@@ -2,19 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package oodj.hospital.management.system;
+package oodj_hospital_management_system;
 
 /**
  *
  * @author sheaw
+ * 
+ * Description: 
  */
-public class OODJHospitalManagementSystem {
 
-    /**
-     * @param args the command line arguments
-     */
+public class OODJHospitalManagementSystem {
     public static void main(String[] args) {
-        // TODO code application logic here
+        //
     }
-    
 }
