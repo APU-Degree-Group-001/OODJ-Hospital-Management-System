@@ -7,17 +7,20 @@ package oodj_hospital_management_system.models;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
+// import own package :3
+import oodj_hospital_management_system.config.SystemConfiguration;
+
 /**
  *
  * @author sheaw
  * Description : User Object
  */
-public class User {
+public abstract class User {
     private LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
     private String id;
     private String name;
     private String pwd;
-    public String type;
+    private String type;
     private String joinedDateTime;
 
     public User() {
@@ -35,33 +38,26 @@ public class User {
         this.type = type;
         this.joinedDateTime = joinedDateTime;
 
-        if (this.type.equalsIgnoreCase("super admin")) {
-            this.userDetails.put("userId", this.id);
-            this.userDetails.put("userName", this.name);
-            this.userDetails.put("userPwd", this.pwd);
-            this.userDetails.put("userType", this.type);
-        } else {
-            this.userDetails.put("userId", this.id);
-            this.userDetails.put("userName", this.name);
-            this.userDetails.put("userPwd", this.pwd);
-            this.userDetails.put("userType", this.type);
-            this.userDetails.put("joinedDateTime", this.joinedDateTime);
-        }
+        this.userDetails.put("userId", this.id);
+        this.userDetails.put("userName", this.name);
+        this.userDetails.put("userPwd", this.pwd);
+        this.userDetails.put("userType", this.type);
+        this.userDetails.put("joinedDateTime", this.joinedDateTime);
     }
 
     // public void deleteUser(User user) {
     //     user = null;
     // }
 
-    public void invalidateUser() {
-        this.id = null;
-        this.name = null;
-        this.pwd = null;
-        this.type = null;
-        if (userDetails != null) {
-            userDetails.clear();
-        }
-    }
+//    public void invalidateUser() {
+//        this.id = null;
+//        this.name = null;
+//        this.pwd = null;
+//        this.type = null;
+//        if (userDetails != null) {
+//            userDetails.clear();
+//        }
+//    }
 
     @Override
     public String toString() {
@@ -97,6 +93,11 @@ public class User {
         return this.pwd;
     }
 
+    // accessor method for user type
+    public String getType() {
+        return this.type;
+    }
+
     // accessor method for user joined date time
     public String  getJoinedDateTime() {
         return this.joinedDateTime;
@@ -107,20 +108,96 @@ public class User {
     }
 
     // mutator method for user name
-    public void modifyName(String newName) {
+    public void setName(String newName) {
         this.name = newName;
         userDetails.put("userName", this.name);
     }
 
     // mutator method for user password
-    public void modifyPwd(String newPwd) {
+    public void setPwd(String newPwd) {
         this.pwd = newPwd;
         userDetails.put("userPwd", this.pwd);
     }
 
     // mutator method for user type
-    public void modifyType(String newType) {
+    public void setType(String newType) {
         this.type = newType;
         userDetails.put("userType", this.type);
+    }
+}
+
+class AdminStaff extends User {
+    public AdminStaff() {
+        super();
+    }
+    
+    public AdminStaff(
+            String id, 
+            String name, 
+            String pwd, 
+            String type, 
+            String joinedDateTime
+    ) {
+        super(id, name, pwd, type, joinedDateTime);
+    }
+}
+
+class MedicalManager extends User {
+    public MedicalManager() {
+        super();
+    }
+    
+    public MedicalManager(
+            String id, 
+            String name, 
+            String pwd, 
+            String type, 
+            String joinedDateTime
+    ) {
+        super(id, name, pwd, type, joinedDateTime);
+    }
+}
+
+class Doctor extends User {
+    private int assignedShiftHourByMonth;
+    
+    public Doctor() {
+        super();
+    }
+    
+    public Doctor(
+            String id, 
+            String name, 
+            String pwd, 
+            String type, 
+            String joinedDateTime,
+            int assignedShiftHourByMonth
+    ) {
+        super(id, name, pwd, type, joinedDateTime);
+        this.assignedShiftHourByMonth = assignedShiftHourByMonth;
+    }
+    
+    public int getAssignedShiftHourByMonth() {
+        return this.assignedShiftHourByMonth;
+    }
+    
+    public void setAssignedShiftHourByMonth(int assignedShiftHourByMonth) {
+        this.assignedShiftHourByMonth = assignedShiftHourByMonth;
+    }
+}
+
+class Patient extends User {
+    public Patient() {
+        super();
+    }
+    
+    public Patient(
+            String id, 
+            String name, 
+            String pwd, 
+            String type, 
+            String joinedDateTime
+    ) {
+        super(id, name, pwd, type, joinedDateTime);
     }
 }
