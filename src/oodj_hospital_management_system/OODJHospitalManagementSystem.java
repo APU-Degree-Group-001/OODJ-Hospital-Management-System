@@ -13,6 +13,6 @@ package oodj_hospital_management_system;
 
 public class OODJHospitalManagementSystem {
     public static void main(String[] args) {
-        //
+        //bibilabu
     }
 }
