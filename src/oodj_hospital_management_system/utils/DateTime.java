@@ -16,10 +16,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTime {
-    private static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static DateTimeFormatter dateFormatter1 = DateTimeFormatter.ofPattern("dd MMMM yyyy");
-    private static DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+    private final static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final static DateTimeFormatter dateFormatter1 = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    private final static DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
     public static LocalDateTime currentDateTime() {
         LocalDateTime dateTime = LocalDateTime.now();
@@ -54,5 +54,21 @@ public class DateTime {
 
     public static String toTimeString(LocalTime time) {
         return time.format(timeFormatter);
+    }
+    
+    public static LocalDate currentDate() {
+        return LocalDate.now();
+    }
+
+    public static LocalTime currentTime() {
+        return LocalTime.now();
+    }
+    
+    public static boolean isBefore(LocalDateTime first, LocalDateTime second) {
+        return first.isBefore(second);
+    }
+
+    public static boolean isAfter(LocalDateTime first, LocalDateTime second) {
+        return first.isAfter(second);
     }
 }
