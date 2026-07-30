@@ -1,0 +1,3 @@
+userId, userName, userPwd, userType, joinedDateTime
+#DOCd4e8f, waka waka, hehe123, doctor, 2026-07-30 14:22:07
+#PATd4e8f, uehehe, hehe456, patient, 2026-07-30 14:22:07

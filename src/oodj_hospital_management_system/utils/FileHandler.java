@@ -40,24 +40,26 @@ public class FileHandler {
 //         }
         
         // Test Write File
-//        ArrayList<LinkedHashMap<String, String>> testW = new ArrayList<>();
-//        LinkedHashMap<String, String> w = new LinkedHashMap<>();
-//        w.put("userId", "#DOCd4e8f");
-//        w.put("userName", "haha");
-//        w.put("userPwd", "hehe123");
-//        w.put("userType", "docotor");
-//        testW.add(w);
-//        handler.writeFile(testW);
+        ArrayList<LinkedHashMap<String, String>> testW = new ArrayList<>();
+        LinkedHashMap<String, String> w = new LinkedHashMap<>();
+        w.put("userId", "#DOCd4e8f");
+        w.put("userName", "haha");
+        w.put("userPwd", "hehe123");
+        w.put("userType", "doctor");
+        w.put("joinedDateTime", "2026-07-30 14:22:07");
+        testW.add(w);
+        handler.writeFile(testW);
 
         // Test Append File
-//        ArrayList<LinkedHashMap<String, String>> testA = new ArrayList<>();
-//        LinkedHashMap<String, String> a = new LinkedHashMap<>();
-//        a.put("userId", "#PATd4e8f");
-//        a.put("userName", "uehehe");
-//        a.put("userPwd", "hehe456");
-//        a.put("userType", "patient");
-//        testA.add(a);
-//        handler.appendFile(testA);
+        ArrayList<LinkedHashMap<String, String>> testA = new ArrayList<>();
+        LinkedHashMap<String, String> a = new LinkedHashMap<>();
+        a.put("userId", "#PATd4e8f");
+        a.put("userName", "uehehe");
+        a.put("userPwd", "hehe456");
+        a.put("userType", "patient");
+        a.put("joinedDateTime", "2026-07-30 14:22:07");
+        testA.add(a);
+        handler.appendFile(testA);
         
     }
 

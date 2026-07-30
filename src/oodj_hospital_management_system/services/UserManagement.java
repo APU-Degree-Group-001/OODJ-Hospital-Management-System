@@ -9,10 +9,15 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
+import oodj_hospital_management_system.models.AdminStaff;
+import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
+import oodj_hospital_management_system.utils.Logger;
 import oodj_hospital_management_system.utils.exceptions.UserException;
 
 /**
@@ -27,6 +32,16 @@ public class UserManagement {
     private static List<User> medicalManager = new ArrayList<>();
     private static List<User> doctor = new ArrayList<>();
     private static List<User> patient = new ArrayList<>();
+    
+    public static void main(String[] args) {
+        Doctor usr = new Doctor("#DOCd4e8f", "haha", "hehe123", "doctor", DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
+        UserManagement test = new UserManagement(usr);
+        
+        test.modifyUserName("waka waka", usr.getId());
+        
+        // forgotten how to update User object gei name, but the txt updated le
+        System.out.println(usr.getName());
+    }
 
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
     private User activeUser;
@@ -37,29 +52,30 @@ public class UserManagement {
     }
     
     public static void loadUsers() {
+        allUsers.clear(); // <-- add this line
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
-        String type = row.get("type");
-        User user;
-//        switch (type) {
-////            userId, userName, userPwd, userType, joinedDateTime
-//            case "doctor":
-//                user = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-//                break;
-//            case "patient":
-//                user = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-//                break;
-//            case "medicalManager":
-//                user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-//                break;
-//            case "adminStaff":
-//                user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-//                break;
-//            default:
-//                user = new User(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime")); // fallback
-//        }
-//        allUsers.add(user);
-}
+            String type = row.get("userType");
+            User user;
+            switch (type) {
+                case "doctor":
+                    user = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    break;
+                case "patient":
+                    user = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    break;
+                case "medicalManager":
+                    user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    break;
+                case "adminStaff":
+                    user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    break;
+                default:
+                    System.out.println("Unknown user type '" + type + "' for user " + row.get("userId") + ", skipping.");
+                    continue;
+            }
+            allUsers.add(user);
+        }
     }
     
     public static ArrayList<User> getAllUsers() {
@@ -67,7 +83,12 @@ public class UserManagement {
     }
     
     private static boolean writeUsers() {
-        return false;
+        ArrayList<LinkedHashMap<String, String>> users = new ArrayList<>();
+        for (User user : allUsers) {
+            users.add(user.getUserMap());
+        }
+        handler.writeFile(users);
+        return true;
     }
     
     private static boolean appendUser(User user) {
@@ -110,83 +131,88 @@ public class UserManagement {
     }
 
     public LinkedHashMap<String, String> modifyUserName(String newName, String userId) {
-//        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
-//        try {
-//            User user = getUserById(userId);
-//            ErrorHandler.userErrorHandler(Arrays.asList("name", "user"), newName, user);
-//        } catch (UserException e) {
-//            System.out.println("Error modifying user name\n" + e.getMessage());
-//            msgMap.put("success", null);
-//            msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
-//            return msgMap;
-//        }
-//        User modifyUser;
-//        for (User user : allUsers) {
-//            if (user.getId().equals(userId)) {
-//                if (user.getClass())
-//                modifyUser = user;
-//                break;
-//            }
-//        }
-//        if (checkPermission(modifyUser.type) || this.activeUser.equals(getUserById(userId))) {
-////            modifyUser.modifyName(newName);
-//            for (User user : allUsers) {
-//                if (user.getId().equals(modifyUser.getId())) {
-//                    user.setName(newName);
-//                    break;
-//                }
-//            }
-//            writeUsers();
-//            loadUsers();
-//            msgMap.put("success", "true");
-//            msgMap.put("msg", String.format("User '%s' name is modified!", userId));
-//        } else {
-//            msgMap.put("success", null);
-//            msgMap.put("msg", String.format("User '%s' name is not modified: you have no access to modify '%s' users",
-//                    userId, modifyUser.type));
-//        }
-//        return msgMap;
-        return null;
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            User user = getUserById(userId);
+            ErrorHandler.userErrorHandler(Arrays.asList("name", "user"), newName, user);
+        } catch (UserException e) {
+            System.out.println("Error modifying user name\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
+            return msgMap;
+        }
+        
+        User modifyUser = null;
+        for (User user : allUsers) {
+            if (user.getId().equals(userId)) {
+                modifyUser = user;
+                break;
+            }
+        }
+        
+        if (modifyUser == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' not found", userId));
+            return msgMap;
+        }
+        
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
+//            modifyUser.modifyName(newName);
+            for (User user : allUsers) {
+                if (user.getId().equals(modifyUser.getId())) {
+                    user.setName(newName);
+                    break;
+                }
+            }
+            writeUsers();
+            loadUsers();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' name is modified!", userId));
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' name is not modified: you have no access to modify '%s' users",
+                    userId, modifyUser.getType()));
+        }
+        return msgMap;
     }
 
     public LinkedHashMap<String, String> modifyUserPwd(String newPwd, String userId) {
-//        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
-//        try {
-//            User user = getUserById(userId);
-//            ErrorHandler.userErrorHandler(Arrays.asList("pwd", "user"), newPwd, user);
-//        } catch (UserException e) {
-//            System.out.println("Error modifying user password\n" + e.getMessage());
-//            msgMap.put("success", null);
-//            msgMap.put("msg", String.format("User '%s''s password is not modified\n", userId) + e.getMessage());
-//            return msgMap;
-//        }
-//        User modifyUser = new User();
-//        for (User user : allUsers) {
-//            if (user.getId().equals(userId)) {
-//                modifyUser = user;
-//                break;
-//            }
-//        }
-//        if (checkPermission(modifyUser.type) || this.activeUser.equals(getUserById(userId))) {
-////            modifyUser.modifyPwd(newPwd);
-//            for (User user : allUsers) {
-//                if (user.getId().equals(modifyUser.getId())) {
-//                        user.modifyPwd(newPwd);
-//                    break;
-//                }
-//            }
-//            writeUsers();
-//            loadUsers();
-//            msgMap.put("success", "true");
-//            msgMap.put("msg", String.format("User '%s' password is modified!", userId, modifyUser.type));
-//        } else {
-//            msgMap.put("success", null);
-//            msgMap.put("msg",
-//                    String.format("User '%s' password is not modified: you have no access to modify '%s' users", userId,
-//                            modifyUser.type));
-//        }
-//        return msgMap;
-          return null;
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            User user = getUserById(userId);
+            ErrorHandler.userErrorHandler(Arrays.asList("pwd", "user"), newPwd, user);
+        } catch (UserException e) {
+            System.out.println("Error modifying user password\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s''s password is not modified\n", userId) + e.getMessage());
+            return msgMap;
+        }
+        User modifyUser = null;
+        for (User user : allUsers) {
+            if (user.getId().equals(userId)) {
+                modifyUser = user;
+                break;
+            }
+        }
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
+//            modifyUser.modifyPwd(newPwd);
+            for (User user : allUsers) {
+                if (user.getId().equals(modifyUser.getId())) {
+                        user.setPwd(newPwd);
+                    break;
+                }
+            }
+            writeUsers();
+            loadUsers();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' password is modified!", userId, modifyUser.getType()));
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg",
+                    String.format("User '%s' password is not modified: you have no access to modify '%s' users", userId,
+                            modifyUser.getType()));
+        }
+        return msgMap;
     }
     
     public LinkedHashMap<String, String> deleteUser(String userId) {
@@ -194,7 +220,22 @@ public class UserManagement {
     }
     
     public User getUserById(String userId) {
-        return null;
+        loadUsers();
+        try {
+            if (!allUsers.stream().anyMatch(user -> user.getId().equals(userId))) {
+                throw new UserException(String.format("Invalid User ID: User ID '%s' is not found", userId));
+            }
+            for (User user : allUsers) {
+                if (user.getId().equals(userId)) {
+                    return user;
+                }
+            }
+            return null;
+        } catch (UserException e) {
+            System.out.println("Error finding user -> " + e.getMessage());
+            Logger.errorLog("Error finding user -> " + e.getMessage());
+            return null;
+        }
     }
 
     public ArrayList<User> searchUsers(String keyword) {
@@ -249,7 +290,22 @@ public class UserManagement {
     }
 
     private boolean checkPermission(String type) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (this.activeUser == null) {
+            return false;
+        }
+        String activeType = this.activeUser.getType();
+
+        switch (activeType) {
+            case "adminStaff":
+                return true; // admin can manage everyone
+            case "medicalManager":
+                return type.equals("doctor") || type.equals("patient"); // manager can manage doctors/patients only
+            case "doctor":
+            case "patient":
+                return false; // regular users can't manage other users' accounts
+            default:
+                return false;
+        }
     }
     
 }
