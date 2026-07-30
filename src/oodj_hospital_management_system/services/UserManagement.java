@@ -5,12 +5,15 @@
 package oodj_hospital_management_system.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
+import oodj_hospital_management_system.utils.exceptions.UserException;
 
 /**
  *
@@ -19,6 +22,7 @@ import oodj_hospital_management_system.utils.FileHandler;
 public class UserManagement {
     private static final FileHandler handler = new FileHandler(SystemConfiguration.userFilePath);
     // private static List<User> admins = new ArrayList<>();
+    private static List<User> allUsers = new ArrayList<>();
     private static List<User> adminStaff = new ArrayList<>();
     private static List<User> medicalManager = new ArrayList<>();
     private static List<User> doctor = new ArrayList<>();
@@ -33,7 +37,29 @@ public class UserManagement {
     }
     
     public static void loadUsers() {
-        //
+        List<LinkedHashMap<String, String>> rawData = handler.readFile();
+        for (LinkedHashMap<String, String> row : rawData) {
+        String type = row.get("type");
+        User user;
+//        switch (type) {
+////            userId, userName, userPwd, userType, joinedDateTime
+//            case "doctor":
+//                user = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+//                break;
+//            case "patient":
+//                user = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+//                break;
+//            case "medicalManager":
+//                user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+//                break;
+//            case "adminStaff":
+//                user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+//                break;
+//            default:
+//                user = new User(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime")); // fallback
+//        }
+//        allUsers.add(user);
+}
     }
     
     public static ArrayList<User> getAllUsers() {
@@ -50,38 +76,37 @@ public class UserManagement {
     
     // CRUD - mutator methods
     public LinkedHashMap<String, String> createUser(String name, String pwd, String type) {
-//        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
-//        try {
-//            ErrorHandler.userErrorHandler(Arrays.asList("name", "pwd", "type"), name, pwd, type);
-//        } catch (UserException e) {
-//            System.out.println("Error creating user\n" + e.getMessage());
-//            msgMap.put("success", null);
-//            msgMap.put("msg", String.format("User '%s' is not created\n", name) + e.getMessage());
-//            return msgMap;
-//        }
-//        if (checkPermission(type)) {
-//                String newUserId = generateId(type);
-//                String currentDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
-//                User newUser = new User(newUserId, name, pwd, type, currentDateTime);
-//                allUsers.add(newUser);
-//                if (handler.checkFileExistence()) {
-//                    appendNewUser(newUser);
-//                } else {
-//                    writeUsers();
-//                }
-//                loadUsers();
-//                msgMap.put("success", "true");
-//                msgMap.put("msg", String.format("User '%s' is created and stored!", name));
-//                msgMap.put("newUserId", newUserId);
-//                // msgMap.put("newUserName", name);
-//                return msgMap;
-//        } else {
-//            msgMap.put("success", null);
-//            msgMap.put("msg",
-//                    String.format("User '%s' is not created: you have no access to create '%s' users", name, type));
-//            return msgMap;
-//        }
-        return null;
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.userErrorHandler(Arrays.asList("name", "pwd", "type"), name, pwd, type);
+        } catch (UserException e) {
+            System.out.println("Error creating user\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' is not created\n", name) + e.getMessage());
+            return msgMap;
+        }
+        if (checkPermission(type)) {
+                String newUserId = generateUserId(type);
+                String currentDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+                User newUser = new User(newUserId, name, pwd, type, currentDateTime) {};
+                allUsers.add(newUser);
+                if (handler.checkFileExistence()) {
+                    appendUser(newUser);
+                } else {
+                    writeUsers();
+                }
+                loadUsers();
+                msgMap.put("success", "true");
+                msgMap.put("msg", String.format("User '%s' is created and stored!", name));
+                msgMap.put("newUserId", newUserId);
+                // msgMap.put("newUserName", name);
+                return msgMap;
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg",
+                    String.format("User '%s' is not created: you have no access to create '%s' users", name, type));
+            return msgMap;
+        }
     }
 
     public LinkedHashMap<String, String> modifyUserName(String newName, String userId) {
@@ -95,9 +120,10 @@ public class UserManagement {
 //            msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
 //            return msgMap;
 //        }
-//        User modifyUser = new User();
+//        User modifyUser;
 //        for (User user : allUsers) {
 //            if (user.getId().equals(userId)) {
+//                if (user.getClass())
 //                modifyUser = user;
 //                break;
 //            }
@@ -106,7 +132,7 @@ public class UserManagement {
 ////            modifyUser.modifyName(newName);
 //            for (User user : allUsers) {
 //                if (user.getId().equals(modifyUser.getId())) {
-//                    user.modifyName(newName);
+//                    user.setName(newName);
 //                    break;
 //                }
 //            }
@@ -220,6 +246,10 @@ public class UserManagement {
             String newPassword
     ) {
         return null;
+    }
+
+    private boolean checkPermission(String type) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

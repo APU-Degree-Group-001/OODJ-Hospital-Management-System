@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 // Import Internal Package
@@ -27,22 +28,37 @@ public class FileHandler {
     private String txtDelimiter = SystemConfiguration.txtDelimiter;
 
     public static void main(String[] args) {
-        FileHandler handler = new FileHandler("txt/users/users.txt");
+        FileHandler handler = new FileHandler(SystemConfiguration.userFilePath);
         System.out.println(handler.checkFileExistence());
-        // ArrayList<LinkedHashMap<String, String>> users = handler.readFile();
-        // System.out.printf("%-19s %-19s %-19s %-19s%n", "User ID", "Name", "Password",
-        // "Role");
-        // for (LinkedHashMap<String, String> map : users) {
-        //     System.out.printf("%-19s %-19s %-19s %-19s%n", map.get("userId"), map.get("userName"), map.get("userPwd"), map.get("userType"));
-        // }
-        ArrayList<LinkedHashMap<String, String>> map = new ArrayList<>();
-        LinkedHashMap<String, String> n = new LinkedHashMap<>();
-        n.put("userId", "#STFd4e8f");
-        n.put("userName", "haha");
-        n.put("userPwd", "hehe123");
-        n.put("userType", "staff");
-        map.add(n);
-        handler.writeFile(map);
+        
+        // Test Read File
+//         ArrayList<LinkedHashMap<String, String>> users = handler.readFile();
+//         System.out.printf("%-19s %-19s %-19s %-19s%n", "User ID", "Name", "Password",
+//         "Role");
+//         for (LinkedHashMap<String, String> map : users) {
+//             System.out.printf("%-19s %-19s %-19s %-19s%n", map.get("userId"), map.get("userName"), map.get("userPwd"), map.get("userType"));
+//         }
+        
+        // Test Write File
+//        ArrayList<LinkedHashMap<String, String>> testW = new ArrayList<>();
+//        LinkedHashMap<String, String> w = new LinkedHashMap<>();
+//        w.put("userId", "#DOCd4e8f");
+//        w.put("userName", "haha");
+//        w.put("userPwd", "hehe123");
+//        w.put("userType", "docotor");
+//        testW.add(w);
+//        handler.writeFile(testW);
+
+        // Test Append File
+//        ArrayList<LinkedHashMap<String, String>> testA = new ArrayList<>();
+//        LinkedHashMap<String, String> a = new LinkedHashMap<>();
+//        a.put("userId", "#PATd4e8f");
+//        a.put("userName", "uehehe");
+//        a.put("userPwd", "hehe456");
+//        a.put("userType", "patient");
+//        testA.add(a);
+//        handler.appendFile(testA);
+        
     }
 
     public FileHandler(String filePath) {

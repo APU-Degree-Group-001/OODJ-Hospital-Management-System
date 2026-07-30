@@ -165,6 +165,10 @@ class Doctor extends User {
         super();
     }
     
+    public Doctor(String id, String name, String pwd, String type, String joinedDateTime) {
+        this(id, name, pwd, type, joinedDateTime, 0); // calls the constructor above
+    }
+    
     public Doctor(
             String id, 
             String name, 
