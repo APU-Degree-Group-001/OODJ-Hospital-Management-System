@@ -6,8 +6,12 @@ package oodj_hospital_management_system.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.UUID;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.AdminStaff;
 import oodj_hospital_management_system.models.Doctor;
@@ -34,13 +38,22 @@ public class UserManagement {
     private static List<User> patient = new ArrayList<>();
     
     public static void main(String[] args) {
-        Doctor usr = new Doctor("#DOCd4e8f", "haha", "hehe123", "doctor", DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
-        UserManagement test = new UserManagement(usr);
-        
-        test.modifyUserName("waka waka", usr.getId());
-        
-        // forgotten how to update User object gei name, but the txt updated le
-        System.out.println(usr.getName());
+        // Test Update Name
+//        Doctor usr = new Doctor("#DOCd4e8f", "waka waka", "hehe123", "doctor", "2026-07-30 14:22:07");
+//        UserManagement test = new UserManagement(usr);
+//        test.modifyUserName("Shakira Dai Dai", usr.getId());
+//        
+//        User updatedUser = test.getUserById("#DOCd4e8f");
+//        test = new UserManagement(updatedUser);
+//   
+//        System.out.println(updatedUser.getName());
+
+        // Test Append New User
+        AdminStaff admin = new AdminStaff("#ADMd4e8f", "uehehe", "hehe456", "admin staff", "2026-07-30 14:22:07");
+        UserManagement usrMng = new UserManagement(admin);
+//        usrMng.createUser("Paureen", "pau123", "patient");
+//        UserManagement.testPrintAllUsers(usrMng.getAllUsers());
+        UserManagement.testPrintAllUsers(usrMng.getAllPatients());
     }
 
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
@@ -51,24 +64,43 @@ public class UserManagement {
         loadUsers();
     }
     
+    public static void testPrintAllUsers(List<User> userList) {
+        System.out.printf("%-19s %-19s %-19s %-19s%n", "User ID", "Name", "Password","Role");
+         for (User usr : userList) {
+             System.out.printf("%-19s %-19s %-19s %-19s%n", usr.getId(), usr.getName(), usr.getPwd(), usr.getType());
+         }
+    }
+    
+    public User getActiveUser() {
+        return this.activeUser;
+    }
+    
     public static void loadUsers() {
-        allUsers.clear(); // <-- add this line
+        allUsers.clear();
+        adminStaff.clear();
+        medicalManager.clear();
+        doctor.clear();
+        patient.clear();
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
             String type = row.get("userType");
             User user;
             switch (type) {
+                case "admin staff":
+                    user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    adminStaff.add(user);
+                    break;
+                case "medical manager":
+                    user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    medicalManager.add(user);
+                    break;
                 case "doctor":
                     user = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    doctor.add(user);
                     break;
                 case "patient":
                     user = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    break;
-                case "medicalManager":
-                    user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    break;
-                case "adminStaff":
-                    user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    patient.add(user);
                     break;
                 default:
                     System.out.println("Unknown user type '" + type + "' for user " + row.get("userId") + ", skipping.");
@@ -78,10 +110,33 @@ public class UserManagement {
         }
     }
     
-    public static ArrayList<User> getAllUsers() {
-        return null;
+    // Accessor Method for Users
+    public static List<User> getAllUsers() {
+        loadUsers();
+        return allUsers;
     }
     
+    public static List<User> getAllAdminStaffs() {
+        loadUsers();
+        return adminStaff;
+    }
+    
+    public static List<User> getAllMedicalManagers() {
+        loadUsers();
+        return medicalManager;
+    }
+    
+    public static List<User> getAllDoctors() {
+        loadUsers();
+        return doctor;
+    }
+    
+    public static List<User> getAllPatients() {
+        loadUsers();
+        return patient;
+    }
+    
+    // File Handler (Write and Append)
     private static boolean writeUsers() {
         ArrayList<LinkedHashMap<String, String>> users = new ArrayList<>();
         for (User user : allUsers) {
@@ -92,7 +147,22 @@ public class UserManagement {
     }
     
     private static boolean appendUser(User user) {
-        return false;
+        try {
+            ArrayList<LinkedHashMap<String, String>> users = new ArrayList<>();
+            users.add(user.getUserMap());
+            if (!handler.checkFileExistence() && !handler.createFile()) {
+                System.out.printf("File 'users.txt' failed to be created, user '%s' cannot be appended%n",
+                        user.getName());
+                return false;
+            }
+            handler.appendFile(users);
+            System.out.printf("User '%s' is appended to users.txt!%n", user.getName());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error appending new user: " + e.getMessage());
+            Logger.errorLog("Error appending new user (System Error) -> " + e.getMessage() + "\n");
+            return false;
+        }
     }
     
     // CRUD - mutator methods
@@ -107,21 +177,39 @@ public class UserManagement {
             return msgMap;
         }
         if (checkPermission(type)) {
-                String newUserId = generateUserId(type);
-                String currentDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
-                User newUser = new User(newUserId, name, pwd, type, currentDateTime) {};
-                allUsers.add(newUser);
-                if (handler.checkFileExistence()) {
-                    appendUser(newUser);
-                } else {
-                    writeUsers();
-                }
-                loadUsers();
-                msgMap.put("success", "true");
-                msgMap.put("msg", String.format("User '%s' is created and stored!", name));
-                msgMap.put("newUserId", newUserId);
-                // msgMap.put("newUserName", name);
-                return msgMap;
+            String newUserId = generateUserId(type);
+            String currentDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+            User newUser;
+            switch (type) {
+                case "doctor":
+                    newUser = new Doctor(newUserId, name, pwd, type, currentDateTime);
+                    break;
+                case "patient":
+                    newUser = new Patient(newUserId, name, pwd, type, currentDateTime);
+                    break;
+                case "medicalManager":
+                    newUser = new MedicalManager(newUserId, name, pwd, type, currentDateTime);
+                    break;
+                case "adminStaff":
+                    newUser = new AdminStaff(newUserId, name, pwd, type, currentDateTime);
+                    break;
+                default:
+                    msgMap.put("success", null);
+                    msgMap.put("msg", String.format("User '%s' is not created: unknown user type '%s'", name, type));
+                    return msgMap;
+            }
+
+            allUsers.add(newUser);
+            if (handler.checkFileExistence()) {
+                appendUser(newUser);
+            } else {
+                writeUsers();
+            }
+            loadUsers();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' is created and stored!", name));
+            msgMap.put("newUserId", newUserId);
+            return msgMap;
         } else {
             msgMap.put("success", null);
             msgMap.put("msg",
@@ -203,7 +291,7 @@ public class UserManagement {
                 }
             }
             writeUsers();
-            loadUsers();
+            loadUsers();            
             msgMap.put("success", "true");
             msgMap.put("msg", String.format("User '%s' password is modified!", userId, modifyUser.getType()));
         } else {
@@ -216,7 +304,29 @@ public class UserManagement {
     }
     
     public LinkedHashMap<String, String> deleteUser(String userId) {
-        return null;
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        User deleteUser = null;
+        for (User user : allUsers) {
+            if (user.getId().equals(userId)) {
+                deleteUser = user;
+                break;
+            }
+        }
+        if (checkPermission(deleteUser.getType())) {
+            allUsers.removeIf(user -> user.getId().equals(userId));
+            writeUsers();
+            loadUsers();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' is deleted!", userId));
+            msgMap.put("deleteUserType", deleteUser.getType());
+            msgMap.put("deleteUserId", deleteUser.getId());
+            msgMap.put("deleteUserName", deleteUser.getName());
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' is not deleted: you have no access to delete '%s' users", userId,
+                    deleteUser.getType()));
+        }
+        return msgMap;
     }
     
     public User getUserById(String userId) {
@@ -238,54 +348,96 @@ public class UserManagement {
         }
     }
 
-    public ArrayList<User> searchUsers(String keyword) {
-        return null;
+    // Searching and Sorting
+    public List<User> searchUsers(String keywords) {
+        List<User> matchedUsers = new ArrayList<>();
+        for (User user : allUsers) {
+            if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getType().contains(keywords.toLowerCase().trim())) {
+                matchedUsers.add(user);
+            }
+        }
+        return matchedUsers;
     }
 
-    public ArrayList<User> searchUsers(
-            String keyword,
-            ArrayList<User> users
-    ) {
-        return null;
+    public List<User> searchUsers(String keywords, ArrayList<User> userList) {
+        List<User> matchedUsers = new ArrayList<>();
+        for (User user : userList) {
+            if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getType().contains(keywords.toLowerCase().trim())) {
+                matchedUsers.add(user);
+            }
+        }
+        return matchedUsers;
     }
     
-    public ArrayList<User> sortUsersById() {
-        return null;
-    }
-
-    public ArrayList<User> sortUsersByName() {
-        return null;
-    }
-
-    public ArrayList<User> sortUsersByType() {
-        return null;
+    public List<User> sortUsersById() {
+        List<User> sortedUsers = allUsers;
+        sortedUsers.sort(Comparator.comparing(User::getId));
+        return sortedUsers;
     }
     
-    public boolean isUserIdExists(String userId) {
-        return false;
+    public List<User> sortUsersList(List<User> list) {
+        List<User> sortedUsers = list;
+        sortedUsers.sort(Comparator.comparing(User::getId));
+        return sortedUsers;
     }
 
-    public boolean isUsernameExists(String username) {
-        return false;
+    public List<User> sortUsersByName() {
+        List<User> sortedUsers = allUsers;
+        sortedUsers.sort(Comparator.comparing(User::getName));
+        return sortedUsers;
     }
     
+    // Generate ID annd Temp Password
     public static String generateUserId(String userType) {
-        return null;
+        if (!Arrays.asList(SystemConfiguration.userTypes).contains(userType)) {
+            throw new IllegalArgumentException("Invalid user type");
+        }
+        String newUserId = "";
+        boolean loop;
+        do {
+            switch (userType.toLowerCase()) {
+                case "admin staff":
+                    newUserId = "#Adm" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+                    break;
+                case "medical manager":
+                    newUserId = "#MNG" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+                    break;
+                case "doctor":
+                    newUserId = "#DOC" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+                    break;
+                case "patient":
+                    newUserId = "#PAT" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+                    break;
+                default:
+                    throw new IllegalStateException("Invalid User ID: User ID cannot be null or empty");
+            }
+
+            String userId = newUserId;
+            loop = newUserId != null && allUsers.stream().anyMatch(user -> Objects.equals(user.getId(), userId));
+
+        } while (loop);
+        return newUserId;
+    }
+    
+    public static String generateTemporaryPassword() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        int passwordLength = 8;
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+        String pwd;
+        do {
+            password = new StringBuilder();
+            for (int i = 0; i < passwordLength; i++) {
+                password.append(characters.charAt(random.nextInt(characters.length())));
+            }
+            pwd = password.toString();
+        } while (!(pwd.matches(SystemConfiguration.pwdPattern1) && pwd.matches(SystemConfig.pwdPattern2) && pwd.matches(SystemConfig.pwdPattern3) && pwd.matches(SystemConfig.pwdPattern4)));
+        return password.toString();
     }
     
     public User login(String userId, String password) {
-        return null;
-    }
-
-    public boolean verifyPassword(User user, String password) {
-        return false;
-    }
-
-    public LinkedHashMap<String, String> changePassword(
-            User user,
-            String oldPassword,
-            String newPassword
-    ) {
         return null;
     }
 
@@ -296,9 +448,9 @@ public class UserManagement {
         String activeType = this.activeUser.getType();
 
         switch (activeType) {
-            case "adminStaff":
+            case "admin staff":
                 return true; // admin can manage everyone
-            case "medicalManager":
+            case "medical manager":
                 return type.equals("doctor") || type.equals("patient"); // manager can manage doctors/patients only
             case "doctor":
             case "patient":
