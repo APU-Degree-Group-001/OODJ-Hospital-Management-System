@@ -6,12 +6,13 @@ package oodj_hospital_management_system.models;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import oodj_hospital_management_system.models.interfaces.ConsultationWorkflow;
 
 /**
  *
  * @author sheaw
  */
-public class Consultation {
+public class Consultation implements ConsultationWorkflow {
     private String consultationId;
     private ConsultationSlot consultationSlot;
     private Patient patient;
@@ -22,6 +23,14 @@ public class Consultation {
     private HospitalAssetAllocation hospitalAssetAllocation;
     private Feedback feedback;
     private Bill bill;
+    
+    public enum ConsultationStatus {
+        SCHEDULED,
+        IN_PROGRESS,
+        COMPLETED,
+        CANCELLED
+    }
+    private ConsultationStatus status;
 
     public Consultation() {
         this.consultationId = "";
@@ -34,6 +43,7 @@ public class Consultation {
         this.hospitalAssetAllocation = null;
         this.feedback = null;
         this.bill = null;
+        this.status = ConsultationStatus.SCHEDULED;
     }
 
     public Consultation(
@@ -46,7 +56,8 @@ public class Consultation {
             ArrayList<Prescription> prescriptions,
             HospitalAssetAllocation hospitalAssetAllocation,
             Feedback feedback,
-            Bill bill
+            Bill bill,
+            ConsultationStatus status
     ) {
         this.consultationId = consultationId;
         this.consultationSlot = consultationSlot;
@@ -58,6 +69,7 @@ public class Consultation {
         this.hospitalAssetAllocation = hospitalAssetAllocation;
         this.feedback = feedback;
         this.bill = bill;
+        this.status = status;
     }
 
     @Override
@@ -81,6 +93,36 @@ public class Consultation {
 
         Consultation consultationObj = (Consultation) obj;
         return Objects.equals(this.consultationId, consultationObj.consultationId);
+    }
+    
+    @Override
+    public void startConsultation() {
+        if (status != ConsultationStatus.SCHEDULED) {
+            throw new IllegalStateException(
+                "In-progress or completed consultation unable to be started."
+            );
+        }
+        status = ConsultationStatus.IN_PROGRESS;
+    }
+    
+    @Override
+    public void completeConsultation() {
+        if (status != ConsultationStatus.IN_PROGRESS) {
+            throw new IllegalStateException(
+                "Only an in-progress consultation can be completed."
+            );
+        }
+        status = ConsultationStatus.COMPLETED;
+    }
+    
+    @Override
+    public void cancelConsultation() {
+        if (status != ConsultationStatus.SCHEDULED) {
+            throw new IllegalStateException(
+                "In-progress or completed consultation unable to be cancelled."
+            );
+        }
+        status = ConsultationStatus.CANCELLED;
     }
 
     public String getConsultationId() {
@@ -121,6 +163,10 @@ public class Consultation {
 
     public Bill getBill() {
         return bill;
+    }
+
+    public ConsultationStatus getConsultationStatus() {
+        return this.status;
     }
 
     public void setConsultationSlot(ConsultationSlot consultationSlot) {

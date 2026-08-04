@@ -36,25 +36,6 @@ public class UserManagement {
     private static List<User> medicalManager = new ArrayList<>();
     private static List<User> doctor = new ArrayList<>();
     private static List<User> patient = new ArrayList<>();
-    
-    public static void main(String[] args) {
-        // Test Update Name
-//        Doctor usr = new Doctor("#DOCd4e8f", "waka waka", "hehe123", "doctor", "2026-07-30 14:22:07");
-//        UserManagement test = new UserManagement(usr);
-//        test.modifyUserName("Shakira Dai Dai", usr.getId());
-//        
-//        User updatedUser = test.getUserById("#DOCd4e8f");
-//        test = new UserManagement(updatedUser);
-//   
-//        System.out.println(updatedUser.getName());
-
-        // Test Append New User
-        AdminStaff admin = new AdminStaff("#ADMd4e8f", "uehehe", "hehe456", "admin staff", "2026-07-30 14:22:07");
-        UserManagement usrMng = new UserManagement(admin);
-//        usrMng.createUser("Paureen", "pau123", "patient");
-//        UserManagement.testPrintAllUsers(usrMng.getAllUsers());
-        UserManagement.testPrintAllUsers(usrMng.getAllPatients());
-    }
 
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
     private User activeUser;
@@ -62,13 +43,6 @@ public class UserManagement {
     public UserManagement(User user) {
         this.activeUser = user;
         loadUsers();
-    }
-    
-    public static void testPrintAllUsers(List<User> userList) {
-        System.out.printf("%-19s %-19s %-19s %-19s%n", "User ID", "Name", "Password","Role");
-         for (User usr : userList) {
-             System.out.printf("%-19s %-19s %-19s %-19s%n", usr.getId(), usr.getName(), usr.getPwd(), usr.getType());
-         }
     }
     
     public User getActiveUser() {
@@ -187,10 +161,10 @@ public class UserManagement {
                 case "patient":
                     newUser = new Patient(newUserId, name, pwd, type, currentDateTime);
                     break;
-                case "medicalManager":
+                case "medical manager":
                     newUser = new MedicalManager(newUserId, name, pwd, type, currentDateTime);
                     break;
-                case "adminStaff":
+                case "admin staff":
                     newUser = new AdminStaff(newUserId, name, pwd, type, currentDateTime);
                     break;
                 default:
@@ -229,7 +203,6 @@ public class UserManagement {
             msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
             return msgMap;
         }
-        
         User modifyUser = null;
         for (User user : allUsers) {
             if (user.getId().equals(userId)) {
@@ -237,7 +210,6 @@ public class UserManagement {
                 break;
             }
         }
-        
         if (modifyUser == null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s' not found", userId));
@@ -281,6 +253,11 @@ public class UserManagement {
                 modifyUser = user;
                 break;
             }
+        }
+        if (modifyUser == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' not found", userId));
+            return msgMap;
         }
         if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
 //            modifyUser.modifyPwd(newPwd);
@@ -329,7 +306,7 @@ public class UserManagement {
         return msgMap;
     }
     
-    public User getUserById(String userId) {
+    public static User getUserById(String userId) {
         loadUsers();
         try {
             if (!allUsers.stream().anyMatch(user -> user.getId().equals(userId))) {
@@ -360,7 +337,7 @@ public class UserManagement {
         return matchedUsers;
     }
 
-    public List<User> searchUsers(String keywords, ArrayList<User> userList) {
+    public List<User> searchUsers(String keywords, List<User> userList) {
         List<User> matchedUsers = new ArrayList<>();
         for (User user : userList) {
             if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
@@ -371,20 +348,15 @@ public class UserManagement {
         return matchedUsers;
     }
     
-    public List<User> sortUsersById() {
-        List<User> sortedUsers = allUsers;
-        sortedUsers.sort(Comparator.comparing(User::getId));
-        return sortedUsers;
-    }
     
-    public List<User> sortUsersList(List<User> list) {
+    public List<User> sortUsersById(List<User> list) {
         List<User> sortedUsers = list;
         sortedUsers.sort(Comparator.comparing(User::getId));
         return sortedUsers;
     }
 
-    public List<User> sortUsersByName() {
-        List<User> sortedUsers = allUsers;
+    public List<User> sortUsersByName(List<User> list) {
+        List<User> sortedUsers = list;
         sortedUsers.sort(Comparator.comparing(User::getName));
         return sortedUsers;
     }
@@ -421,6 +393,7 @@ public class UserManagement {
         return newUserId;
     }
     
+    // this havent check
     public static String generateTemporaryPassword() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
         int passwordLength = 8;
@@ -433,7 +406,10 @@ public class UserManagement {
                 password.append(characters.charAt(random.nextInt(characters.length())));
             }
             pwd = password.toString();
-        } while (!(pwd.matches(SystemConfiguration.pwdPattern1) && pwd.matches(SystemConfig.pwdPattern2) && pwd.matches(SystemConfig.pwdPattern3) && pwd.matches(SystemConfig.pwdPattern4)));
+        } while (!(pwd.matches(SystemConfiguration.pwdPattern1) 
+                && pwd.matches(SystemConfiguration.pwdPattern2) 
+                && pwd.matches(SystemConfiguration.pwdPattern3) 
+                && pwd.matches(SystemConfiguration.pwdPattern4)));
         return password.toString();
     }
     

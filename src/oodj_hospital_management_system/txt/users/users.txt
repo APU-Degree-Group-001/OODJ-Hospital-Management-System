@@ -1,7 +1,7 @@
 userId, userName, userPwd, userType, joinedDateTime
-#DOCd4e8f, Shakira Dai Dai, hehe123, doctor, 2026-07-30 14:22:07
+#DOCd4e8f, Dai Dai, daidai123, doctor, 2026-07-30 14:22:07
 #PATd4e8f, uehehe, hehe456, patient, 2026-07-30 14:22:07
 #ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07
 #PAT3fad4, Paureen, pau123, patient, 2026-08-04 17:04:24
 #PAT79a39, Paureen, pau123, patient, 2026-08-04 17:10:01
-#PATd0bef, Paureen, pau123, patient, 2026-08-04 17:12:26
+#MNG74295, Reen, pau123, medical manager, 2026-08-04 21:20:53
