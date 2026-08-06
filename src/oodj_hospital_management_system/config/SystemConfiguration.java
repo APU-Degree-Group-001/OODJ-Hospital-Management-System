@@ -19,9 +19,10 @@ public class SystemConfiguration {
     public static final String parentPath = "src/oodj_hospital_management_system/";
     public static final String logFilePath = parentPath + "txt/log/log.txt";
     public static final String errorLogFilePath = parentPath + "txt/log/error_log.txt";
-    public static final String superAdminFilePath = parentPath + "txt/users/superAdmin.txt";
+//    public static final String superAdminFilePath = parentPath + "txt/users/superAdmin.txt";
     public static final String userFilePath = parentPath + "txt/users/users.txt";
-    public static final String rbcFilePath = parentPath + "txt/users/rbc.txt";
+    public static final String consultationFilePath = parentPath + "txt/consultations/consultations.txt";
+//    public static final String rbcFilePath = parentPath + "txt/users/rbc.txt";
     public static final String backupDir = parentPath + "txt/backups/";
     
     // Default Hospital Assets

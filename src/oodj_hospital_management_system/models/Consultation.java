@@ -24,7 +24,7 @@ public class Consultation implements ConsultationWorkflow {
     private Feedback feedback;
     private Bill bill;
     
-    public enum ConsultationStatus {
+    public enum ConsultationStatus {                                                                                                                                                                                                                                                                                                                                               
         SCHEDULED,
         IN_PROGRESS,
         COMPLETED,
