@@ -8,6 +8,7 @@ package oodj_hospital_management_system.models;
  *
  * @author sheaw
  */
+
 public abstract class HospitalAsset {
     private String assetId;
     private String assetName;
@@ -91,41 +92,41 @@ public abstract class HospitalAsset {
     }
 }
 
-class ConsultationRoom extends HospitalAsset {
-    public ConsultationRoom(
-            String assetId,
-            String assetName,
-            String imagePath,
-            String location,
-            String description
-    ) {
-        super(assetId, assetName, imagePath, location, description);
-    }
-}
+//class ConsultationRoom extends HospitalAsset {
+//    public ConsultationRoom(
+//            String assetId,
+//            String assetName,
+//            String imagePath,
+//            String location,
+//            String description
+//    ) {
+//        super(assetId, assetName, imagePath, location, description);
+//    }
+//}
 
-class Ward extends HospitalAsset {
-    private int totalBeds;
-    
-    public Ward(
-            String assetId,
-            String assetName,
-            String imagePath,
-            String location,
-            String description,
-            int totalBeds
-    ) {
-        super(assetId, assetName, imagePath, location, description);
-        this.totalBeds = totalBeds;
-    }
-    
-    public int getTotalBeds() {
-        return totalBeds;
-    }
-    
-    public void setTotalBeds(int totalBeds) {
-        this.totalBeds = totalBeds;
-    }
-}
+//class Ward extends HospitalAsset {
+//    private int totalBeds;
+//    
+//    public Ward(
+//            String assetId,
+//            String assetName,
+//            String imagePath,
+//            String location,
+//            String description,
+//            int totalBeds
+//    ) {
+//        super(assetId, assetName, imagePath, location, description);
+//        this.totalBeds = totalBeds;
+//    }
+//    
+//    public int getTotalBeds() {
+//        return totalBeds;
+//    }
+//    
+//    public void setTotalBeds(int totalBeds) {
+//        this.totalBeds = totalBeds;
+//    }
+//}
 
 //class Bed {
 //    public String bedId;
@@ -140,40 +141,40 @@ class Ward extends HospitalAsset {
 //    }
 //}
 
-class Laboratory extends HospitalAsset {
-    public Laboratory(
-            String assetId,
-            String assetName,
-            String imagePath,
-            String location,
-            String description
-    ) {
-        super(assetId, assetName, imagePath, location, description);
-    }
-}
+//class Laboratory extends HospitalAsset {
+//    public Laboratory(
+//            String assetId,
+//            String assetName,
+//            String imagePath,
+//            String location,
+//            String description
+//    ) {
+//        super(assetId, assetName, imagePath, location, description);
+//    }
+//}
 
-class XRayRoom extends HospitalAsset {
-    public XRayRoom(
-            String assetId,
-            String assetName,
-            String imagePath,
-            String location,
-            String description
-    ) {
-        super(assetId, assetName, imagePath, location, description);
-    }
-}
+//class XRayRoom extends HospitalAsset {
+//    public XRayRoom(
+//            String assetId,
+//            String assetName,
+//            String imagePath,
+//            String location,
+//            String description
+//    ) {
+//        super(assetId, assetName, imagePath, location, description);
+//    }
+//}
 
-class ImagingRoom extends HospitalAsset {
-    public ImagingRoom(
-            String assetId,
-            String assetName,
-            String imagePath,
-            String location,
-            String description
-    ) {
-        super(assetId, assetName, imagePath, location, description);
-    }
-}
+//class ImagingRoom extends HospitalAsset {
+//    public ImagingRoom(
+//            String assetId,
+//            String assetName,
+//            String imagePath,
+//            String location,
+//            String description
+//    ) {
+//        super(assetId, assetName, imagePath, location, description);
+//    }
+//}
 
 

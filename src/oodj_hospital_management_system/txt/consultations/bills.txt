@@ -1,0 +1,4 @@
+billId, consultationId, patientId, insuranceId, consultationFee, totalAmount, payableAmount
+#BILL001, #CON001, #PATd4e8f, #INS001, 80.00, 80.00, 16.00
+#BILL002, #CON002, #PAT3fad4, #INS002, 100.00, 100.00, 20.00
+#BILL003, #CON003, #PAT79a39, , 60.00, 60.00, 60.00

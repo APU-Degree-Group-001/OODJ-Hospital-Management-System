@@ -19,10 +19,22 @@ public class SystemConfiguration {
     public static final String parentPath = "src/oodj_hospital_management_system/";
     public static final String logFilePath = parentPath + "txt/log/log.txt";
     public static final String errorLogFilePath = parentPath + "txt/log/error_log.txt";
-//    public static final String superAdminFilePath = parentPath + "txt/users/superAdmin.txt";
+    
     public static final String userFilePath = parentPath + "txt/users/users.txt";
+    public static final String doctorShiftFilePath = parentPath + "txt/users/doctorShifts.txt";
+    
+    public static final String billFilePath = parentPath + "txt/consultations/bills.txt";
     public static final String consultationFilePath = parentPath + "txt/consultations/consultations.txt";
-//    public static final String rbcFilePath = parentPath + "txt/users/rbc.txt";
+    public static final String consultationSlotsFilePath = parentPath + "txt/consultations/consultationSlots.txt";
+    public static final String feedbackFilePath = parentPath + "txt/consultations/feedback.txt";
+    
+    public static final String hospitalAssetAllocationFilePath = parentPath + "txt/hospital_assets/hospitalAssetAllocation.txt";
+    public static final String hospitalAssetsFilePath = parentPath + "txt/hospital_assets/hospitalAssets.txt";
+    
+    public static final String labResultsFilePath = parentPath + "txt/medical_records/labResults.txt";
+    public static final String medicalAssessmentsFilePath = parentPath + "txt/medical_records/medicalAssessments.txt";
+    public static final String prescriptionsFilePath = parentPath + "txt/medical_records/prescriptions.txt";
+    
     public static final String backupDir = parentPath + "txt/backups/";
     
     // Default Hospital Assets
@@ -35,7 +47,7 @@ public class SystemConfiguration {
 //    ));
     
     // Default User Type
-    public static String[] userTypes = { "administrative staff", "medical manager", "doctor", "patient" };
+    public static String[] userTypes = { "admin staff", "medical manager", "doctor", "patient" };
 
     // Default Escape Delimiter (replace ',' with '#|')
     public static final String txtDelimiter = "#|";

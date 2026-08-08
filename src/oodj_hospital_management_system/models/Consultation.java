@@ -5,6 +5,7 @@
 package oodj_hospital_management_system.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import oodj_hospital_management_system.models.interfaces.ConsultationWorkflow;
 
@@ -18,8 +19,8 @@ public class Consultation implements ConsultationWorkflow {
     private Patient patient;
     private String description;
     private MedicalAssessment medicalAssessment;
-    private ArrayList<LabResult> labResults;
-    private ArrayList<Prescription> prescriptions;
+    private List<LabResult> labResults;
+    private List<Prescription> prescriptions;
     private HospitalAssetAllocation hospitalAssetAllocation;
     private Feedback feedback;
     private Bill bill;
@@ -33,6 +34,7 @@ public class Consultation implements ConsultationWorkflow {
     private ConsultationStatus status;
 
     public Consultation() {
+//        consultationId, consultationSlotId, patientId, description, medicalAssessmentId, labResultIds, prescriptionIds, hospitalAssetAllocationId, feedbackId, billId, status
         this.consultationId = "";
         this.consultationSlot = null;
         this.patient = null;
@@ -52,8 +54,8 @@ public class Consultation implements ConsultationWorkflow {
             Patient patient,
             String description,
             MedicalAssessment medicalAssessment,
-            ArrayList<LabResult> labResults,
-            ArrayList<Prescription> prescriptions,
+            List<LabResult> labResults,
+            List<Prescription> prescriptions,
             HospitalAssetAllocation hospitalAssetAllocation,
             Feedback feedback,
             Bill bill,
@@ -145,11 +147,11 @@ public class Consultation implements ConsultationWorkflow {
         return medicalAssessment;
     }
 
-    public ArrayList<LabResult> getLabResults() {
+    public List<LabResult> getLabResults() {
         return labResults;
     }
 
-    public ArrayList<Prescription> getPrescriptions() {
+    public List<Prescription> getPrescriptions() {
         return prescriptions;
     }
 

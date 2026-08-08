@@ -10,55 +10,39 @@ import java.util.Objects;
  *
  * @author sheaw
  */
+
 public class MedicalAssessment {
     private String assessmentId;
+    private String consultationId;
+    private String doctorId;
 
-    private String bloodPressure;
-    private int heartRate;
-    private double temperature;
-    private double weight;
-    private double height;
-    private double bmi;
-
-    private String symptoms;
+    private String assessmentType;
+    private String findings;
     private String diagnosis;
-    private String notes;
 
     public MedicalAssessment() {
         this.assessmentId = "";
-        this.bloodPressure = "";
-        this.heartRate = 0;
-        this.temperature = 0.0;
-        this.weight = 0.0;
-        this.height = 0.0;
-        this.bmi = 0.0;
-        this.symptoms = "";
+        this.consultationId = "";
+        this.doctorId = "";
+        this.assessmentType = "";
+        this.findings = "";
         this.diagnosis = "";
-        this.notes = "";
     }
 
     public MedicalAssessment(
             String assessmentId,
-            String bloodPressure,
-            int heartRate,
-            double temperature,
-            double weight,
-            double height,
-            double bmi,
-            String symptoms,
-            String diagnosis,
-            String notes
+            String consultationId,
+            String doctorId,
+            String assessmentType,
+            String findings,
+            String diagnosis
     ) {
         this.assessmentId = assessmentId;
-        this.bloodPressure = bloodPressure;
-        this.heartRate = heartRate;
-        this.temperature = temperature;
-        this.weight = weight;
-        this.height = height;
-        this.bmi = bmi;
-        this.symptoms = symptoms;
+        this.consultationId = consultationId;
+        this.doctorId = doctorId;
+        this.assessmentType = assessmentType;
+        this.findings = findings;
         this.diagnosis = diagnosis;
-        this.notes = notes;
     }
 
     @Override
@@ -81,7 +65,11 @@ public class MedicalAssessment {
         }
 
         MedicalAssessment assessmentObj = (MedicalAssessment) obj;
-        return Objects.equals(this.assessmentId, assessmentObj.assessmentId);
+
+        return Objects.equals(
+                this.assessmentId,
+                assessmentObj.assessmentId
+        );
     }
 
     // Getters
@@ -90,77 +78,45 @@ public class MedicalAssessment {
         return assessmentId;
     }
 
-    public String getBloodPressure() {
-        return bloodPressure;
+    public String getConsultationId() {
+        return consultationId;
     }
 
-    public int getHeartRate() {
-        return heartRate;
+    public String getDoctorId() {
+        return doctorId;
     }
 
-    public double getTemperature() {
-        return temperature;
+    public String getAssessmentType() {
+        return assessmentType;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getBMI() {
-        return bmi;
-    }
-
-    public String getSymptoms() {
-        return symptoms;
+    public String getFindings() {
+        return findings;
     }
 
     public String getDiagnosis() {
         return diagnosis;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
     // Setters
 
-    public void setBloodPressure(String bloodPressure) {
-        this.bloodPressure = bloodPressure;
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
-    public void setHeartRate(int heartRate) {
-        this.heartRate = heartRate;
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
     }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
+    public void setAssessmentType(String assessmentType) {
+        this.assessmentType = assessmentType;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public void setBMI(double bmi) {
-        this.bmi = bmi;
-    }
-
-    public void setSymptoms(String symptoms) {
-        this.symptoms = symptoms;
+    public void setFindings(String findings) {
+        this.findings = findings;
     }
 
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 }

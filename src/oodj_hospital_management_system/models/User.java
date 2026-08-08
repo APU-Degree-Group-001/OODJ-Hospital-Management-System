@@ -99,7 +99,7 @@ public abstract class User {
     }
 
     // accessor method for user joined date time
-    public String  getJoinedDateTime() {
+    public String getJoinedDateTime() {
         return this.joinedDateTime;
     }
 

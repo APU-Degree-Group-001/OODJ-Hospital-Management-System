@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.models.AdminStaff;
 import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.UserManagement;
 
@@ -67,7 +68,7 @@ public class TestUserManagement {
     }
     
     static void testSearchUserFromGivenList() {
-        testPrintAllUsers(usrMng.searchUsers("re", UserManagement.getAllMedicalManagers()));
+        testPrintAllUsers(usrMng.searchUsers("re", usrMng.getAllMedicalManagers()));
     }
     
     static void testSortUserById() {

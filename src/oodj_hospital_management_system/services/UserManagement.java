@@ -32,10 +32,10 @@ public class UserManagement {
     private static final FileHandler handler = new FileHandler(SystemConfiguration.userFilePath);
     // private static List<User> admins = new ArrayList<>();
     private static List<User> allUsers = new ArrayList<>();
-    private static List<User> adminStaff = new ArrayList<>();
-    private static List<User> medicalManager = new ArrayList<>();
-    private static List<User> doctor = new ArrayList<>();
-    private static List<User> patient = new ArrayList<>();
+    private static List<User> adminStaffs = new ArrayList<>();
+    private static List<User> medicalManagers = new ArrayList<>();
+    private static List<User> doctors = new ArrayList<>();
+    private static List<User> patients = new ArrayList<>();
 
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
     private User activeUser;
@@ -51,36 +51,38 @@ public class UserManagement {
     
     public static void loadUsers() {
         allUsers.clear();
-        adminStaff.clear();
-        medicalManager.clear();
-        doctor.clear();
-        patient.clear();
+        adminStaffs.clear();
+        medicalManagers.clear();
+        doctors.clear();
+        patients.clear();
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
             String type = row.get("userType");
-            User user;
             switch (type) {
                 case "admin staff":
-                    user = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    adminStaff.add(user);
+                    AdminStaff admin = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    adminStaffs.add(admin);
+                    allUsers.add(admin);
                     break;
                 case "medical manager":
-                    user = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    medicalManager.add(user);
+                    MedicalManager manager = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    medicalManagers.add(manager);
+                    allUsers.add(manager);
                     break;
                 case "doctor":
-                    user = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    doctor.add(user);
+                    Doctor doctor = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    doctors.add(doctor);
+                    allUsers.add(doctor);
                     break;
                 case "patient":
-                    user = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
-                    patient.add(user);
+                    Patient patient = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    patients.add(patient);
+                    allUsers.add(patient);
                     break;
                 default:
                     System.out.println("Unknown user type '" + type + "' for user " + row.get("userId") + ", skipping.");
                     continue;
             }
-            allUsers.add(user);
         }
     }
     
@@ -92,22 +94,22 @@ public class UserManagement {
     
     public static List<User> getAllAdminStaffs() {
         loadUsers();
-        return adminStaff;
+        return adminStaffs;
     }
     
     public static List<User> getAllMedicalManagers() {
         loadUsers();
-        return medicalManager;
+        return medicalManagers;
     }
     
     public static List<User> getAllDoctors() {
         loadUsers();
-        return doctor;
+        return doctors;
     }
     
     public static List<User> getAllPatients() {
         loadUsers();
-        return patient;
+        return patients;
     }
     
     // File Handler (Write and Append)
@@ -321,6 +323,98 @@ public class UserManagement {
         } catch (UserException e) {
             System.out.println("Error finding user -> " + e.getMessage());
             Logger.errorLog("Error finding user -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static AdminStaff getAdminStaffById(String adminId) {
+        loadUsers();
+        try {
+            if (!adminStaffs.stream().anyMatch(
+                    adminStaff -> adminStaff.getId().equals(adminId))) {
+                throw new UserException(
+                        String.format("Invalid Admin Staff ID: Admin Staff ID '%s' is not found", adminId)
+                );
+            }
+            for (User adminStaff : adminStaffs) {
+                if (adminStaff.getId().equals(adminId)) {
+                    AdminStaff a = (AdminStaff) adminStaff;
+                    return a;
+                }
+            }
+            return null;
+        } catch (UserException e) {
+            System.out.println("Error finding medical manager -> " + e.getMessage());
+            Logger.errorLog("Error finding medical manager -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static MedicalManager getMedicalManagerById(String managerId) {
+        loadUsers();
+        try {
+            if (!medicalManagers.stream().anyMatch(
+                    medicalManager -> medicalManager.getId().equals(managerId))) {
+                throw new UserException(
+                        String.format("Invalid Medical Manager ID: Medical Manager ID '%s' is not found", managerId)
+                );
+            }
+            for (User medicalManager : medicalManagers) {
+                if (medicalManager.getId().equals(managerId)) {
+                    MedicalManager m = (MedicalManager) medicalManager;
+                    return m;
+                }
+            }
+            return null;
+        } catch (UserException e) {
+            System.out.println("Error finding medical manager -> " + e.getMessage());
+            Logger.errorLog("Error finding medical manager -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Doctor getDoctorById(String doctorId) {
+        loadUsers();
+        try {
+            if (!doctors.stream().anyMatch(
+                    doctor -> doctor.getId().equals(doctorId))) {
+                throw new UserException(
+                        String.format("Invalid Doctor ID: Doctor ID '%s' is not found", doctorId)
+                );
+            }
+            for (User doctor : doctors) {
+                if (doctor.getId().equals(doctorId)) {
+                    Doctor d = (Doctor) doctor;
+                    return d;
+                }
+            }
+            return null;
+        } catch (UserException e) {
+            System.out.println("Error finding doctor -> " + e.getMessage());
+            Logger.errorLog("Error finding doctor -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Patient getPatientById(String patientId) {
+        loadUsers();
+        try {
+            if (!patients.stream().anyMatch(
+                    patient -> patient.getId().equals(patientId))) {
+                throw new UserException(
+                        String.format("Invalid Patient ID: Patient ID '%s' is not found", patientId)
+                );
+            }
+            for (User patient : patients) {
+                if (patient.getId().equals(patientId)) {
+                    Patient p = (Patient) patient;
+                    return p;
+                }
+            }
+            return null;
+        } catch (UserException e) {
+            System.out.println("Error finding patient -> " + e.getMessage());
+            Logger.errorLog("Error finding patient -> " + e.getMessage());
             return null;
         }
     }

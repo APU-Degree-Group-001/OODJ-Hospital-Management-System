@@ -18,8 +18,8 @@ public class ConsultationSlot {
 
     private String consultationSlotId;
     private DoctorShift doctorShift;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    private String startDateTime;
+    private String endDateTime;
     private String status;
 
     public ConsultationSlot() {
@@ -33,8 +33,8 @@ public class ConsultationSlot {
     public ConsultationSlot(
             String consultationSlotId,
             DoctorShift doctorShift,
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime
+            String startDateTime,
+            String endDateTime
     ) {
         this.consultationSlotId = consultationSlotId;
         this.doctorShift = doctorShift;
@@ -76,11 +76,11 @@ public class ConsultationSlot {
         return doctorShift;
     }
 
-    public LocalDateTime getStartDateTime() {
+    public String getStartDateTime() {
         return startDateTime;
     }
 
-    public LocalDateTime getEndDateTime() {
+    public String getEndDateTime() {
         return endDateTime;
     }
 
@@ -94,11 +94,11 @@ public class ConsultationSlot {
         this.doctorShift = doctorShift;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
+    public void setStartDateTime(String startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(String endDateTime) {
         this.endDateTime = endDateTime;
     }
 

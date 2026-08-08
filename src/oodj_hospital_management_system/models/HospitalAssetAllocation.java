@@ -4,7 +4,6 @@
  */
 package oodj_hospital_management_system.models;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import oodj_hospital_management_system.utils.DateTime;
 
@@ -20,14 +19,14 @@ public class HospitalAssetAllocation {
     private String allocationId;
     private HospitalAsset hospitalAsset;
     private Consultation consultation;
-    private LocalDateTime allocationDateTime;
+    private String allocationDateTime;
     private String status;
 
     public HospitalAssetAllocation() {
         this.allocationId = "";
         this.hospitalAsset = null;
         this.consultation = null;
-        this.allocationDateTime = DateTime.currentDateTime();
+        this.allocationDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
         this.status = STATUS_ALLOCATED;
     }
 
@@ -35,13 +34,14 @@ public class HospitalAssetAllocation {
             String allocationId,
             HospitalAsset hospitalAsset,
             Consultation consultation,
-            LocalDateTime allocationDateTime
+            String allocationDateTime,
+            String status
     ) {
         this.allocationId = allocationId;
         this.hospitalAsset = hospitalAsset;
         this.consultation = consultation;
         this.allocationDateTime = allocationDateTime;
-        this.status = STATUS_ALLOCATED;
+        this.status = status;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class HospitalAssetAllocation {
         return this.consultation;
     }
 
-    public LocalDateTime getAllocationDateTime() {
+    public String getAllocationDateTime() {
         return this.allocationDateTime;
     }
 
@@ -100,7 +100,7 @@ public class HospitalAssetAllocation {
         this.consultation = consultation;
     }
 
-    public void setAllocationDateTime(LocalDateTime allocationDateTime) {
+    public void setAllocationDateTime(String allocationDateTime) {
         this.allocationDateTime = allocationDateTime;
     }
 

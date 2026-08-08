@@ -13,40 +13,41 @@ import java.util.Objects;
 public class Bill {
     private String billId;
     private Consultation consultation;
+    private Patient patient;
+    private Insurance insurance;
 
     private double consultationFee;
-    private double insuranceCoverage;
-    private double labFee;
     private double totalAmount;
-
-    private boolean paid;
+    private double payableAmount;
 
     public Bill() {
         this.billId = "";
         this.consultation = null;
+        this.patient = null;
+        this.insurance = null;
+
         this.consultationFee = 0.0;
-        this.insuranceCoverage = 0.0;
-        this.labFee = 0.0;
         this.totalAmount = 0.0;
-        this.paid = false;
+        this.payableAmount = 0.0;
     }
 
     public Bill(
             String billId,
             Consultation consultation,
+            Patient patient,
+            Insurance insurance,
             double consultationFee,
-            double insuranceCoverage,
-            double labFee,
             double totalAmount,
-            boolean paid
+            double payableAmount
     ) {
         this.billId = billId;
         this.consultation = consultation;
+        this.patient = patient;
+        this.insurance = insurance;
+
         this.consultationFee = consultationFee;
-        this.insuranceCoverage = insuranceCoverage;
-        this.labFee = labFee;
         this.totalAmount = totalAmount;
-        this.paid = paid;
+        this.payableAmount = payableAmount;
     }
 
     @Override
@@ -60,6 +61,7 @@ public class Bill {
 
     @Override
     public boolean equals(Object obj) {
+
         if (!(obj instanceof Bill)) {
             return false;
         }
@@ -69,7 +71,11 @@ public class Bill {
         }
 
         Bill billObj = (Bill) obj;
-        return Objects.equals(this.billId, billObj.billId);
+
+        return Objects.equals(
+                this.billId,
+                billObj.billId
+        );
     }
 
     // Getters
@@ -82,24 +88,24 @@ public class Bill {
         return consultation;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public Insurance getInsurance() {
+        return insurance;
+    }
+
     public double getConsultationFee() {
         return consultationFee;
-    }
-
-    public double getInsuranceCoverage() {
-        return insuranceCoverage;
-    }
-
-    public double getLabFee() {
-        return labFee;
     }
 
     public double getTotalAmount() {
         return totalAmount;
     }
 
-    public boolean isPaid() {
-        return paid;
+    public double getPayableAmount() {
+        return payableAmount;
     }
 
     // Setters
@@ -108,23 +114,23 @@ public class Bill {
         this.consultation = consultation;
     }
 
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public void setInsurance(Insurance insurance) {
+        this.insurance = insurance;
+    }
+
     public void setConsultationFee(double consultationFee) {
         this.consultationFee = consultationFee;
-    }
-
-    public void setInsuranceCoverage(double insuranceCoverage) {
-        this.insuranceCoverage = insuranceCoverage;
-    }
-
-    public void setLabFee(double labFee) {
-        this.labFee = labFee;
     }
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public void setPaid(boolean paid) {
-        this.paid = paid;
+    public void setPayableAmount(double payableAmount) {
+        this.payableAmount = payableAmount;
     }
 }

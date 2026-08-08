@@ -1,0 +1,3 @@
+feedbackId, consultationId, patientId, rating, comment, submittedDateTime
+#FB001, #CON001, #PATd4e8f, 5, Doctor was very helpful and explained the treatment clearly, 2026-08-05 12:30:00
+#FB002, #CON002, #PAT3fad4, 4, Consultation was good and the doctor was professional, 2026-08-05 14:20:00

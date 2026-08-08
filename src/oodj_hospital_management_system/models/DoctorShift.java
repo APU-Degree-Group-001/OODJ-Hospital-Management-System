@@ -4,7 +4,6 @@
  */
 package oodj_hospital_management_system.models;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import oodj_hospital_management_system.utils.DateTime;
 
@@ -13,44 +12,50 @@ import oodj_hospital_management_system.utils.DateTime;
  * @author sheaw
  */
 public class DoctorShift {
-    public static final String STATUS_SCHEDULED = "Scheduled";
-    public static final String STATUS_COMPLETED = "Completed";
-    public static final String STATUS_CANCELLED = "Cancelled";
+    public enum DoctorShiftStatus {
+        SCHEDULED,
+        COMPLETED,
+        IN_PROGRESS,
+        CANCELLED
+    }
 
     private String shiftId;
     private Doctor doctor;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
-    private String status;
+    private String startDateTime;
+    private String endDateTime;
+    private DoctorShiftStatus status;
 
     public DoctorShift() {
         this.shiftId = "";
         this.doctor = null;
         this.startDateTime = null;
         this.endDateTime = null;
-        this.status = STATUS_SCHEDULED;
+        this.status = DoctorShiftStatus.SCHEDULED;
     }
 
     public DoctorShift(
             String shiftId,
             Doctor doctor,
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime
+            String startDateTime,
+            String endDateTime,
+            DoctorShiftStatus status
     ) {
         this.shiftId = shiftId;
         this.doctor = doctor;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.status = STATUS_SCHEDULED;
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Doctor Shift {%s - %s (%s)}",
+            "Doctor Shift {%s: %s on %s (%s - %s)}",
             shiftId,
             doctor.getName(),
-            DateTime.formattedLocalDateTime(startDateTime)
+            DateTime.toDateStringWords(DateTime.getDate(DateTime.toDateTimeObject(startDateTime))),
+            DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(startDateTime))),
+            DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(endDateTime)))
         );
     }
 
@@ -79,15 +84,15 @@ public class DoctorShift {
         return doctor;
     }
 
-    public LocalDateTime getStartDateTime() {
+    public String getStartDateTime() {
         return startDateTime;
     }
 
-    public LocalDateTime getEndDateTime() {
+    public String getEndDateTime() {
         return endDateTime;
     }
 
-    public String getStatus() {
+    public DoctorShiftStatus getStatus() {
         return status;
     }
 
@@ -97,21 +102,15 @@ public class DoctorShift {
         this.doctor = doctor;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
+    public void setStartDateTime(String startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(String endDateTime) {
         this.endDateTime = endDateTime;
     }
 
-    public void setStatus(String status) {
-
-        if (status.equals(STATUS_SCHEDULED)
-                || status.equals(STATUS_COMPLETED)
-                || status.equals(STATUS_CANCELLED)) {
-
-            this.status = status;
-        }
+    public void setStatus(DoctorShiftStatus status) {
+        this.status = status;
     }
 }

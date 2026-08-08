@@ -14,16 +14,16 @@ public class Prescription {
     private String prescriptionId;
     private String medicineName;
     private String dosage;
-    private int frequencyPerDay;
-    private int durationInDays;
+    private String frequencyPerDay;
+    private String durationInDays;
     private String instructions;
 
     public Prescription() {
         this.prescriptionId = "";
         this.medicineName = "";
         this.dosage = "";
-        this.frequencyPerDay = 0;
-        this.durationInDays = 0;
+        this.frequencyPerDay = "";
+        this.durationInDays = "";
         this.instructions = "";
     }
 
@@ -31,8 +31,8 @@ public class Prescription {
             String prescriptionId,
             String medicineName,
             String dosage,
-            int frequencyPerDay,
-            int durationInDays,
+            String frequencyPerDay,
+            String durationInDays,
             String instructions
     ) {
         this.prescriptionId = prescriptionId;
@@ -85,11 +85,11 @@ public class Prescription {
         return this.dosage;
     }
 
-    public int getFrequencyPerDay() {
+    public String getFrequencyPerDay() {
         return this.frequencyPerDay;
     }
 
-    public int getDurationInDays() {
+    public String getDurationInDays() {
         return this.durationInDays;
     }
 
@@ -115,11 +115,11 @@ public class Prescription {
         this.dosage = dosage;
     }
 
-    public void setFrequencyPerDay(int frequencyPerDay) {
+    public void setFrequencyPerDay(String frequencyPerDay) {
         this.frequencyPerDay = frequencyPerDay;
     }
 
-    public void setDurationInDays(int durationInDays) {
+    public void setDurationInDays(String durationInDays) {
         this.durationInDays = durationInDays;
     }
 
