@@ -35,7 +35,8 @@ import oodj_hospital_management_system.utils.FileHandler;
 //private Bill bill;
 
 public class ConsultationManagement {
-    private static final FileHandler handler = new FileHandler(SystemConfiguration.consultationFilePath);
+    private static final FileHandler consultationHandler = new FileHandler(SystemConfiguration.consultationFilePath);
+    private static final FileHandler consultationSlotHandler = new FileHandler(SystemConfiguration.consultationSlotFilePath);
     private static final List<Consultation> consultations = new ArrayList<>();
     private static final List<ConsultationSlot> consultationSlots = new ArrayList<>();
     private User activeUser;
@@ -45,9 +46,9 @@ public class ConsultationManagement {
         loadConsultations();
     }
     
-    public void loadConsultations() {
+    public static void loadConsultations() {
         consultations.clear();
-        List<LinkedHashMap<String, String>> rawData = handler.readFile();
+        List<LinkedHashMap<String, String>> rawData = consultationHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
 //            consultationId, consultationSlotId, patientId, description, medicalAssessmentId, labResultIds, prescriptionIds, hospitalAssetAllocationId, feedbackId, billId, status
             Consultation consultation = new Consultation(
@@ -67,9 +68,9 @@ public class ConsultationManagement {
         }
     }
     
-    public void loadConsultationSlots() {
+    public static void loadConsultationSlots() {
         consultationSlots.clear();
-        List<LinkedHashMap<String, String>> rawData = handler.readFile();
+        List<LinkedHashMap<String, String>> rawData = consultationSlotHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
             // consultationSlotId, doctorShiftId, startDateTime, endDateTime
             ConsultationSlot consultationSlot = new ConsultationSlot(
@@ -83,10 +84,12 @@ public class ConsultationManagement {
     }
     
     public static List<Consultation> getAllConsultations() {
+        loadConsultations();
         return consultations;
     }
     
     public static List<ConsultationSlot> getAllConsultationSlots() {
+        loadConsultationSlots();
         return consultationSlots;
     }
     
@@ -98,7 +101,7 @@ public class ConsultationManagement {
         return null;
     }
     
-    public List<MedicalAssessment> getMedicalAssessments(String assessmentIds) {
+    public static List<MedicalAssessment> getMedicalAssessments(String assessmentIds) {
         String[] ids = assessmentIds.split(",");
         List<MedicalAssessment> assessment = new ArrayList<>();
         for (String id : ids) {
@@ -108,7 +111,7 @@ public class ConsultationManagement {
         return assessment;
     }
     
-    public List<LabResult> getLabResults(String labResultIds) {
+    public static List<LabResult> getLabResults(String labResultIds) {
         String[] ids = labResultIds.split(",");
         List<LabResult> labResults = new ArrayList<>();
         for (String id : ids) {
@@ -118,7 +121,7 @@ public class ConsultationManagement {
         return labResults;
     }
     
-    public List<Prescription> getPrescriptions(String prescriptionIds) {
+    public static List<Prescription> getPrescriptions(String prescriptionIds) {
         String[] ids = prescriptionIds.split(",");
         List<Prescription> prescriptions = new ArrayList<>();
         for (String id : ids) {
@@ -128,7 +131,7 @@ public class ConsultationManagement {
         return prescriptions;
     }
     
-    public ConsultationStatus getConsultationStatus(String status) {
+    public static ConsultationStatus getConsultationStatus(String status) {
 //        SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED
         ConsultationStatus consultationStatus = null;
         switch (status) {

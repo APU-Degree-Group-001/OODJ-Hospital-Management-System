@@ -550,10 +550,6 @@ public class UserManagement {
                 && pwd.matches(SystemConfiguration.pwdPattern4)));
         return password.toString();
     }
-    
-    public User login(String userId, String password) {
-        return null;
-    }
 
     private boolean checkPermission(String type) {
         if (this.activeUser == null) {
@@ -601,30 +597,13 @@ public class UserManagement {
             writeUsers();
 
         } catch (Exception e) {
-            System.out.println(
-                    "Error assigning doctor to medical manager\n"
-                    + e.getMessage()
-            );
-
+            System.out.println("Error assigning doctor to medical manager\n" + e.getMessage());
             msgMap.put("success", null);
-            msgMap.put(
-                    "msg",
-                    "Doctor assignment failed\n" + e.getMessage()
-            );
-
+            msgMap.put("msg", "Doctor assignment failed\n" + e.getMessage());
             return msgMap;
         }
-
         msgMap.put("success", "true");
-        msgMap.put(
-                "msg",
-                String.format(
-                        "Doctor '%s' has been assigned to Medical Manager '%s'!",
-                        doctor.getName(),
-                        medicalManager.getName()
-                )
-        );
-
+        msgMap.put("msg",String.format("Doctor '%s' has been assigned to Medical Manager '%s'!", doctor.getName(),medicalManager.getName()));
         return msgMap;
     }
     

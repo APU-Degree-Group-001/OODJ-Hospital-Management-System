@@ -7,6 +7,7 @@ package oodj_hospital_management_system.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -321,6 +322,81 @@ public class DoctorManagement {
     }
     
     // Assign Doctor to Medical Manager - Hnadled in UserManagement because involving updating users.txt :3
+    
+    // Searching and Sorting
+    public List<DoctorShift> searchDoctorShifts(String keywords) {
+        List<DoctorShift> matchedShifts = new ArrayList<>();
+        for (DoctorShift shift : doctorShifts) {
+            if (shift.getShiftId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getDoctor().getName().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getStatus().toString().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getMedicalManager().getName().toLowerCase().contains(keywords.toLowerCase().trim())) {
+                matchedShifts.add(shift);
+            }
+        }
+        return matchedShifts;
+    }
+
+    public List<DoctorShift> searchDoctorShifts(String keywords, List<DoctorShift> shiftList) {
+        List<DoctorShift> matchedShifts = new ArrayList<>();
+        for (DoctorShift shift : shiftList) {
+            if (shift.getShiftId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getDoctor().getName().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getStatus().toString().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || shift.getMedicalManager().getName().toLowerCase().contains(keywords.toLowerCase().trim())) {
+                matchedShifts.add(shift);
+            }
+        }
+        return matchedShifts;
+    }
+
+    public List<DoctorShift> sortDoctorShiftsById(List<DoctorShift> list) {
+        List<DoctorShift> sortedShifts = list;
+        sortedShifts.sort(Comparator.comparing(DoctorShift::getShiftId));
+        return sortedShifts;
+    }
+
+    public List<DoctorShift> sortDoctorShiftsByStartDateTime(List<DoctorShift> list) {
+        List<DoctorShift> sortedShifts = list;
+        sortedShifts.sort(Comparator.comparing(shift -> DateTime.toDateTimeObject(shift.getStartDateTime())));
+        return sortedShifts;
+    }
+
+    public List<MedicalDepartment> searchMedicalDepartments(String keywords) {
+        List<MedicalDepartment> matchedDepartments = new ArrayList<>();
+        for (MedicalDepartment department : medicalDepartments) {
+            if (department.getDepartmentId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || department.getDepartmentName().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || department.getDescription().toLowerCase().contains(keywords.toLowerCase().trim())) {
+                matchedDepartments.add(department);
+            }
+        }
+        return matchedDepartments;
+    }
+
+    public List<MedicalDepartment> searchMedicalDepartments(String keywords, List<MedicalDepartment> departmentList) {
+        List<MedicalDepartment> matchedDepartments = new ArrayList<>();
+        for (MedicalDepartment department : departmentList) {
+            if (department.getDepartmentId().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || department.getDepartmentName().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || department.getDescription().toLowerCase().contains(keywords.toLowerCase().trim())) {
+                matchedDepartments.add(department);
+            }
+        }
+        return matchedDepartments;
+    }
+
+    public List<MedicalDepartment> sortMedicalDepartmentsById(List<MedicalDepartment> list) {
+        List<MedicalDepartment> sortedDepartments = list;
+        sortedDepartments.sort(Comparator.comparing(MedicalDepartment::getDepartmentId));
+        return sortedDepartments;
+    }
+
+    public List<MedicalDepartment> sortMedicalDepartmentsByName(List<MedicalDepartment> list) {
+        List<MedicalDepartment> sortedDepartments = list;
+        sortedDepartments.sort(Comparator.comparing(MedicalDepartment::getDepartmentName));
+        return sortedDepartments;
+    }
     
     // Generate ID
     public static String generateShiftId() {
