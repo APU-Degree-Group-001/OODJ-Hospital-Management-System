@@ -5,6 +5,7 @@
 package oodj_hospital_management_system.models;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import oodj_hospital_management_system.models.interfaces.ConsultationWorkflow;
@@ -205,5 +206,34 @@ public class Consultation implements ConsultationWorkflow {
 
     public void setBill(Bill bill) {
         this.bill = bill;
+    }
+    
+    public LinkedHashMap<String, String> getConsultationMap() {
+        LinkedHashMap<String, String> consultationDetails = new LinkedHashMap<>();
+        consultationDetails.put("consultationId", this.consultationId);
+        consultationDetails.put("consultationSlotId", this.consultationSlot == null ? "" : this.consultationSlot.getConsultationSlotId());
+        consultationDetails.put("patientId", this.patient == null ? "" : this.patient.getId());
+        consultationDetails.put("description", this.description);
+        consultationDetails.put("medicalAssessmentId", this.medicalAssessment == null ? "" : this.medicalAssessment.getAssessmentId());
+        consultationDetails.put("labResultIds", labResultIdsAsString());
+        consultationDetails.put("prescriptionIds", prescriptionIdsAsString());
+        consultationDetails.put("hospitalAssetAllocationId", this.hospitalAssetAllocation == null ? "" : this.hospitalAssetAllocation.getAllocationId());
+        consultationDetails.put("feedbackId", this.feedback == null ? "" : this.feedback.getFeedbackId());
+        consultationDetails.put("billId", this.bill == null ? "" : this.bill.getBillId());
+        consultationDetails.put("status", this.status.name());
+
+        return consultationDetails;
+    }
+
+    private String labResultIdsAsString() {
+        List<String> ids = new ArrayList<>();
+        for (LabResult lr : this.labResults) { ids.add(lr.getResultId()); }
+        return String.join(";", ids);
+    }
+
+    private String prescriptionIdsAsString() {
+        List<String> ids = new ArrayList<>();
+        for (Prescription p : this.prescriptions) { ids.add(p.getPrescriptionId()); }
+        return String.join(";", ids);
     }
 }

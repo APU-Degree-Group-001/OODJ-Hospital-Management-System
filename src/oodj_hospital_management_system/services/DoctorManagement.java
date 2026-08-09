@@ -41,6 +41,7 @@ public class DoctorManagement {
     public DoctorManagement(User usr) {
         this.activeUser = usr;
         loadDoctorShift();
+        loadMedicalDepartment();
     }
     
     public static void loadDoctorShift() {
@@ -54,6 +55,8 @@ public class DoctorManagement {
                     UserManagement.getDoctorById(row.get("doctorId")),
                     row.get("startDateTime"),
                     row.get("endDateTime"),
+                    row.get("actualStartDateTime"),
+                    row.get("actualEndDateTime"),
                     getDoctorShiftStatus(row.get("status")),
                     UserManagement.getMedicalManagerById(row.get("medicalManagerId"))
             );
@@ -70,7 +73,7 @@ public class DoctorManagement {
                     row.get("departmentId"),
                     row.get("departmentName"),
                     row.get("description")
-            );
+        );
             medicalDepartments.add(department);
         }
     }
@@ -129,6 +132,7 @@ public class DoctorManagement {
         switch (status) {
             case "SCHEDULED": shiftStaus = DoctorShiftStatus.SCHEDULED; break;
             case "COMPLETED": shiftStaus = DoctorShiftStatus.COMPLETED; break;
+            case "IN_PROGRESS": shiftStaus = DoctorShiftStatus.IN_PROGRESS; break;
             case "CANCELLED": shiftStaus = DoctorShiftStatus.CANCELLED; break;
             default: System.out.println("Unknown Doctor Shift Status");
         }
@@ -185,7 +189,7 @@ public class DoctorManagement {
         }
         MedicalManager medicalManager = (MedicalManager) activeUser;
         String newShiftId = generateShiftId();
-        DoctorShift newShift = new DoctorShift(newShiftId, doctor, startDateTime, endDateTime, DoctorShiftStatus.SCHEDULED, medicalManager);
+        DoctorShift newShift = new DoctorShift(newShiftId, doctor, startDateTime, endDateTime, "", "", DoctorShiftStatus.SCHEDULED, medicalManager);
         doctorShifts.add(newShift);
         if (shiftHandler.checkFileExistence()) {
             appendDoctorShift(newShift);
@@ -400,13 +404,7 @@ public class DoctorManagement {
     
     // Generate ID
     public static String generateShiftId() {
-        String newShiftId = "";
-        boolean loop;
-        do {
-            newShiftId = "#SHIFT" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
-            String shiftId = newShiftId;
-            loop = newShiftId != null && doctorShifts.stream().anyMatch(shift -> Objects.equals(shift.getShiftId(), shiftId));
-        } while (loop);
-        return newShiftId;
+        List<String> existingIds = doctorShifts.stream().map(DoctorShift::getShiftId).toList();
+        return SystemConfiguration.generateId("#SHIFT", existingIds);
     }
 }

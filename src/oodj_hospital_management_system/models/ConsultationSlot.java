@@ -5,6 +5,7 @@
 package oodj_hospital_management_system.models;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -12,9 +13,9 @@ import java.util.Objects;
  * @author sheaw
  */
 public class ConsultationSlot {
-    public static final String STATUS_AVAILABLE = "Available";
-    public static final String STATUS_BOOKED = "Booked";
-    public static final String STATUS_CANCELLED = "Cancelled";
+    public static final String STATUS_AVAILABLE = "AVAILABLE";
+    public static final String STATUS_BOOKED = "BOOKED";
+    public static final String STATUS_CANCELLED = "CANCELLED";
 
     private String consultationSlotId;
     private DoctorShift doctorShift;
@@ -34,13 +35,14 @@ public class ConsultationSlot {
             String consultationSlotId,
             DoctorShift doctorShift,
             String startDateTime,
-            String endDateTime
+            String endDateTime,
+            String status
     ) {
         this.consultationSlotId = consultationSlotId;
         this.doctorShift = doctorShift;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.status = STATUS_AVAILABLE;
+        this.status = status;
     }
 
     @Override
@@ -108,5 +110,15 @@ public class ConsultationSlot {
                 || status.equals(STATUS_CANCELLED)) {
             this.status = status;
         }
+    }
+    
+    public LinkedHashMap<String, String> getConsultationSlotMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("consultationSlotId", consultationSlotId);
+        map.put("doctorShiftId", doctorShift.getShiftId());
+        map.put("startDateTime", startDateTime);
+        map.put("endDateTime", endDateTime);
+        map.put("status", status);
+        return map;
     }
 }

@@ -1,4 +1,4 @@
-departmentId,departmentName,description
+departmentId, departmentName, description
 #DEPT001, Cardiology, Provides medical diagnosis and treatment for heart and cardiovascular conditions.
 #DEPT002, Neurology, Provides diagnosis and treatment for disorders affecting the brain nervous system and spinal cord.
 #DEPT003, General Medicine, Provides comprehensive diagnosis and treatment for common illnesses and general health conditions.

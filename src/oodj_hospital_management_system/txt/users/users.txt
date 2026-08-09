@@ -1,9 +1,9 @@
 userId, userName, userPwd, userType, joinedDateTime, departmentId, medicalManagerId
-#DOCd4e8f, Dai Dai, daidai123, doctor, 2026-07-30 14:22:07, #DEPT001, #MNG74295
+#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, #DEPT001, #MNG74295
 #DOCd4e8c, Waka Waka, wakawaka123, doctor, 2026-07-30 14:22:07, #DEPT002, #MNG58321
-#PATd4e8f, uehehe, hehe456, patient, 2026-07-30 14:22:07, ,
-#ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07, ,
-#PAT3fad4, Pau, pau123, patient, 2026-08-04 17:04:24, ,
-#PAT79a39, Chua, chua123, patient, 2026-08-04 17:10:01, ,
-#MNG74295, Reen, pau123, medical manager, 2026-08-04 21:20:53, ,
-#MNG58321, Chee, chee123, medical manager, 2026-08-05 10:15:32, ,
+#ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07, , 
+#PAT3fad4, Pau, pau123, patient, 2026-08-04 17:04:24, , 
+#PAT79a39, Chua, chua123, patient, 2026-08-04 17:10:01, , 
+#MNG74295, Reen, pau123, medical manager, 2026-08-04 21:20:53, , 
+#MNG58321, Chee, chee123, medical manager, 2026-08-05 10:15:32, , 
+#MNG79e32, Reen, paU12345!, medical manager, 2026-08-09 22:01:34, , 

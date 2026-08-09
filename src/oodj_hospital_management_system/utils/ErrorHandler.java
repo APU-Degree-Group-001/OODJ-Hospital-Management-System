@@ -9,13 +9,19 @@ import java.util.Arrays;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.AdminStaff;
+import oodj_hospital_management_system.models.Consultation;
+import oodj_hospital_management_system.models.Consultation.ConsultationStatus;
+import oodj_hospital_management_system.models.ConsultationSlot;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
 import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.ConsultationManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
+import oodj_hospital_management_system.utils.exceptions.ConsultationException;
 import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
 import oodj_hospital_management_system.utils.exceptions.UserException;
 
@@ -191,6 +197,159 @@ public class ErrorHandler {
             LocalDateTime end = DateTime.toDateTimeObject(endDateTime);
             if (!DateTime.isBefore(start, end)) {
                 throw new DoctorShiftException("End date/time must be after start date/time");
+            }
+        }
+    }
+    
+    public static void consultationErrorHandler(List<String> details, Object... var) throws ConsultationException, UserException {
+        List<Consultation> allConsultations = ConsultationManagement.getAllConsultations();
+        List<ConsultationSlot> allConsultationSlots = ConsultationManagement.getAllConsultationSlots();
+        List<Doctor> allDoctors = UserManagement.getAllDoctors().stream().map(user -> (Doctor) user).toList();
+        List<Patient> allPatients = UserManagement.getAllPatients().stream().map(user -> (Patient) user).toList();
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+                if (details.get(i).equalsIgnoreCase("consultationId")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("Consultation ID cannot be null or empty");
+                    }
+                    if (allConsultations.stream().anyMatch(consultation -> consultation.getConsultationId().equals(data))) {
+                        throw new ConsultationException(
+                                String.format("Consultation ID '%s' already exists", data)
+                        );
+                    }
+                } else if (details.get(i).equalsIgnoreCase("description")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("Consultation description cannot be null or empty");
+                    }
+                } else if (details.get(i).equalsIgnoreCase("consultationStatus")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("Consultation status cannot be null or empty");
+                    }
+                    if (!(ConsultationStatus.SCHEDULED.equals(data)
+                            || ConsultationStatus.IN_PROGRESS.equals(data)
+                            || ConsultationStatus.COMPLETED.equals(data)
+                            || ConsultationStatus.CANCELLED.equals(data))) {
+                        throw new ConsultationException(
+                                String.format("Invalid consultation status: '%s'", data)
+                        );
+                    }
+                }
+            }
+            if (object instanceof ConsultationSlot) {
+                ConsultationSlot consultationSlot = (ConsultationSlot) object;
+
+                if (details.get(i).equalsIgnoreCase("consultation slot")) {
+                    if (!allConsultationSlots.stream().anyMatch(slot -> slot.equals(consultationSlot))) {
+                        throw new ConsultationException(
+                                String.format("Consultation Slot '%s' not found", consultationSlot.getConsultationSlotId())
+                        );
+                    }
+                }
+            }
+            if (object instanceof Patient) {
+                Patient patient = (Patient) object;
+
+                if (details.get(i).equalsIgnoreCase("patient")) {
+                    if (!allPatients.stream().anyMatch(p -> p.equals(patient))) {
+                        throw new UserException(
+                                String.format("Patient '%s' not found", patient.getName())
+                        );
+                    }
+                }
+            }
+            if (object instanceof Doctor) {
+                Doctor doctor = (Doctor) object;
+
+                if (details.get(i).equalsIgnoreCase("doctor")) {
+                    if (!allDoctors.stream().anyMatch(d -> d.equals(doctor))) {
+                        throw new UserException(
+                                String.format("Doctor '%s' not found", doctor.getName())
+                        );
+                    }
+                }
+            }
+            if (details.get(i).equalsIgnoreCase("consultation operation")) {
+                if (object == null) {
+                    throw new ConsultationException("Active User cannot be null");
+                }
+                if (!(object instanceof User)) {
+                    throw new ConsultationException("Invalid active user");
+                }
+                User user = (User) object;
+                if (!"doctor".equalsIgnoreCase(user.getType())) {
+                    throw new ConsultationException(
+                            "Only Doctors can perform consultation operations"
+                    );
+                }
+            }
+            i++;
+        }
+    }
+    
+    public static void consultationSlotErrorHandler(List<String> details, Object... var) throws ConsultationException {
+        List<ConsultationSlot> allConsultationSlots = ConsultationManagement.getAllConsultationSlots();
+        List<DoctorShift> allDoctorShifts = DoctorManagement.getAllDoctorShifts();
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+        String startDateTime = null;
+        String endDateTime = null;
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+                if (details.get(i).equalsIgnoreCase("consultationSlotId")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("Consultation Slot ID cannot be null or empty");
+                    }
+                    if (allConsultationSlots.stream().anyMatch(slot -> slot.getConsultationSlotId().equals(data))) {
+                        throw new ConsultationException(String.format("Consultation Slot ID '%s' already exists", data));
+                    }
+                } else if (details.get(i).equalsIgnoreCase("startDateTime")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("Start date/time cannot be null or empty");
+                    }
+                    startDateTime = data;
+                } else if (details.get(i).equalsIgnoreCase("endDateTime")) {
+                    if (data == null || data.equals("")) {
+                        throw new ConsultationException("End date/time cannot be null or empty");
+                    }
+                    endDateTime = data;
+                }
+            }
+            if (object instanceof DoctorShift) {
+                DoctorShift doctorShift = (DoctorShift) object;
+                if (details.get(i).equalsIgnoreCase("doctor shift")) {
+                    if (!allDoctorShifts.stream().anyMatch(shift -> shift.equals(doctorShift))) {
+                        throw new ConsultationException(String.format("Doctor Shift '%s' not found", doctorShift.getShiftId()));
+                    }
+                }
+            }
+            i++;
+        }
+
+        if (startDateTime != null && endDateTime != null) {
+            LocalDateTime start = DateTime.toDateTimeObject(startDateTime);
+            LocalDateTime end = DateTime.toDateTimeObject(endDateTime);
+            if (!DateTime.isBefore(start, end)) {
+                throw new ConsultationException("End date/time must be after start date/time");
             }
         }
     }

@@ -139,7 +139,7 @@ public class FileHandler {
                         header = Arrays.asList(line.split(", "));
                     } else {
                         String line = reader.nextLine();
-                        List<String> row = Arrays.asList(line.split(", "));
+                        List<String> row = Arrays.asList(line.split(", ", -1));
                         if (row.size() == header.size()) {
                             LinkedHashMap<String, String> map = new LinkedHashMap<>();
                             for (int index = 0; index < row.size(); index++) {
@@ -159,6 +159,17 @@ public class FileHandler {
 
     public void writeFile(ArrayList<LinkedHashMap<String, String>> maps) {
         try (FileWriter writer = new FileWriter(filePath)) {
+                System.out.println("===== FILE HANDLER WRITE =====");
+                System.out.println("File: " + file.getAbsolutePath());
+                System.out.println("Data size: " + maps.size());
+
+                for (LinkedHashMap<String, String> map : maps) {
+                    System.out.println(
+                        map.get("userId") + " | " +
+                        map.get("userName") + " | " +
+                        map.get("userPwd")
+                    );
+                }
             // prevent writing empty file
             if (maps.isEmpty()) {
                 System.out.println("No data to write to file: " + filePath);

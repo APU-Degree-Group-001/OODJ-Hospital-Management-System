@@ -42,6 +42,8 @@ public class DoctorShift {
             Doctor doctor,
             String startDateTime,
             String endDateTime,
+            String actualStartDateTime,
+            String actualEndDateTime,
             DoctorShiftStatus status,
             MedicalManager medicalManager
     ) {
@@ -49,6 +51,8 @@ public class DoctorShift {
         this.doctor = doctor;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.actualStartDateTime = actualStartDateTime;
+        this.actualEndDateTime = actualEndDateTime;
         this.status = status;
         this.medicalManager = medicalManager;       
     }
@@ -100,11 +104,11 @@ public class DoctorShift {
     }
 
     public String getActualStartDateTime() {
-        return startDateTime;
+        return actualStartDateTime;
     }
 
     public String getActualEndDateTime() {
-        return endDateTime;
+        return actualEndDateTime;
     }
 
     public DoctorShiftStatus getStatus() {
@@ -116,7 +120,6 @@ public class DoctorShift {
     }
 
     // Setters
-
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
     }
@@ -129,12 +132,12 @@ public class DoctorShift {
         this.endDateTime = endDateTime;
     }
 
-    public void setActualStartDateTime(String startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setActualStartDateTime(String actualStartDateTime) {
+        this.actualStartDateTime = actualStartDateTime;
     }
 
-    public void setActualEndDateTime(String endDateTime) {
-        this.endDateTime = endDateTime;
+    public void setActualEndDateTime(String actualEndDateTime) {
+        this.actualEndDateTime = actualEndDateTime;
     }
 
     public void setStatus(DoctorShiftStatus status) {

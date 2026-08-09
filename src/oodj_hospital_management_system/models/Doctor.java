@@ -87,8 +87,8 @@ public class Doctor extends User {
     @Override
     public LinkedHashMap<String, String> getUserMap() {
         LinkedHashMap<String, String> userDetails = super.getUserMap();
-        userDetails.put("departmentId", department.getDepartmentId());
-        userDetails.put("medicalManagerId", medicalManager.getId());
+        userDetails.put("departmentId", department != null ? department.getDepartmentId() : "");
+        userDetails.put("medicalManagerId", medicalManager != null ? medicalManager.getId() : "");
         return userDetails;
     }
 }

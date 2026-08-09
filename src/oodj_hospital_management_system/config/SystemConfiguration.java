@@ -7,6 +7,9 @@ package oodj_hospital_management_system.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  *
@@ -63,4 +66,17 @@ public class SystemConfiguration {
     public static final int dailyMaxShiftHours = 8;
     public static final int monthlyMinShiftHours = 80;
     public static final int monthlyMaxShiftHours = 160;
+    
+    public static String generateId(String prefix, List<String> existingIds) {
+        String newId = "";
+        boolean loop;
+
+        do {
+            newId = prefix + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+            String id = newId;
+            loop = newId != null && existingIds.stream().anyMatch(existingId -> Objects.equals(existingId, id));
+        } while (loop);
+
+        return newId;
+}
 }

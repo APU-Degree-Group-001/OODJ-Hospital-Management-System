@@ -57,6 +57,19 @@ public class UserManagement {
         patients.clear();
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
         
+        System.out.println("===== USER LOAD =====");
+        System.out.println("USER RAW DATA SIZE = " + rawData.size());
+
+        for (LinkedHashMap<String, String> row : rawData) {
+            System.out.println(
+                row.get("userId") + " | " +
+                row.get("userName") + " | " +
+                row.get("userType")
+            );
+        }
+
+        System.out.println("====================");
+        
         // STEP 1: Create all basic User objects
         for (LinkedHashMap<String, String> row : rawData) {
             String type = row.get("userType");
@@ -107,8 +120,6 @@ public class UserManagement {
             if (departmentId != null && !departmentId.isEmpty()) {
                 doctor.setMedicalDepartment(DoctorManagement.getMedicalDepartmentById(departmentId));
             }
-            // Calculate assigned shift hours
-            doctor.setAssignedShiftHourByMonth(DoctorManagement.calculateAssignedShiftHourByMonth(doctor));
         }
     }
 
@@ -475,7 +486,7 @@ public class UserManagement {
         return matchedUsers;
     }
 
-    public List<User> searchUsers(String keywords, List<User> userList) {
+    public static List<User> searchUsers(String keywords, List<User> userList) {
         List<User> matchedUsers = new ArrayList<>();
         for (User user : userList) {
             if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
@@ -487,13 +498,13 @@ public class UserManagement {
     }
     
     
-    public List<User> sortUsersById(List<User> list) {
+    public static List<User> sortUsersById(List<User> list) {
         List<User> sortedUsers = list;
         sortedUsers.sort(Comparator.comparing(User::getId));
         return sortedUsers;
     }
 
-    public List<User> sortUsersByName(List<User> list) {
+    public static List<User> sortUsersByName(List<User> list) {
         List<User> sortedUsers = list;
         sortedUsers.sort(Comparator.comparing(User::getName));
         return sortedUsers;
@@ -504,31 +515,29 @@ public class UserManagement {
         if (!Arrays.asList(SystemConfiguration.userTypes).contains(userType)) {
             throw new IllegalArgumentException("Invalid user type");
         }
-        String newUserId = "";
-        boolean loop;
-        do {
-            switch (userType.toLowerCase()) {
-                case "admin staff":
-                    newUserId = "#Adm" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
-                    break;
-                case "medical manager":
-                    newUserId = "#MNG" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
-                    break;
-                case "doctor":
-                    newUserId = "#DOC" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
-                    break;
-                case "patient":
-                    newUserId = "#PAT" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid User ID: User ID cannot be null or empty");
-            }
 
-            String userId = newUserId;
-            loop = newUserId != null && allUsers.stream().anyMatch(user -> Objects.equals(user.getId(), userId));
+        String prefix;
 
-        } while (loop);
-        return newUserId;
+        switch (userType.toLowerCase()) {
+            case "admin staff":
+                prefix = "#Adm";
+                break;
+            case "medical manager":
+                prefix = "#MNG";
+                break;
+            case "doctor":
+                prefix = "#DOC";
+                break;
+            case "patient":
+                prefix = "#PAT";
+                break;
+            default:
+                throw new IllegalStateException("Invalid User ID: User ID cannot be null or empty");
+        }
+
+        List<String> existingIds = allUsers.stream().map(User::getId).toList();
+
+        return SystemConfiguration.generateId(prefix, existingIds);
     }
     
     // this havent check
