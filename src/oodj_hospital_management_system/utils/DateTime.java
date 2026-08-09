@@ -10,6 +10,7 @@ package oodj_hospital_management_system.utils;
  * Description: Format Date and Time
  */
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -70,5 +71,26 @@ public class DateTime {
 
     public static boolean isAfter(LocalDateTime first, LocalDateTime second) {
         return first.isAfter(second);
+    }
+    
+    public static long calculateDurationInHours(
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+        return Duration.between(start, end).toHours();
+    }
+    
+    public static long calculateDurationInMinutes(
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+        return Duration.between(start, end).toMinutes();
+    }
+    
+    public static String formatHourMinuteDuration(long totalMinutes) {
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%dh %02dm", hours, minutes);
     }
 }

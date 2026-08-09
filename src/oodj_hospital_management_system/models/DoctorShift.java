@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import oodj_hospital_management_system.utils.DateTime;
 
@@ -23,7 +24,10 @@ public class DoctorShift {
     private Doctor doctor;
     private String startDateTime;
     private String endDateTime;
+    private String actualStartDateTime;
+    private String actualEndDateTime;
     private DoctorShiftStatus status;
+    private MedicalManager medicalManager;
 
     public DoctorShift() {
         this.shiftId = "";
@@ -38,24 +42,27 @@ public class DoctorShift {
             Doctor doctor,
             String startDateTime,
             String endDateTime,
-            DoctorShiftStatus status
+            DoctorShiftStatus status,
+            MedicalManager medicalManager
     ) {
         this.shiftId = shiftId;
         this.doctor = doctor;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.status = status;
+        this.medicalManager = medicalManager;       
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Doctor Shift {%s: %s on %s (%s - %s)}",
+            "Doctor Shift {%s: %s on %s (%s - %s)}%n Assigned By: %s",
             shiftId,
             doctor.getName(),
             DateTime.toDateStringWords(DateTime.getDate(DateTime.toDateTimeObject(startDateTime))),
             DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(startDateTime))),
-            DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(endDateTime)))
+            DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(endDateTime))),
+            medicalManager.getName()
         );
     }
 
@@ -92,8 +99,20 @@ public class DoctorShift {
         return endDateTime;
     }
 
+    public String getActualStartDateTime() {
+        return startDateTime;
+    }
+
+    public String getActualEndDateTime() {
+        return endDateTime;
+    }
+
     public DoctorShiftStatus getStatus() {
         return status;
+    }
+
+    public MedicalManager getMedicalManager() {
+        return medicalManager;
     }
 
     // Setters
@@ -110,7 +129,33 @@ public class DoctorShift {
         this.endDateTime = endDateTime;
     }
 
+    public void setActualStartDateTime(String startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public void setActualEndDateTime(String endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
     public void setStatus(DoctorShiftStatus status) {
         this.status = status;
+    }
+
+    public void setMedicalManager(MedicalManager medicalManager) {
+        this.medicalManager = medicalManager;
+    }
+    
+    public LinkedHashMap<String, String> getDoctorShiftMap() {
+        // shiftId, doctorId, startDateTime, endDateTime, status, medicalManagerId
+        LinkedHashMap<String, String> shiftDetails = new LinkedHashMap<>();
+        shiftDetails.put("shiftId", this.shiftId);
+        shiftDetails.put("doctorId", this.doctor.getId());
+        shiftDetails.put("startDateTime", this.startDateTime);
+        shiftDetails.put("endDateTime", this.endDateTime);
+        shiftDetails.put("actualStartDateTime", this.actualStartDateTime);
+        shiftDetails.put("actualEndDateTime", this.actualEndDateTime);
+        shiftDetails.put("status", this.status.toString());
+        shiftDetails.put("medicalManagerId", this.medicalManager.getId());
+        return shiftDetails;
     }
 }

@@ -1,0 +1,6 @@
+departmentId,departmentName,description
+#DEPT001, Cardiology, Provides medical diagnosis and treatment for heart and cardiovascular conditions.
+#DEPT002, Neurology, Provides diagnosis and treatment for disorders affecting the brain nervous system and spinal cord.
+#DEPT003, General Medicine, Provides comprehensive diagnosis and treatment for common illnesses and general health conditions.
+#DEPT004, Pediatrics, Provides medical care and treatment for infants children and adolescents.
+#DEPT005, Orthopedics, Provides diagnosis and treatment for conditions affecting bones joints muscles and the musculoskeletal system.

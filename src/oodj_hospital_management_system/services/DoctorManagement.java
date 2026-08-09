@@ -6,27 +6,45 @@ package oodj_hospital_management_system.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import oodj_hospital_management_system.config.SystemConfiguration;
+import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
+import oodj_hospital_management_system.models.MedicalDepartment;
+import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.utils.DateTime;
+import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
 import oodj_hospital_management_system.utils.Logger;
 import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
+import oodj_hospital_management_system.utils.exceptions.MedicalDepartmentException;
+import oodj_hospital_management_system.utils.exceptions.UserException;
 
 /**
  *
  * @author sheaw
  */
 public class DoctorManagement {
-    private static final FileHandler handler = new FileHandler(SystemConfiguration.doctorShiftFilePath);
+    private static final FileHandler shiftHandler = new FileHandler(SystemConfiguration.doctorShiftFilePath);
+    private static final FileHandler departmentHandler = new FileHandler(SystemConfiguration.medicalDepartmentFilePath);
     private static final List<DoctorShift> doctorShifts = new ArrayList<>();
+    private static final List<MedicalDepartment> medicalDepartments = new ArrayList<>();
+    private User activeUser;
+    
+    public DoctorManagement(User usr) {
+        this.activeUser = usr;
+        loadDoctorShift();
+    }
     
     public static void loadDoctorShift() {
         doctorShifts.clear();
-        List<LinkedHashMap<String, String>> rawData = handler.readFile();
+        List<LinkedHashMap<String, String>> rawData = shiftHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
             // String shiftId, Doctor doctor, LocalDateTime startDateTime, LocalDateTime endDateTime, DoctorShiftStatus status
             // shiftId,doctorId,startDateTime,endDateTime
@@ -35,14 +53,35 @@ public class DoctorManagement {
                     UserManagement.getDoctorById(row.get("doctorId")),
                     row.get("startDateTime"),
                     row.get("endDateTime"),
-                    getDoctorShiftStatus(row.get("status"))
+                    getDoctorShiftStatus(row.get("status")),
+                    UserManagement.getMedicalManagerById(row.get("medicalManagerId"))
             );
             doctorShifts.add(doctorShift);
         }
     }
     
+    public static void loadMedicalDepartment() {
+        medicalDepartments.clear();
+        List<LinkedHashMap<String, String>> rawData = departmentHandler.readFile();
+        for (LinkedHashMap<String, String> row : rawData) {
+            // departmentId,departmentName,description
+            MedicalDepartment department = new MedicalDepartment(
+                    row.get("departmentId"),
+                    row.get("departmentName"),
+                    row.get("description")
+            );
+            medicalDepartments.add(department);
+        }
+    }
+    
     public static List<DoctorShift> getAllDoctorShifts() {
+        loadDoctorShift();
         return doctorShifts;
+    }
+    
+    public static List<MedicalDepartment> getAllMedicalDepartments() {
+        loadMedicalDepartment();
+        return medicalDepartments;
     }
     
     public static DoctorShift getDoctorShiftById(String shiftId) {
@@ -64,6 +103,25 @@ public class DoctorManagement {
         }
     }
     
+    public static MedicalDepartment getMedicalDepartmentById(String departmentId) {
+        loadMedicalDepartment();
+        try {
+            if (!medicalDepartments.stream().anyMatch(department -> department.getDepartmentId().equals(departmentId))) {
+                throw new MedicalDepartmentException(String.format("Invalid Medical Department ID: Department ID '%s' is not found", departmentId));
+            }
+            for (MedicalDepartment department : medicalDepartments) {
+                if (department.getDepartmentId().equals(departmentId)) {
+                    return department;
+                }
+            }
+            return null;
+        } catch (MedicalDepartmentException e) {
+            System.out.println("Error finding medical department -> " + e.getMessage());
+            Logger.errorLog("Error finding medical department -> " + e.getMessage());
+            return null;
+        }
+    }
+    
     public static DoctorShiftStatus getDoctorShiftStatus(String status) {
 //        SCHEDULED, COMPLETED, CANCELLED
         DoctorShiftStatus shiftStaus = null;
@@ -74,6 +132,121 @@ public class DoctorManagement {
             default: System.out.println("Unknown Doctor Shift Status");
         }
         return shiftStaus;
+    }
+    
+    // File Handler (Write and Append)
+    private static boolean writeDoctorShifts() {
+        ArrayList<LinkedHashMap<String, String>> shifts = new ArrayList<>();
+        for (DoctorShift shift : doctorShifts) {
+            updateShiftStatus(shift);
+            shifts.add(shift.getDoctorShiftMap());
+        }
+        shiftHandler.writeFile(shifts);
+        return true;
+    }
+
+    private static boolean appendDoctorShift(DoctorShift shift) {
+        try {
+            ArrayList<LinkedHashMap<String, String>> shifts = new ArrayList<>();
+            updateShiftStatus(shift);
+            shifts.add(shift.getDoctorShiftMap());
+            if (!shiftHandler.checkFileExistence() && !shiftHandler.createFile()) {
+                System.out.printf("File 'doctorShifts.txt' failed to be created, shift '%s' cannot be appended%n", shift.getShiftId());
+                return false;
+            }
+            shiftHandler.appendFile(shifts);
+            System.out.printf("Doctor Shift '%s' is appended to doctorShifts.txt!%n", shift.getShiftId());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error appending new doctor shift: " + e.getMessage());
+            Logger.errorLog("Error appending new doctor shift (System Error) -> "+ e.getMessage() + "\n");
+            return false;
+        }
+    }
+    
+    public LinkedHashMap<String, String> createShift(Doctor doctor, String startDateTime, String endDateTime) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.doctorShiftErrorHandler(Arrays.asList(
+                    "medical manager", "doctor", "startDateTime", "endDateTime"),
+                    activeUser, doctor, startDateTime, endDateTime
+            );
+        } catch (DoctorShiftException e) {
+            System.out.println("Error creating doctor shift\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg","Doctor shift is not created\n" + e.getMessage());
+            return msgMap;
+        } catch (UserException ue) {
+            System.out.println("Error creating doctor shift\n" + ue.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg","Doctor shift is not created\n" + ue.getMessage());
+            return msgMap;
+        }
+        MedicalManager medicalManager = (MedicalManager) activeUser;
+        String newShiftId = generateShiftId();
+        DoctorShift newShift = new DoctorShift(newShiftId, doctor, startDateTime, endDateTime, DoctorShiftStatus.SCHEDULED, medicalManager);
+        doctorShifts.add(newShift);
+        if (shiftHandler.checkFileExistence()) {
+            appendDoctorShift(newShift);
+        } else {
+            writeDoctorShifts();
+        }
+        loadDoctorShift();
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Doctor shift '%s' is created and stored!", newShiftId));
+        msgMap.put("newShiftId", newShiftId);
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> cancelShift(DoctorShift shift) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        // Already cancelled
+        if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' is already cancelled!", shift.getShiftId()));
+            return msgMap;
+        }
+        // Cannot cancel a completed shift
+        if (DoctorShiftStatus.COMPLETED.equals(shift.getStatus())) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been completed and cannot be cancelled!", shift.getShiftId()));
+            return msgMap;
+        }
+        shift.setStatus(DoctorShiftStatus.CANCELLED);
+        writeDoctorShifts();
+        loadDoctorShift();
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled!",shift.getShiftId()));
+        return msgMap;
+    }
+    
+    // Shift Management
+    public static Doctor.ShiftStatus getDoctorAttendanceStatus(Doctor doctor) {
+        loadDoctorShift();
+        LocalDateTime now = DateTime.currentDateTime();
+        for (DoctorShift shift : doctorShifts) {
+            if (!shift.getDoctor().equals(doctor)) {
+                continue;
+            }
+            // Doctor has not signed in yet
+            if (shift.getActualStartDateTime() == null
+                    || shift.getActualStartDateTime().isEmpty()) {
+                continue;
+            }
+            LocalDateTime actualStart = DateTime.toDateTimeObject(shift.getActualStartDateTime());
+            // Doctor has already signed out
+            if (shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty()) {
+                LocalDateTime actualEnd = DateTime.toDateTimeObject(shift.getActualEndDateTime());
+                if (!DateTime.isBefore(now, actualEnd)) {
+                    continue;
+                }
+            }
+            // Doctor has signed in and has not signed out
+            if (!DateTime.isBefore(now, actualStart)) {
+                return Doctor.ShiftStatus.ON_SHIFT;
+            }
+        }
+        return Doctor.ShiftStatus.OFF_SHIFT;
     }
     
     public static void updateShiftStatus(DoctorShift shift) {
@@ -91,5 +264,73 @@ public class DoctorManagement {
         } else {
             shift.setStatus(DoctorShiftStatus.COMPLETED);
         }
+    }
+
+    // Dynamically Calculate Monthly Assigned Shift Hours
+    public static int calculateAssignedShiftHourByMonth(Doctor doctor) {
+        loadDoctorShift();
+        LocalDateTime now = DateTime.currentDateTime();
+        int totalHours = 0;
+        for (DoctorShift shift : doctorShifts) {
+            if (!shift.getDoctor().equals(doctor)) {
+                continue;
+            }
+            // Exclude cancelled shifts
+            if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+                continue;
+            }
+            LocalDateTime start = DateTime.toDateTimeObject(shift.getStartDateTime());
+            LocalDateTime end = DateTime.toDateTimeObject(shift.getEndDateTime());
+            // Only count shifts from the current month
+            if (start.getYear() == now.getYear() && start.getMonth() == now.getMonth()) {
+                totalHours += DateTime.calculateDurationInHours(start, end);
+            }
+        }
+        return totalHours;
+    }
+
+    // Dynamically Calculate Monthly Actual Shift Hours
+    public static String calculateActualShiftHourByMonth(Doctor doctor) {
+        loadDoctorShift();
+        LocalDateTime now = DateTime.currentDateTime();
+        int totalMinutes = 0;
+        for (DoctorShift shift : doctorShifts) {
+            if (!shift.getDoctor().equals(doctor)) {
+                continue;
+            }
+            // Exclude cancelled shifts
+            if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+                continue;
+            }
+            // Only calculate shifts that have actually started and ended
+            if (shift.getActualStartDateTime() == null
+                    || shift.getActualStartDateTime().isEmpty()
+                    || shift.getActualEndDateTime() == null
+                    || shift.getActualEndDateTime().isEmpty()) {
+                continue;
+            }
+            LocalDateTime start = DateTime.toDateTimeObject(shift.getActualStartDateTime());
+            LocalDateTime end = DateTime.toDateTimeObject(shift.getActualEndDateTime());
+            // Only count shifts from the current month
+            if (start.getYear() == now.getYear() && start.getMonth() == now.getMonth()) {
+                totalMinutes += DateTime.calculateDurationInMinutes(start, end);
+            }
+        }
+        String duration = DateTime.formatHourMinuteDuration(totalMinutes);
+        return duration;
+    }
+    
+    // Assign Doctor to Medical Manager - Hnadled in UserManagement because involving updating users.txt :3
+    
+    // Generate ID
+    public static String generateShiftId() {
+        String newShiftId = "";
+        boolean loop;
+        do {
+            newShiftId = "#SHIFT" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5);
+            String shiftId = newShiftId;
+            loop = newShiftId != null && doctorShifts.stream().anyMatch(shift -> Objects.equals(shift.getShiftId(), shiftId));
+        } while (loop);
+        return newShiftId;
     }
 }

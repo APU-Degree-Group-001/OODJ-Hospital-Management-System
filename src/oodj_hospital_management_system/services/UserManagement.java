@@ -56,6 +56,8 @@ public class UserManagement {
         doctors.clear();
         patients.clear();
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
+        
+        // STEP 1: Create all basic User objects
         for (LinkedHashMap<String, String> row : rawData) {
             String type = row.get("userType");
             switch (type) {
@@ -81,11 +83,35 @@ public class UserManagement {
                     break;
                 default:
                     System.out.println("Unknown user type '" + type + "' for user " + row.get("userId") + ", skipping.");
-                    continue;
+                    break;
             }
         }
+
+        // STEP 2: Restore Doctor-specific information
+        for (LinkedHashMap<String, String> row : rawData) {
+            if (!"doctor".equals(row.get("userType"))) {
+                continue;
+            }
+            Doctor doctor = findDoctorByIdWithoutReload(row.get("userId"));
+            if (doctor == null) {
+                continue;
+            }
+            // Restore Medical Manager
+            String medicalManagerId = row.get("medicalManagerId");
+            if (medicalManagerId != null && !medicalManagerId.isEmpty()) {
+                MedicalManager manager = findMedicalManagerByIdWithoutReload(medicalManagerId);
+                doctor.setMedicalManager(manager);
+            }
+            // Restore Medical Department
+            String departmentId = row.get("departmentId");
+            if (departmentId != null && !departmentId.isEmpty()) {
+                doctor.setMedicalDepartment(DoctorManagement.getMedicalDepartmentById(departmentId));
+            }
+            // Calculate assigned shift hours
+            doctor.setAssignedShiftHourByMonth(DoctorManagement.calculateAssignedShiftHourByMonth(doctor));
+        }
     }
-    
+
     // Accessor Method for Users
     public static List<User> getAllUsers() {
         loadUsers();
@@ -418,6 +444,24 @@ public class UserManagement {
             return null;
         }
     }
+    
+    private static MedicalManager findMedicalManagerByIdWithoutReload(String managerId) {
+        for (User manager : medicalManagers) {
+            if (manager.getId().equals(managerId)) {
+                return (MedicalManager) manager;
+            }
+        }
+        return null;
+    }
+    
+    private static Doctor findDoctorByIdWithoutReload(String doctorId) {
+        for (User doctor : doctors) {
+            if (doctor.getId().equals(doctorId)) {
+                return (Doctor)doctor;
+            }
+        }
+        return null;
+    }
 
     // Searching and Sorting
     public List<User> searchUsers(String keywords) {
@@ -528,6 +572,60 @@ public class UserManagement {
             default:
                 return false;
         }
+    }
+    
+    public LinkedHashMap<String, String> assignDoctorToMedicalManager(Doctor doctor, MedicalManager medicalManager) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.doctorShiftErrorHandler(Arrays.asList(
+                    "doctor",
+                    "medical manager",
+                    "assignment operation"
+                    ),
+                    doctor,
+                    medicalManager,
+                    activeUser
+            );
+            // Update doctor in allDoctors
+            for (User user : allUsers) {
+                if (user instanceof Doctor) {
+                    Doctor storedDoctor = (Doctor) user;
+
+                    if (storedDoctor.equals(doctor)) {
+                        storedDoctor.setMedicalManager(medicalManager);
+                        break;
+                    }
+                }
+            }
+            // Save updated user information
+            writeUsers();
+
+        } catch (Exception e) {
+            System.out.println(
+                    "Error assigning doctor to medical manager\n"
+                    + e.getMessage()
+            );
+
+            msgMap.put("success", null);
+            msgMap.put(
+                    "msg",
+                    "Doctor assignment failed\n" + e.getMessage()
+            );
+
+            return msgMap;
+        }
+
+        msgMap.put("success", "true");
+        msgMap.put(
+                "msg",
+                String.format(
+                        "Doctor '%s' has been assigned to Medical Manager '%s'!",
+                        doctor.getName(),
+                        medicalManager.getName()
+                )
+        );
+
+        return msgMap;
     }
     
 }

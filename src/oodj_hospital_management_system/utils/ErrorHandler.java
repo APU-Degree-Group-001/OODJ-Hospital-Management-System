@@ -8,9 +8,11 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
+import oodj_hospital_management_system.models.AdminStaff;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
+import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
@@ -89,10 +91,12 @@ public class ErrorHandler {
         }
     }
     
-    public static void doctorShiftErrorHandler(List<String> details, Object... var) throws DoctorShiftException {
+    public static void doctorShiftErrorHandler(List<String> details, Object... var) throws DoctorShiftException, UserException {
         List<DoctorShift> allDoctorShifts =DoctorManagement.getAllDoctorShifts();
 
         List<Doctor> allDoctors = UserManagement.getAllDoctors().stream().map(user -> (Doctor) user).toList();
+        List<MedicalManager> allMedicalManagers = UserManagement.getAllMedicalManagers().stream().map(user -> (MedicalManager) user).toList();
+        List<AdminStaff> allAdminStaffs = UserManagement.getAllAdminStaffs().stream().map(user -> (AdminStaff) user).toList();
 
         try {
             if (details.size() != var.length) {
@@ -139,12 +143,43 @@ public class ErrorHandler {
                         throw new DoctorShiftException(String.format("Invalid shift status: '%s'",data));
                     }
                 }
-            } else if (object instanceof Doctor) {
+            } 
+            if (object instanceof Doctor) {
                 Doctor doctor = (Doctor) object;
                 if (details.get(i).equalsIgnoreCase("doctor")) {
                     if (!allDoctors.stream().anyMatch(d -> d.equals(doctor))) {
-                        throw new DoctorShiftException(String.format("Doctor '%s' not found",doctor.getName()));
+                        throw new UserException(String.format("Doctor '%s' not found", doctor.getName()));
                     }
+                }
+            }
+            if (object instanceof MedicalManager) {
+                MedicalManager medicalManager = (MedicalManager) object;
+                if (details.get(i).equalsIgnoreCase("medical manager")) {
+                    if (!allMedicalManagers.stream().anyMatch(d -> d.equals(medicalManager))) {
+                        throw new UserException(String.format("Medical Manager '%s' not found", medicalManager.getName()));
+                    }
+                }
+            }
+            if (object instanceof AdminStaff) {
+                AdminStaff staff = (AdminStaff) object;
+                if (details.get(i).equalsIgnoreCase("admin staff")) {
+                    if (!allAdminStaffs.stream().anyMatch(d -> d.equals(staff))) {
+                        throw new UserException(String.format("Admin Staff '%s' not found", staff.getName()));
+                    }
+                }
+            }
+            if (details.get(i).equalsIgnoreCase("assignment operation")) {
+                if (object == null) {
+                    throw new DoctorShiftException("Active User cannot be null");
+                }
+                if (!(object instanceof User)) {
+                    throw new DoctorShiftException("Invalid active user");
+                }
+                User user = (User) object;
+                if (!"admin staff".equalsIgnoreCase(user.getType())) {
+                    throw new DoctorShiftException(
+                        "Only Admin Staff can perform doctor assignment"
+                    );
                 }
             }
             i++;

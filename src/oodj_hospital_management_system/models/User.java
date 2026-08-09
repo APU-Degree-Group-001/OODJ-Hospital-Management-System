@@ -16,7 +16,6 @@ import oodj_hospital_management_system.config.SystemConfiguration;
  * Description : User Object
  */
 public abstract class User {
-    private LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
     private String id;
     private String name;
     private String pwd;
@@ -37,12 +36,6 @@ public abstract class User {
         this.pwd = pwd; // haven't add hashing yet
         this.type = type;
         this.joinedDateTime = joinedDateTime;
-
-        this.userDetails.put("userId", this.id);
-        this.userDetails.put("userName", this.name);
-        this.userDetails.put("userPwd", this.pwd);
-        this.userDetails.put("userType", this.type);
-        this.userDetails.put("joinedDateTime", this.joinedDateTime);
     }
 
     // public void deleteUser(User user) {
@@ -74,8 +67,7 @@ public abstract class User {
             return true;
         }
         User userObj = (User) obj;
-        return (Objects.equals(this.id, userObj.id) && Objects.equals(this.name, userObj.name) &&
-        Objects.equals(this.pwd, userObj.pwd) && Objects.equals(this.type, userObj.type));
+        return Objects.equals(this.id, userObj.id);
     }
 
     // accessor method for user id
@@ -104,24 +96,30 @@ public abstract class User {
     }
 
     public LinkedHashMap<String, String> getUserMap() {
-        return this.userDetails;
+        LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
+        userDetails.put("userId", this.id);
+        userDetails.put("userName", this.name);
+        userDetails.put("userPwd", this.pwd);
+        userDetails.put("userType", this.type);
+        userDetails.put("joinedDateTime", this.joinedDateTime);
+        userDetails.put("departmentId", "");
+        userDetails.put("medicalManagerId", "");
+        
+        return userDetails;
     }
 
     // mutator method for user name
     public void setName(String newName) {
         this.name = newName;
-        userDetails.put("userName", this.name);
     }
 
     // mutator method for user password
     public void setPwd(String newPwd) {
         this.pwd = newPwd;
-        userDetails.put("userPwd", this.pwd);
     }
 
     // mutator method for user type
     public void setType(String newType) {
         this.type = newType;
-        userDetails.put("userType", this.type);
     }
 }

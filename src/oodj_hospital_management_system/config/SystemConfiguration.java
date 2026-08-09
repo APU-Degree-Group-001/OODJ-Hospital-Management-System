@@ -22,18 +22,19 @@ public class SystemConfiguration {
     
     public static final String userFilePath = parentPath + "txt/users/users.txt";
     public static final String doctorShiftFilePath = parentPath + "txt/users/doctorShifts.txt";
+    public static final String medicalDepartmentFilePath = parentPath + "txt/users/medicalDepartments.txt";
     
     public static final String billFilePath = parentPath + "txt/consultations/bills.txt";
     public static final String consultationFilePath = parentPath + "txt/consultations/consultations.txt";
-    public static final String consultationSlotsFilePath = parentPath + "txt/consultations/consultationSlots.txt";
+    public static final String consultationSlotFilePath = parentPath + "txt/consultations/consultationSlots.txt";
     public static final String feedbackFilePath = parentPath + "txt/consultations/feedback.txt";
     
     public static final String hospitalAssetAllocationFilePath = parentPath + "txt/hospital_assets/hospitalAssetAllocation.txt";
-    public static final String hospitalAssetsFilePath = parentPath + "txt/hospital_assets/hospitalAssets.txt";
+    public static final String hospitalAssetFilePath = parentPath + "txt/hospital_assets/hospitalAssets.txt";
     
-    public static final String labResultsFilePath = parentPath + "txt/medical_records/labResults.txt";
-    public static final String medicalAssessmentsFilePath = parentPath + "txt/medical_records/medicalAssessments.txt";
-    public static final String prescriptionsFilePath = parentPath + "txt/medical_records/prescriptions.txt";
+    public static final String labResultFilePath = parentPath + "txt/medical_records/labResults.txt";
+    public static final String medicalAssessmentFilePath = parentPath + "txt/medical_records/medicalAssessments.txt";
+    public static final String prescriptionFilePath = parentPath + "txt/medical_records/prescriptions.txt";
     
     public static final String backupDir = parentPath + "txt/backups/";
     
@@ -62,5 +63,4 @@ public class SystemConfiguration {
     public static final int dailyMaxShiftHours = 8;
     public static final int monthlyMinShiftHours = 80;
     public static final int monthlyMaxShiftHours = 160;
-    
 }
