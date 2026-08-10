@@ -214,23 +214,40 @@ public class DoctorManagement {
     
     public LinkedHashMap<String, String> cancelShift(DoctorShift shift) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
-        // Already cancelled
+
+        try {
+            ErrorHandler.doctorShiftErrorHandler(Arrays.asList("delete shift"), shift);
+        } catch (DoctorShiftException e) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Doctor shift is not cancelled\n" + e.getMessage());
+            return msgMap;
+        } catch (UserException ue) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Doctor shift is not cancelled\n" + ue.getMessage());
+            return msgMap;
+        }
+
         if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("Doctor shift '%s' is already cancelled!", shift.getShiftId()));
             return msgMap;
         }
-        // Cannot cancel a completed shift
+
         if (DoctorShiftStatus.COMPLETED.equals(shift.getStatus())) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("Doctor shift '%s' has already been completed and cannot be cancelled!", shift.getShiftId()));
             return msgMap;
         }
+
         shift.setStatus(DoctorShiftStatus.CANCELLED);
         writeDoctorShifts();
         loadDoctorShift();
+
+        ConsultationManagement.deleteConsultationSlotsInBulk(shift.getShiftId());
+
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled!",shift.getShiftId()));
+        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled and its consultation slots are deleted!", shift.getShiftId()));
+
         return msgMap;
     }
     

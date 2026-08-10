@@ -1,6 +1,6 @@
-consultationId, consultationSlotId, patientId, description, medicalAssessmentId, labResultIds, prescriptionIds, hospitalAssetAllocationId, feedbackId, billId, status
-#CON001, #SLOT001, #PATd4e8f, Patient complained of persistent headache, #MED001, #LAB001|#LAB002, #PRE001|#PRE002, #AST001, #FB001, #BILL001, COMPLETED
-#CON002, #SLOT002, #PAT3fad4, Patient reported chest discomfort and shortness of breath, #MED002, #LAB003, #PRE003, #AST002, #FB002, #BILL002, COMPLETED
-#CON003, #SLOT003, #PAT79a39, Patient attended routine health consultation, #MED003, , #PRE004, #AST003, , #BILL003, COMPLETED
-#CON004, #SLOT004, #PATd4e8f, Patient complained of fever and sore throat, , , , #AST004, , , IN_PROGRESS
-#CON005, #SLOT005, #PAT3fad4, Patient requested consultation for recurring back pain, , , , , , , SCHEDULED
+consultationId, consultationSlotId, patientId, description, hospitalAssetAllocationId, feedbackId, billId, status
+#CON001, #SLOT001, #PATd4e8f, Patient complained of persistent headache, #AST001, #FB001, #BILL001, COMPLETED
+#CON002, #SLOT002, #PAT3fad4, Patient reported chest discomfort and shortness of breath, #AST002, #FB002, #BILL002, COMPLETED
+#CON003, #SLOT003, #PAT79a39, Patient attended routine health consultation, #AST003, , #BILL003, COMPLETED
+#CON004, #SLOT004, #PATd4e8f, Patient complained of fever and sore throat, #AST004, , , IN_PROGRESS
+#CON005, #SLOT005, #PAT3fad4, Patient requested consultation for recurring back pain, , , , SCHEDULED

@@ -202,6 +202,20 @@ public class ErrorHandler {
                     );
                 }
             }
+            
+            if (object instanceof DoctorShift) {
+                DoctorShift doctorShift = (DoctorShift) object;
+
+                if (details.get(i).equalsIgnoreCase("delete shift")) {
+                    boolean hasBookedConsultation = ConsultationManagement.getAllConsultationSlots().stream()
+                            .filter(slot -> slot.getDoctorShift() != null && slot.getDoctorShift().equals(doctorShift))
+                            .anyMatch(slot -> ConsultationSlot.STATUS_BOOKED.equals(slot.getStatus()));
+
+                    if (hasBookedConsultation) {
+                        throw new DoctorShiftException(String.format("Doctor Shift '%s' cannot be deleted because it has booked consultation(s)", doctorShift.getShiftId()));
+                    }
+                }
+            }
 
             i++;
         }
