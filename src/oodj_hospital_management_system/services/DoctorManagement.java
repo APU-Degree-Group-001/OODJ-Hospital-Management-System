@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
@@ -168,23 +166,20 @@ public class DoctorManagement {
             return false;
         }
     }
-    
+
     public LinkedHashMap<String, String> createShift(Doctor doctor, String startDateTime, String endDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
-            ErrorHandler.doctorShiftErrorHandler(Arrays.asList(
-                    "medical manager", "doctor", "startDateTime", "endDateTime"),
-                    activeUser, doctor, startDateTime, endDateTime
-            );
+            ErrorHandler.doctorShiftErrorHandler(Arrays.asList("medical manager", "doctor", "startDateTime", "endDateTime"), activeUser, doctor, startDateTime, endDateTime);
         } catch (DoctorShiftException e) {
             System.out.println("Error creating doctor shift\n" + e.getMessage());
             msgMap.put("success", null);
-            msgMap.put("msg","Doctor shift is not created\n" + e.getMessage());
+            msgMap.put("msg", "Doctor shift is not created\n" + e.getMessage());
             return msgMap;
         } catch (UserException ue) {
             System.out.println("Error creating doctor shift\n" + ue.getMessage());
             msgMap.put("success", null);
-            msgMap.put("msg","Doctor shift is not created\n" + ue.getMessage());
+            msgMap.put("msg", "Doctor shift is not created\n" + ue.getMessage());
             return msgMap;
         }
         MedicalManager medicalManager = (MedicalManager) activeUser;
@@ -197,9 +192,23 @@ public class DoctorManagement {
             writeDoctorShifts();
         }
         loadDoctorShift();
+        
+        // Generate 30-minute consultation slots
+        ConsultationManagement consultationManagement = new ConsultationManagement(activeUser);
+        LinkedHashMap<String, String> slotResult = consultationManagement.createConsultationSlotInBulk(newShift, startDateTime, endDateTime);
+        // Check whether consultation slots were created successfully
+        if (!"true".equals(slotResult.get("success"))) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' is created, but consultation slots failed to be created.\n%s", newShiftId, slotResult.get("msg")));
+            msgMap.put("newShiftId", newShiftId);
+            return msgMap;
+        }
+        // Everything succeeded
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' is created and stored!", newShiftId));
+        msgMap.put("msg", String.format("Doctor shift '%s' is created and consultation slots are generated successfully!", newShiftId));
         msgMap.put("newShiftId", newShiftId);
+        msgMap.put("slotCount", slotResult.get("slotCount"));
+
         return msgMap;
     }
     

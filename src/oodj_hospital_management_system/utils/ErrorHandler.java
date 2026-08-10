@@ -20,6 +20,7 @@ import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.ConsultationManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
+import oodj_hospital_management_system.services.HospitalAssetManagement;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.exceptions.ConsultationException;
 import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
@@ -98,12 +99,11 @@ public class ErrorHandler {
     }
     
     public static void doctorShiftErrorHandler(List<String> details, Object... var) throws DoctorShiftException, UserException {
-        List<DoctorShift> allDoctorShifts =DoctorManagement.getAllDoctorShifts();
+        List<DoctorShift> allDoctorShifts = DoctorManagement.getAllDoctorShifts();
 
         List<Doctor> allDoctors = UserManagement.getAllDoctors().stream().map(user -> (Doctor) user).toList();
         List<MedicalManager> allMedicalManagers = UserManagement.getAllMedicalManagers().stream().map(user -> (MedicalManager) user).toList();
         List<AdminStaff> allAdminStaffs = UserManagement.getAllAdminStaffs().stream().map(user -> (AdminStaff) user).toList();
-
         try {
             if (details.size() != var.length) {
                 throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
@@ -115,6 +115,7 @@ public class ErrorHandler {
         }
         String startDateTime = null;
         String endDateTime = null;
+        Doctor selectedDoctor = null;
         int i = 0;
         for (Object object : var) {
             if (object instanceof String) {
@@ -126,7 +127,7 @@ public class ErrorHandler {
                     // Check duplicate Shift ID
                     if (allDoctorShifts.stream().anyMatch(shift -> shift.getShiftId().equals(data))) {
                         throw new DoctorShiftException(
-                                String.format("Doctor Shift ID '%s' already exists",data)
+                                String.format("Doctor Shift ID '%s' already exists", data)
                         );
                     }
                 } else if (details.get(i).equalsIgnoreCase("startDateTime")) {
@@ -144,36 +145,49 @@ public class ErrorHandler {
                         throw new DoctorShiftException("Shift status cannot be null or empty");
                     }
                     if (!(DoctorShiftStatus.SCHEDULED.equals(data)
-                        || DoctorShiftStatus.COMPLETED.equals(data)
-                        || DoctorShiftStatus.CANCELLED.equals(data))) {
-                        throw new DoctorShiftException(String.format("Invalid shift status: '%s'",data));
+                            || DoctorShiftStatus.COMPLETED.equals(data)
+                            || DoctorShiftStatus.CANCELLED.equals(data))) {
+                        throw new DoctorShiftException(
+                                String.format("Invalid shift status: '%s'", data)
+                        );
                     }
                 }
-            } 
+            }
+
             if (object instanceof Doctor) {
                 Doctor doctor = (Doctor) object;
                 if (details.get(i).equalsIgnoreCase("doctor")) {
                     if (!allDoctors.stream().anyMatch(d -> d.equals(doctor))) {
-                        throw new UserException(String.format("Doctor '%s' not found", doctor.getName()));
+                        throw new UserException(
+                                String.format("Doctor '%s' not found", doctor.getName())
+                        );
                     }
+                    selectedDoctor = doctor;
                 }
             }
+
             if (object instanceof MedicalManager) {
                 MedicalManager medicalManager = (MedicalManager) object;
                 if (details.get(i).equalsIgnoreCase("medical manager")) {
                     if (!allMedicalManagers.stream().anyMatch(d -> d.equals(medicalManager))) {
-                        throw new UserException(String.format("Medical Manager '%s' not found", medicalManager.getName()));
+                        throw new UserException(
+                                String.format("Medical Manager '%s' not found", medicalManager.getName())
+                        );
                     }
                 }
             }
+
             if (object instanceof AdminStaff) {
                 AdminStaff staff = (AdminStaff) object;
                 if (details.get(i).equalsIgnoreCase("admin staff")) {
                     if (!allAdminStaffs.stream().anyMatch(d -> d.equals(staff))) {
-                        throw new UserException(String.format("Admin Staff '%s' not found", staff.getName()));
+                        throw new UserException(
+                                String.format("Admin Staff '%s' not found", staff.getName())
+                        );
                     }
                 }
             }
+
             if (details.get(i).equalsIgnoreCase("assignment operation")) {
                 if (object == null) {
                     throw new DoctorShiftException("Active User cannot be null");
@@ -184,10 +198,11 @@ public class ErrorHandler {
                 User user = (User) object;
                 if (!"admin staff".equalsIgnoreCase(user.getType())) {
                     throw new DoctorShiftException(
-                        "Only Admin Staff can perform doctor assignment"
+                            "Only Admin Staff can perform doctor assignment"
                     );
                 }
             }
+
             i++;
         }
 
@@ -196,7 +211,53 @@ public class ErrorHandler {
             LocalDateTime start = DateTime.toDateTimeObject(startDateTime);
             LocalDateTime end = DateTime.toDateTimeObject(endDateTime);
             if (!DateTime.isBefore(start, end)) {
-                throw new DoctorShiftException("End date/time must be after start date/time");
+                throw new DoctorShiftException(
+                        "End date/time must be after start date/time"
+                );
+            }
+            // Check doctor's own overlapping shift
+            if (selectedDoctor != null) {
+                Doctor doctorToCheck = selectedDoctor;
+                boolean doctorHasOverlappingShift = allDoctorShifts.stream()
+                        .filter(shift -> doctorToCheck.equals(shift.getDoctor()))
+                        .filter(shift -> DoctorShiftStatus.SCHEDULED.equals(shift.getStatus()))
+                        .anyMatch(shift -> {
+                            LocalDateTime existingStart = DateTime.toDateTimeObject(shift.getStartDateTime());
+                            LocalDateTime existingEnd = DateTime.toDateTimeObject(shift.getEndDateTime());
+                            return start.isBefore(existingEnd) && end.isAfter(existingStart);
+                        });
+                if (doctorHasOverlappingShift) {
+                    throw new DoctorShiftException(
+                            String.format(
+                                    "Doctor '%s' already has an overlapping scheduled shift",
+                                    doctorToCheck.getName()
+                            )
+                    );
+                }
+            }
+
+            // Count all overlapping scheduled doctor shifts
+            long overlappingShifts = allDoctorShifts.stream()
+                    .filter(shift -> DoctorShiftStatus.SCHEDULED.equals(shift.getStatus()))
+                    .filter(shift -> {
+                        LocalDateTime existingStart = DateTime.toDateTimeObject(shift.getStartDateTime());
+                        LocalDateTime existingEnd = DateTime.toDateTimeObject(shift.getEndDateTime());
+                        return start.isBefore(existingEnd) && end.isAfter(existingStart);
+                    })
+                    .count();
+
+            // Get number of consultation rooms
+            int consultationRoomCount = HospitalAssetManagement.getConsultationRoomCount();
+
+            // Check consultation room capacity
+            if (overlappingShifts >= consultationRoomCount) {
+                throw new DoctorShiftException(
+                        String.format(
+                                "No consultation room is available for this shift. %d overlapping shift(s) already exist and only %d consultation room(s) are available.",
+                                overlappingShifts,
+                                consultationRoomCount
+                        )
+                );
             }
         }
     }

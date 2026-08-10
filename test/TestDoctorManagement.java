@@ -64,7 +64,7 @@ public class TestDoctorManagement {
 
         // Test shift creation
         // Uncomment when needed because this modifies doctorShifts.txt
-//         testCreateShift();
+         testCreateShift();
 
         // Test shift cancellation
         // Uncomment when needed because this modifies doctorShifts.txt

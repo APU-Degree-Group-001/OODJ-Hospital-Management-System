@@ -14,12 +14,13 @@ public class Ward extends HospitalAsset {
     public Ward(
             String assetId,
             String assetName,
+            String assetType,
             String imagePath,
             String location,
             String description,
             int totalBeds
     ) {
-        super(assetId, assetName, imagePath, location, description);
+        super(assetId, assetName, assetType, imagePath, location, description);
         this.totalBeds = totalBeds;
     }
     

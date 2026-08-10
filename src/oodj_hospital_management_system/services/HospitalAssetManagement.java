@@ -44,4 +44,10 @@ public class HospitalAssetManagement {
         loadHospitalAssetAllocations();
         return allHospitalAssetAllocations;
     }
+    
+    public static int getConsultationRoomCount() {
+        return (int) getAllHospitalAssets().stream()
+                .filter(asset -> "Consultation Room".equalsIgnoreCase(asset.getAssetType()))
+                .count();
+    }
 }

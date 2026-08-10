@@ -4,12 +4,11 @@
  */
 package oodj_hospital_management_system.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.Consultation.ConsultationStatus;
@@ -21,6 +20,7 @@ import oodj_hospital_management_system.models.MedicalAssessment;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.Prescription;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
 import oodj_hospital_management_system.utils.exceptions.ConsultationException;
@@ -296,6 +296,53 @@ public class ConsultationManagement {
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation slot '%s' is created and stored!", newConsultationSlotId));
         msgMap.put("newConsultationSlotId", newConsultationSlotId);
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> createConsultationSlotInBulk(DoctorShift doctorShift, String startDateTime, String endDateTime) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.consultationSlotErrorHandler(
+                    Arrays.asList("doctor shift", "startDateTime", "endDateTime"),
+                    doctorShift,
+                    startDateTime,
+                    endDateTime
+            );
+        } catch (ConsultationException e) {
+            System.out.println("Error creating consultation slots\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation slots are not created\n" + e.getMessage());
+            return msgMap;
+        }
+        LocalDateTime slotStart = DateTime.toDateTimeObject(startDateTime);
+        LocalDateTime shiftEnd = DateTime.toDateTimeObject(endDateTime);
+        int slotCount = 0;
+        while (slotStart.plusMinutes(30).compareTo(shiftEnd) <= 0) {
+            LocalDateTime slotEnd = slotStart.plusMinutes(30);
+            String newConsultationSlotId = generateConsultationSlotId();
+            ConsultationSlot newConsultationSlot = new ConsultationSlot(
+                    newConsultationSlotId,
+                    doctorShift,
+                    DateTime.formattedLocalDateTime(slotStart),
+                    DateTime.formattedLocalDateTime(slotEnd),
+                    ConsultationSlot.STATUS_AVAILABLE
+            );
+            consultationSlots.add(newConsultationSlot);
+            slotStart = slotEnd;
+            slotCount++;
+        }
+        writeConsultationSlots();
+        loadConsultationSlots();
+        msgMap.put("success", "true");
+        msgMap.put(
+                "msg",
+                String.format(
+                        "%d consultation slots are created and stored for Doctor Shift '%s'!",
+                        slotCount,
+                        doctorShift.getShiftId()
+                )
+        );
+        msgMap.put("slotCount", String.valueOf(slotCount));
         return msgMap;
     }
     
