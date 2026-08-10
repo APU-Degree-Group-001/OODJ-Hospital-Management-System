@@ -166,6 +166,46 @@ public class MedicalRecordManagement {
         }
     }
     
+    public static MedicalAssessment getMedicalAssessmentByConsultationId(String consultationId) {
+        loadMedicalAssessments();
+
+        for (MedicalAssessment assessment : medicalAssessments) {
+            if (assessment.getConsultation().getConsultationId().equals(consultationId)) {
+                return assessment;
+            }
+        }
+
+        return null;
+    }
+    
+    public static List<LabResult> getLabResultsByConsultationId(String consultationId) {
+        loadLabResults();
+
+        List<LabResult> matchedResults = new ArrayList<>();
+
+        for (LabResult labResult : labResults) {
+            if (labResult.getConsultation().getConsultationId().equals(consultationId)) {
+                matchedResults.add(labResult);
+            }
+        }
+
+        return matchedResults;
+    }
+    
+    public static List<Prescription> getPrescriptionsByConsultationId(String consultationId) {
+        loadPrescriptions();
+
+        List<Prescription> matchedPrescriptions = new ArrayList<>();
+
+        for (Prescription prescription : prescriptions) {
+            if (prescription.getConsultation().getConsultationId().equals(consultationId)) {
+                matchedPrescriptions.add(prescription);
+            }
+        }
+
+        return matchedPrescriptions;
+    }
+
     // File Handler (Write and Append)
 
     private static boolean writeMedicalAssessments() {
@@ -630,7 +670,7 @@ public class MedicalRecordManagement {
 
         if (prescription == null) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Prescription '%s' frequency is modified!", prescriptionId));
+            msgMap.put("msg", String.format("Prescription '%s' frequency is not found!", prescriptionId));
             return msgMap;
         }
 
@@ -670,7 +710,7 @@ public class MedicalRecordManagement {
 
         if (prescription == null) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Prescription '%s' instructions are modified!", prescriptionId));
+            msgMap.put("msg", String.format("Prescription '%s' instructions is not found!", prescriptionId));
             return msgMap;
         }
 
@@ -759,6 +799,7 @@ public class MedicalRecordManagement {
         for (LabResult result : resultList) {
             if (result.getResultId().toLowerCase().contains(keywords.toLowerCase().trim())
                     || result.getResultType().toLowerCase().contains(keywords.toLowerCase().trim())
+                    || result.getResult().toLowerCase().contains(keywords.toLowerCase().trim())
                     || result.getRemarks().toLowerCase().contains(keywords.toLowerCase().trim())
                     || result.getResultDateTime().toLowerCase().contains(keywords.toLowerCase().trim())) {
                 matchedResults.add(result);
