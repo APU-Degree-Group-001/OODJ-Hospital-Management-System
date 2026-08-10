@@ -4,41 +4,58 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
  *
  * @author sheaw
  */
+
 public class LabResult {
     private String resultId;
-    private String resultName;
+    private Consultation consultation;
+    private String resultType;
+    private String result;
     private String remarks;
+    private String resultDateTime;
 
     public LabResult() {
         this.resultId = "";
-        this.resultName = "";
+        this.consultation = null;
+        this.resultType = "";
+        this.result = "";
         this.remarks = "";
+        this.resultDateTime = "";
     }
 
     public LabResult(
             String resultId,
-            String resultName,
-            String remarks
+            Consultation consultation,
+            String resultType,
+            String result,
+            String remarks,
+            String resultDateTime
     ) {
         this.resultId = resultId;
-        this.resultName = resultName;
+        this.consultation = consultation;
+        this.resultType = resultType;
+        this.result = result;
         this.remarks = remarks;
+        this.resultDateTime = resultDateTime;
     }
 
     @Override
     public String toString() {
-        return String.format("Lab Result {%s}", resultId);
+        return String.format(
+                "Lab Result {%s - %s}",
+                resultId,
+                this.resultType
+        );
     }
 
     @Override
     public boolean equals(Object obj) {
-
         if (!(obj instanceof LabResult)) {
             return false;
         }
@@ -48,7 +65,11 @@ public class LabResult {
         }
 
         LabResult resultObj = (LabResult) obj;
-        return Objects.equals(this.resultId, resultObj.resultId);
+
+        return Objects.equals(
+                this.resultId,
+                resultObj.resultId
+        );
     }
 
     // Getters
@@ -57,148 +78,56 @@ public class LabResult {
         return this.resultId;
     }
 
-    public String getResultName() {
-        return this.resultName;
+    public Consultation getConsultation() {
+        return this.consultation;
+    }
+
+    public String getResultType() {
+        return this.resultType;
+    }
+
+    public String getResult() {
+        return this.result;
     }
 
     public String getRemarks() {
         return this.remarks;
     }
 
+    public String getResultDateTime() {
+        return this.resultDateTime;
+    }
+
     // Setters
 
-    public void setResultName(String resultName) {
-        this.resultName = resultName;
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
+
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-}
 
-class BloodTest extends LabResult {
-
-    private double hemoglobin;
-    private double whiteBloodCellCount;
-    private double plateletCount;
-
-    public BloodTest(
-            String resultId,
-            String remarks,
-            double hemoglobin,
-            double whiteBloodCellCount,
-            double plateletCount
-    ) {
-        super(resultId, "Blood Test", remarks);
-
-        this.hemoglobin = hemoglobin;
-        this.whiteBloodCellCount = whiteBloodCellCount;
-        this.plateletCount = plateletCount;
+    public void setResultDateTime(String resultDateTime) {
+        this.resultDateTime = resultDateTime;
     }
-
-    public double getHemoglobin() {
-        return this.hemoglobin;
+    
+    public LinkedHashMap<String, String> getLabResultMap() {
+        LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
+        resultMap.put("resultId", this.resultId);
+        resultMap.put("consultationId", this.consultation != null ? this.consultation.getConsultationId() : "");
+        resultMap.put("resultType", this.resultType);
+        resultMap.put("result", this.result);
+        resultMap.put("remarks", this.remarks);
+        resultMap.put("resultDateTime", this.resultDateTime);
+        return resultMap;
     }
-
-    public double getWhiteBloodCellCount() {
-        return this.whiteBloodCellCount;
-    }
-
-    public double getPlateletCount() {
-        return this.plateletCount;
-    }
-
-    public void setHemoglobin(double hemoglobin) {
-        this.hemoglobin = hemoglobin;
-    }
-
-    public void setWhiteBloodCellCount(double whiteBloodCellCount) {
-        this.whiteBloodCellCount = whiteBloodCellCount;
-    }
-
-    public void setPlateletCount(double plateletCount) {
-        this.plateletCount = plateletCount;
-    }
-
-}
-
-class UrineTest extends LabResult {
-
-    private double pH;
-    private boolean proteinDetected;
-    private boolean glucoseDetected;
-
-    public UrineTest(
-            String resultId,
-            String remarks,
-            double pH,
-            boolean proteinDetected,
-            boolean glucoseDetected
-    ) {
-        super(resultId, "Urine Test", remarks);
-
-        this.pH = pH;
-        this.proteinDetected = proteinDetected;
-        this.glucoseDetected = glucoseDetected;
-    }
-
-    public double getPH() {
-        return this.pH;
-    }
-
-    public boolean isProteinDetected() {
-        return this.proteinDetected;
-    }
-
-    public boolean isGlucoseDetected() {
-        return this.glucoseDetected;
-    }
-
-    public void setPH(double pH) {
-        this.pH = pH;
-    }
-
-    public void setProteinDetected(boolean proteinDetected) {
-        this.proteinDetected = proteinDetected;
-    }
-
-    public void setGlucoseDetected(boolean glucoseDetected) {
-        this.glucoseDetected = glucoseDetected;
-    }
-
-}
-
-class XRay extends LabResult {
-
-    private String bodyPart;
-    private String findings;
-
-    public XRay(
-            String resultId,
-            String remarks,
-            String bodyPart,
-            String findings
-    ) {
-        super(resultId, "X-Ray", remarks);
-
-        this.bodyPart = bodyPart;
-        this.findings = findings;
-    }
-
-    public String getBodyPart() {
-        return this.bodyPart;
-    }
-
-    public String getFindings() {
-        return this.findings;
-    }
-
-    public void setBodyPart(String bodyPart) {
-        this.bodyPart = bodyPart;
-    }
-
-    public void setFindings(String findings) {
-        this.findings = findings;
-    }
-
 }

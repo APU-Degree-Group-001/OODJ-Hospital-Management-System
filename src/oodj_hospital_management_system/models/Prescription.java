@@ -4,14 +4,18 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
  *
  * @author sheaw
  */
+
 public class Prescription {
     private String prescriptionId;
+    private Consultation consultation;
+
     private String medicineName;
     private String dosage;
     private String frequencyPerDay;
@@ -20,6 +24,7 @@ public class Prescription {
 
     public Prescription() {
         this.prescriptionId = "";
+        this.consultation = null;
         this.medicineName = "";
         this.dosage = "";
         this.frequencyPerDay = "";
@@ -29,6 +34,7 @@ public class Prescription {
 
     public Prescription(
             String prescriptionId,
+            Consultation consultation,
             String medicineName,
             String dosage,
             String frequencyPerDay,
@@ -36,6 +42,7 @@ public class Prescription {
             String instructions
     ) {
         this.prescriptionId = prescriptionId;
+        this.consultation = consultation;
         this.medicineName = medicineName;
         this.dosage = dosage;
         this.frequencyPerDay = frequencyPerDay;
@@ -72,9 +79,12 @@ public class Prescription {
     }
 
     // Getters
-
     public String getPrescriptionId() {
-        return prescriptionId;
+        return this.prescriptionId;
+    }
+
+    public Consultation getConsultation() {
+        return this.consultation;
     }
 
     public String getMedicineName() {
@@ -106,6 +116,9 @@ public class Prescription {
     }
 
     // Setters
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
 
     public void setMedicineName(String medicineName) {
         this.medicineName = medicineName;
@@ -125,5 +138,19 @@ public class Prescription {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public LinkedHashMap<String, String> getPrescriptionMap() {
+        LinkedHashMap<String, String> prescriptionMap = new LinkedHashMap<>();
+
+        prescriptionMap.put("prescriptionId", this.prescriptionId);
+        prescriptionMap.put("consultationId", this.consultation != null ? this.consultation.getConsultationId() : "");
+        prescriptionMap.put("medicineName", this.medicineName);
+        prescriptionMap.put("dosage", this.dosage);
+        prescriptionMap.put("frequencyPerDay", this.frequencyPerDay);
+        prescriptionMap.put("durationInDays", this.durationInDays);
+        prescriptionMap.put("instructions", this.instructions);
+
+        return prescriptionMap;
     }
 }

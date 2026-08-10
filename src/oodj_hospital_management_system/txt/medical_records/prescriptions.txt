@@ -1,5 +1,5 @@
-prescriptionId, consultationId, medicationName, dosage, frequency, duration
-#PRE001, #CON001, Paracetamol, 500mg, 3 times daily, 3 days
-#PRE002, #CON001, Ibuprofen, 200mg, 2 times daily, 3 days
-#PRE003, #CON002, Aspirin, 100mg, Once daily, 7 days
-#PRE004, #CON003, Paracetamol, 500mg, 2 times daily, 2 days
+prescriptionId, consultationId, medicineName, dosage, frequencyPerDay, durationInDays, instructions
+#PRE001, #CON001, Paracetamol, 500mg, 3, 3, Take after meals
+#PRE002, #CON001, Ibuprofen, 200mg, 2, 3, Take after meals
+#PRE003, #CON002, Aspirin, 100mg, 1, 7, Take once after breakfast
+#PRE004, #CON003, Paracetamol, 500mg, 2, 2, Take after meals

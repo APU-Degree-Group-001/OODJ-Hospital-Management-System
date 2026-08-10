@@ -1,4 +1,4 @@
-medicalAssessmentId, consultationId, doctorId, assessmentType, findings, diagnosis
-#MED001, #CON001, #DOCd4e8f, General Assessment, Patient has mild headache and elevated temperature, Tension headache
-#MED002, #CON002, #DOCd4e8f, Cardiac Assessment, Patient reports mild chest discomfort, No immediate cardiac abnormality
-#MED003, #CON003, #DOCd4e8f, Routine Check-up, Patient is generally healthy, No abnormal findings
+assessmentId, consultationId, assessmentType, findings, diagnosis
+#MED001, #CON001, General Assessment, Patient has mild headache and elevated temperature, Tension headache
+#MED002, #CON002, Cardiac Assessment, Patient reports mild chest discomfort, No immediate cardiac abnormality
+#MED003, #CON003, Routine Check-up, Patient is generally healthy, No abnormal findings

@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -13,8 +14,7 @@ import java.util.Objects;
 
 public class MedicalAssessment {
     private String assessmentId;
-    private String consultationId;
-    private String doctorId;
+    private Consultation consultation;
 
     private String assessmentType;
     private String findings;
@@ -22,8 +22,7 @@ public class MedicalAssessment {
 
     public MedicalAssessment() {
         this.assessmentId = "";
-        this.consultationId = "";
-        this.doctorId = "";
+        this.consultation = null;
         this.assessmentType = "";
         this.findings = "";
         this.diagnosis = "";
@@ -31,15 +30,13 @@ public class MedicalAssessment {
 
     public MedicalAssessment(
             String assessmentId,
-            String consultationId,
-            String doctorId,
+            Consultation consultation,
             String assessmentType,
             String findings,
             String diagnosis
     ) {
         this.assessmentId = assessmentId;
-        this.consultationId = consultationId;
-        this.doctorId = doctorId;
+        this.consultation = consultation;
         this.assessmentType = assessmentType;
         this.findings = findings;
         this.diagnosis = diagnosis;
@@ -73,17 +70,12 @@ public class MedicalAssessment {
     }
 
     // Getters
-
     public String getAssessmentId() {
         return assessmentId;
     }
 
-    public String getConsultationId() {
-        return consultationId;
-    }
-
-    public String getDoctorId() {
-        return doctorId;
+    public Consultation getConsultation() {
+        return consultation;
     }
 
     public String getAssessmentType() {
@@ -99,13 +91,8 @@ public class MedicalAssessment {
     }
 
     // Setters
-
-    public void setConsultationId(String consultationId) {
-        this.consultationId = consultationId;
-    }
-
-    public void setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
     }
 
     public void setAssessmentType(String assessmentType) {
@@ -118,5 +105,15 @@ public class MedicalAssessment {
 
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
+    }
+    
+    public LinkedHashMap<String, String> getMedicalAssessmentMap() {
+        LinkedHashMap<String, String> assessmentMap = new LinkedHashMap<>();
+        assessmentMap.put("assessmentId", this.assessmentId);
+        assessmentMap.put("consultationId", this.consultation != null ? this.consultation.getConsultationId() : "");
+        assessmentMap.put("assessmentType", this.assessmentType);
+        assessmentMap.put("findings", this.findings);
+        assessmentMap.put("diagnosis", this.diagnosis);
+        return assessmentMap;
     }
 }
