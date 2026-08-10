@@ -23,6 +23,7 @@ import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
+import oodj_hospital_management_system.utils.Logger;
 import oodj_hospital_management_system.utils.exceptions.ConsultationException;
 import oodj_hospital_management_system.utils.exceptions.UserException;
 
@@ -45,8 +46,10 @@ import oodj_hospital_management_system.utils.exceptions.UserException;
 public class ConsultationManagement {
     private static final FileHandler consultationHandler = new FileHandler(SystemConfiguration.consultationFilePath);
     private static final FileHandler consultationSlotHandler = new FileHandler(SystemConfiguration.consultationSlotFilePath);
+    private static final FileHandler feedbackHandler = new FileHandler(SystemConfiguration.feedbackFilePath);
     private static final List<Consultation> consultations = new ArrayList<>();
     private static final List<ConsultationSlot> consultationSlots = new ArrayList<>();
+    private static final List<Feedback> allFeedback = new ArrayList<>();
     private User activeUser;
     
     public ConsultationManagement(User user) {
@@ -68,7 +71,7 @@ public class ConsultationManagement {
                     getLabResults(row.get("labResultIds")),
                     getPrescriptions(row.get("prescriptionIds")),
                     HospitalAssetManagement.getHospitalAssetAllocationById(row.get("hospitalAssetAllocationId")),
-                    getFeedback(row.get("feedbackId")),
+                    getFeedbackById(row.get("feedbackId")),
                     BillingManagement.getBillById(row.get("billId")),
                     getConsultationStatus(row.get("status"))
             );
@@ -92,6 +95,23 @@ public class ConsultationManagement {
         }
     }
     
+    public static void loadAllFeedback() {
+        allFeedback.clear();
+        List<LinkedHashMap<String, String>> rawData = feedbackHandler.readFile();
+        for (LinkedHashMap<String, String> row : rawData) {
+            // feedbackId, consultationId, patientId, rating, comment, submittedDateTime
+            Feedback feedback = new Feedback(
+                    row.get("feedbackId"),
+                    ConsultationManagement.getConsultationById(row.get("consultationId")),
+                    UserManagement.getPatientById(row.get("patientId")),
+                    Integer.parseInt(row.get("rating")),
+                    row.get("comment"),
+                    row.get("submittedDateTime")
+            );
+            allFeedback.add(feedback);
+        }
+    }
+    
     public static List<Consultation> getAllConsultations() {
         loadConsultations();
         return consultations;
@@ -102,12 +122,68 @@ public class ConsultationManagement {
         return consultationSlots;
     }
     
-    public static ConsultationSlot getConsultationSlotById(String consultationSlotId) {
-        return null;
+    public static List<Feedback> getAllFeedback() {
+        loadAllFeedback();
+        return allFeedback;
     }
     
-    public static Feedback getFeedback(String feedbackId) {
-        return null;
+    public static Consultation getConsultationById(String consultationId) {
+        loadConsultations();
+        try {
+            if (!consultations.stream().anyMatch(consultation -> consultation.getConsultationId().equals(consultationId))) {
+                throw new Exception(String.format("Invalid Consultation ID: Consultation ID '%s' is not found", consultationId));
+            }
+            for (Consultation consultation : consultations) {
+                if (consultation.getConsultationId().equals(consultationId)) {
+                    return consultation;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error finding consultation -> " + e.getMessage());
+            Logger.errorLog("Error finding consultation -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static ConsultationSlot getConsultationSlotById(String consultationSlotId) {
+        loadConsultationSlots();
+        try {
+            if (!consultationSlots.stream().anyMatch(consultationSlot -> consultationSlot.getConsultationSlotId().equals(consultationSlotId))) {
+                throw new Exception(String.format("Invalid Consultation Slot ID: Consultation Slot ID '%s' is not found", consultationSlotId));
+            }
+
+            for (ConsultationSlot consultationSlot : consultationSlots) {
+                if (consultationSlot.getConsultationSlotId().equals(consultationSlotId)) {
+                    return consultationSlot;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error finding consultation slot -> " + e.getMessage());
+            Logger.errorLog("Error finding consultation slot -> " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Feedback getFeedbackById(String feedbackId) {
+        loadAllFeedback();
+        try {
+            if (!allFeedback.stream().anyMatch(feedback -> feedback.getFeedbackId().equals(feedbackId))) {
+                throw new Exception(String.format("Invalid Feedback ID: Feedback ID '%s' is not found", feedbackId));
+            }
+
+            for (Feedback feedback : allFeedback) {
+                if (feedback.getFeedbackId().equals(feedbackId)) {
+                    return feedback;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error finding feedback -> " + e.getMessage());
+            Logger.errorLog("Error finding feedback -> " + e.getMessage());
+            return null;
+        }
     }
     
     public static List<MedicalAssessment> getMedicalAssessments(String assessmentIds) {

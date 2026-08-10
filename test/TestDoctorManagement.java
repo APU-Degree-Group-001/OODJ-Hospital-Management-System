@@ -588,8 +588,8 @@ public class TestDoctorManagement {
          * Use a future date so the newly created shift
          * will initially have SCHEDULED status.
          */
-        String startDateTime = "2026-08-15 09:00:00";
-        String endDateTime = "2026-08-15 17:00:00";
+        String startDateTime = "2026-08-16 09:00:00";
+        String endDateTime = "2026-08-16 17:00:00";
 
         LinkedHashMap<String, String> result =
                 doctorMng.createShift(

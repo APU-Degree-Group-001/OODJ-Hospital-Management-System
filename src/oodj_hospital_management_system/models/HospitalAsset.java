@@ -9,7 +9,7 @@ package oodj_hospital_management_system.models;
  * @author sheaw
  */
 
-public abstract class HospitalAsset {
+public class HospitalAsset {
     private String assetId;
     private String assetType;
     private String assetName;
