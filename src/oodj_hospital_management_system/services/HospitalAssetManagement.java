@@ -5,12 +5,16 @@
 package oodj_hospital_management_system.services;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.HospitalAsset;
 import oodj_hospital_management_system.models.HospitalAssetAllocation;
+import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.models.Ward;
+import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.FileHandler;
 import oodj_hospital_management_system.utils.Logger;
 
@@ -19,12 +23,25 @@ import oodj_hospital_management_system.utils.Logger;
  *
  * @author sheaw
  */
+
 public class HospitalAssetManagement {
+
     private static final FileHandler assetHandler = new FileHandler(SystemConfiguration.hospitalAssetFilePath);
     private static final FileHandler allocationHandler = new FileHandler(SystemConfiguration.hospitalAssetAllocationFilePath);
 
     private static final List<HospitalAsset> allHospitalAssets = new ArrayList<>();
     private static final List<HospitalAssetAllocation> allHospitalAssetAllocations = new ArrayList<>();
+    
+    private User activeUser;
+    
+    public HospitalAssetManagement(User usr) {
+        this.activeUser = usr;
+        loadHospitalAssets();
+    }
+
+    // =========================================================
+    // LOAD
+    // =========================================================
 
     public static void loadHospitalAssets() {
         allHospitalAssets.clear();
@@ -33,16 +50,16 @@ public class HospitalAssetManagement {
 
         for (LinkedHashMap<String, String> row : rawData) {
             // assetId, assetType, assetName, imagePath, location, description, totalBeds
-                
+
             if ("Ward".equalsIgnoreCase(row.get("assetType"))) {
                 Ward asset = new Ward(
-                    row.get("assetId"),
-                    row.get("assetType"),
-                    row.get("assetName"),
-                    row.get("imagePath"),
-                    row.get("location"),
-                    row.get("description"),
-                    Integer.parseInt(row.get("totalBeds"))
+                        row.get("assetId"),
+                        row.get("assetType"),
+                        row.get("assetName"),
+                        row.get("imagePath"),
+                        row.get("location"),
+                        row.get("description"),
+                        Integer.parseInt(row.get("totalBeds"))
                 );
                 allHospitalAssets.add(asset);
             } else {
@@ -55,7 +72,7 @@ public class HospitalAssetManagement {
                         row.get("description")
                 );
                 allHospitalAssets.add(asset);
-            } 
+            }
         }
     }
 
@@ -65,11 +82,11 @@ public class HospitalAssetManagement {
         List<LinkedHashMap<String, String>> rawData = allocationHandler.readFile();
 
         for (LinkedHashMap<String, String> row : rawData) {
-            // allocationId, consultationId, assetId, allocatedDateTime
+            // allocationId, consultationId, assetId, allocatedDateTime, releasedDateTime
             HospitalAssetAllocation allocation = new HospitalAssetAllocation(
                     row.get("allocationId"),
-                    getHospitalAssetById(row.get("assetId")),
-                    ConsultationManagement.getConsultationById(row.get("consultationId")),
+                    row.get("assetId"),
+                    row.get("consultationId"),
                     row.get("allocatedDateTime"),
                     row.get("releasedDateTime")
             );
@@ -78,18 +95,40 @@ public class HospitalAssetManagement {
         }
     }
 
+    // =========================================================
+    // ACCESSORS
+    // =========================================================
+
+    public static List<HospitalAsset> getAllHospitalAssets() {
+        loadHospitalAssets();
+        return allHospitalAssets;
+    }
+
+    public static List<HospitalAssetAllocation> getAllHospitalAssetAllocations() {
+        loadHospitalAssetAllocations();
+        return allHospitalAssetAllocations;
+    }
+
+    // =========================================================
+    // GET BY ID
+    // =========================================================
+
     public static HospitalAsset getHospitalAssetById(String assetId) {
         loadHospitalAssets();
+
         try {
             if (!allHospitalAssets.stream().anyMatch(asset -> asset.getAssetId().equals(assetId))) {
                 throw new Exception(String.format("Invalid Hospital Asset ID: Asset ID '%s' is not found", assetId));
             }
+
             for (HospitalAsset asset : allHospitalAssets) {
                 if (asset.getAssetId().equals(assetId)) {
                     return asset;
                 }
             }
+
             return null;
+
         } catch (Exception e) {
             System.out.println("Error finding hospital asset -> " + e.getMessage());
             Logger.errorLog("Error finding hospital asset -> " + e.getMessage());
@@ -99,11 +138,13 @@ public class HospitalAssetManagement {
 
     public static HospitalAssetAllocation getHospitalAssetAllocationById(String allocationId) {
         loadHospitalAssetAllocations();
+        if (allocationId == null || allocationId.isEmpty()) {
+            return null;
+        }
         try {
             if (!allHospitalAssetAllocations.stream().anyMatch(allocation -> allocation.getAllocationId().equals(allocationId))) {
                 throw new Exception(String.format("Invalid Hospital Asset Allocation ID: Allocation ID '%s' is not found", allocationId));
             }
-
             for (HospitalAssetAllocation allocation : allHospitalAssetAllocations) {
                 if (allocation.getAllocationId().equals(allocationId)) {
                     return allocation;
@@ -116,21 +157,412 @@ public class HospitalAssetManagement {
             return null;
         }
     }
-    
-    // Accessor Method for Hospital Assets
-    public static List<HospitalAsset> getAllHospitalAssets() {
+
+    // =========================================================
+    // SEARCH
+    // =========================================================
+
+    public static List<HospitalAsset> searchHospitalAssets(String keyword) {
         loadHospitalAssets();
-        return allHospitalAssets;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>(allHospitalAssets);
+        }
+
+        String searchKeyword = keyword.toLowerCase().trim();
+
+        return allHospitalAssets.stream()
+                .filter(asset -> asset.getAssetId().toLowerCase().contains(searchKeyword)
+                || asset.getAssetType().toLowerCase().contains(searchKeyword)
+                || asset.getAssetName().toLowerCase().contains(searchKeyword)
+                || asset.getLocation().toLowerCase().contains(searchKeyword)
+                || asset.getDescription().toLowerCase().contains(searchKeyword))
+                .collect(Collectors.toList());
     }
-    
-    public static List<HospitalAssetAllocation> getAllHospitalAssetAllocations() {
-        loadHospitalAssetAllocations();
-        return allHospitalAssetAllocations;
+
+    // =========================================================
+    // SORT
+    // =========================================================
+
+    public static List<HospitalAsset> sortHospitalAssets(String sortBy, boolean ascending) {
+        loadHospitalAssets();
+
+        List<HospitalAsset> sortedAssets = new ArrayList<>(allHospitalAssets);
+
+        Comparator<HospitalAsset> comparator;
+
+        switch (sortBy.toLowerCase()) {
+            case "assetid":
+                comparator = Comparator.comparing(HospitalAsset::getAssetId);
+                break;
+
+            case "assettype":
+                comparator = Comparator.comparing(HospitalAsset::getAssetType);
+                break;
+
+            case "assetname":
+                comparator = Comparator.comparing(HospitalAsset::getAssetName);
+                break;
+
+            case "location":
+                comparator = Comparator.comparing(HospitalAsset::getLocation);
+                break;
+
+            default:
+                return sortedAssets;
+        }
+
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+
+        sortedAssets.sort(comparator);
+
+        return sortedAssets;
     }
-    
+
+    // =========================================================
+    // CONSULTATION ROOM COUNT
+    // =========================================================
+
     public static int getConsultationRoomCount() {
         return (int) getAllHospitalAssets().stream()
                 .filter(asset -> "Consultation Room".equalsIgnoreCase(asset.getAssetType()))
                 .count();
+    }
+
+    // =========================================================
+    // FILE HANDLER - HOSPITAL ASSET
+    // =========================================================
+
+    private static boolean writeHospitalAssets() {
+        ArrayList<LinkedHashMap<String, String>> assetData = new ArrayList<>();
+
+        for (HospitalAsset asset : allHospitalAssets) {
+            assetData.add(asset.getHospitalAssetMap());
+        }
+
+        assetHandler.writeFile(assetData);
+
+        return true;
+    }
+
+    private static boolean appendHospitalAsset(HospitalAsset asset) {
+        try {
+            ArrayList<LinkedHashMap<String, String>> assetData = new ArrayList<>();
+            assetData.add(asset.getHospitalAssetMap());
+
+            if (!assetHandler.checkFileExistence() && !assetHandler.createFile()) {
+                System.out.printf("File 'hospitalAssets.txt' failed to be created, hospital asset '%s' cannot be appended%n", asset.getAssetId());
+                return false;
+            }
+
+            assetHandler.appendFile(assetData);
+
+            System.out.printf("Hospital asset '%s' is appended to hospitalAssets.txt!%n", asset.getAssetId());
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("Error appending new hospital asset: " + e.getMessage());
+            Logger.errorLog("Error appending new hospital asset (System Error) -> " + e.getMessage());
+            return false;
+        }
+    }
+    
+    // =========================================================
+    // FILE HANDLER - HOSPITAL ASSET ALLOCATION
+    // =========================================================
+
+    private static boolean writeHospitalAssetAllocations() {
+        ArrayList<LinkedHashMap<String, String>> allocationData = new ArrayList<>();
+
+        for (HospitalAssetAllocation allocation : allHospitalAssetAllocations) {
+            allocationData.add(allocation.getHospitalAssetAllocationMap());
+        }
+
+        allocationHandler.writeFile(allocationData);
+
+        return true;
+    }
+
+    private static boolean appendHospitalAssetAllocation(HospitalAssetAllocation allocation) {
+        try {
+            ArrayList<LinkedHashMap<String, String>> allocationData = new ArrayList<>();
+            allocationData.add(allocation.getHospitalAssetAllocationMap());
+
+            if (!allocationHandler.checkFileExistence() && !allocationHandler.createFile()) {
+                System.out.printf("File 'hospitalAssetAllocations.txt' failed to be created, allocation '%s' cannot be appended%n", allocation.getAllocationId());
+                return false;
+            }
+
+            allocationHandler.appendFile(allocationData);
+
+            System.out.printf("Hospital asset allocation '%s' is appended to hospitalAssetAllocations.txt!%n", allocation.getAllocationId());
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("Error appending new hospital asset allocation: " + e.getMessage());
+            Logger.errorLog("Error appending new hospital asset allocation (System Error) -> " + e.getMessage());
+            return false;
+        }
+    }
+
+    // =========================================================
+    // CREATE HOSPITAL ASSET
+    // =========================================================
+
+    public LinkedHashMap<String, String> createHospitalAsset(String assetType, String assetName, String imagePath, String location, String description) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        String newAssetId = generateHospitalAssetId();
+
+        HospitalAsset newAsset = new HospitalAsset(
+                newAssetId,
+                assetType,
+                assetName,
+                imagePath,
+                location,
+                description
+        );
+
+        allHospitalAssets.add(newAsset);
+
+        if (assetHandler.checkFileExistence()) {
+            appendHospitalAsset(newAsset);
+        } else {
+            writeHospitalAssets();
+        }
+
+        loadHospitalAssets();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset '%s' is created and stored!", newAssetId));
+        msgMap.put("newAssetId", newAssetId);
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // CREATE WARD
+    // =========================================================
+
+    public LinkedHashMap<String, String> createWard(String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        String newAssetId = generateHospitalAssetId();
+
+        Ward newWard = new Ward(
+                newAssetId,
+                assetType,
+                assetName,
+                imagePath,
+                location,
+                description,
+                totalBeds
+        );
+
+        allHospitalAssets.add(newWard);
+
+        if (assetHandler.checkFileExistence()) {
+            appendHospitalAsset(newWard);
+        } else {
+            writeHospitalAssets();
+        }
+
+        loadHospitalAssets();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Ward '%s' is created and stored!", newAssetId));
+        msgMap.put("newAssetId", newAssetId);
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // MODIFY HOSPITAL ASSET
+    // =========================================================
+
+    public LinkedHashMap<String, String> modifyHospitalAsset(HospitalAsset asset, String assetType, String assetName, String imagePath, String location, String description) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        if (asset == null || getHospitalAssetById(asset.getAssetId()) == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Hospital asset is not found");
+            return msgMap;
+        }
+
+        asset.setAssetType(assetType);
+        asset.setAssetName(assetName);
+        asset.setImagePath(imagePath);
+        asset.setLocation(location);
+        asset.setDescription(description);
+
+        writeHospitalAssets();
+        loadHospitalAssets();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset '%s' is modified!", asset.getAssetId()));
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // MODIFY WARD
+    // =========================================================
+
+    public LinkedHashMap<String, String> modifyWard(Ward ward, String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        if (ward == null || getHospitalAssetById(ward.getAssetId()) == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Ward is not found");
+            return msgMap;
+        }
+
+        ward.setAssetType(assetType);
+        ward.setAssetName(assetName);
+        ward.setImagePath(imagePath);
+        ward.setLocation(location);
+        ward.setDescription(description);
+        ward.setTotalBeds(totalBeds);
+
+        writeHospitalAssets();
+        loadHospitalAssets();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Ward '%s' is modified!", ward.getAssetId()));
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // DELETE HOSPITAL ASSET
+    // =========================================================
+
+    public LinkedHashMap<String, String> deleteHospitalAsset(String assetId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAsset deleteAsset = getHospitalAssetById(assetId);
+
+        if (deleteAsset == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset '%s' not found", assetId));
+            return msgMap;
+        }
+
+        allHospitalAssets.removeIf(asset -> asset.getAssetId().equals(assetId));
+
+        writeHospitalAssets();
+        loadHospitalAssets();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset '%s' is deleted!", assetId));
+        msgMap.put("deleteAssetId", assetId);
+
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> createHospitalAssetAllocation(String assetId, String consultationId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        String newAllocationId = generateHospitalAssetAllocationId();
+
+        HospitalAssetAllocation newAllocation = new HospitalAssetAllocation(
+                newAllocationId,
+                assetId,
+                consultationId,
+                DateTime.formattedLocalDateTime(DateTime.currentDateTime()),
+                ""
+        );
+
+        allHospitalAssetAllocations.add(newAllocation);
+
+        if (allocationHandler.checkFileExistence()) {
+            appendHospitalAssetAllocation(newAllocation);
+        } else {
+            writeHospitalAssetAllocations();
+        }
+
+        loadHospitalAssetAllocations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset allocation '%s' is created and stored!", newAllocationId));
+        msgMap.put("newAllocationId", newAllocationId);
+
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> releaseHospitalAssetAllocation(String allocationId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAssetAllocation allocation = getHospitalAssetAllocationById(allocationId);
+
+        if (allocation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' is not found", allocationId));
+            return msgMap;
+        }
+
+        if (!allocation.getReleasedDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' is already released", allocationId));
+            return msgMap;
+        }
+
+        allocation.setReleasedDateTime(DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
+
+        writeHospitalAssetAllocations();
+        loadHospitalAssetAllocations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset allocation '%s' is released!", allocationId));
+
+        return msgMap;
+    }
+    
+//    FOR ADMIN STAFF ONLY
+    public LinkedHashMap<String, String> deleteHospitalAssetAllocation(String allocationId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAssetAllocation deleteAllocation = getHospitalAssetAllocationById(allocationId);
+
+        if (deleteAllocation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' not found", allocationId));
+            return msgMap;
+        }
+
+        allHospitalAssetAllocations.removeIf(allocation -> allocation.getAllocationId().equals(allocationId));
+
+        writeHospitalAssetAllocations();
+        loadHospitalAssetAllocations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset allocation '%s' is deleted!", allocationId));
+        msgMap.put("deleteAllocationId", allocationId);
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // GENERATE ID
+    // =========================================================
+
+    public static String generateHospitalAssetId() {
+        List<String> existingIds = allHospitalAssets.stream()
+                .map(HospitalAsset::getAssetId)
+                .toList();
+
+        return SystemConfiguration.generateId("#AST", existingIds);
+    }
+
+    public static String generateHospitalAssetAllocationId() {
+        List<String> existingIds = allHospitalAssets.stream()
+                .map(HospitalAsset::getAssetId)
+                .toList();
+
+        return SystemConfiguration.generateId("#ALLOC", existingIds);
     }
 }

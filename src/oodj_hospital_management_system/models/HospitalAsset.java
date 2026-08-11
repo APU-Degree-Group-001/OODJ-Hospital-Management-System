@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
+
 /**
  *
  * @author sheaw
@@ -101,6 +103,17 @@ public class HospitalAsset {
                 || STATUS_INACTIVE.equals(status)) {
             this.status = status;
         }
+    }
+    
+    public LinkedHashMap<String, String> getHospitalAssetMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("assetId", assetId);
+        map.put("assetType", assetType);
+        map.put("assetName", assetName);
+        map.put("imagePath", imagePath);
+        map.put("location", location);
+        map.put("description", description);
+        return map;
     }
 }
 

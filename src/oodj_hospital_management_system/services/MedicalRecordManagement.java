@@ -51,7 +51,7 @@ public class MedicalRecordManagement {
             // assessmentId, consultationId, assessmentType, findings, diagnosis
             MedicalAssessment assessment = new MedicalAssessment(
                     row.get("assessmentId"), 
-                    ConsultationManagement.getConsultationById(row.get("consultationId")), 
+                    row.get("consultationId"), 
                     row.get("assessmentType"), 
                     row.get("findings"), 
                     row.get("diagnosis")
@@ -67,7 +67,7 @@ public class MedicalRecordManagement {
             // resultId, consultationId, resultType, result, remarks, resultDateTime
             LabResult result = new LabResult(
                     row.get("resultId"), 
-                    ConsultationManagement.getConsultationById(row.get("consultationId")), 
+                    row.get("consultationId"), 
                     row.get("resultType"), 
                     row.get("result"), 
                     row.get("remarks"), 
@@ -84,7 +84,7 @@ public class MedicalRecordManagement {
             // prescriptionId, consultationId, medicineName, dosage, frequencyPerDay, durationInDays, instructions
             Prescription prescription = new Prescription(
                     row.get("prescriptionId"), 
-                    ConsultationManagement.getConsultationById(row.get("consultationId")), 
+                    row.get("consultationId"), 
                     row.get("medicineName"), 
                     row.get("dosage"), 
                     row.get("frequencyPerDay"), 
@@ -170,7 +170,7 @@ public class MedicalRecordManagement {
         loadMedicalAssessments();
 
         for (MedicalAssessment assessment : medicalAssessments) {
-            if (assessment.getConsultation().getConsultationId().equals(consultationId)) {
+            if (assessment.getConsultationId().equals(consultationId)) {
                 return assessment;
             }
         }
@@ -184,7 +184,7 @@ public class MedicalRecordManagement {
         List<LabResult> matchedResults = new ArrayList<>();
 
         for (LabResult labResult : labResults) {
-            if (labResult.getConsultation().getConsultationId().equals(consultationId)) {
+            if (labResult.getConsultationId().equals(consultationId)) {
                 matchedResults.add(labResult);
             }
         }
@@ -198,7 +198,7 @@ public class MedicalRecordManagement {
         List<Prescription> matchedPrescriptions = new ArrayList<>();
 
         for (Prescription prescription : prescriptions) {
-            if (prescription.getConsultation().getConsultationId().equals(consultationId)) {
+            if (prescription.getConsultationId().equals(consultationId)) {
                 matchedPrescriptions.add(prescription);
             }
         }

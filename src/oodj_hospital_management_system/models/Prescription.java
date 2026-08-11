@@ -6,6 +6,7 @@ package oodj_hospital_management_system.models;
 
 import java.util.LinkedHashMap;
 import java.util.Objects;
+import oodj_hospital_management_system.services.ConsultationManagement;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 public class Prescription {
     private String prescriptionId;
-    private Consultation consultation;
+    private String consultationId;
 
     private String medicineName;
     private String dosage;
@@ -24,7 +25,7 @@ public class Prescription {
 
     public Prescription() {
         this.prescriptionId = "";
-        this.consultation = null;
+        this.consultationId = "";
         this.medicineName = "";
         this.dosage = "";
         this.frequencyPerDay = "";
@@ -32,6 +33,26 @@ public class Prescription {
         this.instructions = "";
     }
 
+    // Preferred constructor - takes consultationId directly, no eager lookup
+    public Prescription(
+            String prescriptionId,
+            String consultationId,
+            String medicineName,
+            String dosage,
+            String frequencyPerDay,
+            String durationInDays,
+            String instructions
+    ) {
+        this.prescriptionId = prescriptionId;
+        this.consultationId = consultationId;
+        this.medicineName = medicineName;
+        this.dosage = dosage;
+        this.frequencyPerDay = frequencyPerDay;
+        this.durationInDays = durationInDays;
+        this.instructions = instructions;
+    }
+
+    // Backward-compatible constructor - accepts a Consultation object, stores only its ID
     public Prescription(
             String prescriptionId,
             Consultation consultation,
@@ -41,13 +62,15 @@ public class Prescription {
             String durationInDays,
             String instructions
     ) {
-        this.prescriptionId = prescriptionId;
-        this.consultation = consultation;
-        this.medicineName = medicineName;
-        this.dosage = dosage;
-        this.frequencyPerDay = frequencyPerDay;
-        this.durationInDays = durationInDays;
-        this.instructions = instructions;
+        this(
+            prescriptionId,
+            consultation != null ? consultation.getConsultationId() : "",
+            medicineName,
+            dosage,
+            frequencyPerDay,
+            durationInDays,
+            instructions
+        );
     }
 
     @Override
@@ -83,8 +106,16 @@ public class Prescription {
         return this.prescriptionId;
     }
 
+    public String getConsultationId() {
+        return this.consultationId;
+    }
+
+    // Lazily resolves the Consultation - safe to call regardless of load order
     public Consultation getConsultation() {
-        return this.consultation;
+        if (this.consultationId == null || this.consultationId.isEmpty()) {
+            return null;
+        }
+        return ConsultationManagement.findConsultationById(this.consultationId);
     }
 
     public String getMedicineName() {
@@ -117,7 +148,11 @@ public class Prescription {
 
     // Setters
     public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
+        this.consultationId = consultation != null ? consultation.getConsultationId() : "";
+    }
+
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
     public void setMedicineName(String medicineName) {
@@ -144,7 +179,7 @@ public class Prescription {
         LinkedHashMap<String, String> prescriptionMap = new LinkedHashMap<>();
 
         prescriptionMap.put("prescriptionId", this.prescriptionId);
-        prescriptionMap.put("consultationId", this.consultation != null ? this.consultation.getConsultationId() : "");
+        prescriptionMap.put("consultationId", this.consultationId != null ? this.consultationId : "");
         prescriptionMap.put("medicineName", this.medicineName);
         prescriptionMap.put("dosage", this.dosage);
         prescriptionMap.put("frequencyPerDay", this.frequencyPerDay);

@@ -3,18 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package oodj_hospital_management_system.models;
-
 import java.util.LinkedHashMap;
 import java.util.Objects;
-
+import oodj_hospital_management_system.services.ConsultationManagement;
 /**
  *
  * @author sheaw
  */
-
 public class LabResult {
     private String resultId;
-    private Consultation consultation;
+    private String consultationId;
     private String resultType;
     private String result;
     private String remarks;
@@ -22,13 +20,31 @@ public class LabResult {
 
     public LabResult() {
         this.resultId = "";
-        this.consultation = null;
+        this.consultationId = "";
         this.resultType = "";
         this.result = "";
         this.remarks = "";
         this.resultDateTime = "";
     }
 
+    // Preferred constructor - takes consultationId directly, no eager lookup
+    public LabResult(
+            String resultId,
+            String consultationId,
+            String resultType,
+            String result,
+            String remarks,
+            String resultDateTime
+    ) {
+        this.resultId = resultId;
+        this.consultationId = consultationId;
+        this.resultType = resultType;
+        this.result = result;
+        this.remarks = remarks;
+        this.resultDateTime = resultDateTime;
+    }
+
+    // Backward-compatible constructor - accepts a Consultation object, stores only its ID
     public LabResult(
             String resultId,
             Consultation consultation,
@@ -37,12 +53,14 @@ public class LabResult {
             String remarks,
             String resultDateTime
     ) {
-        this.resultId = resultId;
-        this.consultation = consultation;
-        this.resultType = resultType;
-        this.result = result;
-        this.remarks = remarks;
-        this.resultDateTime = resultDateTime;
+        this(
+            resultId,
+            consultation != null ? consultation.getConsultationId() : "",
+            resultType,
+            result,
+            remarks,
+            resultDateTime
+        );
     }
 
     @Override
@@ -59,13 +77,10 @@ public class LabResult {
         if (!(obj instanceof LabResult)) {
             return false;
         }
-
         if (obj == this) {
             return true;
         }
-
         LabResult resultObj = (LabResult) obj;
-
         return Objects.equals(
                 this.resultId,
                 resultObj.resultId
@@ -73,13 +88,20 @@ public class LabResult {
     }
 
     // Getters
-
     public String getResultId() {
         return this.resultId;
     }
 
+    public String getConsultationId() {
+        return this.consultationId;
+    }
+
+    // Lazily resolves the Consultation - safe to call regardless of load order
     public Consultation getConsultation() {
-        return this.consultation;
+        if (this.consultationId == null || this.consultationId.isEmpty()) {
+            return null;
+        }
+        return ConsultationManagement.findConsultationById(this.consultationId);
     }
 
     public String getResultType() {
@@ -99,9 +121,12 @@ public class LabResult {
     }
 
     // Setters
-
     public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
+        this.consultationId = consultation != null ? consultation.getConsultationId() : "";
+    }
+
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
     public void setResultType(String resultType) {
@@ -119,11 +144,11 @@ public class LabResult {
     public void setResultDateTime(String resultDateTime) {
         this.resultDateTime = resultDateTime;
     }
-    
+
     public LinkedHashMap<String, String> getLabResultMap() {
         LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
         resultMap.put("resultId", this.resultId);
-        resultMap.put("consultationId", this.consultation != null ? this.consultation.getConsultationId() : "");
+        resultMap.put("consultationId", this.consultationId != null ? this.consultationId : "");
         resultMap.put("resultType", this.resultType);
         resultMap.put("result", this.result);
         resultMap.put("remarks", this.remarks);

@@ -27,42 +27,6 @@ public class FileHandler {
     private String filePath;
     private String txtDelimiter = SystemConfiguration.txtDelimiter;
 
-    public static void main(String[] args) {
-        FileHandler handler = new FileHandler(SystemConfiguration.userFilePath);
-        System.out.println(handler.checkFileExistence());
-        
-        // Test Read File
-//         ArrayList<LinkedHashMap<String, String>> users = handler.readFile();
-//         System.out.printf("%-19s %-19s %-19s %-19s%n", "User ID", "Name", "Password",
-//         "Role");
-//         for (LinkedHashMap<String, String> map : users) {
-//             System.out.printf("%-19s %-19s %-19s %-19s%n", map.get("userId"), map.get("userName"), map.get("userPwd"), map.get("userType"));
-//         }
-        
-        // Test Write File
-        ArrayList<LinkedHashMap<String, String>> testW = new ArrayList<>();
-        LinkedHashMap<String, String> w = new LinkedHashMap<>();
-        w.put("userId", "#DOCd4e8f");
-        w.put("userName", "haha");
-        w.put("userPwd", "hehe123");
-        w.put("userType", "doctor");
-        w.put("joinedDateTime", "2026-07-30 14:22:07");
-        testW.add(w);
-        handler.writeFile(testW);
-
-        // Test Append File
-        ArrayList<LinkedHashMap<String, String>> testA = new ArrayList<>();
-        LinkedHashMap<String, String> a = new LinkedHashMap<>();
-        a.put("userId", "#PATd4e8f");
-        a.put("userName", "uehehe");
-        a.put("userPwd", "hehe456");
-        a.put("userType", "patient");
-        a.put("joinedDateTime", "2026-07-30 14:22:07");
-        testA.add(a);
-        handler.appendFile(testA);
-        
-    }
-
     public FileHandler(String filePath) {
         this.file = new File(filePath);
         this.filePath = filePath;
@@ -131,19 +95,26 @@ public class FileHandler {
         ArrayList<LinkedHashMap<String, String>> maps = new ArrayList<>();
         if (file.exists()) {
             try (Scanner reader = new Scanner(file)) {
-                List<String> header = new ArrayList<>(); // List is not instantiable (cannot create instance), so use
-                                                         // ArrayList
+                List<String> header = new ArrayList<>();
                 for (int i = 0; reader.hasNextLine(); i++) {
                     if (i == 0) {
                         String line = reader.nextLine();
-                        header = Arrays.asList(line.split(", "));
+                        // cannot split by ", " if last field is empty
+                        String[] headerArray = line.split(",", -1);
+                        for (String column : headerArray) {
+                            header.add(column.trim());
+                        }
                     } else {
                         String line = reader.nextLine();
-                        List<String> row = Arrays.asList(line.split(", ", -1));
-                        if (row.size() == header.size()) {
-                            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-                            for (int index = 0; index < row.size(); index++) {
-                                map.put(header.get(index), row.get(index).replace(txtDelimiter, ", "));
+                        String[] rowArray = line.split(",", -1);
+                        if (rowArray.length == header.size()) {
+                            LinkedHashMap<String, String> map =
+                                    new LinkedHashMap<>();
+                            for (int index = 0;
+                                 index < rowArray.length;
+                                 index++) {
+                                map.put(header.get(index), rowArray[index].trim().replace(txtDelimiter, ", ")
+                                );
                             }
                             maps.add(map);
                         }
@@ -151,7 +122,7 @@ public class FileHandler {
                 }
             } catch (IOException e) {
                 System.out.println("Error reading file: " + filePath);
-                e.printStackTrace(); // print error details
+                e.printStackTrace();
             }
         }
         return maps;

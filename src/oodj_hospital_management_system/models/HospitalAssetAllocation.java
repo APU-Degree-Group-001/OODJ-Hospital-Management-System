@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import oodj_hospital_management_system.utils.DateTime;
 
@@ -12,36 +13,32 @@ import oodj_hospital_management_system.utils.DateTime;
  * @author sheaw
  */
 public class HospitalAssetAllocation {
-    public static final String STATUS_ALLOCATED = "Allocated";
-    public static final String STATUS_COMPLETED = "Completed";
-    public static final String STATUS_CANCELLED = "Cancelled";
-
     private String allocationId;
-    private HospitalAsset hospitalAsset;
-    private Consultation consultation;
+    private String assetId;
+    private String consultationId;
     private String allocationDateTime;
-    private String status;
+    private String releasedDateTime;
 
     public HospitalAssetAllocation() {
         this.allocationId = "";
-        this.hospitalAsset = null;
-        this.consultation = null;
+        this.assetId = "";
+        this.consultationId = "";
         this.allocationDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
-        this.status = STATUS_ALLOCATED;
+        this.releasedDateTime = "";
     }
 
     public HospitalAssetAllocation(
             String allocationId,
-            HospitalAsset hospitalAsset,
-            Consultation consultation,
+            String assetId,
+            String consultationId,
             String allocationDateTime,
-            String status
+            String releasedDateTime
     ) {
         this.allocationId = allocationId;
-        this.hospitalAsset = hospitalAsset;
-        this.consultation = consultation;
+        this.assetId = assetId;
+        this.consultationId = consultationId;
         this.allocationDateTime = allocationDateTime;
-        this.status = status;
+        this.releasedDateTime = releasedDateTime;
     }
 
     @Override
@@ -54,61 +51,73 @@ public class HospitalAssetAllocation {
 
     @Override
     public boolean equals(Object obj) {
-
         if (!(obj instanceof HospitalAssetAllocation)) {
             return false;
         }
-
         if (obj == this) {
             return true;
         }
-
         HospitalAssetAllocation allocationObj =
                 (HospitalAssetAllocation) obj;
-
         return Objects.equals(
                 this.allocationId,
                 allocationObj.allocationId
         );
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.allocationId);
+    }
+
+    // Accessor Methods
+
     public String getAllocationId() {
         return this.allocationId;
     }
 
-    public HospitalAsset getHospitalAsset() {
-        return this.hospitalAsset;
+    public String getAssetId() {
+        return this.assetId;
     }
 
-    public Consultation getConsultation() {
-        return this.consultation;
+    public String getConsultationId() {
+        return this.consultationId;
     }
 
     public String getAllocationDateTime() {
         return this.allocationDateTime;
     }
 
-    public String getStatus() {
-        return status;
+    public String getReleasedDateTime() {
+        return this.releasedDateTime;
     }
 
-    public void setHospitalAsset(HospitalAsset hospitalAsset) {
-        this.hospitalAsset = hospitalAsset;
+    // Mutator Methods
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
-    public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
     public void setAllocationDateTime(String allocationDateTime) {
         this.allocationDateTime = allocationDateTime;
     }
 
-    public void setStatus(String status) {
-        if (status.equals(STATUS_ALLOCATED)
-                || status.equals(STATUS_COMPLETED)
-                || status.equals(STATUS_CANCELLED)) {
-            this.status = status;
-        }
+    public void setReleasedDateTime(String releasedDateTime) {
+        this.releasedDateTime = releasedDateTime;
+    }
+
+
+    public LinkedHashMap<String, String> getHospitalAssetAllocationMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("allocationId", allocationId);
+        map.put("consultationId", consultationId != null ? consultationId : "");
+        map.put("assetId", assetId != null ? assetId : "");
+        map.put("allocatedDateTime", allocationDateTime);
+        map.put("releasedDateTime", releasedDateTime != null ? releasedDateTime : "");
+        return map;
     }
 }

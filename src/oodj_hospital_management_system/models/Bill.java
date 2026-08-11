@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Objects;
  */
 public class Bill {
     private String billId;
-    private Consultation consultation;
+    private String consultationId;
     private Patient patient;
     private Insurance insurance;
 
@@ -22,7 +23,7 @@ public class Bill {
 
     public Bill() {
         this.billId = "";
-        this.consultation = null;
+        this.consultationId = "";
         this.patient = null;
         this.insurance = null;
 
@@ -33,7 +34,7 @@ public class Bill {
 
     public Bill(
             String billId,
-            Consultation consultation,
+            String consultation,
             Patient patient,
             Insurance insurance,
             double consultationFee,
@@ -41,7 +42,7 @@ public class Bill {
             double payableAmount
     ) {
         this.billId = billId;
-        this.consultation = consultation;
+        this.consultationId = consultationId;
         this.patient = patient;
         this.insurance = insurance;
 
@@ -84,8 +85,8 @@ public class Bill {
         return billId;
     }
 
-    public Consultation getConsultation() {
-        return consultation;
+    public String getConsultationId() {
+        return consultationId;
     }
 
     public Patient getPatient() {
@@ -110,8 +111,8 @@ public class Bill {
 
     // Setters
 
-    public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
     public void setPatient(Patient patient) {
@@ -132,5 +133,16 @@ public class Bill {
 
     public void setPayableAmount(double payableAmount) {
         this.payableAmount = payableAmount;
+    }
+    
+    public LinkedHashMap<String, String> getHospitalAssetMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("billId", billId);
+        map.put("consultationId", consultationId);
+        map.put("patientId", patient.getId());
+        map.put("consultationFee", Double.toString(consultationFee));
+        map.put("totalAmount", Double.toString(totalAmount));
+        map.put("payableAmount", Double.toString(payableAmount));
+        return map;
     }
 }

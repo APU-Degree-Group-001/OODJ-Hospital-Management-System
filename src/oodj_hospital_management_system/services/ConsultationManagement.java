@@ -46,10 +46,14 @@ public class ConsultationManagement {
 
     public ConsultationManagement(User user) {
         this.activeUser = user;
+        HospitalAssetManagement.loadHospitalAssets();
+        loadAllFeedback();
+        loadConsultationSlots();
         loadConsultations();
     }
 
     public static void loadConsultations() {
+        System.out.println(">>> LOAD CONSULTATIONS");
         consultations.clear();
         List<LinkedHashMap<String, String>> rawData = consultationHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -73,6 +77,7 @@ public class ConsultationManagement {
     }
 
     public static void loadConsultationSlots() {
+        System.out.println(">>> LOAD CONSULTATION SLOTS");
         consultationSlots.clear();
         List<LinkedHashMap<String, String>> rawData = consultationSlotHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -93,7 +98,7 @@ public class ConsultationManagement {
         for (LinkedHashMap<String, String> row : rawData) {
             Feedback feedback = new Feedback(
                     row.get("feedbackId"),
-                    findConsultationById(row.get("consultationId")),
+                    row.get("consultationId"),
                     UserManagement.getPatientById(row.get("patientId")),
                     Integer.parseInt(row.get("rating")),
                     row.get("comment"),
@@ -104,11 +109,16 @@ public class ConsultationManagement {
     }
 
     public static List<Consultation> getAllConsultations() {
+        HospitalAssetManagement.loadHospitalAssets();
+        loadAllFeedback();
+        loadConsultationSlots();
         loadConsultations();
         return consultations;
     }
 
     public static List<ConsultationSlot> getAllConsultationSlots() {
+        HospitalAssetManagement.loadHospitalAssets();
+        loadAllFeedback();
         loadConsultationSlots();
         return consultationSlots;
     }
@@ -119,11 +129,14 @@ public class ConsultationManagement {
     }
 
     public static Consultation getConsultationById(String consultationId) {
+        HospitalAssetManagement.loadHospitalAssets();
+        loadAllFeedback();
+        loadConsultationSlots();
         loadConsultations();
         return findConsultationById(consultationId);
     }
 
-    private static Consultation findConsultationById(String consultationId) {
+    public static Consultation findConsultationById(String consultationId) {
         try {
             if (consultationId == null || consultationId.isEmpty()) {
                 throw new Exception("Consultation ID cannot be null or empty");
@@ -142,11 +155,14 @@ public class ConsultationManagement {
     }
 
     public static ConsultationSlot getConsultationSlotById(String consultationSlotId) {
+        HospitalAssetManagement.loadHospitalAssets();
+        loadAllFeedback();
         loadConsultationSlots();
+        loadConsultations();
         return findConsultationSlotById(consultationSlotId);
     }
 
-    private static ConsultationSlot findConsultationSlotById(String consultationSlotId) {
+    public static ConsultationSlot findConsultationSlotById(String consultationSlotId) {
         try {
             if (consultationSlotId == null || consultationSlotId.isEmpty()) {
                 throw new Exception("Consultation Slot ID cannot be null or empty");
@@ -169,7 +185,7 @@ public class ConsultationManagement {
         return findFeedbackById(feedbackId);
     }
 
-    private static Feedback findFeedbackById(String feedbackId) {
+    public static Feedback findFeedbackById(String feedbackId) {
         if (feedbackId == null || feedbackId.isEmpty()) {
             return null;
         }

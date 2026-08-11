@@ -15,6 +15,8 @@ import oodj_hospital_management_system.models.ConsultationSlot;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
+import oodj_hospital_management_system.models.HospitalAsset;
+import oodj_hospital_management_system.models.HospitalAssetAllocation;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
@@ -25,6 +27,7 @@ import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.exceptions.ConsultationException;
 import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
 import oodj_hospital_management_system.utils.exceptions.UserException;
+import oodj_hospital_management_system.utils.exceptions.HospitalAssetException;
 
 /**
  *
@@ -262,6 +265,12 @@ public class ErrorHandler {
 
             // Get number of consultation rooms
             int consultationRoomCount = HospitalAssetManagement.getConsultationRoomCount();
+            
+            // whyyyyyyyyy
+            System.out.println(
+                "Consultation Rooms: "
+                + HospitalAssetManagement.getConsultationRoomCount()
+            );
 
             // Check consultation room capacity
             if (overlappingShifts >= consultationRoomCount) {
@@ -426,6 +435,114 @@ public class ErrorHandler {
             if (!DateTime.isBefore(start, end)) {
                 throw new ConsultationException("End date/time must be after start date/time");
             }
+        }
+    }
+    
+    public static void hospitalAssetErrorHandler(List<String> details, Object... var) throws HospitalAssetException {
+        List<HospitalAsset> allHospitalAssets = HospitalAssetManagement.getAllHospitalAssets();
+        List<HospitalAssetAllocation> allHospitalAssetAllocations = HospitalAssetManagement.getAllHospitalAssetAllocations();
+
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+
+        int i = 0;
+
+        for (Object object : var) {
+
+            if (object instanceof String) {
+                String data = (String) object;
+
+                if (details.get(i).equalsIgnoreCase("assetId")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Hospital Asset ID cannot be null or empty");
+                    }
+
+                    if (allHospitalAssets.stream().anyMatch(asset -> asset.getAssetId().equals(data))) {
+                        throw new HospitalAssetException(
+                                String.format("Hospital Asset ID '%s' already exists", data)
+                        );
+                    }
+
+                } else if (details.get(i).equalsIgnoreCase("assetType")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Hospital Asset type cannot be null or empty");
+                    }
+
+                } else if (details.get(i).equalsIgnoreCase("assetName")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Hospital Asset name cannot be null or empty");
+                    }
+
+                } else if (details.get(i).equalsIgnoreCase("imagePath")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Image path cannot be null or empty");
+                    }
+
+                } else if (details.get(i).equalsIgnoreCase("location")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Hospital Asset location cannot be null or empty");
+                    }
+
+                } else if (details.get(i).equalsIgnoreCase("description")) {
+
+                    if (data == null || data.equals("")) {
+                        throw new HospitalAssetException("Hospital Asset description cannot be null or empty");
+                    }
+                }
+            }
+
+            if (object instanceof HospitalAsset) {
+                HospitalAsset asset = (HospitalAsset) object;
+
+                if (details.get(i).equalsIgnoreCase("hospital asset")) {
+
+                    if (!allHospitalAssets.stream().anyMatch(existingAsset -> existingAsset.equals(asset))) {
+                        throw new HospitalAssetException(
+                                String.format("Hospital Asset '%s' not found", asset.getAssetId())
+                        );
+                    }
+                }
+                if (details.get(i).equalsIgnoreCase("delete hospital asset")) {
+                    if (!allHospitalAssets.stream().anyMatch(existingAsset -> existingAsset.equals(asset))) {
+                        throw new HospitalAssetException(
+                                String.format("Hospital Asset '%s' not found", asset.getAssetId())
+                        );
+                    }
+                    boolean isAllocated = allHospitalAssetAllocations.stream()
+                            .anyMatch(allocation -> allocation.getAssetId().equals(asset)
+                                    && allocation.getReleasedDateTime().isEmpty());
+                    if (isAllocated) {
+                        throw new HospitalAssetException(
+                                String.format(
+                                        "Hospital Asset '%s' cannot be deleted because it is currently allocated",
+                                        asset.getAssetId()
+                                )
+                        );
+                    }
+                }
+            }
+            if (details.get(i).equalsIgnoreCase("totalBeds")) {
+                if (!(object instanceof Integer)) {
+                    throw new HospitalAssetException("Total beds must be a valid number");
+                }
+                int totalBeds = (Integer) object;
+                if (totalBeds <= 0) {
+                    throw new HospitalAssetException("Total beds must be greater than 0");
+                }
+            }
+            i++;
         }
     }
 }

@@ -8,16 +8,23 @@
  * @author sheaw
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
+import oodj_hospital_management_system.config.SystemConfiguration;
+import oodj_hospital_management_system.models.ConsultationSlot;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
+import oodj_hospital_management_system.models.HospitalAsset;
 import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.ConsultationManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
+import oodj_hospital_management_system.services.HospitalAssetManagement;
 import oodj_hospital_management_system.services.UserManagement;
+import oodj_hospital_management_system.utils.FileHandler;
 
 public class TestDoctorManagement {
     private static DoctorManagement doctorMng;
@@ -65,10 +72,65 @@ public class TestDoctorManagement {
         // Test shift creation
         // Uncomment when needed because this modifies doctorShifts.txt
          testCreateShift();
+//           testHospitalAssetCount();
+//        testRawHospitalAssetFile();
+//        testFindConsultationSlot();
 
         // Test shift cancellation
         // Uncomment when needed because this modifies doctorShifts.txt
 //         testCancelShift();
+    }
+    
+    public void testLoadConsultationSlots() {
+        
+    }
+    
+    static void testRawHospitalAssetFile() {
+
+        FileHandler handler =
+        new FileHandler(SystemConfiguration.hospitalAssetFilePath);
+
+        System.out.println("File Path: " + handler.getFilePath());
+
+        File file = new File(handler.getFilePath());
+
+        System.out.println("Absolute Path: " + file.getAbsolutePath());
+        System.out.println("Exists: " + file.exists());
+        System.out.println("File Size: " + file.length());
+
+        ArrayList<LinkedHashMap<String, String>> assets =
+                handler.readFile();
+
+        System.out.println("Rows Read: " + assets.size());
+
+        for (LinkedHashMap<String, String> asset : assets) {
+            System.out.println(asset);
+        }
+    }
+    
+    static void testHospitalAssetCount() {
+
+        System.out.println("\n===== TEST HOSPITAL ASSETS =====");
+
+        List<HospitalAsset> assets =
+                HospitalAssetManagement.getAllHospitalAssets();
+
+        System.out.println("Total assets: " + assets.size());
+
+        for (HospitalAsset asset : assets) {
+            System.out.println(
+                    asset.getAssetId()
+                    + " | "
+                    + asset.getAssetType()
+                    + " | "
+                    + asset.getAssetName()
+            );
+        }
+
+        System.out.println(
+                "Consultation Rooms: "
+                + HospitalAssetManagement.getConsultationRoomCount()
+        );
     }
 
     // =========================================================
@@ -556,59 +618,52 @@ public class TestDoctorManagement {
     // =========================================================
 
     static void testCreateShift() {
+        System.out.println("\n===== TEST CREATE DOCTOR SHIFT =====");
 
-        System.out.println(
-                "\n===== TEST CREATE DOCTOR SHIFT ====="
-        );
-
-        MedicalManager manager =
-                UserManagement.getMedicalManagerById("#MNG74295");
-
-        Doctor doctor =
-                UserManagement.getDoctorById("#DOCd4e8f");
+        MedicalManager manager = UserManagement.getMedicalManagerById("#MNG74295");
+        Doctor doctor = UserManagement.getDoctorById("#DOCd4e8f");
 
         if (manager == null) {
-            System.out.println(
-                    "Test failed: Medical Manager not found."
-            );
+            System.out.println("Test failed: Medical Manager not found.");
             return;
         }
 
         if (doctor == null) {
-            System.out.println(
-                    "Test failed: Doctor not found."
-            );
+            System.out.println("Test failed: Doctor not found.");
             return;
         }
 
-        DoctorManagement doctorMng =
-                new DoctorManagement(manager);
+        DoctorManagement doctorMng = new DoctorManagement(manager);
 
-        /*
-         * Use a future date so the newly created shift
-         * will initially have SCHEDULED status.
-         */
         String startDateTime = "2026-08-16 09:00:00";
         String endDateTime = "2026-08-16 17:00:00";
 
-        LinkedHashMap<String, String> result =
-                doctorMng.createShift(
-                        doctor,
-                        startDateTime,
-                        endDateTime
-                );
+        LinkedHashMap<String, String> result = doctorMng.createShift(doctor, startDateTime, endDateTime);
 
-        System.out.println(
-                "Success : " + result.get("success")
-        );
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+        System.out.println("New Shift ID : " + result.get("newShiftId"));
 
-        System.out.println(
-                "Message : " + result.get("msg")
-        );
+        if (!"true".equals(result.get("success"))) {
+            return;
+        }
 
-        System.out.println(
-                "New Shift ID : " + result.get("newShiftId")
-        );
+        String newShiftId = result.get("newShiftId");
+
+        List<ConsultationSlot> slots = ConsultationManagement.getAllConsultationSlots();
+
+        long shiftSlotCount = slots.stream()
+                .filter(slot -> slot.getDoctorShift() != null && slot.getDoctorShift().getShiftId().equals(newShiftId))
+                .count();
+
+        System.out.println("Consultation Slots Created : " + shiftSlotCount);
+        System.out.println("Expected Consultation Slots : 16");
+
+        if (shiftSlotCount == 16) {
+            System.out.println("Slot creation test PASSED!");
+        } else {
+            System.out.println("Slot creation test FAILED!");
+        }
     }
 
     // =========================================================

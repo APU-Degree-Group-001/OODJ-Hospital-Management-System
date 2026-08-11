@@ -57,19 +57,6 @@ public class UserManagement {
         patients.clear();
         List<LinkedHashMap<String, String>> rawData = handler.readFile();
         
-        System.out.println("===== USER LOAD =====");
-        System.out.println("USER RAW DATA SIZE = " + rawData.size());
-
-        for (LinkedHashMap<String, String> row : rawData) {
-            System.out.println(
-                row.get("userId") + " | " +
-                row.get("userName") + " | " +
-                row.get("userType")
-            );
-        }
-
-        System.out.println("====================");
-        
         // STEP 1: Create all basic User objects
         for (LinkedHashMap<String, String> row : rawData) {
             String type = row.get("userType");

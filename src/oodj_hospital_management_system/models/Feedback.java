@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Objects;
  */
 public class Feedback {
     private String feedbackId;
-    private Consultation consultation;
+    private String consultationId;
     private Patient patient;
 
     private int rating;
@@ -21,7 +22,7 @@ public class Feedback {
 
     public Feedback() {
         this.feedbackId = "";
-        this.consultation = null;
+        this.consultationId = "";
         this.patient = null;
 
         this.rating = 0;
@@ -31,14 +32,14 @@ public class Feedback {
 
     public Feedback(
             String feedbackId,
-            Consultation consultation,
+            String consultationId,
             Patient patient,
             int rating,
             String comment,
             String submittedDateTime
     ) {
         this.feedbackId = feedbackId;
-        this.consultation = consultation;
+        this.consultationId = consultationId;
         this.patient = patient;
 
         this.rating = rating;
@@ -80,8 +81,8 @@ public class Feedback {
         return feedbackId;
     }
 
-    public Consultation getConsultation() {
-        return consultation;
+    public String getConsultationId() {
+        return consultationId;
     }
 
     public Patient getPatient() {
@@ -102,8 +103,8 @@ public class Feedback {
 
     // Setters
 
-    public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
 
     public void setPatient(Patient patient) {
@@ -122,5 +123,16 @@ public class Feedback {
 
     public void setSubmittedDateTime(String submittedDateTime) {
         this.submittedDateTime = submittedDateTime;
+    }
+    
+    public LinkedHashMap<String, String> getFeedbackMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("feedbackId", feedbackId);
+        map.put("consultationId", consultationId);
+        map.put("patientId", patient.getId());
+        map.put("rating", Integer.toString(rating));
+        map.put("comment", comment);
+        map.put("submittedDateTime", submittedDateTime);
+        return map;
     }
 }

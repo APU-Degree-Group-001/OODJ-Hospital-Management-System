@@ -14,6 +14,7 @@ import oodj_hospital_management_system.models.interfaces.ConsultationWorkflow;
  *
  * @author sheaw
  */
+
 public class Consultation implements ConsultationWorkflow {
     private String consultationId;
     private ConsultationSlot consultationSlot;
@@ -214,9 +215,6 @@ public class Consultation implements ConsultationWorkflow {
         consultationDetails.put("consultationSlotId", this.consultationSlot == null ? "" : this.consultationSlot.getConsultationSlotId());
         consultationDetails.put("patientId", this.patient == null ? "" : this.patient.getId());
         consultationDetails.put("description", this.description);
-        consultationDetails.put("medicalAssessmentId", this.medicalAssessment == null ? "" : this.medicalAssessment.getAssessmentId());
-        consultationDetails.put("labResultIds", labResultIdsAsString());
-        consultationDetails.put("prescriptionIds", prescriptionIdsAsString());
         consultationDetails.put("hospitalAssetAllocationId", this.hospitalAssetAllocation == null ? "" : this.hospitalAssetAllocation.getAllocationId());
         consultationDetails.put("feedbackId", this.feedback == null ? "" : this.feedback.getFeedbackId());
         consultationDetails.put("billId", this.bill == null ? "" : this.bill.getBillId());
