@@ -16,31 +16,36 @@ public class HospitalAssetAllocation {
     private String allocationId;
     private String assetId;
     private String consultationId;
+    private String scheduledStartDateTime;
+    private String scheduledEndDateTime;
     private String allocationDateTime;
     private String releasedDateTime;
-
     public HospitalAssetAllocation() {
         this.allocationId = "";
         this.assetId = "";
         this.consultationId = "";
+        this.scheduledStartDateTime = "";
+        this.scheduledEndDateTime = "";
         this.allocationDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
         this.releasedDateTime = "";
     }
-
     public HospitalAssetAllocation(
             String allocationId,
             String assetId,
             String consultationId,
+            String scheduledStartDateTime,
+            String scheduledEndDateTime,
             String allocationDateTime,
             String releasedDateTime
     ) {
         this.allocationId = allocationId;
         this.assetId = assetId;
         this.consultationId = consultationId;
+        this.scheduledStartDateTime = scheduledStartDateTime;
+        this.scheduledEndDateTime = scheduledEndDateTime;
         this.allocationDateTime = allocationDateTime;
         this.releasedDateTime = releasedDateTime;
     }
-
     @Override
     public String toString() {
         return String.format(
@@ -48,7 +53,6 @@ public class HospitalAssetAllocation {
                 this.allocationId
         );
     }
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof HospitalAssetAllocation)) {
@@ -64,58 +68,58 @@ public class HospitalAssetAllocation {
                 allocationObj.allocationId
         );
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(this.allocationId);
     }
-
     // Accessor Methods
-
     public String getAllocationId() {
         return this.allocationId;
     }
-
     public String getAssetId() {
         return this.assetId;
     }
-
     public String getConsultationId() {
         return this.consultationId;
     }
-
+    public String getScheduledStartDateTime() {
+        return this.scheduledStartDateTime;
+    }
+    public String getScheduledEndDateTime() {
+        return this.scheduledEndDateTime;
+    }
     public String getAllocationDateTime() {
         return this.allocationDateTime;
     }
-
     public String getReleasedDateTime() {
         return this.releasedDateTime;
     }
-
     // Mutator Methods
-
     public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-
     public void setConsultationId(String consultationId) {
         this.consultationId = consultationId;
     }
-
+    public void setScheduledStartDateTime(String scheduledStartDateTime) {
+        this.scheduledStartDateTime = scheduledStartDateTime;
+    }
+    public void setScheduledEndDateTime(String scheduledEndDateTime) {
+        this.scheduledEndDateTime = scheduledEndDateTime;
+    }
     public void setAllocationDateTime(String allocationDateTime) {
         this.allocationDateTime = allocationDateTime;
     }
-
     public void setReleasedDateTime(String releasedDateTime) {
         this.releasedDateTime = releasedDateTime;
     }
-
-
     public LinkedHashMap<String, String> getHospitalAssetAllocationMap() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("allocationId", allocationId);
         map.put("consultationId", consultationId != null ? consultationId : "");
         map.put("assetId", assetId != null ? assetId : "");
+        map.put("scheduledStartDateTime", scheduledStartDateTime != null ? scheduledStartDateTime : "");
+        map.put("scheduledEndDateTime", scheduledEndDateTime != null ? scheduledEndDateTime : "");
         map.put("allocatedDateTime", allocationDateTime);
         map.put("releasedDateTime", releasedDateTime != null ? releasedDateTime : "");
         return map;

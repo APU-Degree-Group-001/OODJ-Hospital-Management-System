@@ -23,7 +23,6 @@ import oodj_hospital_management_system.utils.Logger;
  *
  * @author sheaw
  */
-
 public class HospitalAssetManagement {
 
     private static final FileHandler assetHandler = new FileHandler(SystemConfiguration.hospitalAssetFilePath);
@@ -37,6 +36,7 @@ public class HospitalAssetManagement {
     public HospitalAssetManagement(User usr) {
         this.activeUser = usr;
         loadHospitalAssets();
+        loadHospitalAssetAllocations();
     }
 
     // =========================================================
@@ -82,11 +82,13 @@ public class HospitalAssetManagement {
         List<LinkedHashMap<String, String>> rawData = allocationHandler.readFile();
 
         for (LinkedHashMap<String, String> row : rawData) {
-            // allocationId, consultationId, assetId, allocatedDateTime, releasedDateTime
+            // allocationId, consultationId, assetId, scheduledStartDateTime, scheduledEndDateTime, allocatedDateTime, releasedDateTime
             HospitalAssetAllocation allocation = new HospitalAssetAllocation(
                     row.get("allocationId"),
                     row.get("assetId"),
                     row.get("consultationId"),
+                    row.get("scheduledStartDateTime"),
+                    row.get("scheduledEndDateTime"),
                     row.get("allocatedDateTime"),
                     row.get("releasedDateTime")
             );
@@ -478,9 +480,38 @@ public class HospitalAssetManagement {
 
         return msgMap;
     }
-    
-    public LinkedHashMap<String, String> createHospitalAssetAllocation(String assetId, String consultationId) {
+
+    // =========================================================
+    // CREATE HOSPITAL ASSET ALLOCATION
+    // =========================================================
+
+    /**
+     * Creates a new allocation.
+     * scheduledStartDateTime / scheduledEndDateTime are optional (pass "" or null if not planning ahead).
+     * allocatedDateTime (actual start) defaults to "now" if not supplied.
+     */
+    public LinkedHashMap<String, String> createHospitalAssetAllocation(
+            String assetId,
+            String consultationId,
+            String scheduledStartDateTime,
+            String scheduledEndDateTime,
+            String allocatedDateTime
+    ) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        loadHospitalAssetAllocations(); // keep in-memory list synced with disk before mutating
+
+        if (assetId == null || assetId.isBlank() || getHospitalAssetById(assetId) == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation is not created\nInvalid asset ID: '%s' is not found", assetId));
+            return msgMap;
+        }
+
+        if (consultationId == null || consultationId.isBlank()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Hospital asset allocation is not created\nConsultation ID is required");
+            return msgMap;
+        }
 
         String newAllocationId = generateHospitalAssetAllocationId();
 
@@ -488,7 +519,11 @@ public class HospitalAssetManagement {
                 newAllocationId,
                 assetId,
                 consultationId,
-                DateTime.formattedLocalDateTime(DateTime.currentDateTime()),
+                scheduledStartDateTime != null ? scheduledStartDateTime : "",
+                scheduledEndDateTime != null ? scheduledEndDateTime : "",
+                (allocatedDateTime == null || allocatedDateTime.isBlank())
+                        ? DateTime.formattedLocalDateTime(DateTime.currentDateTime())
+                        : allocatedDateTime,
                 ""
         );
 
@@ -508,7 +543,78 @@ public class HospitalAssetManagement {
 
         return msgMap;
     }
-    
+
+    // =========================================================
+    // MODIFY SCHEDULED START / END
+    // =========================================================
+
+    public LinkedHashMap<String, String> setHospitalAssetAllocationSchedule(String allocationId, String scheduledStartDateTime, String scheduledEndDateTime) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAssetAllocation allocation = getHospitalAssetAllocationById(allocationId);
+
+        if (allocation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' is not found", allocationId));
+            return msgMap;
+        }
+
+        allocation.setScheduledStartDateTime(scheduledStartDateTime != null ? scheduledStartDateTime : "");
+        allocation.setScheduledEndDateTime(scheduledEndDateTime != null ? scheduledEndDateTime : "");
+
+        writeHospitalAssetAllocations();
+        loadHospitalAssetAllocations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset allocation '%s' schedule is updated!", allocationId));
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // START (ACTUAL) HOSPITAL ASSET ALLOCATION
+    // =========================================================
+
+    /**
+     * Marks the actual start of an allocation (allocatedDateTime), separate from when the record was created.
+     * Useful if an allocation was created ahead of time (scheduled) and the asset is only actually taken now.
+     */
+    public LinkedHashMap<String, String> startHospitalAssetAllocation(String allocationId, String allocatedDateTime) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAssetAllocation allocation = getHospitalAssetAllocationById(allocationId);
+
+        if (allocation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' is not found", allocationId));
+            return msgMap;
+        }
+
+        if (!allocation.getReleasedDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset allocation '%s' is already released", allocationId));
+            return msgMap;
+        }
+
+        allocation.setAllocationDateTime(
+                (allocatedDateTime == null || allocatedDateTime.isBlank())
+                        ? DateTime.formattedLocalDateTime(DateTime.currentDateTime())
+                        : allocatedDateTime
+        );
+
+        writeHospitalAssetAllocations();
+        loadHospitalAssetAllocations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset allocation '%s' actual start is updated!", allocationId));
+
+        return msgMap;
+    }
+
+    // =========================================================
+    // RELEASE (ACTUAL END) HOSPITAL ASSET ALLOCATION
+    // =========================================================
+
     public LinkedHashMap<String, String> releaseHospitalAssetAllocation(String allocationId) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 

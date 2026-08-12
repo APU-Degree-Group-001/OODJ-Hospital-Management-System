@@ -6,3 +6,4 @@ assetId, assetType, assetName, imagePath, location, description, totalBeds
 #XRAY001, XRay Room, X-Ray Room 1, images/assets/xray001.jpg, Block C Level 2, Room equipped for X-ray imaging, 
 #IMG001, Imaging Room, Imaging Room 1, images/assets/imaging001.jpg, Block C Level 2, Room for medical imaging procedures, 
 #AST29ef6, Consultation Room, Room A, images/roomA.png, Level 2#|Block B, Standard consultation room with basic equipment, 
+#ASTe848a, Consultation Room, Room A, images/roomA.png, Level 2#|Block B, Standard consultation room with basic equipment, 

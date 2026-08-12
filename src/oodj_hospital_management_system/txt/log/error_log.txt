@@ -4062,3 +4062,4 @@
 [2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
 [2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
 [2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 20:28:37] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOCcd6e9' is not found
