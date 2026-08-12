@@ -130,17 +130,6 @@ public class FileHandler {
 
     public void writeFile(ArrayList<LinkedHashMap<String, String>> maps) {
         try (FileWriter writer = new FileWriter(filePath)) {
-                System.out.println("===== FILE HANDLER WRITE =====");
-                System.out.println("File: " + file.getAbsolutePath());
-                System.out.println("Data size: " + maps.size());
-
-                for (LinkedHashMap<String, String> map : maps) {
-                    System.out.println(
-                        map.get("userId") + " | " +
-                        map.get("userName") + " | " +
-                        map.get("userPwd")
-                    );
-                }
             // prevent writing empty file
             if (maps.isEmpty()) {
                 System.out.println("No data to write to file: " + filePath);

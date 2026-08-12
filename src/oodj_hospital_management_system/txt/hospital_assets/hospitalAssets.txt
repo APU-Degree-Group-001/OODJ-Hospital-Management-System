@@ -1,7 +1,8 @@
 assetId, assetType, assetName, imagePath, location, description, totalBeds
-#ROOM001, Consultation Room, Consultation Room 1, images/assets/room001.jpg, Block A Level 1, General consultation room,
-#ROOM002, Consultation Room, Consultation Room 2, images/assets/room002.jpg, Block A Level 1, General consultation room,
-#WARD001, Ward, General Ward A, images/assets/ward001.jpg, Block B Level 2, General patient ward, 20
-#LAB001, Laboratory, Main Laboratory, images/assets/lab001.jpg, Block C Level 1, Laboratory for medical testing,
-#XRAY001, XRay Room, X-Ray Room 1, images/assets/xray001.jpg, Block C Level 2, Room equipped for X-ray imaging,
-#IMG001, Imaging Room, Imaging Room 1, images/assets/imaging001.jpg, Block C Level 2, Room for medical imaging procedures,
+#ROOM001, Consultation Room, Updated Asset Name, images/assets/room001.jpg, Block A Level 1, Updated description for testing, 
+#ROOM002, Consultation Room, Consultation Room 2, images/assets/room002.jpg, Block A Level 1, General consultation room, 
+#WARD001, Ward, General Ward A, images/assets/ward001.jpg, Block B Level 2, General patient ward, 30
+#LAB001, Laboratory, Main Laboratory, images/assets/lab001.jpg, Block C Level 1, Laboratory for medical testing, 
+#XRAY001, XRay Room, X-Ray Room 1, images/assets/xray001.jpg, Block C Level 2, Room equipped for X-ray imaging, 
+#IMG001, Imaging Room, Imaging Room 1, images/assets/imaging001.jpg, Block C Level 2, Room for medical imaging procedures, 
+#AST29ef6, Consultation Room, Room A, images/roomA.png, Level 2#|Block B, Standard consultation room with basic equipment, 

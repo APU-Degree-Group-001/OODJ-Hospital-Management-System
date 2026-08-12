@@ -1,4 +1,4 @@
 resultId, consultationId, resultType, result, remarks, resultDateTime
-#LAB001, #CON001, Full Blood Count, Normal, No abnormal findings detected, 2026-08-05 09:35:12
+#LAB001, #CON001, Urine Test, Abnormal, Recommend re-test in 2 weeks, 2026-08-17 09:00:00
 #LAB002, #CON001, Blood Glucose Test, 6.2 mmol/L, Blood glucose level is within normal range, 2026-08-05 09:42:18
 #LAB003, #CON002, Cardiac Enzyme Test, Within normal range, No significant cardiac enzyme elevation detected, 2026-08-05 11:25:43

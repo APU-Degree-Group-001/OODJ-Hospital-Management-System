@@ -26,8 +26,10 @@ public class SystemConfiguration {
     public static final String userFilePath = parentPath + "txt/users/users.txt";
     public static final String doctorShiftFilePath = parentPath + "txt/users/doctorShifts.txt";
     public static final String medicalDepartmentFilePath = parentPath + "txt/users/medicalDepartments.txt";
+    public static final String requestFilePath = parentPath + "txt/users/requests.txt";
     
     public static final String billFilePath = parentPath + "txt/consultations/bills.txt";
+    public static final String insuranceFilePath = parentPath + "txt/consultations/insurance.txt";
     public static final String consultationFilePath = parentPath + "txt/consultations/consultations.txt";
     public static final String consultationSlotFilePath = parentPath + "txt/consultations/consultationSlots.txt";
     public static final String feedbackFilePath = parentPath + "txt/consultations/feedback.txt";

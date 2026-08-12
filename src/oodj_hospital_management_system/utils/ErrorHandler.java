@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.AdminStaff;
+import oodj_hospital_management_system.models.Bill;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.Consultation.ConsultationStatus;
 import oodj_hospital_management_system.models.ConsultationSlot;
@@ -17,17 +18,25 @@ import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
 import oodj_hospital_management_system.models.HospitalAsset;
 import oodj_hospital_management_system.models.HospitalAssetAllocation;
+import oodj_hospital_management_system.models.Insurance;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.Patient;
+import oodj_hospital_management_system.models.Request;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.BillingManagement;
 import oodj_hospital_management_system.services.ConsultationManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.HospitalAssetManagement;
+import oodj_hospital_management_system.services.InsuranceManagement;
+import oodj_hospital_management_system.services.RequestManagement;
 import oodj_hospital_management_system.services.UserManagement;
+import oodj_hospital_management_system.utils.exceptions.BillException;
 import oodj_hospital_management_system.utils.exceptions.ConsultationException;
 import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
 import oodj_hospital_management_system.utils.exceptions.UserException;
 import oodj_hospital_management_system.utils.exceptions.HospitalAssetException;
+import oodj_hospital_management_system.utils.exceptions.InsuranceException;
+import oodj_hospital_management_system.utils.exceptions.RequestException;
 
 /**
  *
@@ -543,6 +552,253 @@ public class ErrorHandler {
                 }
             }
             i++;
+        }
+    }
+    
+    public static void billErrorHandler(List<String> details, Object... var) throws BillException, UserException {
+        List<Bill> allBills = BillingManagement.getAllBills();
+        List<Patient> allPatients = UserManagement.getAllPatients().stream().map(user -> (Patient) user).toList();
+
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+                if (details.get(i).equalsIgnoreCase("consultation")) {
+                    if (data == null || data.equals("")) {
+                        throw new BillException("Consultation ID cannot be null or empty");
+                    }
+                    // Prevent double-billing the same consultation
+                    boolean alreadyBilled = allBills.stream()
+                            .anyMatch(bill -> bill.getConsultationId().equals(data)
+                                    && !Bill.BillStatus.VOID.equals(bill.getStatus()));
+                    if (alreadyBilled) {
+                        throw new BillException(String.format("Consultation '%s' already has an active bill", data));
+                    }
+                }
+            }
+
+            if (object instanceof Double) {
+                double fee = (Double) object;
+                if (details.get(i).equalsIgnoreCase("consultationFee")) {
+                    if (fee <= 0) {
+                        throw new BillException("Consultation fee must be greater than 0");
+                    }
+                }
+            }
+
+            if (object instanceof Patient) {
+                Patient patient = (Patient) object;
+                if (details.get(i).equalsIgnoreCase("patient")) {
+                    if (!allPatients.stream().anyMatch(p -> p.equals(patient))) {
+                        throw new UserException(String.format("Patient '%s' not found", patient.getName()));
+                    }
+                }
+            }
+            
+            if (object instanceof Bill) {
+                Bill bill = (Bill) object;
+
+                if (details.get(i).equalsIgnoreCase("update bill")) {
+                    if (!allBills.stream().anyMatch(b -> b.equals(bill))) {
+                        throw new BillException(String.format("Bill '%s' not found", bill.getBillId()));
+                    }
+                }
+                if (details.get(i).equalsIgnoreCase("cancel bill")) {
+                    if (!allBills.stream().anyMatch(b -> b.equals(bill))) {
+                        throw new BillException(String.format("Bill '%s' not found", bill.getBillId()));
+                    }
+                }
+            }
+            if (details.get(i).equalsIgnoreCase("admin staff")) {
+                if (object == null) {
+                    throw new BillException("Active User cannot be null");
+                }
+                if (!(object instanceof User)) {
+                    throw new BillException("Invalid active user");
+                }
+                User user = (User) object;
+                if (!"admin staff".equalsIgnoreCase(user.getType())) {
+                    throw new BillException("Only Admin Staff can manage billing");
+                }
+            }
+            i++;
+        }
+    }
+    
+    public static void insuranceErrorHandler(List<String> details, Object... var) throws InsuranceException, UserException {
+        List<Insurance> allInsurances = InsuranceManagement.getAllInsurances();
+
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+
+        Insurance insuranceBeingUpdated = null; // NEW: track which insurance (if any) is being updated
+
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+
+                if (details.get(i).equalsIgnoreCase("insuranceName")) {
+                    if (data == null || data.equals("")) {
+                        throw new InsuranceException("Insurance name cannot be null or empty");
+                    }
+                    // Check duplicate insurance name (case-insensitive),
+                    // excluding the insurance currently being updated (if any)
+                    final Insurance excluded = insuranceBeingUpdated; // effectively-final for lambda
+                    boolean nameExists = allInsurances.stream()
+                            .anyMatch(insurance -> insurance.getInsuranceName().equalsIgnoreCase(data)
+                                    && (excluded == null || !insurance.getInsuranceId().equals(excluded.getInsuranceId())));
+                    if (nameExists) {
+                        throw new InsuranceException(String.format("Insurance '%s' already exists", data));
+                    }
+                }
+            }
+
+            if (object instanceof Double) {
+                double coveragePercentage = (Double) object;
+                if (details.get(i).equalsIgnoreCase("coveragePercentage")) {
+                    if (coveragePercentage < 0 || coveragePercentage > 1) {
+                        throw new InsuranceException("Coverage percentage must be between 0 and 1 (0% - 100%)");
+                    }
+                }
+            }
+
+            if (object instanceof Insurance) {
+                Insurance insurance = (Insurance) object;
+
+                if (details.get(i).equalsIgnoreCase("insurance")) {
+                    if (!allInsurances.stream().anyMatch(ins -> ins.equals(insurance))) {
+                        throw new InsuranceException(String.format("Insurance '%s' not found", insurance.getInsuranceId()));
+                    }
+                }
+
+                if (details.get(i).equalsIgnoreCase("update insurance")) {
+                    if (!allInsurances.stream().anyMatch(ins -> ins.equals(insurance))) {
+                        throw new InsuranceException(String.format("Insurance '%s' not found", insurance.getInsuranceId()));
+                    }
+                    insuranceBeingUpdated = insurance; // NEW: remember this for the name check below
+                }
+            }
+
+            if (details.get(i).equalsIgnoreCase("admin staff")) {
+                if (object == null) {
+                    throw new InsuranceException("Active User cannot be null");
+                }
+                if (!(object instanceof User)) {
+                    throw new InsuranceException("Invalid active user");
+                }
+                User user = (User) object;
+                if (!"admin staff".equalsIgnoreCase(user.getType())) {
+                    throw new InsuranceException("Only Admin Staff can manage insurance records");
+                }
+            }
+
+            i++;
+        }
+    }
+    
+    public static void requestErrorHandler(List<String> details, Object... var) throws RequestException, UserException {
+        List<Request> allRequests = RequestManagement.getAllRequests();
+
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+
+        User activeUserRef = null;
+        Request requestRef = null;
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+
+                if (details.get(i).equalsIgnoreCase("referenceId")) {
+                    if (data == null || data.equals("")) {
+                        throw new RequestException("Reference ID cannot be null or empty");
+                    }
+                } else if (details.get(i).equalsIgnoreCase("reason")) {
+                    if (data == null || data.equals("")) {
+                        throw new RequestException("Reason cannot be null or empty");
+                    }
+                }
+            }
+
+            if (object instanceof Request.RequestType) {
+                if (details.get(i).equalsIgnoreCase("requestType")) {
+                    if (object == null) {
+                        throw new RequestException("Request type cannot be null");
+                    }
+                }
+            }
+
+            if (object instanceof User) {
+                User user = (User) object;
+
+                if (details.get(i).equalsIgnoreCase("requester")) {
+                    if (user == null) {
+                        throw new UserException("Active User cannot be null");
+                    }
+                    activeUserRef = user;
+                }
+            }
+
+            if (object instanceof Request) {
+                Request request = (Request) object;
+                requestRef = request;
+
+                if (details.get(i).equalsIgnoreCase("update request")) {
+                    if (!allRequests.stream().anyMatch(r -> r.equals(request))) {
+                        throw new RequestException(String.format("Request '%s' not found", request.getRequestId()));
+                    }
+                }
+
+                if (details.get(i).equalsIgnoreCase("withdraw request")) {
+                    if (!allRequests.stream().anyMatch(r -> r.equals(request))) {
+                        throw new RequestException(String.format("Request '%s' not found", request.getRequestId()));
+                    }
+                }
+
+                if (details.get(i).equalsIgnoreCase("resolve request")) {
+                    if (!allRequests.stream().anyMatch(r -> r.equals(request))) {
+                        throw new RequestException(String.format("Request '%s' not found", request.getRequestId()));
+                    }
+                    if (!Request.RequestStatus.PENDING.equals(request.getStatus())) {
+                        throw new RequestException(
+                                String.format("Request '%s' has already been resolved (%s)", request.getRequestId(), request.getStatus())
+                        );
+                    }
+                }
+            }
+            i++;
+        }
+
+        // Ownership check: only the original requester can update/withdraw their own request
+        if (requestRef != null && activeUserRef != null) {
+            if (!requestRef.getRequester().equals(activeUserRef)) {
+                throw new RequestException("You can only modify your own requests");
+            }
         }
     }
 }

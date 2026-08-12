@@ -1,0 +1,5 @@
+insuranceId, insuranceName, accepted, coveragePercentage
+#INS001, Banned By Paureen, true, 0.6
+#INS002, AIA, true, 0.8
+#INS003, Prudential, false, 0.5
+#INSf85e9, Allianz, false, 0.7

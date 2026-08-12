@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.models;
 
+import java.util.LinkedHashMap;
+
 /**
  *
  * @author sheaw
@@ -30,5 +32,12 @@ public class Ward extends HospitalAsset {
     
     public void setTotalBeds(int totalBeds) {
         this.totalBeds = totalBeds;
+    }
+    
+    @Override
+    public LinkedHashMap<String, String> getHospitalAssetMap() {
+        LinkedHashMap<String, String> map = super.getHospitalAssetMap();
+        map.put("totalBeds", Integer.toString(totalBeds));
+        return map;
     }
 }

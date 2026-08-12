@@ -4044,3 +4044,6 @@
 [2026-08-11 23:19:44] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CONinvalid' is not found
 [2026-08-11 23:21:15] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CON24860' is not found
 [2026-08-11 23:22:25] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CON0d4dd' is not found
+[2026-08-12 16:23:18] Error finding patient -> User Handling Error: Invalid Patient ID: Patient ID '#PATd4e8f' is not found
+[2026-08-12 16:24:38] Error Handling error (System Error) -> Invalid arguments passed: number of details set to check and number of data passed is conflicted
+[2026-08-12 16:24:57] Error Handling error (System Error) -> Invalid arguments passed: number of details set to check and number of data passed is conflicted

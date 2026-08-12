@@ -387,23 +387,30 @@ public class HospitalAssetManagement {
     public LinkedHashMap<String, String> modifyHospitalAsset(HospitalAsset asset, String assetType, String assetName, String imagePath, String location, String description) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        if (asset == null || getHospitalAssetById(asset.getAssetId()) == null) {
+        if (asset == null) {
             msgMap.put("success", null);
             msgMap.put("msg", "Hospital asset is not found");
             return msgMap;
         }
 
-        asset.setAssetType(assetType);
-        asset.setAssetName(assetName);
-        asset.setImagePath(imagePath);
-        asset.setLocation(location);
-        asset.setDescription(description);
+        HospitalAsset targetAsset = getHospitalAssetById(asset.getAssetId());
+        if (targetAsset == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Hospital asset is not found");
+            return msgMap;
+        }
+
+        targetAsset.setAssetType(assetType);
+        targetAsset.setAssetName(assetName);
+        targetAsset.setImagePath(imagePath);
+        targetAsset.setLocation(location);
+        targetAsset.setDescription(description);
 
         writeHospitalAssets();
         loadHospitalAssets();
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Hospital asset '%s' is modified!", asset.getAssetId()));
+        msgMap.put("msg", String.format("Hospital asset '%s' is modified!", targetAsset.getAssetId()));
 
         return msgMap;
     }
@@ -415,24 +422,32 @@ public class HospitalAssetManagement {
     public LinkedHashMap<String, String> modifyWard(Ward ward, String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        if (ward == null || getHospitalAssetById(ward.getAssetId()) == null) {
+        if (ward == null) {
             msgMap.put("success", null);
             msgMap.put("msg", "Ward is not found");
             return msgMap;
         }
 
-        ward.setAssetType(assetType);
-        ward.setAssetName(assetName);
-        ward.setImagePath(imagePath);
-        ward.setLocation(location);
-        ward.setDescription(description);
-        ward.setTotalBeds(totalBeds);
+        HospitalAsset found = getHospitalAssetById(ward.getAssetId());
+        if (!(found instanceof Ward)) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Ward is not found");
+            return msgMap;
+        }
+        Ward targetWard = (Ward) found;
+
+        targetWard.setAssetType(assetType);
+        targetWard.setAssetName(assetName);
+        targetWard.setImagePath(imagePath);
+        targetWard.setLocation(location);
+        targetWard.setDescription(description);
+        targetWard.setTotalBeds(totalBeds);
 
         writeHospitalAssets();
         loadHospitalAssets();
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Ward '%s' is modified!", ward.getAssetId()));
+        msgMap.put("msg", String.format("Ward '%s' is modified!", targetWard.getAssetId()));
 
         return msgMap;
     }
@@ -559,8 +574,8 @@ public class HospitalAssetManagement {
     }
 
     public static String generateHospitalAssetAllocationId() {
-        List<String> existingIds = allHospitalAssets.stream()
-                .map(HospitalAsset::getAssetId)
+        List<String> existingIds = allHospitalAssetAllocations.stream()
+                .map(HospitalAssetAllocation::getAllocationId)
                 .toList();
 
         return SystemConfiguration.generateId("#ALLOC", existingIds);

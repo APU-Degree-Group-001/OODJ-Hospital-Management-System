@@ -24,7 +24,7 @@ public class TestMedicalRecordManagement {
 
     // NOTE: Update this to a valid consultation ID that actually exists
     // in your consultations.txt data file before running these tests.
-    private static final String SAMPLE_CONSULTATION_ID = "#CON00001";
+    private static final String SAMPLE_CONSULTATION_ID = "#CON001";
 
     public static void main(String[] args) {
 
@@ -97,7 +97,7 @@ public class TestMedicalRecordManagement {
         // Uncomment when needed because these modify the respective .txt files
 //         testDeleteMedicalAssessment();
 //         testDeleteLabResult();
-//         testDeletePrescription();
+         testDeletePrescription();
     }
 
     // =========================================================
@@ -398,7 +398,7 @@ public class TestMedicalRecordManagement {
 
         System.out.println("\n===== TEST SEARCH MEDICAL ASSESSMENTS =====");
 
-        String keyword = "fracture";
+        String keyword = "no";
 
         List<MedicalAssessment> result =
                 recordMng.searchMedicalAssessments(keyword);
@@ -419,9 +419,9 @@ public class TestMedicalRecordManagement {
                 MedicalRecordManagement.getAllMedicalAssessments();
 
         List<MedicalAssessment> result =
-                recordMng.searchMedicalAssessments("x-ray", assessments);
+                recordMng.searchMedicalAssessments("cardiac", assessments);
 
-        System.out.println("Search keyword: x-ray");
+        System.out.println("Search keyword: cardiac");
         System.out.println("Matched assessments: " + result.size());
 
         testPrintMedicalAssessments(result);

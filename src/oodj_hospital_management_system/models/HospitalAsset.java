@@ -113,6 +113,7 @@ public class HospitalAsset {
         map.put("imagePath", imagePath);
         map.put("location", location);
         map.put("description", description);
+        map.put("totalBeds", "");
         return map;
     }
 }
