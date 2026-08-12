@@ -68,8 +68,8 @@ public class ConsultationManagement {
                     MedicalRecordManagement.getLabResultsByConsultationId(consultationId),
                     MedicalRecordManagement.getPrescriptionsByConsultationId(consultationId),
                     HospitalAssetManagement.getHospitalAssetAllocationById(row.get("hospitalAssetAllocationId")),
-                    findFeedbackById(row.get("feedbackId")),
-                    BillingManagement.getBillById(row.get("billId")),
+                    findFeedbackByConsultationId(row.get("consultationId")),
+                    BillingManagement.findBillByConsultationId(row.get("consultationId")),
                     getConsultationStatus(row.get("status"))
             );
             consultations.add(consultation);
@@ -201,6 +201,25 @@ public class ConsultationManagement {
             Logger.errorLog("Error finding feedback -> " + e.getMessage());
             return null;
         }
+    }
+    
+    public static Feedback findFeedbackByConsultationId(String consultationId) {
+        for (Feedback feedback : allFeedback) {
+            if (feedback.getConsultationId().equals(consultationId)) {
+                return feedback;
+            }
+        }
+        return null;
+    }
+    
+    public static Feedback getFeedbackByConsultationId(String consultationId) {
+        loadAllFeedback();
+        for (Feedback feedback : allFeedback) {
+            if (feedback.getConsultationId().equals(consultationId)) {
+                return feedback;
+            }
+        }
+        return null;
     }
 
     public static ConsultationStatus getConsultationStatus(String status) {

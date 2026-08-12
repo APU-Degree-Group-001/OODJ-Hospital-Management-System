@@ -90,6 +90,25 @@ public class BillingManagement {
             return null;
         }
     }
+    
+    public static Bill findBillByConsultationId(String consultationId) {
+        for (Bill bill : bills) {
+            if (bill.getConsultationId().equals(consultationId)) {
+                return bill;
+            }
+        }
+        return null;
+    }
+    
+    public static Bill getBillByConsultationId(String consultationId) {
+        loadBills();
+        for (Bill bill : bills) {
+            if (bill.getConsultationId().equals(consultationId)) {
+                return bill;
+            }
+        }
+        return null;
+    }
 
     // File Handler (Write and Append)
     private static boolean writeBills() {

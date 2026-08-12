@@ -216,8 +216,6 @@ public class Consultation implements ConsultationWorkflow {
         consultationDetails.put("patientId", this.patient == null ? "" : this.patient.getId());
         consultationDetails.put("description", this.description);
         consultationDetails.put("hospitalAssetAllocationId", this.hospitalAssetAllocation == null ? "" : this.hospitalAssetAllocation.getAllocationId());
-        consultationDetails.put("feedbackId", this.feedback == null ? "" : this.feedback.getFeedbackId());
-        consultationDetails.put("billId", this.bill == null ? "" : this.bill.getBillId());
         consultationDetails.put("status", this.status.name());
 
         return consultationDetails;

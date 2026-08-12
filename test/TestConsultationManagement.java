@@ -42,7 +42,7 @@ public class TestConsultationManagement {
         consultationMng = new ConsultationManagement(manager);
 
         // Test loading
-//        testLoadConsultations();
+        testLoadConsultations();
 //        testLoadConsultationSlots();
 //        testLoadAllFeedback();
 

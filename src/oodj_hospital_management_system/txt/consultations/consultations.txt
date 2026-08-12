@@ -1,6 +1,7 @@
-consultationId, consultationSlotId, patientId, description, hospitalAssetAllocationId, feedbackId, billId, status
-#CON001, #SLOT001, #PAT3fad4, Patient complained of persistent headache, #ALLOC001, #FB001, , COMPLETED
-#CON002, #SLOT002, #PAT3fad4, Patient reported chest discomfort and shortness of breath, #ALLOC002, #FB002, , COMPLETED
-#CON003, #SLOT003, #PAT79a39, Patient attended routine health consultation, #ALLOC003, , , COMPLETED
-#CON004, #SLOT004, #PAT79a39, Patient complained of fever and sore throat, #ALLOC004, , , IN_PROGRESS
-#CONd3224, #SLOT001, #PAT3fad4, General check-up for recurring headaches., , , , SCHEDULED
+consultationId, consultationSlotId, patientId, description, hospitalAssetAllocationId, status
+#CON001, #SLOT001, #PAT3fad4, Patient complained of persistent headache, #ALLOC001, COMPLETED
+#CON002, #SLOT002, #PAT3fad4, Patient reported chest discomfort and shortness of breath, #ALLOC002, COMPLETED
+#CON003, #SLOT003, #PAT79a39, Patient attended routine health consultation, #ALLOC003, COMPLETED
+#CON004, #SLOT004, #PAT79a39, Patient complained of fever and sore throat, #ALLOC004, IN_PROGRESS
+#CONd3224, #SLOT001, #PAT3fad4, General check-up for recurring headaches., , SCHEDULED
+#CON167e9, #SLOT001, #PAT3fad4, General check-up for recurring headaches., , SCHEDULED

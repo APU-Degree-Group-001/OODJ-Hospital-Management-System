@@ -4047,3 +4047,18 @@
 [2026-08-12 16:23:18] Error finding patient -> User Handling Error: Invalid Patient ID: Patient ID '#PATd4e8f' is not found
 [2026-08-12 16:24:38] Error Handling error (System Error) -> Invalid arguments passed: number of details set to check and number of data passed is conflicted
 [2026-08-12 16:24:57] Error Handling error (System Error) -> Invalid arguments passed: number of details set to check and number of data passed is conflicted
+[2026-08-12 18:41:03] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:03] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:03] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:03] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:03] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:33] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:33] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:33] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:33] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:41:33] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
+[2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found

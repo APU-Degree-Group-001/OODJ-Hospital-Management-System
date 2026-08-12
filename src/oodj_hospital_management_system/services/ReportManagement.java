@@ -4,40 +4,345 @@
  */
 package oodj_hospital_management_system.services;
 
-import java.time.YearMonth;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import oodj_hospital_management_system.models.Bill;
+import oodj_hospital_management_system.models.Consultation;
+import oodj_hospital_management_system.models.ConsultationSlot;
+import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.DoctorShift;
+import oodj_hospital_management_system.models.HospitalAsset;
+import oodj_hospital_management_system.models.HospitalAssetAllocation;
+import oodj_hospital_management_system.models.Insurance;
+import oodj_hospital_management_system.utils.DateTime;
 
 /**
  *
  * @author sheaw
  */
 public class ReportManagement {
-    public double getRevenueForMonth(YearMonth month) {
-        // calculate from bills
-        return 0;
-        // calculate from bills
+
+    private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM");
+
+    // =========================================================
+    // BILLING / REVENUE REPORT
+    // =========================================================
+
+    public static LinkedHashMap<String, String> getBillingTotals() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+
+        double totalRevenue = 0; // sum of payable amount, excludes VOID bills
+        double totalPaid = 0;
+        double totalUnpaid = 0;
+        int countPaid = 0;
+        int countUnpaid = 0;
+        int countVoid = 0;
+
+        for (Bill bill : bills) {
+            if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
+                countVoid++;
+                continue;
+            }
+            totalRevenue += bill.getPayableAmount();
+            if (Bill.BillStatus.PAID.equals(bill.getStatus())) {
+                totalPaid += bill.getPayableAmount();
+                countPaid++;
+            } else if (Bill.BillStatus.UNPAID.equals(bill.getStatus())) {
+                totalUnpaid += bill.getPayableAmount();
+                countUnpaid++;
+            }
+        }
+
+        totals.put("totalBills", String.valueOf(bills.size()));
+        totals.put("totalRevenue", String.format("%.2f", totalRevenue));
+        totals.put("totalPaid", String.format("%.2f", totalPaid));
+        totals.put("totalUnpaid", String.format("%.2f", totalUnpaid));
+        totals.put("countPaid", String.valueOf(countPaid));
+        totals.put("countUnpaid", String.valueOf(countUnpaid));
+        totals.put("countVoid", String.valueOf(countVoid));
+
+        return totals;
     }
 
-    public int getConsultationCount(YearMonth month) {
-        // calculate from consultations
-        return 0;
-        // calculate from consultations
+    // Revenue grouped by month (yyyy-MM), based on the linked consultation slot's start date/time.
+    // Bills whose consultation/slot cannot be resolved are skipped (should not normally happen).
+    public static LinkedHashMap<String, Double> getRevenueByMonth() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        Map<String, Double> revenueByMonth = new TreeMap<>(); // TreeMap keeps yyyy-MM keys chronologically sorted
+
+        for (Bill bill : bills) {
+            if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
+                continue; // exclude voided bills from revenue
+            }
+            String monthKey = getBillMonthKey(bill);
+            if (monthKey == null) {
+                continue;
+            }
+            revenueByMonth.merge(monthKey, bill.getPayableAmount(), Double::sum);
+        }
+
+        return new LinkedHashMap<>(revenueByMonth);
     }
 
-    public int getCompletedConsultationCount(YearMonth month) {
-        // calculate from consultations
-        return 0;
-        // calculate from consultations
+    // Bill count grouped by status (PAID / UNPAID / VOID), ready for a pie/donut chart
+    public static LinkedHashMap<String, Double> getBillStatusBreakdown() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+        breakdown.put(Bill.BillStatus.PAID.toString(), 0.0);
+        breakdown.put(Bill.BillStatus.UNPAID.toString(), 0.0);
+        breakdown.put(Bill.BillStatus.VOID.toString(), 0.0);
+
+        for (Bill bill : bills) {
+            if (bill.getStatus() == null) {
+                continue;
+            }
+            breakdown.merge(bill.getStatus().toString(), 1.0, Double::sum);
+        }
+
+        return breakdown;
     }
 
-    public int getCancelledConsultationCount(YearMonth month) {
-        // calculate from consultations
-        return 0;
-        // calculate from consultations
+    // Resolves a bill's "month" via Bill -> Consultation -> ConsultationSlot -> startDateTime
+    private static String getBillMonthKey(Bill bill) {
+        Consultation consultation = ConsultationManagement.getConsultationById(bill.getConsultationId());
+        if (consultation == null || consultation.getConsultationSlot() == null) {
+            return null;
+        }
+        String startDateTime = consultation.getConsultationSlot().getStartDateTime();
+        if (startDateTime == null || startDateTime.isEmpty()) {
+            return null;
+        }
+        LocalDateTime dateTime = DateTime.toDateTimeObject(startDateTime);
+        return dateTime.format(MONTH_FORMAT);
     }
 
-    public int getPatientCount(YearMonth month) {
-        // calculate from consultations/users
-        return 0;
-        // calculate from consultations/users
+    // =========================================================
+    // INSURANCE USAGE REPORT
+    // =========================================================
+
+    public static LinkedHashMap<String, String> getInsuranceTotals() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+
+        long billsWithInsurance = bills.stream().filter(b -> b.getInsurance() != null).count();
+        long billsWithoutInsurance = bills.size() - billsWithInsurance;
+
+        totals.put("totalBills", String.valueOf(bills.size()));
+        totals.put("billsWithInsurance", String.valueOf(billsWithInsurance));
+        totals.put("billsWithoutInsurance", String.valueOf(billsWithoutInsurance));
+
+        return totals;
+    }
+
+    // Number of bills grouped by insurance provider, ready for a bar/pie chart
+    public static LinkedHashMap<String, Double> getInsuranceUsageByProvider() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, Double> usage = new LinkedHashMap<>();
+
+        for (Bill bill : bills) {
+            Insurance insurance = bill.getInsurance();
+            String key = (insurance == null) ? "No Insurance" : insurance.getInsuranceName();
+            usage.merge(key, 1.0, Double::sum);
+        }
+
+        return usage;
+    }
+
+    // Total payable amount grouped by insurance provider (excludes VOID bills)
+    public static LinkedHashMap<String, Double> getPayableAmountByInsurance() {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, Double> amountByInsurance = new LinkedHashMap<>();
+
+        for (Bill bill : bills) {
+            if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
+                continue;
+            }
+            Insurance insurance = bill.getInsurance();
+            String key = (insurance == null) ? "No Insurance" : insurance.getInsuranceName();
+            amountByInsurance.merge(key, bill.getPayableAmount(), Double::sum);
+        }
+
+        return amountByInsurance;
+    }
+
+    // =========================================================
+    // CONSULTATION REPORT
+    // =========================================================
+
+    public static LinkedHashMap<String, String> getConsultationTotals() {
+        List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+        totals.put("totalConsultations", String.valueOf(consultations.size()));
+        return totals;
+    }
+
+    // Consultation count grouped by status, ready for a pie chart
+    public static LinkedHashMap<String, Double> getConsultationsByStatus() {
+        List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+
+        for (Consultation.ConsultationStatus status : Consultation.ConsultationStatus.values()) {
+            breakdown.put(status.toString(), 0.0);
+        }
+
+        for (Consultation consultation : consultations) {
+            if (consultation.getConsultationStatus() == null) {
+                continue;
+            }
+            breakdown.merge(consultation.getConsultationStatus().toString(), 1.0, Double::sum);
+        }
+
+        return breakdown;
+    }
+
+    // Consultation count grouped by doctor, via ConsultationSlot -> DoctorShift -> Doctor
+    public static LinkedHashMap<String, Double> getConsultationsByDoctor() {
+        List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+
+        for (Consultation consultation : consultations) {
+            Doctor doctor = getDoctorFromConsultation(consultation);
+            String key = (doctor == null) ? "Unknown Doctor" : doctor.getName();
+            breakdown.merge(key, 1.0, Double::sum);
+        }
+
+        return breakdown;
+    }
+
+    // Consultation count grouped by month, based on the linked consultation slot's start date/time
+    public static LinkedHashMap<String, Double> getConsultationsByMonth() {
+        List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        Map<String, Double> byMonth = new TreeMap<>();
+
+        for (Consultation consultation : consultations) {
+            ConsultationSlot slot = consultation.getConsultationSlot();
+            if (slot == null || slot.getStartDateTime() == null || slot.getStartDateTime().isEmpty()) {
+                continue;
+            }
+            LocalDateTime dateTime = DateTime.toDateTimeObject(slot.getStartDateTime());
+            byMonth.merge(dateTime.format(MONTH_FORMAT), 1.0, Double::sum);
+        }
+
+        return new LinkedHashMap<>(byMonth);
+    }
+
+    // Resolves the doctor tied to a consultation via ConsultationSlot -> DoctorShift -> Doctor
+    private static Doctor getDoctorFromConsultation(Consultation consultation) {
+        if (consultation.getConsultationSlot() == null) {
+            return null;
+        }
+        DoctorShift shift = consultation.getConsultationSlot().getDoctorShift();
+        return (shift == null) ? null : shift.getDoctor();
+    }
+
+    // =========================================================
+    // DOCTOR SHIFT REPORT
+    // =========================================================
+
+    public static LinkedHashMap<String, String> getDoctorShiftTotals() {
+        List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+        totals.put("totalShifts", String.valueOf(shifts.size()));
+        return totals;
+    }
+
+    // Shift count grouped by status, ready for a pie chart
+    public static LinkedHashMap<String, Double> getShiftsByStatus() {
+        List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+
+        for (DoctorShift.DoctorShiftStatus status : DoctorShift.DoctorShiftStatus.values()) {
+            breakdown.put(status.toString(), 0.0);
+        }
+
+        for (DoctorShift shift : shifts) {
+            if (shift.getStatus() == null) {
+                continue;
+            }
+            breakdown.merge(shift.getStatus().toString(), 1.0, Double::sum);
+        }
+
+        return breakdown;
+    }
+
+    // Total scheduled shift hours grouped by doctor (excludes cancelled shifts), ready for a bar chart
+    public static LinkedHashMap<String, Double> getScheduledShiftHoursByDoctor() {
+        List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
+        LinkedHashMap<String, Double> hoursByDoctor = new LinkedHashMap<>();
+
+        for (DoctorShift shift : shifts) {
+            if (DoctorShift.DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+                continue;
+            }
+            LocalDateTime start = DateTime.toDateTimeObject(shift.getStartDateTime());
+            LocalDateTime end = DateTime.toDateTimeObject(shift.getEndDateTime());
+            double hours = DateTime.calculateDurationInHours(start, end);
+
+            String key = (shift.getDoctor() == null) ? "Unknown Doctor" : shift.getDoctor().getName();
+            hoursByDoctor.merge(key, hours, Double::sum);
+        }
+
+        return hoursByDoctor;
+    }
+
+    // =========================================================
+    // ROOM / HOSPITAL ASSET UTILIZATION REPORT
+    // =========================================================
+
+    public static LinkedHashMap<String, String> getRoomUtilizationTotals() {
+        List<HospitalAssetAllocation> allocations = HospitalAssetManagement.getAllHospitalAssetAllocations();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+
+        long currentlyOccupied = allocations.stream()
+                .filter(a -> a.getReleasedDateTime() == null || a.getReleasedDateTime().isEmpty())
+                .count();
+
+        totals.put("totalAllocations", String.valueOf(allocations.size()));
+        totals.put("currentlyOccupied", String.valueOf(currentlyOccupied));
+        totals.put("totalConsultationRooms", String.valueOf(HospitalAssetManagement.getConsultationRoomCount()));
+
+        return totals;
+    }
+
+    // Allocation count grouped by asset (room/ward/etc), ready for a bar chart
+    public static LinkedHashMap<String, Double> getAllocationCountByAsset() {
+        List<HospitalAssetAllocation> allocations = HospitalAssetManagement.getAllHospitalAssetAllocations();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+
+        for (HospitalAssetAllocation allocation : allocations) {
+            HospitalAsset asset = HospitalAssetManagement.getHospitalAssetById(allocation.getAssetId());
+            String key = (asset == null) ? allocation.getAssetId() : asset.getAssetName();
+            breakdown.merge(key, 1.0, Double::sum);
+        }
+
+        return breakdown;
+    }
+
+    // Total occupied minutes grouped by asset. Only counts allocations that have already
+    // been released (an allocation with no releasedDateTime is still ongoing, so its
+    // duration is not yet final and is excluded here).
+    public static LinkedHashMap<String, Double> getOccupiedMinutesByAsset() {
+        List<HospitalAssetAllocation> allocations = HospitalAssetManagement.getAllHospitalAssetAllocations();
+        LinkedHashMap<String, Double> minutesByAsset = new LinkedHashMap<>();
+
+        for (HospitalAssetAllocation allocation : allocations) {
+            if (allocation.getReleasedDateTime() == null || allocation.getReleasedDateTime().isEmpty()) {
+                continue;
+            }
+            LocalDateTime allocatedStart = DateTime.toDateTimeObject(allocation.getAllocationDateTime());
+            LocalDateTime released = DateTime.toDateTimeObject(allocation.getReleasedDateTime());
+            double minutes = DateTime.calculateDurationInMinutes(allocatedStart, released);
+
+            HospitalAsset asset = HospitalAssetManagement.getHospitalAssetById(allocation.getAssetId());
+            String key = (asset == null) ? allocation.getAssetId() : asset.getAssetName();
+            minutesByAsset.merge(key, minutes, Double::sum);
+        }
+
+        return minutesByAsset;
     }
 }
