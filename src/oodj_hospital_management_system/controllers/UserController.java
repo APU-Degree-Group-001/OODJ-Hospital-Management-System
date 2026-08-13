@@ -6,11 +6,13 @@ package oodj_hospital_management_system.controllers;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import oodj_hospital_management_system.models.AdminStaff;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.Logger;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.Patient;
 
 /**
  *
@@ -81,9 +83,63 @@ public class UserController {
         return this.requestController;
     }
     
-    // Search User
+    // Get All Users
+    public List<User> getAllUsers() {
+        return UserManagement.getAllUsers();
+    }
+    
+    public List<User> getAllAdminStaffs() {
+        return UserManagement.getAllAdminStaffs();
+    }
+ 
+    public List<User> getAllMedicalManagers() {
+        return UserManagement.getAllMedicalManagers();
+    }
+ 
+    public List<User> getAllDoctors() {
+        return UserManagement.getAllDoctors();
+    }
+ 
+    public List<User> getAllPatients() {
+        return UserManagement.getAllPatients();
+    }
+    
+    // Lookup by ID
+    public User getUserById(String userId) {
+        return UserManagement.getUserById(userId);
+    }
+ 
+    public AdminStaff getAdminStaffById(String adminId) {
+        return UserManagement.getAdminStaffById(adminId);
+    }
+ 
+    public MedicalManager getMedicalManagerById(String managerId) {
+        return UserManagement.getMedicalManagerById(managerId);
+    }
+ 
+    public Doctor getDoctorById(String doctorId) {
+        return UserManagement.getDoctorById(doctorId);
+    }
+ 
+    public Patient getPatientById(String patientId) {
+        return UserManagement.getPatientById(patientId);
+    }
+    
+    // Search and Sort
     public List<User> searchUsers(String keywords) {
         return userServices.searchUsers(keywords);
+    }
+    
+    public List<User> searchUsers(String keywords, List<User> billList) {
+        return userServices.searchUsers(keywords, billList);
+    }
+    
+    public List<User> sortUsersById(List<User> list) {
+        return UserManagement.sortUsersById(list);
+    }
+
+    public List<User> sortUsersByName(List<User> list) {
+        return UserManagement.sortUsersByName(list);
     }
 
     // Login & Logout
@@ -174,7 +230,7 @@ public class UserController {
         }
         return msg;
     }
-
+ 
     public LinkedHashMap<String, String> modifyPwd(String newPwd, String userId) {
         User user = UserManagement.getUserById(userId);
         LinkedHashMap<String, String> msg = userServices.modifyUserPwd(newPwd, userId);
@@ -183,11 +239,11 @@ public class UserController {
             Logger.log(String.format("User {%s - %s - %s} modified password for User {%s - %s - %s}", activeUser.getType(), activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName()));
         } else {
             System.out.println(msg.get("msg"));
-            Logger.errorLog(String.format("User {%s - %s - %s} failed to modify password for User {%s - %s - %s}\n\tErrorMsg: %s", activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName(), user.getType(), msg.get("msg")));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to modify password for User {%s - %s - %s}\n\tErrorMsg: %s", activeUser.getType(), activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName(), msg.get("msg")));
         }
         return msg;
     }
-
+ 
     public LinkedHashMap<String, String> deleteUser(String userId) {
         LinkedHashMap<String, String> msg = userServices.deleteUser(userId);
         if (msg.get("success") != null) {
