@@ -5,6 +5,7 @@
 package oodj_hospital_management_system.controllers;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import oodj_hospital_management_system.models.Bill;
 import oodj_hospital_management_system.models.Insurance;
 import oodj_hospital_management_system.models.Patient;
@@ -25,6 +26,36 @@ public class BillingController {
         this.billingServices = new BillingManagement(activeUser);
     }
     
+    // Get Bills
+    public List<Bill> getAllBills() {
+        return BillingManagement.getAllBills();
+    }
+    
+    public Bill getBillById(String billId) {
+        return BillingManagement.getBillById(billId);
+    }
+    
+    public Bill getBillByConsultationId(String consultationId) {
+        return BillingManagement.getBillByConsultationId(consultationId);
+    }
+    
+    // Search and Sort
+    public List<Bill> searchBills(String keywords) {
+        return billingServices.searchBills(keywords);
+    }
+ 
+    public List<Bill> searchBills(String keywords, List<Bill> billList) {
+        return billingServices.searchBills(keywords, billList);
+    }
+    
+    public List<Bill> sortBillsById(List<Bill> list) {
+        return billingServices.sortBillsById(list);
+    }
+ 
+    public List<Bill> sortBillsByTotalAmount(List<Bill> list) {
+        return billingServices.sortBillsByTotalAmount(list);
+    }
+    
     // CRUD
     public LinkedHashMap<String, String> createBill(String consultationId, Patient patient, Insurance insurance, double consultationFee) {
         LinkedHashMap<String, String> msg = billingServices.createBill(consultationId, patient, insurance, consultationFee);
@@ -41,7 +72,7 @@ public class BillingController {
         }
         return msg;
     }
-    
+ 
     public LinkedHashMap<String, String> updateBill(Bill bill, Patient patient, Insurance insurance, double consultationFee) {
         LinkedHashMap<String, String> msg = billingServices.updateBill(bill, patient, insurance, consultationFee);
         if (msg.get("success") != null) {
@@ -55,7 +86,7 @@ public class BillingController {
         }
         return msg;
     }
-    
+ 
     public LinkedHashMap<String, String> cancelBill(Bill bill) {
         LinkedHashMap<String, String> msg = billingServices.cancelBill(bill);
         if (msg.get("success") != null) {
@@ -69,7 +100,7 @@ public class BillingController {
         }
         return msg;
     }
-    
+ 
     public LinkedHashMap<String, String> markBillAsPaid(Bill bill) {
         LinkedHashMap<String, String> msg = billingServices.markBillAsPaid(bill);
         if (msg.get("success") != null) {
