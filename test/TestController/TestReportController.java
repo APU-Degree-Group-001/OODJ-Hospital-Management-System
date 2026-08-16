@@ -48,11 +48,6 @@ public class TestReportController {
 //        testGetRoomUtilizationTotals();
 //        testGetAllocationCountByAsset();
 //        testGetOccupiedMinutesByAsset();
-
-        // PDF Export
-        // Uncomment when needed - this writes an actual .pdf file to disk AND
-        // writes to the log file
-        testExportBillingReportToPdf();
     }
  
     // =========================================================
