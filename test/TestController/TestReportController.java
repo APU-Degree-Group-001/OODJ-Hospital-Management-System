@@ -12,13 +12,17 @@ package TestController;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import oodj_hospital_management_system.controllers.ReportController;
+import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.UserManagement;
 
 public class TestReportController {
     private static ReportController reportCtrl;
+    private static User adminStaff;
  
     public static void main(String[] args) {
         reportCtrl = new ReportController();
- 
+        adminStaff = UserManagement.getAdminStaffById("#ADMd4e8f");
+        
         // Billing / Revenue Report
 //        testGetBillingTotals();
 //        testGetRevenueByMonth();
@@ -44,6 +48,11 @@ public class TestReportController {
 //        testGetRoomUtilizationTotals();
 //        testGetAllocationCountByAsset();
 //        testGetOccupiedMinutesByAsset();
+
+        // PDF Export
+        // Uncomment when needed - this writes an actual .pdf file to disk AND
+        // writes to the log file
+        testExportBillingReportToPdf();
     }
  
     // =========================================================
@@ -147,4 +156,5 @@ public class TestReportController {
     static void testGetOccupiedMinutesByAsset() {
         printDoubleMap("TEST GET OCCUPIED MINUTES BY ASSET (via Controller)", reportCtrl.getOccupiedMinutesByAsset());
     }
+    
 }

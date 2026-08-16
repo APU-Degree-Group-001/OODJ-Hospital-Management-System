@@ -4111,3 +4111,5 @@ User Handling Error: Invalid email format
 [2026-08-16 17:02:12] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
 	ErrorMsg: User 'chuaa' is not created
 User Handling Error: Invalid email format
+[2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found

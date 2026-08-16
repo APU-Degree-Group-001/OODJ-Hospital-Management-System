@@ -27,3 +27,5 @@
 [2026-08-16 17:02:12] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-16 17:02:18] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-16 17:02:19] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATa6a72 - chuaa}
+[2026-08-16 17:58:51] User {admin staff - #ADMd4e8f - uehehe} exported Billing Report to 'C:\Downloads\BillingReport.pdf'
+[2026-08-16 18:01:53] User {admin staff - #ADMd4e8f - uehehe} exported Billing Report to 'Downloads\BillingReport.pdf'

@@ -7,6 +7,9 @@ package oodj_hospital_management_system.controllers;
 import java.util.LinkedHashMap;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.ReportManagement;
+import oodj_hospital_management_system.utils.DateTime;
+import oodj_hospital_management_system.utils.Logger;
+import oodj_hospital_management_system.utils.ReportPDFExporter;
 
 /**
  *
@@ -81,5 +84,37 @@ public class ReportController {
  
     public LinkedHashMap<String, Double> getOccupiedMinutesByAsset() {
         return ReportManagement.getOccupiedMinutesByAsset();
+    }
+    
+    // Export PDF
+    public LinkedHashMap<String, String> exportBillingReportToPdf(String fileName, String folderPath, User activeUser) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        String filePath = ReportPDFExporter.filePath(fileName, folderPath);
+        String datetime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+ 
+        boolean success = ReportPDFExporter.exportBillingReport(
+                filePath,
+                activeUser.getName(),
+                datetime,
+                getBillingTotals(),
+                getRevenueByMonth(),
+                getBillStatusBreakdown()
+        );
+ 
+        if (success) {
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("Billing report exported to '%s'!", filePath));
+            msgMap.put("filePath", filePath);
+            System.out.println(msgMap.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} exported Billing Report to '%s'",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), filePath));
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Billing report export to '%s' failed", filePath));
+            System.out.println(msgMap.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to export Billing Report to '%s'",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), filePath));
+        }
+        return msgMap;
     }
 }
