@@ -29,9 +29,10 @@ public class Doctor extends User {
             String name, 
             String pwd, 
             String type, 
-            String joinedDateTime
+            String joinedDateTime,
+            String email
     ) {
-        super(id, name, pwd, type, joinedDateTime);
+        super(id, name, pwd, type, joinedDateTime, email);
         this.assignedShiftHourByMonth = 0;
         this.shiftStatus = ShiftStatus.OFF_SHIFT;
         this.department = new MedicalDepartment();
@@ -44,12 +45,13 @@ public class Doctor extends User {
             String pwd, 
             String type, 
             String joinedDateTime,
+            String email,
             int assignedShiftHourByMonth,
             ShiftStatus shiftStatus,
             MedicalDepartment department,
             MedicalManager medicalManager
     ) {
-        super(id, name, pwd, type, joinedDateTime);
+        super(id, name, pwd, type, joinedDateTime, email);
         this.assignedShiftHourByMonth = assignedShiftHourByMonth;
         this.shiftStatus = shiftStatus;
         this.department = department;

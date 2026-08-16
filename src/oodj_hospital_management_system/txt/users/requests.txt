@@ -7,3 +7,6 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQ006, CONSULTATION_RESCHEDULE, #PAT79a39, patient, #DOCd4e8c, #CON002, Feeling unwell need to push consultation back a few days, APPROVED, 2026-07-30 09:30:00, 2026-07-30 12:00:00, #DOCd4e8c
 #REQ007, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT003, Requested shift swap approved separately no longer needed, WITHDRAWN, 2026-08-03 07:00:00, 2026-08-03 07:45:00, #DOCd4e8f
 #REQ235fb, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT001, Testing request creation - please ignore, REJECTED, 2026-08-12T16:18:10.410043800, 2026-08-12T16:19:56.579761, #MNG74295
+#REQc760d, ASSET_REQUEST, #ADMd4e8f, admin staff, #ADMd4e8f, #CON003, Updated reason via controller test, WITHDRAWN, 2026-08-16T15:09:33.129039600, 2026-08-16T15:11:05.565983400, #ADMd4e8f
+#REQ06d36, ASSET_REQUEST, #ADMd4e8f, admin staff, #ADMd4e8f, #CON003, Testing request creation via controller, APPROVED, 2026-08-16T15:11:45.728653700, 2026-08-16T15:12:21.450972900, #ADMd4e8f
+#REQ95720, ASSET_REQUEST, #ADMd4e8f, admin staff, #ADMd4e8f, #CON003, Testing request creation via controller, REJECTED, 2026-08-16T15:11:48.415409900, 2026-08-16T15:12:21.572234400, #ADMd4e8f

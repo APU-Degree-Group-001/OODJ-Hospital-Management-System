@@ -205,8 +205,8 @@ public class UserController {
     }
     
     // CRUD
-    public LinkedHashMap<String, String> createUser(String name, String pwd, String type) {
-        LinkedHashMap<String, String> msg = userServices.createUser(name, pwd, type);
+    public LinkedHashMap<String, String> createUser(String name, String pwd, String type, String email) {
+        LinkedHashMap<String, String> msg = userServices.createUser(name, pwd, type, email);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
             User newUser = UserManagement.getUserById(msg.get("newUserId"));
@@ -240,6 +240,19 @@ public class UserController {
         } else {
             System.out.println(msg.get("msg"));
             Logger.errorLog(String.format("User {%s - %s - %s} failed to modify password for User {%s - %s - %s}\n\tErrorMsg: %s", activeUser.getType(), activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName(), msg.get("msg")));
+        }
+        return msg;
+    }
+    
+    public LinkedHashMap<String, String> modifyEmail(String newEmail, String userId) {
+        User user = UserManagement.getUserById(userId);
+        LinkedHashMap<String, String> msg = userServices.modifyUserEmail(newEmail, userId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} modified email for User {%s - %s - %s}", activeUser.getType(), activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName()));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to modify email for User {%s - %s - %s}\n\tErrorMsg: %s", activeUser.getType(), activeUser.getId(), activeUser.getName(), user.getType(), user.getId(), user.getName(), msg.get("msg")));
         }
         return msg;
     }

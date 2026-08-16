@@ -4063,3 +4063,51 @@
 [2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
 [2026-08-12 18:43:29] Error finding bill -> Bill Handling Error: Invalid Bill ID: Bill ID '' is not found
 [2026-08-12 20:28:37] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOCcd6e9' is not found
+[2026-08-15 17:45:53] User {admin staff - #ADMd4e8f - uehehe} failed to update Bill {#BILL001}
+	ErrorMsg: Bill '#BILL001' is already paid and cannot be modified!
+[2026-08-15 17:48:00] User {admin staff - #ADMd4e8f - uehehe} failed to void Bill {#BILL4733b}
+	ErrorMsg: Bill '#BILL4733b' has already been paid and cannot be cancelled!
+[2026-08-15 17:48:22] User {admin staff - #ADMd4e8f - uehehe} failed to create a bill for Patient {#PAT79a39 - Chua}
+	ErrorMsg: Bill is not created
+Bill Handling Error: Consultation '#CON003' already has an active bill
+[2026-08-16 14:58:57] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#DOCd4e8f' is not found
+[2026-08-16 14:59:52] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#DOCd4e8f' is not found
+[2026-08-16 15:00:21] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#DOCd4e8f' is not found
+[2026-08-16 15:00:33] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#DOCd4e8f' is not found
+[2026-08-16 15:01:00] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#MNG74295' is not found
+[2026-08-16 15:01:36] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#MNG74295' is not found
+[2026-08-16 15:02:20] Error finding medical manager -> User Handling Error: Invalid Admin Staff ID: Admin Staff ID '#DOCd4e8f' is not found
+[2026-08-16 15:10:15] User {admin staff - #ADMd4e8f - uehehe} failed to update Request {#REQ001}
+	ErrorMsg: Request '#REQ001' has already been resolved and cannot be modified!
+[2026-08-16 15:20:36] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:20:37] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:49:49] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:49:49] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:50:37] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:50:38] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:50:38] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:50:38] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-16 15:56:27] User with ID '#ADMd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-08-16 15:57:33] Error finding medical manager -> User Handling Error: Invalid Medical Manager ID: Medical Manager ID '#MMxxxxx' is not found
+[2026-08-16 15:57:33] Error finding doctor -> User Handling Error: Invalid Doctor ID: Doctor ID '#DOC001' is not found
+[2026-08-16 16:56:36] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'Test Patient' is not created
+User Handling Error: Password must be a mix of uppercase and lowercase letters, digits, and special characters
+[2026-08-16 16:57:07] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'Test Patient' is not created
+User Handling Error: Invalid user type
+[2026-08-16 16:57:19] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'Patient' is not created
+User Handling Error: Invalid user type
+[2026-08-16 16:58:27] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'chuaa' is not created: email 'chua@gmail.com' is already in use
+[2026-08-16 17:01:56] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'chuaa' is not created
+User Handling Error: Invalid email format
+[2026-08-16 17:02:03] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'chuaa' is not created
+User Handling Error: Invalid email format
+[2026-08-16 17:02:12] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'chuaa' is not created
+User Handling Error: Invalid email format

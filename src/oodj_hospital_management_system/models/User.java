@@ -21,6 +21,7 @@ public abstract class User {
     private String pwd;
     private String type;
     private String joinedDateTime;
+    private String email;
 
     public User() {
         this.id = "";
@@ -28,14 +29,16 @@ public abstract class User {
         this.pwd = ""; // later learn how to hash pwd, use java API (avoid external API larr)
         this.type = "";
         this.joinedDateTime = "";
+        this.email = "";
     }
 
-    public User(String id, String name, String pwd, String type, String joinedDateTime) {
+    public User(String id, String name, String pwd, String type, String joinedDateTime, String email) {
         this.id = id;
         this.name = name;
         this.pwd = pwd; // haven't add hashing yet
         this.type = type;
         this.joinedDateTime = joinedDateTime;
+        this.email = email;
     }
 
     // public void deleteUser(User user) {
@@ -94,6 +97,11 @@ public abstract class User {
     public String getJoinedDateTime() {
         return this.joinedDateTime;
     }
+    
+    // accessor method for user email
+    public String getEmail() {
+        return this.email;
+    }
 
     public LinkedHashMap<String, String> getUserMap() {
         LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
@@ -102,6 +110,7 @@ public abstract class User {
         userDetails.put("userPwd", this.pwd);
         userDetails.put("userType", this.type);
         userDetails.put("joinedDateTime", this.joinedDateTime);
+        userDetails.put("email", this.email);
         userDetails.put("departmentId", "");
         userDetails.put("medicalManagerId", "");
         
@@ -121,5 +130,10 @@ public abstract class User {
     // mutator method for user type
     public void setType(String newType) {
         this.type = newType;
+    }
+    
+     // mutator method for user email
+    public void setEmail(String newEmail) {
+        this.email = newEmail;
     }
 }

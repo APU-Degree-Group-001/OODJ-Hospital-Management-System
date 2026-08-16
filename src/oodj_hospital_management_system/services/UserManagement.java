@@ -62,22 +62,22 @@ public class UserManagement {
             String type = row.get("userType");
             switch (type) {
                 case "admin staff":
-                    AdminStaff admin = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    AdminStaff admin = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"), row.get("email"));
                     adminStaffs.add(admin);
                     allUsers.add(admin);
                     break;
                 case "medical manager":
-                    MedicalManager manager = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    MedicalManager manager = new MedicalManager(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"), row.get("email"));
                     medicalManagers.add(manager);
                     allUsers.add(manager);
                     break;
                 case "doctor":
-                    Doctor doctor = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    Doctor doctor = new Doctor(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"), row.get("email"));
                     doctors.add(doctor);
                     allUsers.add(doctor);
                     break;
                 case "patient":
-                    Patient patient = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"));
+                    Patient patient = new Patient(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), row.get("joinedDateTime"), row.get("email"));
                     patients.add(patient);
                     allUsers.add(patient);
                     break;
@@ -166,14 +166,19 @@ public class UserManagement {
     }
     
     // CRUD - mutator methods
-    public LinkedHashMap<String, String> createUser(String name, String pwd, String type) {
+    public LinkedHashMap<String, String> createUser(String name, String pwd, String type, String email) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
-            ErrorHandler.userErrorHandler(Arrays.asList("name", "pwd", "type"), name, pwd, type);
+            ErrorHandler.userErrorHandler(Arrays.asList("name", "pwd", "type", "email"), name, pwd, type, email);
         } catch (UserException e) {
             System.out.println("Error creating user\n" + e.getMessage());
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s' is not created\n", name) + e.getMessage());
+            return msgMap;
+        }
+        if (allUsers.stream().anyMatch(user -> email.equalsIgnoreCase(user.getEmail()))) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' is not created: email '%s' is already in use", name, email));
             return msgMap;
         }
         if (checkPermission(type)) {
@@ -182,16 +187,16 @@ public class UserManagement {
             User newUser;
             switch (type) {
                 case "doctor":
-                    newUser = new Doctor(newUserId, name, pwd, type, currentDateTime);
+                    newUser = new Doctor(newUserId, name, pwd, type, currentDateTime, email);
                     break;
                 case "patient":
-                    newUser = new Patient(newUserId, name, pwd, type, currentDateTime);
+                    newUser = new Patient(newUserId, name, pwd, type, currentDateTime, email);
                     break;
                 case "medical manager":
-                    newUser = new MedicalManager(newUserId, name, pwd, type, currentDateTime);
+                    newUser = new MedicalManager(newUserId, name, pwd, type, currentDateTime, email);
                     break;
                 case "admin staff":
-                    newUser = new AdminStaff(newUserId, name, pwd, type, currentDateTime);
+                    newUser = new AdminStaff(newUserId, name, pwd, type, currentDateTime, email);
                     break;
                 default:
                     msgMap.put("success", null);
@@ -262,6 +267,53 @@ public class UserManagement {
         return msgMap;
     }
 
+    public LinkedHashMap<String, String> modifyUserEmail(String newEmail, String userId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.userErrorHandler(Arrays.asList("email"), newEmail);
+        } catch (UserException e) {
+            System.out.println("Error modifying user email\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s''s email is not modified\n", userId) + e.getMessage());
+            return msgMap;
+        }
+        boolean emailTaken = allUsers.stream().anyMatch(user -> !user.getId().equals(userId) && newEmail.equalsIgnoreCase(user.getEmail()));
+        if (emailTaken) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s''s email is not modified: email '%s' is already in use", userId, newEmail));
+            return msgMap;
+        }
+        User modifyUser = null;
+        for (User user : allUsers) {
+            if (user.getId().equals(userId)) {
+                modifyUser = user;
+                break;
+            }
+        }
+        if (modifyUser == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' not found", userId));
+            return msgMap;
+        }
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
+            for (User user : allUsers) {
+                if (user.getId().equals(modifyUser.getId())) {
+                    user.setEmail(newEmail);
+                    break;
+                }
+            }
+            writeUsers();
+            loadUsers();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' email is modified!", userId));
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("User '%s' email is not modified: you have no access to modify '%s' users",
+                    userId, modifyUser.getType()));
+        }
+        return msgMap;
+    }
+ 
     public LinkedHashMap<String, String> modifyUserPwd(String newPwd, String userId) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {

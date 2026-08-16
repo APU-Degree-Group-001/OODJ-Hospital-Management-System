@@ -85,6 +85,12 @@ public class ErrorHandler {
                     if (!Arrays.asList(SystemConfiguration.userTypes).contains(data)) {
                         throw new UserException("Invalid user type");
                     }
+                } else if (details.get(i).equalsIgnoreCase("email")) {
+                    if (data == null || data.isBlank()) {
+                        throw new UserException("email cannot be null or empty");
+                    } else if (!data.matches("^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+                        throw new UserException("Invalid email format");
+                    }
                 }
             } else if (object instanceof User) {
                 User data = (User) object;

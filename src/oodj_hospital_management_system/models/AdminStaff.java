@@ -18,8 +18,9 @@ public class AdminStaff extends User {
             String name, 
             String pwd, 
             String type, 
-            String joinedDateTime
+            String joinedDateTime,
+            String email
     ) {
-        super(id, name, pwd, type, joinedDateTime);
+        super(id, name, pwd, type, joinedDateTime, email);
     }
 }

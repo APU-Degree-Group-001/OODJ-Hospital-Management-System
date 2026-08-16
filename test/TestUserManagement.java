@@ -16,13 +16,13 @@ public class TestUserManagement {
     public static void main(String[] args) {
 
         // Test Update User
-//        testUpdateUser();
+        testUpdateUser();
 //         testAppendUser();
 //         testDeleteUser();
 //         testSearchUser();
 //         testSearchUserFromGivenList();
 //         testSortUserById();
-         testSortUserByName();
+//         testSortUserByName();
 //         testGenerateTemporaryPassword();
     }
 
@@ -32,6 +32,7 @@ public class TestUserManagement {
                 "User ID",
                 "Name",
                 "Password",
+                "Email",
                 "Role"
         );
 
@@ -41,6 +42,7 @@ public class TestUserManagement {
                     usr.getId(),
                     usr.getName(),
                     usr.getPwd(),
+                    usr.getEmail(),
                     usr.getType()
             );
         }
@@ -49,10 +51,10 @@ public class TestUserManagement {
     static void testUpdateUser() {
 
         // Get the doctor that will be updated
-        User usr = UserManagement.getUserById("#DOCd4e8f");
+        User usr = UserManagement.getUserById("#PATd5447");
 
         if (usr == null) {
-            System.out.println("Test failed: User '#DOCd4e8f' was not found.");
+            System.out.println("Test failed: User '#PATd5447' was not found.");
             return;
         }
 
@@ -65,11 +67,14 @@ public class TestUserManagement {
         // Update password
         test.modifyUserPwd("Daidai12!", usr.getId());
 
+        // Update email
+        test.modifyUserEmail("bugg@gmail.com", usr.getId());
+        
         // Reload the updated user
-        User updatedUser = UserManagement.getUserById("#DOCd4e8f");
+        User updatedUser = UserManagement.getUserById("#PATd5447");
 
         if (updatedUser == null) {
-            System.out.println("Test failed: Updated user '#DOCd4e8f' could not be found.");
+            System.out.println("Test failed: Updated user '#PATd5447' could not be found.");
             return;
         }
 
@@ -77,9 +82,10 @@ public class TestUserManagement {
         System.out.println("ID       : " + updatedUser.getId());
         System.out.println("Name     : " + updatedUser.getName());
         System.out.println("Password : " + updatedUser.getPwd());
+        System.out.println("Email : " + updatedUser.getEmail());
         System.out.println("Role     : " + updatedUser.getType());
     }
-
+    
     static void testAppendUser() {
 
         // Get an admin user to perform the operation
@@ -93,9 +99,10 @@ public class TestUserManagement {
         UserManagement usrMng = new UserManagement(admin);
 
         usrMng.createUser(
-                "Reen",
-                "paU12345!",
-                "medical manager"
+                "Bibilabu",
+                "Bibilabu!12345",
+                "medical manager",
+                "bibilabu@gmail.com"
         );
 
         System.out.println("\nMedical Managers:");

@@ -1,0 +1,29 @@
+[2026-08-15 17:43:13] User {admin staff - #ADMd4e8f - uehehe} created Bill {#BILL4733b} for Patient {#PAT79a39 - Chua}
+[2026-08-15 17:46:39] User {admin staff - #ADMd4e8f - uehehe} updated Bill {#BILL4733b}
+[2026-08-15 17:47:27] User {admin staff - #ADMd4e8f - uehehe} marked Bill {#BILL4733b} as paid
+[2026-08-15 17:49:13] User {admin staff - #ADMd4e8f - uehehe} voided Bill {#BILL4733b}
+[2026-08-16 15:09:33] User {admin staff - #ADMd4e8f - uehehe} submitted Request {#REQc760d} of type {ASSET_REQUEST}
+[2026-08-16 15:10:39] User {admin staff - #ADMd4e8f - uehehe} updated Request {#REQc760d}
+[2026-08-16 15:11:05] User {admin staff - #ADMd4e8f - uehehe} withdrew Request {#REQc760d}
+[2026-08-16 15:11:45] User {admin staff - #ADMd4e8f - uehehe} submitted Request {#REQ06d36} of type {ASSET_REQUEST}
+[2026-08-16 15:11:48] User {admin staff - #ADMd4e8f - uehehe} submitted Request {#REQ95720} of type {ASSET_REQUEST}
+[2026-08-16 15:12:21] User {admin staff - #ADMd4e8f - uehehe} approved Request {#REQ06d36}
+[2026-08-16 15:12:21] User {admin staff - #ADMd4e8f - uehehe} rejected Request {#REQ95720}
+[2026-08-16 15:53:17] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#AST74cbd - Test X-Ray Machine}
+[2026-08-16 15:53:17] User {admin staff - #ADMd4e8f - uehehe} created Ward {#AST8f5e4 - Test General Ward}
+[2026-08-16 15:55:46] User {admin staff - #ADMd4e8f - uehehe} modified Hospital Asset {#ROOM001 - Updated Asset Name}
+[2026-08-16 15:55:46] User {admin staff - #ADMd4e8f - uehehe} modified Ward {#WARD001 - General Ward A}
+[2026-08-16 15:57:13] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 15:57:20] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 15:57:33] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:56:36] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:57:07] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:57:19] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:58:27] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:58:46] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 16:58:46] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATd5447 - chuaa}
+[2026-08-16 17:01:56] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 17:02:03] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 17:02:12] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 17:02:18] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-16 17:02:19] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATa6a72 - chuaa}

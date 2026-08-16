@@ -4,3 +4,4 @@ billId, consultationId, patientId, insuranceId, consultationFee, totalAmount, pa
 #BILL003, #CON003, #PAT79a39, , 60.0, 60.0, 60.0, VOID
 #BILL62ea6, #CON003, #PAT79a39, #INS001, 60.0, 60.0, 12.0, VOID
 #BILLfd826, #CON003, #PAT79a39, #INS001, 60.0, 60.0, 12.0, VOID
+#BILL4733b, #CON003, #PAT79a39, #INS001, 90.0, 90.0, 36.0, VOID
