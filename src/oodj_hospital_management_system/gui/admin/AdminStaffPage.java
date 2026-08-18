@@ -4,19 +4,28 @@
  */
 package oodj_hospital_management_system.gui.admin;
 
+import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPane;
+import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPane;
+
 /**
  *
  * @author sheaw
  */
-public class AdminStaffDashboard extends javax.swing.JFrame {
+public class AdminStaffPage extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminStaffDashboard.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminStaffPage.class.getName());
 
     /**
      * Creates new form AdminStaffDashboard
      */
-    public AdminStaffDashboard() {
+    public AdminStaffPage() {
         initComponents();
+        // Add cards to contentArea
+        contentArea.add(new AdminDashboardPane(), "adminStaffDashboard");
+        contentArea.add(new AdminUserManagementPane(), "adminStaffUserManagement");
+
+        // Show default card
+        ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");
     }
 
     /**
@@ -28,9 +37,20 @@ public class AdminStaffDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        contentArea = new javax.swing.JPanel();
+        sideBar = new oodj_hospital_management_system.gui.utils.side_bar.SideBar("admin staff", contentArea);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1280, 800));
         setSize(new java.awt.Dimension(1280, 800));
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        contentArea.setLayout(new java.awt.CardLayout());
+        getContentPane().add(contentArea, java.awt.BorderLayout.CENTER);
+
+        sideBar.setBackground(new java.awt.Color(255, 255, 255));
+        sideBar.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 217, 217)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        sideBar.setPreferredSize(new java.awt.Dimension(260, 0));
+        getContentPane().add(sideBar, java.awt.BorderLayout.WEST);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -57,9 +77,13 @@ public class AdminStaffDashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdminStaffDashboard().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new AdminStaffPage().setVisible(true));
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel contentArea;
+    private javax.swing.JPanel sideBar;
     // End of variables declaration//GEN-END:variables
 }

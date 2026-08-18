@@ -6,19 +6,19 @@ package oodj_hospital_management_system.gui.utils.side_bar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import oodj_hospital_management_system.gui.utils.RoundedButton;
 import oodj_hospital_management_system.gui.utils.RoundedPanel;
-import oodj_hospital_management_system.gui.utils.TransparentPanel;
 
 /**
  *
  * @author sheaw
  */
 public class SideBar extends JPanel {
-    private TransparentPanel contentArea;   // the CardLayout container it controls
+    private JPanel contentArea;   // the CardLayout container it controls
     private List<NavItem> items;
-    private RoundedPanel selectedItem;
+    private RoundedButton selectedItem;
     private final Color selectedColor = new Color(230, 240, 250);
     private final Color hoverColor = new Color(245, 248, 251);
     private final Color defaultColor = Color.WHITE;
@@ -26,8 +26,49 @@ public class SideBar extends JPanel {
     /**
      * Creates new form SideBar
      */
-    public SideBar() {
+    public SideBar(String role, JPanel contentArea) {
+        this.contentArea = contentArea;
+        this.items = new ArrayList<>();
         initComponents();
+        
+        if (role.equals("admin staff")) {
+            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
+            addNavItem("User Management", "", "adminStaffUserManagement");
+            addNavItem("Doctor Assignment", "", "adminStaffDoctorAssignment");
+            addNavItem("Hospital Assets", "", "adminStaffHospitalAssets");
+            addNavItem("Billing Settings", "", "adminStaffBillingSettings");
+            // ...
+        } else if (role.equals("medical manager")) {
+            addNavItem("", "", "");
+            // ...
+        } else if (role.equals("doctor")) {
+            addNavItem("", "", "");
+            // ...
+        } else if (role.equals("patient")) {
+            addNavItem("", "", "");
+            // ...
+        }
+    }
+    
+    private void addNavItem(String label, String iconPath, String cardName) {
+        NavItem item = new NavItem(label, 12, iconPath);
+        item.setAlignmentX(Component.LEFT_ALIGNMENT);
+        item.addActionListener(e -> selectNavItem(item, cardName));
+        items.add(item);
+        add(item);
+        add(Box.createVerticalStrut(8));
+    }
+    
+    private void selectNavItem(NavItem clicked, String cardName) {
+        for (NavItem item : items) {
+            item.setActive(item == clicked); // if item == clicked (true), then will set active yo~
+        }
+        selectedItem = clicked;
+
+        if (contentArea != null) {
+            CardLayout cl = (CardLayout) contentArea.getLayout();
+            cl.show(contentArea, cardName);
+        }
     }
 
     /**
@@ -39,16 +80,8 @@ public class SideBar extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 20, 40, 20));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
     }// </editor-fold>//GEN-END:initComponents
 
 
