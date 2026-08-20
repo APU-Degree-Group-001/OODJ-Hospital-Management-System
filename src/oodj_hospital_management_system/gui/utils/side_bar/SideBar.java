@@ -16,6 +16,7 @@ import oodj_hospital_management_system.gui.utils.RoundedPanel;
  * @author sheaw
  */
 public class SideBar extends JPanel {
+    private String role;
     private JPanel contentArea;   // the CardLayout container it controls
     private List<NavItem> items;
     private RoundedButton selectedItem;
@@ -27,10 +28,25 @@ public class SideBar extends JPanel {
      * Creates new form SideBar
      */
     public SideBar(String role, JPanel contentArea) {
+        this.role = role;
         this.contentArea = contentArea;
         this.items = new ArrayList<>();
         initComponents();
-        
+        addNavItemByRole(role);
+        navItems.addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentResized(java.awt.event.ComponentEvent e) {
+                System.out.println("navItems RESIZED -> " + navItems.getSize());
+                for (NavItem item : items) {
+                    System.out.println("   " + item.getText() + " -> " + item.getSize());
+                }
+            }
+        });
+    }
+    
+    
+    
+    private void addNavItemByRole(String role) {
         if (role.equals("admin staff")) {
             addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
             addNavItem("User Management", "", "adminStaffUserManagement");
@@ -54,9 +70,9 @@ public class SideBar extends JPanel {
         NavItem item = new NavItem(label, 12, iconPath);
         item.setAlignmentX(Component.LEFT_ALIGNMENT);
         item.addActionListener(e -> selectNavItem(item, cardName));
+        navItems.add(Box.createVerticalStrut(8));
         items.add(item);
-        add(item);
-        add(Box.createVerticalStrut(8));
+        navItems.add(item);
     }
     
     private void selectNavItem(NavItem clicked, String cardName) {
@@ -79,12 +95,45 @@ public class SideBar extends JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 20, 40, 20));
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
+        welcomePane = new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, "Pau");
+        jSeparator3 = new javax.swing.JSeparator();
+        navItems = new javax.swing.JPanel();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 0, 40, 0));
+        setLayout(new java.awt.GridBagLayout());
+
+        welcomePane.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 20, 20, 20));
+        welcomePane.setLayout(new javax.swing.BoxLayout(welcomePane, javax.swing.BoxLayout.LINE_AXIS));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        add(welcomePane, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jSeparator3, gridBagConstraints);
+
+        navItems.setBackground(new java.awt.Color(255, 255, 255));
+        navItems.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 0, 10));
+        navItems.setLayout(new javax.swing.BoxLayout(navItems, javax.swing.BoxLayout.Y_AXIS));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 1.0;
+        add(navItems, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JPanel navItems;
+    private javax.swing.JPanel welcomePane;
     // End of variables declaration//GEN-END:variables
 }

@@ -34,12 +34,19 @@ public class NavItem extends RoundedButton {
         setVerticalTextPosition(SwingConstants.CENTER);  // text vertically centered with icon
 
         setMinimumSize(new Dimension(0, 50));
-        setPreferredSize(new Dimension(200, 50)); // default
+//        setPreferredSize(new Dimension(200, 50)); // default
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // allow horizontal stretch :D
         setFont(new Font("Segoe UI", Font.PLAIN, 16));
         setForeground(new Color(80, 80, 80));
+        setBackground(Color.WHITE);
 
         setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // padding ~
+    }
+    
+    @Override
+    public Dimension getMaximumSize() {
+//        Integer.MAX_VALUE - infinite ~
+        return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
     }
 
     public void setActive(boolean active) {

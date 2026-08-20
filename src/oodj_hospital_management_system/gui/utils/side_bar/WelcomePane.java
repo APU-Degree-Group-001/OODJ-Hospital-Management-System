@@ -4,31 +4,54 @@
  */
 package oodj_hospital_management_system.gui.utils.side_bar;
 
+import java.awt.Dimension;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author sheaw
  */
 public class WelcomePane extends javax.swing.JPanel {
-    String role, userName;
-
     /**
      * Creates new form WelcomePanel
      */
     public WelcomePane(String role, String userName) {
         initComponents();
-        this.role = role;
-        this.userName = userName;
         userNameLabel.setText(userName);
         
-        if (role.equals("admin staff")) {
-            // ...
-        } else if (role.equals("medical manager")) {
-            // ...
-        } else if (role.equals("doctor")) {
-            // ...
-        } else if (role.equals("patient")) {
-            // ...
+        String iconPath = getIconPathForRole(role);
+        setupWelcomeIcon(iconPath);
+    }
+    
+    @Override
+    public Dimension getMaximumSize() {
+//        Integer.MAX_VALUE - infinite ~
+        return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+    }
+    
+    private String getIconPathForRole(String role) {
+        switch (role) {
+            case "admin staff":
+                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
+            case "medical manager":
+                return "";
+            case "doctor":
+                return "";
+            case "patient":
+                return "";
+            default:
+                return "oodj_hospital_management_system/assets/img/icons/testing_welcome.png";
         }
+    }
+
+    private void setupWelcomeIcon(String iconPath) {
+        ImageIcon rawIcon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
+        Image scaledImage = rawIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+        welcomeIcon.setIcon(new ImageIcon(scaledImage));
+        welcomeIcon.setText("");
+        welcomeIcon.setPreferredSize(new Dimension(70, 70));
+        welcomeIcon.setMaximumSize(new Dimension(70, 70));
     }
 
     /**
@@ -45,18 +68,24 @@ public class WelcomePane extends javax.swing.JPanel {
         welcomeLabel = new javax.swing.JLabel();
         userNameLabel = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 20, 1, 1));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         welcomeIcon.setText("jLabel1");
         add(welcomeIcon);
 
+        welcomeMsgPane.setBackground(new java.awt.Color(255, 255, 255));
         welcomeMsgPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 20));
         welcomeMsgPane.setLayout(new javax.swing.BoxLayout(welcomeMsgPane, javax.swing.BoxLayout.Y_AXIS));
 
+        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        welcomeLabel.setForeground(new java.awt.Color(0, 0, 0));
         welcomeLabel.setText("Welcome,");
         welcomeMsgPane.add(welcomeLabel);
 
+        userNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        userNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         userNameLabel.setText("jLabel2");
         welcomeMsgPane.add(userNameLabel);
 
