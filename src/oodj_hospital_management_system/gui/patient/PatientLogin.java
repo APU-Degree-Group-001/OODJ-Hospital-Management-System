@@ -37,7 +37,7 @@ public class PatientLogin extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        pnlBackground = new oodj_hospital_management_system.gui.utils.BackgroundPanel("oodj_hospital_management_system/assets/img/login/patient_login_bg.png");
+        pnlBackground = new oodj_hospital_management_system.gui.utils.BackgroundPanel("oodj_hospital_management_system/assets/img/login/patient_login_bg_02.png");
         pnlSignInCard = new oodj_hospital_management_system.gui.utils.RoundedPanel(15);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
