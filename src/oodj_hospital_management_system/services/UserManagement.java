@@ -15,6 +15,7 @@ import java.util.UUID;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.AdminStaff;
 import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
@@ -355,6 +356,42 @@ public class UserManagement {
                     String.format("User '%s' password is not modified: you have no access to modify '%s' users", userId,
                             modifyUser.getType()));
         }
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> updateDoctorDepartment(String doctorId, String departmentId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        Doctor doctor = getDoctorById(doctorId);
+        if (doctor == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor department is not updated: Doctor '%s' not found", doctorId));
+            return msgMap;
+        }
+
+        MedicalDepartment department = DoctorManagement.getMedicalDepartmentById(departmentId);
+        if (department == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor department is not updated: Medical Department '%s' not found", departmentId));
+            return msgMap;
+        }
+
+        // Update doctor in allUsers
+        for (User user : allUsers) {
+            if (user instanceof Doctor) {
+                Doctor storedDoctor = (Doctor) user;
+                if (storedDoctor.equals(doctor)) {
+                    storedDoctor.setMedicalDepartment(department);
+                    break;
+                }
+            }
+        }
+        // Save updated user information
+        writeUsers();
+        loadUsers();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Doctor '%s' has been assigned to Medical Department '%s'!", doctor.getName(), department.getDepartmentName()));
         return msgMap;
     }
     

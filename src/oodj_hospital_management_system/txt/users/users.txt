@@ -1,5 +1,5 @@
 userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medicalManagerId
-#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, #DEPT001, #MNG74295
+#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, #DEPT004, #MNG74295
 #DOCd4e8c, Waka Waka, wakawaka123, doctor, 2026-07-30 14:22:07, waka@gmail.com, #DEPT002, #MNG58321
 #ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07, uehehe@gmail.com, , 
 #PAT3fad4, Pau, pau123, patient, 2026-08-04 17:04:24, pau@gmail.com, , 

@@ -19,6 +19,7 @@ import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
 import oodj_hospital_management_system.models.HospitalAsset;
 import oodj_hospital_management_system.models.HospitalAssetAllocation;
 import oodj_hospital_management_system.models.Insurance;
+import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.Request;
@@ -36,6 +37,7 @@ import oodj_hospital_management_system.utils.exceptions.DoctorShiftException;
 import oodj_hospital_management_system.utils.exceptions.UserException;
 import oodj_hospital_management_system.utils.exceptions.HospitalAssetException;
 import oodj_hospital_management_system.utils.exceptions.InsuranceException;
+import oodj_hospital_management_system.utils.exceptions.MedicalDepartmentException;
 import oodj_hospital_management_system.utils.exceptions.RequestException;
 
 /**
@@ -805,6 +807,58 @@ public class ErrorHandler {
             if (!requestRef.getRequester().equals(activeUserRef)) {
                 throw new RequestException("You can only modify your own requests");
             }
+        }
+    }
+    
+    public static void medicalDepartmentErrorHandler(List<String> details, Object... var) throws MedicalDepartmentException {
+        List<MedicalDepartment> allMedicalDepartments = DoctorManagement.getAllMedicalDepartments();
+        try {
+            if (details.size() != var.length) {
+                throw new Exception("Invalid arguments passed: number of details set to check and number of data passed is conflicted");
+            }
+        } catch (Exception e) {
+            System.out.println("Error Handling error: " + e.getMessage());
+            Logger.errorLog("Error Handling error (System Error) -> " + e.getMessage());
+            return;
+        }
+
+        MedicalDepartment departmentBeingUpdated = null; // tracks which department (if any) is being updated
+
+        int i = 0;
+        for (Object object : var) {
+            if (object instanceof String) {
+                String data = (String) object;
+                if (details.get(i).equalsIgnoreCase("name")) {
+                    if (data == null || data.equals("")) {
+                        throw new MedicalDepartmentException("Department name cannot be null or empty");
+                    }
+                    // Check duplicate department name (case-insensitive),
+                    // excluding the department currently being updated (if any)
+                    final MedicalDepartment excluded = departmentBeingUpdated;
+                    boolean nameExists = allMedicalDepartments.stream()
+                            .anyMatch(department -> department.getDepartmentName().equalsIgnoreCase(data)
+                                    && (excluded == null || !department.getDepartmentId().equals(excluded.getDepartmentId())));
+                    if (nameExists) {
+                        throw new MedicalDepartmentException(String.format("Medical Department '%s' already exists", data));
+                    }
+                } else if (details.get(i).equalsIgnoreCase("description")) {
+                    if (data == null || data.equals("")) {
+                        throw new MedicalDepartmentException("Department description cannot be null or empty");
+                    }
+                }
+            }
+
+            if (object instanceof MedicalDepartment) {
+                MedicalDepartment department = (MedicalDepartment) object;
+
+                if (details.get(i).equalsIgnoreCase("department")) {
+                    if (!allMedicalDepartments.stream().anyMatch(d -> d.equals(department))) {
+                        throw new MedicalDepartmentException(String.format("Medical Department '%s' not found", department.getDepartmentId()));
+                    }
+                    departmentBeingUpdated = department; // remember this for the name check above
+                }
+            }
+            i++;
         }
     }
 }

@@ -4113,3 +4113,4 @@ User Handling Error: Invalid email format
 User Handling Error: Invalid email format
 [2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
 [2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
+[2026-08-23 21:26:45] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPTe3d98' is not found

@@ -1,3 +1,5 @@
+package TestServices;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -71,7 +73,7 @@ public class TestDoctorManagement {
 
         // Test shift creation
         // Uncomment when needed because this modifies doctorShifts.txt
-         testCreateShift();
+//         testCreateShift();
 //           testHospitalAssetCount();
 //        testRawHospitalAssetFile();
 //        testFindConsultationSlot();
@@ -79,6 +81,13 @@ public class TestDoctorManagement {
         // Test shift cancellation
         // Uncomment when needed because this modifies doctorShifts.txt
 //         testCancelShift();
+
+        // Test medical department CRUD
+        // Uncomment when needed because these modify medicalDepartments.txt / users.txt
+//        testAddNewDepartment();
+//        testEditDepartment();
+//        testDeleteDepartment();
+//        testUpdateDoctorDepartment();
     }
     
     public void testLoadConsultationSlots() {
@@ -739,5 +748,186 @@ public class TestDoctorManagement {
         System.out.println(
                 "Message : " + result.get("msg")
         );
+    }
+    
+        // =========================================================
+    // MEDICAL DEPARTMENT CRUD TESTS
+    // =========================================================
+
+    static void testAddNewDepartment() {
+
+        System.out.println(
+                "\n===== TEST ADD NEW MEDICAL DEPARTMENT ====="
+        );
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        DoctorManagement doctorMng = new DoctorManagement(manager);
+
+        String departmentName = "Dermatology";
+        String description = "Provides diagnosis and treatment for skin, hair, and nail conditions.";
+
+        LinkedHashMap<String, String> result =
+                doctorMng.addNewDepartment(departmentName, description);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+        System.out.println("New Department ID : " + result.get("newDepartmentId"));
+
+        if ("true".equals(result.get("success"))) {
+            MedicalDepartment created =
+                    DoctorManagement.getMedicalDepartmentById(result.get("newDepartmentId"));
+
+            if (created != null) {
+                System.out.println("Verified in file:");
+                testPrintMedicalDepartments(List.of(created));
+            } else {
+                System.out.println("Test failed: created department not found after reload.");
+            }
+        }
+    }
+
+    static void testEditDepartment() {
+
+        System.out.println(
+                "\n===== TEST EDIT MEDICAL DEPARTMENT ====="
+        );
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        DoctorManagement doctorMng = new DoctorManagement(manager);
+
+        String targetDepartmentId = "#DEPT005";
+        String newName = "Orthopedics";
+        String newDescription = "Provides diagnosis, treatment, and rehabilitation for bones, joints, muscles, and the musculoskeletal system.";
+
+        LinkedHashMap<String, String> result =
+                doctorMng.editDepartment(newName, newDescription, targetDepartmentId);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+
+        if ("true".equals(result.get("success"))) {
+            MedicalDepartment edited =
+                    DoctorManagement.getMedicalDepartmentById(targetDepartmentId);
+
+            if (edited != null) {
+                System.out.println("Verified in file:");
+                testPrintMedicalDepartments(List.of(edited));
+            } else {
+                System.out.println("Test failed: edited department not found after reload.");
+            }
+        }
+    }
+
+    static void testDeleteDepartment() {
+
+        System.out.println(
+                "\n===== TEST DELETE MEDICAL DEPARTMENT ====="
+        );
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        DoctorManagement doctorMng = new DoctorManagement(manager);
+
+        // Add a throwaway department first so deletion doesn't destroy seed data
+        LinkedHashMap<String, String> addResult =
+                doctorMng.addNewDepartment("Temp Test Department", "Created only to be deleted by this test.");
+
+        if (!"true".equals(addResult.get("success"))) {
+            System.out.println("Test failed: could not create throwaway department to delete.");
+            System.out.println("Message : " + addResult.get("msg"));
+            return;
+        }
+
+        String targetDepartmentId = addResult.get("newDepartmentId");
+        System.out.println("Deleting Department : " + targetDepartmentId);
+
+        LinkedHashMap<String, String> result =
+                doctorMng.deleteDepartment(targetDepartmentId);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+        System.out.println("Deleted Department ID : " + result.get("deleteDepartmentId"));
+        System.out.println("Deleted Department Name : " + result.get("deleteDepartmentName"));
+
+        MedicalDepartment shouldBeGone =
+                DoctorManagement.getMedicalDepartmentById(targetDepartmentId);
+
+        if (shouldBeGone == null) {
+            System.out.println("Deletion verified: department no longer found.");
+        } else {
+            System.out.println("Test failed: department still exists after deletion.");
+        }
+    }
+
+    // =========================================================
+    // UPDATE DOCTOR DEPARTMENT TEST (UserManagement)
+    // =========================================================
+
+    static void testUpdateDoctorDepartment() {
+
+        System.out.println(
+                "\n===== TEST UPDATE DOCTOR DEPARTMENT ====="
+        );
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        String doctorId = "#DOCd4e8f";
+        String newDepartmentId = "#DEPT004";
+
+        Doctor doctorBefore = UserManagement.getDoctorById(doctorId);
+        if (doctorBefore == null) {
+            System.out.println("Test failed: Doctor not found.");
+            return;
+        }
+
+        System.out.println("Doctor : " + doctorBefore.getName());
+        System.out.println("Current Department : "
+                + (doctorBefore.getMedicalDepartment() != null
+                        ? doctorBefore.getMedicalDepartment().getDepartmentName()
+                        : "None"));
+        System.out.println("Assigning to Department ID : " + newDepartmentId);
+
+        UserManagement userMng = new UserManagement(manager);
+
+        LinkedHashMap<String, String> result =
+                userMng.updateDoctorDepartment(doctorId, newDepartmentId);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+
+        Doctor reloadedDoctor = UserManagement.getDoctorById(doctorId);
+
+        if (reloadedDoctor != null && reloadedDoctor.getMedicalDepartment() != null
+                && reloadedDoctor.getMedicalDepartment().getDepartmentId().equals(newDepartmentId)) {
+            System.out.println("Verified: doctor's department updated in file.");
+        } else {
+            System.out.println("Test failed: doctor's department was not updated correctly.");
+        }
     }
 }

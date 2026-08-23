@@ -137,7 +137,7 @@ public class DoctorManagement {
         return shiftStaus;
     }
     
-    // File Handler (Write and Append)
+    // File Handler (Write and Append) - Doctor Shifts
     private static boolean writeDoctorShifts() {
         ArrayList<LinkedHashMap<String, String>> shifts = new ArrayList<>();
         for (DoctorShift shift : doctorShifts) {
@@ -166,7 +166,44 @@ public class DoctorManagement {
             return false;
         }
     }
+    
+    // File Handler (Write and Append) - Medical Department
+    private static boolean writeMedicalDepartments() {
+        ArrayList<LinkedHashMap<String, String>> departments = new ArrayList<>();
+        for (MedicalDepartment department : medicalDepartments) {
+            departments.add(new LinkedHashMap<>() {{
+                put("departmentId", department.getDepartmentId());
+                put("departmentName", department.getDepartmentName());
+                put("description", department.getDescription());
+            }});
+        }
+        departmentHandler.writeFile(departments);
+        return true;
+    }
 
+    private static boolean appendMedicalDepartment(MedicalDepartment department) {
+        try {
+            ArrayList<LinkedHashMap<String, String>> departments = new ArrayList<>();
+            departments.add(new LinkedHashMap<>() {{
+                put("departmentId", department.getDepartmentId());
+                put("departmentName", department.getDepartmentName());
+                put("description", department.getDescription());
+            }});
+            if (!departmentHandler.checkFileExistence() && !departmentHandler.createFile()) {
+                System.out.printf("File 'medicalDepartments.txt' failed to be created, department '%s' cannot be appended%n", department.getDepartmentId());
+                return false;
+            }
+            departmentHandler.appendFile(departments);
+            System.out.printf("Medical Department '%s' is appended to medicalDepartments.txt!%n", department.getDepartmentId());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error appending new medical department: " + e.getMessage());
+            Logger.errorLog("Error appending new medical department (System Error) -> " + e.getMessage() + "\n");
+            return false;
+        }
+    }
+
+    // CRUD - mutator methods (Doctor Shift) 
     public LinkedHashMap<String, String> createShift(Doctor doctor, String startDateTime, String endDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
@@ -353,6 +390,111 @@ public class DoctorManagement {
     
     // Assign Doctor to Medical Manager - Hnadled in UserManagement because involving updating users.txt :3
     
+    // CRUD - mutator methods (Medical Department)
+    public LinkedHashMap<String, String> addNewDepartment(String departmentName, String description) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            ErrorHandler.medicalDepartmentErrorHandler(Arrays.asList("name", "description"), departmentName, description);
+        } catch (MedicalDepartmentException e) {
+            System.out.println("Error creating medical department\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not created\n", departmentName) + e.getMessage());
+            return msgMap;
+        }
+        if (medicalDepartments.stream().anyMatch(d -> departmentName.equalsIgnoreCase(d.getDepartmentName()))) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not created: name is already in use", departmentName));
+            return msgMap;
+        }
+        if (checkDepartmentPermission()) {
+            String newDepartmentId = generateDepartmentId();
+            MedicalDepartment newDepartment = new MedicalDepartment(newDepartmentId, departmentName, description);
+
+            medicalDepartments.add(newDepartment);
+            if (departmentHandler.checkFileExistence()) {
+                appendMedicalDepartment(newDepartment);
+            } else {
+                writeMedicalDepartments();
+            }
+            loadMedicalDepartment();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("Medical department '%s' is created and stored!", departmentName));
+            msgMap.put("newDepartmentId", newDepartmentId);
+            return msgMap;
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not created: you have no access to create departments", departmentName));
+            return msgMap;
+        }
+    }
+
+    public LinkedHashMap<String, String> editDepartment(String newName, String newDescription, String departmentId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        try {
+            MedicalDepartment department = getMedicalDepartmentById(departmentId);
+            ErrorHandler.medicalDepartmentErrorHandler(Arrays.asList("department", "name"), department, newName);
+        } catch (MedicalDepartmentException e) {
+            System.out.println("Error modifying medical department\n" + e.getMessage());
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not modified\n", departmentId) + e.getMessage());
+            return msgMap;
+        }
+        MedicalDepartment editDept = null;
+        for (MedicalDepartment d : medicalDepartments) {
+            if (d.getDepartmentId().equals(departmentId)) {
+                editDept = d;
+                break;
+            }
+        }
+        if (editDept == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' not found", departmentId));
+            return msgMap;
+        }
+
+        if (checkDepartmentPermission()) {
+            for (MedicalDepartment d : medicalDepartments) {
+                if (d.getDepartmentId().equals(editDept.getDepartmentId())) {
+                    d.setDepartmentName(newName);
+                    d.setDescription(newDescription);
+                    break;
+                }
+            }
+            writeMedicalDepartments();
+            loadMedicalDepartment();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("Medical department '%s' is modified!", departmentId));
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not modified: you have no access to modify departments", departmentId));
+        }
+        return msgMap;
+    }
+
+    public LinkedHashMap<String, String> deleteDepartment(String departmentId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        MedicalDepartment deleteDept = null;
+        for (MedicalDepartment d : medicalDepartments) {
+            if (d.getDepartmentId().equals(departmentId)) {
+                deleteDept = d;
+                break;
+            }
+        }
+        if (checkDepartmentPermission()) {
+            medicalDepartments.removeIf(d -> d.getDepartmentId().equals(departmentId));
+            writeMedicalDepartments();
+            loadMedicalDepartment();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("Medical department '%s' is deleted!", departmentId));
+            msgMap.put("deleteDepartmentId", deleteDept.getDepartmentId());
+            msgMap.put("deleteDepartmentName", deleteDept.getDepartmentName());
+        } else {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' is not deleted: you have no access to delete departments", departmentId));
+        }
+        return msgMap;
+    }
+
     // Searching and Sorting
     public List<DoctorShift> searchDoctorShifts(String keywords) {
         List<DoctorShift> matchedShifts = new ArrayList<>();
@@ -428,9 +570,28 @@ public class DoctorManagement {
         return sortedDepartments;
     }
     
+    private boolean checkDepartmentPermission() {
+        if (this.activeUser == null) {
+            return false;
+        }
+        String activeType = this.activeUser.getType();
+        switch (activeType) {
+            case "admin staff":
+            case "medical manager":
+                return true; // both admin and medical manager can manage departments
+            default:
+                return false;
+        }
+    }
+    
     // Generate ID
     public static String generateShiftId() {
         List<String> existingIds = doctorShifts.stream().map(DoctorShift::getShiftId).toList();
         return SystemConfiguration.generateId("#SHIFT", existingIds);
+    }
+    
+    public static String generateDepartmentId() {
+        List<String> existingIds = medicalDepartments.stream().map(MedicalDepartment::getDepartmentId).toList();
+        return SystemConfiguration.generateId("#DEPT", existingIds);
     }
 }
