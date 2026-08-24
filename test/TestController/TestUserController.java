@@ -56,7 +56,7 @@ public class TestUserController {
  
         // Test creation
         // Uncomment when needed because these modify users.txt AND write to the log file
-        testCreateUser();
+//        testCreateUser();
  
         // Test modification
         // Uncomment when needed because these modify users.txt AND write to the log file
@@ -64,6 +64,7 @@ public class TestUserController {
 //        testModifyPwd();
 //        testModifyEmail();
 //        testAssignDoctorToMedicalManager();
+//        testUpdateDoctorDepartment();
 //        testDeleteUser();
  
         // Test logout (do this last)
@@ -367,6 +368,24 @@ public class TestUserController {
         }
  
         LinkedHashMap<String, String> result = userCtrl.assignDoctorToMedicalManager(doctor, manager);
+ 
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+    }
+ 
+    static void testUpdateDoctorDepartment() {
+ 
+        System.out.println("\n===== TEST UPDATE DOCTOR DEPARTMENT (via Controller) =====");
+ 
+        Doctor doctor = userCtrl.getDoctorById("#DOC001"); // replace with a real doctor ID
+        String departmentId = "#DEPT001"; // replace with a real department ID
+ 
+        if (doctor == null) {
+            System.out.println("Doctor not found.");
+            return;
+        }
+ 
+        LinkedHashMap<String, String> result = userCtrl.updateDoctorDepartment(doctor.getId(), departmentId);
  
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));

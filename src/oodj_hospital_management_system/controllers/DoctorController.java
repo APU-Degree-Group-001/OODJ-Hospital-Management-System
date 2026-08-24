@@ -124,4 +124,48 @@ public class DoctorController {
         }
         return msg;
     }
+    
+    public LinkedHashMap<String, String> addNewDepartment(String departmentName, String description) {
+        LinkedHashMap<String, String> msg = doctorServices.addNewDepartment(departmentName, description);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} created Medical Department {%s - %s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    msg.get("newDepartmentId"), departmentName));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to create Medical Department {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), departmentName, msg.get("msg")));
+        }
+        return msg;
+    }
+ 
+    public LinkedHashMap<String, String> editDepartment(String newName, String newDescription, String departmentId) {
+        LinkedHashMap<String, String> msg = doctorServices.editDepartment(newName, newDescription, departmentId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} modified Medical Department {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), departmentId));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to modify Medical Department {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), departmentId, msg.get("msg")));
+        }
+        return msg;
+    }
+ 
+    public LinkedHashMap<String, String> deleteDepartment(String departmentId) {
+        LinkedHashMap<String, String> msg = doctorServices.deleteDepartment(departmentId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} deleted Medical Department {%s - %s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    msg.get("deleteDepartmentId"), msg.get("deleteDepartmentName")));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to delete Medical Department {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), departmentId, msg.get("msg")));
+        }
+        return msg;
+    }
 }

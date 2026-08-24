@@ -62,6 +62,12 @@ public class TestDoctorController {
         // Test modification
         // Uncomment when needed because these modify doctorShifts.txt AND write to the log file
 //        testCancelShift();
+
+        // Test department CRUD
+        // Uncomment when needed because these modify medicalDepartments.txt AND write to the log file
+//        testAddNewDepartment();
+//        testEditDepartment();
+//        testDeleteDepartment();
     }
  
     // =========================================================
@@ -341,6 +347,68 @@ public class TestDoctorController {
         DoctorShift shift = shifts.get(shifts.size() - 1);
  
         LinkedHashMap<String, String> result = doctorCtrl.cancelShift(shift);
+ 
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+    }
+    
+    // =========================================================
+    // MEDICAL DEPARTMENT CRUD TESTS
+    // =========================================================
+ 
+    static void testAddNewDepartment() {
+ 
+        System.out.println("\n===== TEST ADD NEW DEPARTMENT (via Controller) =====");
+ 
+        LinkedHashMap<String, String> result = doctorCtrl.addNewDepartment(
+                "Test Department",
+                "Department created via TestDoctorController"
+        );
+ 
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+        System.out.println("New Department ID : " + result.get("newDepartmentId"));
+ 
+        System.out.println(">> Now check logs.txt for the audit entry.");
+    }
+ 
+    static void testEditDepartment() {
+ 
+        System.out.println("\n===== TEST EDIT DEPARTMENT (via Controller) =====");
+ 
+        List<MedicalDepartment> depts = doctorCtrl.getAllMedicalDepartments();
+ 
+        if (depts.isEmpty()) {
+            System.out.println("No departments available to edit.");
+            return;
+        }
+ 
+        String departmentId = depts.get(depts.size() - 1).getDepartmentId();
+ 
+        LinkedHashMap<String, String> result = doctorCtrl.editDepartment(
+                "Updated Department Name",
+                "Updated via TestDoctorController",
+                departmentId
+        );
+ 
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+    }
+ 
+    static void testDeleteDepartment() {
+ 
+        System.out.println("\n===== TEST DELETE DEPARTMENT (via Controller) =====");
+ 
+        List<MedicalDepartment> depts = doctorCtrl.getAllMedicalDepartments();
+ 
+        if (depts.isEmpty()) {
+            System.out.println("No departments available to delete.");
+            return;
+        }
+ 
+        String departmentId = depts.get(depts.size() - 1).getDepartmentId();
+ 
+        LinkedHashMap<String, String> result = doctorCtrl.deleteDepartment(departmentId);
  
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));

@@ -269,6 +269,20 @@ public class UserController {
         return msg;
     }
     
+    public LinkedHashMap<String, String> updateDoctorDepartment(String doctorId, String departmentId) {
+        LinkedHashMap<String, String> msg = userServices.updateDoctorDepartment(doctorId, departmentId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} updated Doctor {%s}'s Medical Department to {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorId, departmentId));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to update Doctor {%s}'s Medical Department\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorId, msg.get("msg")));
+        }
+        return msg;
+    }
+    
     public LinkedHashMap<String, String> assignDoctorToMedicalManager(Doctor doctor, MedicalManager medicalManager) {
         LinkedHashMap<String, String> msg = userServices.assignDoctorToMedicalManager(doctor, medicalManager);
         if (msg.get("success") != null) {
