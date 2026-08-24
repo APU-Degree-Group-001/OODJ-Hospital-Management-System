@@ -39,6 +39,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
         jPanel6 = new javax.swing.JPanel();
 
+        setPreferredSize(new java.awt.Dimension(1020, 0));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
@@ -46,39 +47,60 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
 
         dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
+        dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("User Management");
         jPanel5.add(jLabel2, java.awt.BorderLayout.NORTH);
 
         navigationPane.setBackground(new java.awt.Color(255, 255, 255));
+        navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
+        navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
         java.awt.GridBagLayout navigationPaneLayout = new java.awt.GridBagLayout();
-        navigationPaneLayout.columnWidths = new int[] {50};
+        navigationPaneLayout.columnWidths = new int[] {40};
+        navigationPaneLayout.rowHeights = new int[] {40};
+        navigationPaneLayout.columnWeights = new double[] {0.0};
+        navigationPaneLayout.rowWeights = new double[] {0.0};
         navigationPane.setLayout(navigationPaneLayout);
 
         patientButton.setText("Patient");
+        patientButton.setSelected(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         navigationPane.add(patientButton, gridBagConstraints);
 
         doctorButton.setText("Doctor");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         navigationPane.add(doctorButton, gridBagConstraints);
 
         medicalManagerButton.setText("Medical Manager");
+        medicalManagerButton.addActionListener(this::medicalManagerButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         navigationPane.add(medicalManagerButton, gridBagConstraints);
 
-        jPanel5.add(navigationPane, java.awt.BorderLayout.WEST);
+        jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
@@ -86,11 +108,11 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 16897, Short.MAX_VALUE)
+            .addGap(0, 900, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 772, Short.MAX_VALUE)
+            .addGap(0, 324, Short.MAX_VALUE)
         );
 
         dashboardPanel.add(jPanel6, java.awt.BorderLayout.CENTER);
@@ -99,6 +121,10 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
 
         add(jScrollPane2);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void medicalManagerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicalManagerButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_medicalManagerButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
