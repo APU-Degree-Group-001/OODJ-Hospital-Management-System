@@ -27,47 +27,73 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane2 = new javax.swing.JScrollPane();
         dashboardPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        navigationPane = new javax.swing.JPanel();
+        patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
+        doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
+        medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
+        jPanel6 = new javax.swing.JPanel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        jLabel1.setText("User Management");
+        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setText("User Management");
+        jPanel5.add(jLabel2, java.awt.BorderLayout.NORTH);
 
-        javax.swing.GroupLayout dashboardPanelLayout = new javax.swing.GroupLayout(dashboardPanel);
-        dashboardPanel.setLayout(dashboardPanelLayout);
-        dashboardPanelLayout.setHorizontalGroup(
-            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dashboardPanelLayout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addComponent(jLabel1)
-                .addContainerGap(16925, Short.MAX_VALUE))
-            .addGroup(dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(dashboardPanelLayout.createSequentialGroup()
-                    .addGap(58, 58, 58)
-                    .addComponent(jLabel2)
-                    .addContainerGap(16942, Short.MAX_VALUE)))
+        navigationPane.setBackground(new java.awt.Color(255, 255, 255));
+        java.awt.GridBagLayout navigationPaneLayout = new java.awt.GridBagLayout();
+        navigationPaneLayout.columnWidths = new int[] {50};
+        navigationPane.setLayout(navigationPaneLayout);
+
+        patientButton.setText("Patient");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        navigationPane.add(patientButton, gridBagConstraints);
+
+        doctorButton.setText("Doctor");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        navigationPane.add(doctorButton, gridBagConstraints);
+
+        medicalManagerButton.setText("Medical Manager");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        navigationPane.add(medicalManagerButton, gridBagConstraints);
+
+        jPanel5.add(navigationPane, java.awt.BorderLayout.WEST);
+
+        dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 16897, Short.MAX_VALUE)
         );
-        dashboardPanelLayout.setVerticalGroup(
-            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dashboardPanelLayout.createSequentialGroup()
-                .addContainerGap(741, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(137, 137, 137))
-            .addGroup(dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(dashboardPanelLayout.createSequentialGroup()
-                    .addGap(46, 46, 46)
-                    .addComponent(jLabel2)
-                    .addContainerGap(832, Short.MAX_VALUE)))
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 772, Short.MAX_VALUE)
         );
+
+        dashboardPanel.add(jPanel6, java.awt.BorderLayout.CENTER);
 
         jScrollPane2.setViewportView(dashboardPanel);
 
@@ -77,8 +103,13 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel dashboardPanel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton doctorButton;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton medicalManagerButton;
+    private javax.swing.JPanel navigationPane;
+    private javax.swing.JButton patientButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -19,6 +19,7 @@ public class SideBar extends JPanel {
     private String role;
     private JPanel contentArea;   // the CardLayout container it controls
     private List<NavItem> items;
+    private LogoutButton logoutButton;
     private RoundedButton selectedItem;
     private final Color selectedColor = new Color(230, 240, 250);
     private final Color hoverColor = new Color(245, 248, 251);
@@ -45,7 +46,6 @@ public class SideBar extends JPanel {
     }
     
     
-    
     private void addNavItemByRole(String role) {
         if (role.equals("admin staff")) {
             addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
@@ -53,6 +53,8 @@ public class SideBar extends JPanel {
             addNavItem("Doctor Assignment", "", "adminStaffDoctorAssignment");
             addNavItem("Hospital Assets", "", "adminStaffHospitalAssets");
             addNavItem("Billing Settings", "", "adminStaffBillingSettings");
+            navItems.add(Box.createVerticalGlue());
+            addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("medical manager")) {
             addNavItem("", "", "");
@@ -75,6 +77,14 @@ public class SideBar extends JPanel {
         navItems.add(item);
     }
     
+    private void addLogoutButton(String label, String iconPath, String cardName) {
+        LogoutButton item = new LogoutButton(label, 12, iconPath);
+        item.setAlignmentX(Component.CENTER_ALIGNMENT);
+        item.addActionListener(e -> selectLogoutButton(item));
+        this.logoutButton = item;
+        navItems.add(logoutButton);
+    }
+    
     private void selectNavItem(NavItem clicked, String cardName) {
         for (NavItem item : items) {
             item.setActive(item == clicked); // if item == clicked (true), then will set active yo~
@@ -87,6 +97,10 @@ public class SideBar extends JPanel {
         }
     }
 
+    private void selectLogoutButton(LogoutButton clicked) {
+        // TODO: logout
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -124,7 +138,7 @@ public class SideBar extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 1.0;
         add(navItems, gridBagConstraints);

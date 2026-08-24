@@ -13,6 +13,7 @@ import oodj_hospital_management_system.gui.utils.RoundedButton;
  * @author sheaw
  */
 public class NavItem extends RoundedButton {
+    private final Font normalFont = new Font("Segeo UI", Font.PLAIN, 16);
 
     public NavItem(String text, int radius, String iconPath) {
         super(text, radius); // handles the rounded background + button text
@@ -41,6 +42,13 @@ public class NavItem extends RoundedButton {
         setBackground(Color.WHITE);
 
         setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // padding ~
+        
+        // Initialize inactive state
+        setButtonColors(
+            Color.WHITE,
+            new Color(220, 237, 250),
+            new Color(220, 237, 250)
+        );
     }
     
     @Override
@@ -50,12 +58,21 @@ public class NavItem extends RoundedButton {
     }
 
     public void setActive(boolean active) {
+        Color activeColor = new Color(220, 237, 250);
         if (active) {
-            setBackground(new Color(220, 237, 250)); 
+            setButtonColors(
+                activeColor,  // normal
+                activeColor,  // hover
+                activeColor   // pressed
+            );
             setForeground(new Color(30, 110, 180));
             setFont(getFont().deriveFont(Font.BOLD));
         } else {
-            setBackground(Color.WHITE);
+            setButtonColors(
+                Color.WHITE,  // normal
+                activeColor,  // hover
+                activeColor   // pressed
+            );
             setForeground(new Color(80, 80, 80));
             setFont(getFont().deriveFont(Font.PLAIN));
         }
