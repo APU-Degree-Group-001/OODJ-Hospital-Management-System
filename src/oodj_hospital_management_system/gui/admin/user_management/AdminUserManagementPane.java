@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.gui.admin.user_management;
 
+import java.awt.CardLayout;
+import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.*;
 
 /**
@@ -11,6 +13,9 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
  * @author sheaw
  */
 public class AdminUserManagementPane extends javax.swing.JPanel {
+    private UserController usrCtrl;
+    private CardLayout cl;
+        
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
     private final java.awt.Color selectedTextColor = new java.awt.Color(41, 98, 255);
@@ -18,13 +23,22 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
     /**
      * Creates new form adminDashboardPanel
      */
-    public AdminUserManagementPane() {
+    public AdminUserManagementPane(UserController usrCtrl) {
+        this.usrCtrl = usrCtrl;
         initComponents();
+        
+        usrMngContentArea.add(new PatientManagementPanel(usrCtrl), "patientManagement");
+        usrMngContentArea.add(new DoctorManagementPanel(usrCtrl), "doctorManagement");
+        usrMngContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
+        usrMngContentArea.add(new AdminStaffManagementPanel(usrCtrl), "adminStaffManagement");
         
         setNavButtonActive(patientButton, true);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
         setNavButtonActive(adminStaffButton, false);
+        
+        this.cl = (CardLayout) usrMngContentArea.getLayout();
+        cl.show(usrMngContentArea, "patientManagement");
     }
     
     private void setNavButtonActive(javax.swing.JButton button, boolean active) {
@@ -64,6 +78,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         navigationPane = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
         usrMngContentArea = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
@@ -79,7 +94,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 120));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -143,9 +158,12 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         navigationPane.add(adminStaffButton, gridBagConstraints);
 
         jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
+        jPanel5.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
+        usrMngContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         usrMngContentArea.setLayout(new java.awt.CardLayout());
         dashboardPanel.add(usrMngContentArea, java.awt.BorderLayout.CENTER);
 
@@ -159,6 +177,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, true);
         setNavButtonActive(adminStaffButton, false);
+        cl.show(usrMngContentArea, "medicalManagerManagement");
     }//GEN-LAST:event_medicalManagerButtonActionPerformed
 
     private void adminStaffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminStaffButtonActionPerformed
@@ -166,6 +185,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
         setNavButtonActive(adminStaffButton, true);
+        cl.show(usrMngContentArea, "adminStaffManagement");
     }//GEN-LAST:event_adminStaffButtonActionPerformed
 
     private void patientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patientButtonActionPerformed
@@ -173,6 +193,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
         setNavButtonActive(adminStaffButton, false);
+        cl.show(usrMngContentArea, "patientManagement");
     }//GEN-LAST:event_patientButtonActionPerformed
 
     private void doctorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doctorButtonActionPerformed
@@ -180,6 +201,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         setNavButtonActive(doctorButton, true);
         setNavButtonActive(medicalManagerButton, false);
         setNavButtonActive(adminStaffButton, false);
+        cl.show(usrMngContentArea, "doctorManagement");
     }//GEN-LAST:event_doctorButtonActionPerformed
 
 
@@ -190,6 +212,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private final javax.swing.JButton medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
     private javax.swing.JPanel navigationPane;
     private final javax.swing.JButton patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);

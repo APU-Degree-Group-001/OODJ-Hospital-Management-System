@@ -5,6 +5,8 @@
 package oodj_hospital_management_system.gui.patient;
 
 import javax.swing.*;
+import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.admin.AdminStaffGUI;
 
 /**
  *
@@ -126,6 +128,7 @@ public class PatientSignInPanel extends oodj_hospital_management_system.gui.util
         signInButton.setForeground(new java.awt.Color(14, 40, 65));
         signInButton.setText("Sign In");
         signInButton.setPreferredSize(new java.awt.Dimension(300, 40));
+        signInButton.addActionListener(this::signInButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -189,6 +192,27 @@ public class PatientSignInPanel extends oodj_hospital_management_system.gui.util
     private void signUpLinkMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpLinkMouseExited
         signUpLink.setText("Sign Up");
     }//GEN-LAST:event_signUpLinkMouseExited
+
+    private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
+        // Create User Controller Object
+        UserController usrCtrl = new UserController();
+        String userId, userPwd;
+        userId = userIdTextField.getText();
+        userPwd = userPasswordField.getText();
+        if (usrCtrl.userLogin(userId, userPwd) && usrCtrl.getActiveUser().getType().equalsIgnoreCase("patient")) {
+            JOptionPane.showMessageDialog(this, "Login Success");
+            // need to get parent window then can dispose yo~
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+            }
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("patient")) {
+                // add ltr~
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Login failed");
+        }
+    }//GEN-LAST:event_signInButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

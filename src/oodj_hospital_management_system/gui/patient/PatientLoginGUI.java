@@ -12,14 +12,14 @@ import java.awt.Color;
  *
  * @author sheaw
  */
-public class PatientLogin extends javax.swing.JFrame {
+public class PatientLoginGUI extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PatientLogin.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PatientLoginGUI.class.getName());
 
     /**
      * Creates new form PatientSignIn
      */
-    public PatientLogin() {
+    public PatientLoginGUI() {
         initComponents();
         PatientSignInPanel signInPanel = new oodj_hospital_management_system.gui.patient.PatientSignInPanel(15, pnlSignInCard);
         PatientSignUpPanel signUpPanel = new oodj_hospital_management_system.gui.patient.PatientSignUpPanel(15, pnlSignInCard);
@@ -41,7 +41,6 @@ public class PatientLogin extends javax.swing.JFrame {
         pnlSignInCard = new oodj_hospital_management_system.gui.utils.RoundedPanel(15);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1280, 800));
         setSize(new java.awt.Dimension(1280, 800));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -94,7 +93,7 @@ public class PatientLogin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new PatientLogin().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new PatientLoginGUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -4114,3 +4114,7 @@ User Handling Error: Invalid email format
 [2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
 [2026-08-16 17:24:33] Error finding hospital asset allocation -> Invalid Hospital Asset Allocation ID: Allocation ID '#ALLOC004' is not found
 [2026-08-23 21:26:45] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPTe3d98' is not found
+[2026-08-25 18:22:01] User with ID 'bla' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-08-25 21:44:52] User with ID '#ADMdd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials

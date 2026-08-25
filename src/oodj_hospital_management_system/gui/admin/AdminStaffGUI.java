@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.gui.admin;
 
+import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPane;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPane;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPane;
@@ -12,18 +13,20 @@ import oodj_hospital_management_system.gui.admin.user_management.AdminUserManage
  *
  * @author sheaw
  */
-public class AdminStaffPage extends javax.swing.JFrame {
+public class AdminStaffGUI extends javax.swing.JFrame {
+    private UserController usrCtrl;
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminStaffPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminStaffGUI.class.getName());
 
     /**
      * Creates new form AdminStaffDashboard
      */
-    public AdminStaffPage() {
+    public AdminStaffGUI(UserController usrCtrl) {
+        this.usrCtrl = usrCtrl;
         initComponents();
         // Add cards to contentArea
         contentArea.add(new AdminDashboardPane(), "adminStaffDashboard");
-        contentArea.add(new AdminUserManagementPane(), "adminStaffUserManagement");
+        contentArea.add(new AdminUserManagementPane(this.usrCtrl), "adminStaffUserManagement");
         contentArea.add(new AdminDoctorAssignmentPane(), "adminStaffDoctorAssignment");
 
         // Show default card
@@ -60,29 +63,6 @@ public class AdminStaffPage extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdminStaffPage().setVisible(true));
-        
-        
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentArea;

@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.services;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -555,7 +557,7 @@ public class UserManagement {
         List<User> matchedUsers = new ArrayList<>();
         for (User user : allUsers) {
             if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
-                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getType().contains(keywords.toLowerCase().trim())) {
+                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getEmail().contains(keywords.toLowerCase().trim())) {
                 matchedUsers.add(user);
             }
         }
@@ -566,13 +568,31 @@ public class UserManagement {
         List<User> matchedUsers = new ArrayList<>();
         for (User user : userList) {
             if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
-                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getType().contains(keywords.toLowerCase().trim())) {
+                    || user.getName().toLowerCase().contains(keywords.toLowerCase().trim()) || user.getEmail().contains(keywords.toLowerCase().trim())) {
                 matchedUsers.add(user);
             }
         }
         return matchedUsers;
     }
     
+    public static List<User> searchUsersByDateRange(String startDate, String endDate, List<User> users) {
+        List<User> results = new ArrayList<>();
+        LocalDate start = (startDate != null) ? LocalDate.parse(startDate) : null;
+        LocalDate end = (endDate != null) ? LocalDate.parse(endDate) : null;
+
+        for (User usr : users) {
+            LocalDateTime joined = DateTime.toDateTimeObject(usr.getJoinedDateTime());
+            LocalDate joinedDate = joined.toLocalDate();
+
+            boolean afterStart = (start == null) || !joinedDate.isBefore(start);
+            boolean beforeEnd = (end == null) || !joinedDate.isAfter(end);
+
+            if (afterStart && beforeEnd) {
+                results.add(usr);
+            }
+        }
+        return results;
+    }
     
     public static List<User> sortUsersById(List<User> list) {
         List<User> sortedUsers = list;

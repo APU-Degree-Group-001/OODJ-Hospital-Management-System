@@ -6,6 +6,9 @@ package oodj_hospital_management_system.gui;
 
 import oodj_hospital_management_system.gui.patient.*;
 import java.awt.Color;
+import javax.swing.JOptionPane;
+import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.admin.AdminStaffGUI;
 
 // BG Relative Path: oodj_hospital_management_system/assets/img/login/patient_login_bg.png
 
@@ -13,14 +16,14 @@ import java.awt.Color;
  *
  * @author sheaw
  */
-public class StaffLogin extends javax.swing.JFrame {
+public class StaffLoginGUI extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StaffLogin.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StaffLoginGUI.class.getName());
 
     /**
      * Creates new form PatientSignIn
      */
-    public StaffLogin() {
+    public StaffLoginGUI() {
         initComponents();
     }
 
@@ -74,9 +77,9 @@ public class StaffLogin extends javax.swing.JFrame {
         pnlSignInCard.add(userIdLabel, gridBagConstraints);
 
         userIdTextField.setBackground(new java.awt.Color(242, 242, 242));
-        userIdTextField.setText("jTextField1");
         userIdTextField.setName(""); // NOI18N
         userIdTextField.setPreferredSize(new java.awt.Dimension(300, 40));
+        userIdTextField.addActionListener(this::userIdTextFieldActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -94,7 +97,6 @@ public class StaffLogin extends javax.swing.JFrame {
         pnlSignInCard.add(passwordLabel, gridBagConstraints);
 
         userPasswordField.setBackground(new java.awt.Color(242, 242, 242));
-        userPasswordField.setText("jPasswordField1");
         userPasswordField.setPreferredSize(new java.awt.Dimension(300, 40));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -130,6 +132,7 @@ public class StaffLogin extends javax.swing.JFrame {
         signInButton.setForeground(new java.awt.Color(14, 40, 65));
         signInButton.setText("Sign In");
         signInButton.setPreferredSize(new java.awt.Dimension(300, 40));
+        signInButton.addActionListener(this::signInButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -166,6 +169,34 @@ public class StaffLogin extends javax.swing.JFrame {
     private void forgottenPasswordLinkMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgottenPasswordLinkMouseExited
         forgottenPasswordLink.setText("Forgotten Password?");
     }//GEN-LAST:event_forgottenPasswordLinkMouseExited
+
+    private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
+        /// Create User Controller Object
+        UserController usrCtrl = new UserController();
+        String userId, userPwd;
+        userId = userIdTextField.getText();
+        userPwd = userPasswordField.getText();
+        if (usrCtrl.userLogin(userId, userPwd)) {
+            JOptionPane.showMessageDialog(this, "Login Success");
+            dispose();
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("admin staff")) {
+                AdminStaffGUI adminDashboard = new AdminStaffGUI(usrCtrl);
+                adminDashboard.setVisible(true);
+            }
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("medical manager")) {
+                // add ltr~
+            }
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("doctor")) {
+                // add ltr~
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Login failed");
+        }
+    }//GEN-LAST:event_signInButtonActionPerformed
+
+    private void userIdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userIdTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userIdTextFieldActionPerformed
     
     /**
      * @param args the command line arguments
@@ -189,7 +220,7 @@ public class StaffLogin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new StaffLogin().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new StaffLoginGUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
