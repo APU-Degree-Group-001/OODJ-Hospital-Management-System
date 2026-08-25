@@ -11,12 +11,42 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
  * @author sheaw
  */
 public class AdminUserManagementPane extends javax.swing.JPanel {
-
+    private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
+    private final java.awt.Color defaultColor = java.awt.Color.WHITE;
+    private final java.awt.Color selectedTextColor = new java.awt.Color(41, 98, 255);
+    private final java.awt.Color defaultTextColor = new java.awt.Color(60, 60, 60);
     /**
      * Creates new form adminDashboardPanel
      */
     public AdminUserManagementPane() {
         initComponents();
+        
+        setNavButtonActive(patientButton, true);
+        setNavButtonActive(doctorButton, false);
+        setNavButtonActive(medicalManagerButton, false);
+        setNavButtonActive(adminStaffButton, false);
+    }
+    
+    private void setNavButtonActive(javax.swing.JButton button, boolean active) {
+        oodj_hospital_management_system.gui.utils.RoundedButton rb = (oodj_hospital_management_system.gui.utils.RoundedButton) button;
+
+        java.awt.Color lightGrey = new java.awt.Color(230, 230, 230);
+        java.awt.Color hoverGrey = new java.awt.Color(200, 200, 200);
+        java.awt.Color pressedGrey = new java.awt.Color(180, 180, 180);
+
+        java.awt.Color blue = new java.awt.Color(41, 121, 255);
+        java.awt.Color hoverBlue = new java.awt.Color(25, 100, 230);
+        java.awt.Color pressedBlue = new java.awt.Color(15, 85, 210);
+
+        if (active) {
+            rb.setButtonColors(blue, hoverBlue, pressedBlue);
+            rb.setForeground(java.awt.Color.WHITE);
+            rb.setFont(rb.getFont().deriveFont(java.awt.Font.BOLD));
+        } else {
+            rb.setButtonColors(lightGrey, hoverGrey, pressedGrey);
+            rb.setForeground(new java.awt.Color(60, 60, 60));
+            rb.setFont(rb.getFont().deriveFont(java.awt.Font.PLAIN));
+        }
     }
 
     /**
@@ -34,10 +64,7 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         navigationPane = new javax.swing.JPanel();
-        patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
-        doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
-        medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
-        jPanel6 = new javax.swing.JPanel();
+        usrMngContentArea = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
@@ -63,59 +90,64 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         navigationPane.setBackground(new java.awt.Color(255, 255, 255));
         navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
         navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
-        java.awt.GridBagLayout navigationPaneLayout = new java.awt.GridBagLayout();
-        navigationPaneLayout.columnWidths = new int[] {40};
-        navigationPaneLayout.rowHeights = new int[] {40};
-        navigationPaneLayout.columnWeights = new double[] {0.0};
-        navigationPaneLayout.rowWeights = new double[] {0.0};
-        navigationPane.setLayout(navigationPaneLayout);
+        navigationPane.setLayout(new java.awt.GridBagLayout());
 
         patientButton.setText("Patient");
+        patientButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        patientButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        patientButton.setPreferredSize(new java.awt.Dimension(180, 45));
         patientButton.setSelected(true);
+        patientButton.addActionListener(this::patientButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
         navigationPane.add(patientButton, gridBagConstraints);
 
         doctorButton.setText("Doctor");
+        doctorButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        doctorButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        doctorButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        doctorButton.addActionListener(this::doctorButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
         navigationPane.add(doctorButton, gridBagConstraints);
 
         medicalManagerButton.setText("Medical Manager");
+        medicalManagerButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        medicalManagerButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        medicalManagerButton.setPreferredSize(new java.awt.Dimension(180, 45));
         medicalManagerButton.addActionListener(this::medicalManagerButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
         navigationPane.add(medicalManagerButton, gridBagConstraints);
+
+        adminStaffButton.setText("Administrative Staff");
+        adminStaffButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        adminStaffButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        adminStaffButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        adminStaffButton.addActionListener(this::adminStaffButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        navigationPane.add(adminStaffButton, gridBagConstraints);
 
         jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 324, Short.MAX_VALUE)
-        );
-
-        dashboardPanel.add(jPanel6, java.awt.BorderLayout.CENTER);
+        usrMngContentArea.setLayout(new java.awt.CardLayout());
+        dashboardPanel.add(usrMngContentArea, java.awt.BorderLayout.CENTER);
 
         jScrollPane2.setViewportView(dashboardPanel);
 
@@ -123,19 +155,44 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void medicalManagerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicalManagerButtonActionPerformed
-        // TODO add your handling code here:
+        setNavButtonActive(patientButton, false);
+        setNavButtonActive(doctorButton, false);
+        setNavButtonActive(medicalManagerButton, true);
+        setNavButtonActive(adminStaffButton, false);
     }//GEN-LAST:event_medicalManagerButtonActionPerformed
+
+    private void adminStaffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminStaffButtonActionPerformed
+        setNavButtonActive(patientButton, false);
+        setNavButtonActive(doctorButton, false);
+        setNavButtonActive(medicalManagerButton, false);
+        setNavButtonActive(adminStaffButton, true);
+    }//GEN-LAST:event_adminStaffButtonActionPerformed
+
+    private void patientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patientButtonActionPerformed
+        setNavButtonActive(patientButton, true);
+        setNavButtonActive(doctorButton, false);
+        setNavButtonActive(medicalManagerButton, false);
+        setNavButtonActive(adminStaffButton, false);
+    }//GEN-LAST:event_patientButtonActionPerformed
+
+    private void doctorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doctorButtonActionPerformed
+        setNavButtonActive(patientButton, false);
+        setNavButtonActive(doctorButton, true);
+        setNavButtonActive(medicalManagerButton, false);
+        setNavButtonActive(adminStaffButton, false);
+    }//GEN-LAST:event_doctorButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private final javax.swing.JButton adminStaffButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Administrative Staff", 15);
     private javax.swing.JPanel dashboardPanel;
-    private javax.swing.JButton doctorButton;
+    private final javax.swing.JButton doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JButton medicalManagerButton;
+    private final javax.swing.JButton medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
     private javax.swing.JPanel navigationPane;
-    private javax.swing.JButton patientButton;
+    private final javax.swing.JButton patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
+    private javax.swing.JPanel usrMngContentArea;
     // End of variables declaration//GEN-END:variables
 }
