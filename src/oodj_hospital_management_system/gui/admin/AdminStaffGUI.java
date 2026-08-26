@@ -6,7 +6,7 @@ package oodj_hospital_management_system.gui.admin;
 
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPane;
-import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPane;
+import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPane;
 
 /**
@@ -27,7 +27,7 @@ public class AdminStaffGUI extends javax.swing.JFrame {
         // Add cards to contentArea
         contentArea.add(new AdminDashboardPane(), "adminStaffDashboard");
         contentArea.add(new AdminUserManagementPane(this.usrCtrl), "adminStaffUserManagement");
-        contentArea.add(new AdminDoctorAssignmentPane(), "adminStaffDoctorAssignment");
+        contentArea.add(new AdminDoctorAssignmentPanel(this.usrCtrl), "adminStaffDoctorAssignment");
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");

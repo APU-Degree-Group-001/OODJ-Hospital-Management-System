@@ -76,7 +76,9 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         dashboardPanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         navigationPane = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         usrMngContentArea = new javax.swing.JPanel();
@@ -94,13 +96,36 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 120));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 180));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("User Management");
-        jPanel5.add(jLabel2, java.awt.BorderLayout.NORTH);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanel1.add(jLabel2, gridBagConstraints);
+
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users.");
+        jLabel1.setMaximumSize(new java.awt.Dimension(946, 45));
+        jLabel1.setPreferredSize(new java.awt.Dimension(946, 45));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 1.0;
+        jPanel1.add(jLabel1, gridBagConstraints);
+
+        jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
         navigationPane.setBackground(new java.awt.Color(255, 255, 255));
         navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
@@ -158,6 +183,9 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
         navigationPane.add(adminStaffButton, gridBagConstraints);
 
         jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
+
+        jSeparator1.setBackground(new java.awt.Color(210, 212, 220));
+        jSeparator1.setForeground(new java.awt.Color(210, 212, 220));
         jPanel5.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
@@ -209,7 +237,9 @@ public class AdminUserManagementPane extends javax.swing.JPanel {
     private final javax.swing.JButton adminStaffButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Administrative Staff", 15);
     private javax.swing.JPanel dashboardPanel;
     private final javax.swing.JButton doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

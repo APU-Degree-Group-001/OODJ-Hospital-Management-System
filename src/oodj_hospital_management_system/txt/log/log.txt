@@ -104,3 +104,46 @@
 [2026-08-25 23:28:10] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-25 23:31:19] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-25 23:32:01] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 15:27:11] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 15:37:56] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 15:40:03] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 15:56:49] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 16:01:54] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 16:02:12] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATd5447 - bug1}
+[2026-08-26 20:28:49] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 20:32:52] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 20:35:04] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 20:38:23] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATe55bd - paureen}
+[2026-08-26 20:44:44] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 20:45:19] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PAT31c63 - paureen}
+[2026-08-26 20:48:11] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATd55ea - blabla}
+[2026-08-26 20:48:24] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATd55ea - blabla}
+[2026-08-26 21:02:51] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 21:03:03] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATdd57b - hihi}
+[2026-08-26 21:03:09] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATdd57b - hihi}
+[2026-08-26 21:04:53] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 21:32:27] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 21:32:53] User {admin staff - #ADMd4e8f - uehehe} modified name for User {patient - #PATa6a72 - chuaa}
+[2026-08-26 21:34:29] User {admin staff - #ADMd4e8f - uehehe} modified email for User {patient - #PATa6a72 - Chuaaaaa}
+[2026-08-26 21:34:39] User {admin staff - #ADMd4e8f - uehehe} modified name for User {patient - #PATa6a72 - Chuaaaaa}
+[2026-08-26 21:34:39] User {admin staff - #ADMd4e8f - uehehe} modified email for User {patient - #PATa6a72 - Chuaaa}
+[2026-08-26 21:45:04] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 21:45:28] User {admin staff - #ADMd4e8f - uehehe} modified password for User {patient - #PATe55bd - paureen}
+[2026-08-26 22:01:29] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 22:01:55] User {admin staff - #ADMd4e8f - uehehe} created a new 'doctor' account, User {#DOCb8f50 - chee}
+[2026-08-26 22:02:11] User {admin staff - #ADMd4e8f - uehehe} modified name for User {doctor - #DOCb8f50 - chee}
+[2026-08-26 22:02:11] User {admin staff - #ADMd4e8f - uehehe} modified email for User {doctor - #DOCb8f50 - cheeeeee}
+[2026-08-26 22:02:38] User {admin staff - #ADMd4e8f - uehehe} modified email for User {medical manager - #MNG79e32 - Reen}
+[2026-08-26 22:02:48] User {admin staff - #ADMd4e8f - uehehe} modified password for User {medical manager - #MNG79e32 - Reen}
+[2026-08-26 22:11:50] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 22:12:55] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 22:13:42] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 22:14:32] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 22:57:59] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:04:33] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:05:47] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:08:17] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:09:53] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:10:57] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:13:49] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-26 23:25:29] User {admin staff - #ADMd4e8f - uehehe} logged in

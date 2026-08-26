@@ -12,6 +12,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
@@ -20,7 +26,6 @@ import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
-import oodj_hospital_management_system.utils.WordProcessing;
 
 /**
  *
@@ -32,7 +37,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
 
     /**
-     * Creates new form AdminStaffManagement
+     * Creates new form Admin StaffManagement
      */
     public AdminStaffManagementPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
@@ -62,7 +67,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
             String joinedDate = DateTime.toDateStringWords(date);
             String joinedTime = DateTime.toTimeString(time);
             String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] adminStaffData = {usr.getId(), WordProcessing.capitalizeEachWord(usr.getName()), joinedDateTime};
+            String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
             model.addRow(adminStaffData);
         }
 //        userTable = new JTable(model);
@@ -123,7 +128,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
             String joinedDate = DateTime.toDateStringWords(date);
             String joinedTime = DateTime.toTimeString(time);
             String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] adminStaffData = {usr.getId(), WordProcessing.capitalizeEachWord(usr.getName()), joinedDateTime};
+            String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(),joinedDateTime};
             model.addRow(adminStaffData);
         }
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
@@ -165,11 +170,14 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         adminStaffTable = new javax.swing.JTable();
         showResultsForPanel = new javax.swing.JPanel();
         showResultsForLabel = new javax.swing.JLabel();
-        operationsPanel1 = new javax.swing.JPanel();
+        operationsPanel1 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         operationsLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        addUserButton3 = new javax.swing.JButton();
+        addUserButton = new javax.swing.JButton();
         modifyUserButton = new javax.swing.JButton();
+        resetPasswordButton = new javax.swing.JButton();
         deleteUserButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -203,7 +211,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
 
-        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Name" }));
+        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Name", "Email" }));
         sortField.setPreferredSize(new java.awt.Dimension(150, 30));
         sortField.setRequestFocusEnabled(false);
         sortField.addActionListener(this::sortFieldActionPerformed);
@@ -237,25 +245,18 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         adminStaffTable.setBackground(new java.awt.Color(255, 255, 255));
         adminStaffTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Admin Staff ID", "Name", "Joined At"
+                "Admin Staff ID", "Name", "Email", "Joined At"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -266,22 +267,21 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         adminStaffTable.setRowMargin(5);
         tableScrollPane.setViewportView(adminStaffTable);
 
-        jPanel2.add(tableScrollPane, java.awt.BorderLayout.NORTH);
+        jPanel2.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
         showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);
 
-        jPanel2.add(showResultsForPanel, java.awt.BorderLayout.WEST);
+        jPanel2.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
 
         wrapperPane.add(jPanel2);
 
         operationsPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        operationsPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         operationsPanel1.setAlignmentY(0.0F);
-        operationsPanel1.setMaximumSize(new java.awt.Dimension(400, 177));
-        operationsPanel1.setPreferredSize(new java.awt.Dimension(400, 52));
+        operationsPanel1.setMaximumSize(new java.awt.Dimension(300, 250));
+        operationsPanel1.setPreferredSize(new java.awt.Dimension(300, 250));
         operationsPanel1.setLayout(new javax.swing.BoxLayout(operationsPanel1, javax.swing.BoxLayout.Y_AXIS));
 
         operationsLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -295,10 +295,11 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         jPanel3.setPreferredSize(new java.awt.Dimension(566, 140));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
-        addUserButton3.setText("Add Admin Staff");
-        addUserButton3.setMaximumSize(new java.awt.Dimension(150, 40));
-        addUserButton3.setPreferredSize(new java.awt.Dimension(150, 40));
-        jPanel3.add(addUserButton3);
+        addUserButton.setText("Add Admin Staff");
+        addUserButton.setMaximumSize(new java.awt.Dimension(150, 40));
+        addUserButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        addUserButton.addActionListener(this::addUserButtonActionPerformed);
+        jPanel3.add(addUserButton);
 
         modifyUserButton.setText("Modify Admin Staff");
         modifyUserButton.setMaximumSize(new java.awt.Dimension(150, 40));
@@ -306,10 +307,18 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         modifyUserButton.addActionListener(this::modifyUserButtonActionPerformed);
         jPanel3.add(modifyUserButton);
 
+        resetPasswordButton.setText("Reset Password");
+        resetPasswordButton.setMaximumSize(new java.awt.Dimension(150, 40));
+        resetPasswordButton.setMinimumSize(new java.awt.Dimension(150, 40));
+        resetPasswordButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        resetPasswordButton.addActionListener(this::resetPasswordButtonActionPerformed);
+        jPanel3.add(resetPasswordButton);
+
         deleteUserButton.setText("Delete Admin Staff");
         deleteUserButton.setMaximumSize(new java.awt.Dimension(150, 40));
         deleteUserButton.setMinimumSize(new java.awt.Dimension(150, 40));
         deleteUserButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        deleteUserButton.addActionListener(this::deleteUserButtonActionPerformed);
         jPanel3.add(deleteUserButton);
 
         operationsPanel1.add(jPanel3);
@@ -337,7 +346,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
             String joinedDate = DateTime.toDateStringWords(date);
             String joinedTime = DateTime.toTimeString(time);
             String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] adminStaffData = {usr.getId(), WordProcessing.capitalizeEachWord(usr.getName()), joinedDateTime};
+            String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
             model.addRow(adminStaffData);
         }
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
@@ -354,10 +363,11 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         int selectedIndex = sortField.getSelectedIndex();
         int columnToSortIndex;
         switch (selectedIndex) {
-            case 0: columnToSortIndex = 2; break; // "Joined At" -> table column 2
-            case 1: columnToSortIndex = 0; break; // "AdminStaff ID" -> table column 0
-            case 2: columnToSortIndex = 1; break; // "Name" -> table column 1
-            default: columnToSortIndex = 2;
+            case 0: columnToSortIndex = 3; break; // "Joined At" -> table column 2
+            case 1: columnToSortIndex = 0; break;
+            case 2: columnToSortIndex = 1; break;
+            case 3: columnToSortIndex = 2; break;
+            default: columnToSortIndex = 3;
         }
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
     }//GEN-LAST:event_sortFieldActionPerformed
@@ -386,7 +396,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
                 String joinedDate = DateTime.toDateStringWords(date);
                 String joinedTime = DateTime.toTimeString(time);
                 String joinedDateTime = joinedDate + " " + joinedTime;
-                String[] adminStaffData = {usr.getId(), WordProcessing.capitalizeEachWord(usr.getName()), joinedDateTime};
+                String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
                 model.addRow(adminStaffData);
             }
         }
@@ -398,13 +408,173 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         showResultsForLabel.setText("");
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
+    private void deleteUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteUserButtonActionPerformed
+        int selectedRow = adminStaffTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String usrId = adminStaffTable.getValueAt(selectedRow, 0).toString();
+            int choice = JOptionPane.showConfirmDialog(
+                parentWindow,
+                "Are you sure you want to delete this user?\nThis action cannot be undone!",
+                "Confirm User Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+                );
+
+            if (choice == JOptionPane.YES_OPTION) {
+                LinkedHashMap<String, String> msg = this.usrCtrl.deleteUser(usrId);
+                if (msg.get("success") != null) {                
+                        JOptionPane.showMessageDialog(parentWindow, String.format("Admin Staff '%s' is deleted!", usrId));
+                        loadAdminStaffs();
+                } else {
+                    JOptionPane.showMessageDialog(parentWindow, String.format("Fail to delete Admin Staff '%s' :(", usrId) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(parentWindow, "Admin Staff deletion canceled.", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(parentWindow, "Please select a row first", "Advice", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_deleteUserButtonActionPerformed
+
+    private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
+        java.awt.Frame parent = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        CreateNewUser dialog = new CreateNewUser(parent, true, "admin staff", usrCtrl, this::loadAdminStaffs);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_addUserButtonActionPerformed
+
     private void modifyUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyUserButtonActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = adminStaffTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row first");
+            return;
+        }
+
+        String usrId = adminStaffTable.getValueAt(selectedRow, 0).toString();
+        User selectedUsr = UserManagement.getUserById(usrId);
+
+        // Choose what to modify ：D
+        JRadioButton nameOption = new JRadioButton("Name");
+        JRadioButton emailOption = new JRadioButton("Email");
+        JRadioButton bothOption = new JRadioButton("Name & Email");
+        ButtonGroup group = new ButtonGroup();
+        group.add(nameOption);
+        group.add(emailOption);
+        group.add(bothOption);
+        nameOption.setSelected(true); // default
+
+        JPanel choicePanel = new JPanel();
+        choicePanel.setLayout(new javax.swing.BoxLayout(choicePanel, javax.swing.BoxLayout.Y_AXIS));
+        choicePanel.add(new JLabel("What would you like to modify?"));
+        choicePanel.add(nameOption);
+        choicePanel.add(emailOption);
+        choicePanel.add(bothOption);
+
+        int choice = JOptionPane.showConfirmDialog(parentWindow, choicePanel, "Modify Admin Staff", JOptionPane.OK_CANCEL_OPTION);
+        if (choice != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        boolean editName = nameOption.isSelected() || bothOption.isSelected();
+        boolean editEmail = emailOption.isSelected() || bothOption.isSelected();
+
+        JTextField nameField = new JTextField(selectedUsr.getName());
+        JTextField emailField = new JTextField(selectedUsr.getEmail());
+
+        JPanel fieldPanel = new JPanel();
+        fieldPanel.setLayout(new javax.swing.BoxLayout(fieldPanel, javax.swing.BoxLayout.Y_AXIS));
+        if (editName) {
+            fieldPanel.add(new JLabel("Name:"));
+            fieldPanel.add(nameField);
+        }
+        if (editEmail) {
+            fieldPanel.add(new JLabel("Email:"));
+            fieldPanel.add(emailField);
+        }
+
+        int result = JOptionPane.showConfirmDialog(parentWindow, fieldPanel, "Modify Admin Staff", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String newName = nameField.getText();
+        String newEmail = emailField.getText();
+
+        if (editName && newName.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow, "Name cannot be empty", "Modify Failed", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (editEmail && (newEmail.isEmpty() || !this.usrCtrl.isValidEmail(newEmail))) {
+            JOptionPane.showMessageDialog(parentWindow, "Please enter a valid email address", "Modify Failed", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        StringBuilder errors = new StringBuilder();
+        boolean anyUpdated = false;
+
+        if (editName && !selectedUsr.getName().equals(newName)) {
+            LinkedHashMap<String, String> msg = this.usrCtrl.modifyUserName(newName, usrId);
+            if (msg.get("success") != null) {
+                anyUpdated = true;
+            } else {
+                errors.append("Name: ").append(msg.get("msg")).append("\n");
+            }
+        }
+
+        if (editEmail && !selectedUsr.getEmail().equals(newEmail)) {
+            LinkedHashMap<String, String> msg = this.usrCtrl.modifyEmail(newEmail, usrId);
+            if (msg.get("success") != null) {
+                anyUpdated = true;
+            } else {
+                errors.append("Email: ").append(msg.get("msg")).append("\n");
+            }
+        }
+
+        if (errors.length() > 0) {
+            JOptionPane.showMessageDialog(parentWindow, "Some updates failed:\n" + errors, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (anyUpdated) {
+            JOptionPane.showMessageDialog(parentWindow, String.format("User '%s' updated!", usrId));
+            loadAdminStaffs(); // refresh whole table instead of manually patching cells
+        }
     }//GEN-LAST:event_modifyUserButtonActionPerformed
+
+    private void resetPasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetPasswordButtonActionPerformed
+        int selectedRow = adminStaffTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row first");
+            return;
+        }
+
+        String usrId = adminStaffTable.getValueAt(selectedRow, 0).toString();
+        User selectedUsr = UserManagement.getUserById(usrId);
+
+        int choice = JOptionPane.showConfirmDialog(
+            parentWindow,
+            String.format("Reset password for '%s'?\nA new temporary password will be generated.", selectedUsr.getName()),
+            "Confirm Password Reset",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        if (choice != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        String tempPwd = UserManagement.generateTemporaryPassword();
+        LinkedHashMap<String, String> msg = this.usrCtrl.modifyPwd(tempPwd, usrId);
+
+        if (msg.get("success") != null) {
+            String showNewPwd = String.format("User ID: %s\nNew Temporary Password: %s\n\nPlease notify the user to update the password for security", usrId, tempPwd);
+            JOptionPane.showMessageDialog(parentWindow, showNewPwd, "Password Reset", JOptionPane.INFORMATION_MESSAGE);
+            // IMPORTANT !!!!! send email~~~~~
+        } else {
+            JOptionPane.showMessageDialog(parentWindow, String.format("Failed to reset password for '%s' :(\n", usrId) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_resetPasswordButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addUserButton3;
+    private javax.swing.JButton addUserButton;
     private javax.swing.JTable adminStaffTable;
     private javax.swing.JButton deleteUserButton;
     private javax.swing.Box.Filler filler1;
@@ -416,6 +586,7 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
     private javax.swing.JButton modifyUserButton;
     private javax.swing.JLabel operationsLabel1;
     private javax.swing.JPanel operationsPanel1;
+    private javax.swing.JButton resetPasswordButton;
     private javax.swing.JButton resetSearchButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
