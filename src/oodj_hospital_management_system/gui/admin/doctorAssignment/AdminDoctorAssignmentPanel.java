@@ -4,23 +4,22 @@
  */
 package oodj_hospital_management_system.gui.admin.doctorAssignment;
 
-import oodj_hospital_management_system.gui.admin.user_management.*;
-import java.awt.CardLayout;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.UserManagement;
-import oodj_hospital_management_system.utils.DateTime;
 
 /**
  *
@@ -29,6 +28,8 @@ import oodj_hospital_management_system.utils.DateTime;
 public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private List<User> currentDoctors;
+    private List<String> medicalManagerLabels = new ArrayList<>();
+    private List<MedicalManager> medicalManagers = new ArrayList<>();
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -40,6 +41,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     public AdminDoctorAssignmentPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        loadDoctors();
     }
     
     public void loadDoctors() {
@@ -49,14 +51,14 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         List<User> allDoctors = UserManagement.getAllDoctors();
         currentDoctors = allDoctors;
         for (User usr: allDoctors) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] doctorData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
+            Doctor doctor = (Doctor) usr;
+            MedicalManager medicalManager = doctor.getMedicalManager();
+            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
+            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
             model.addRow(doctorData);
+            medicalManagerLabels.add(managerLabel);
+            medicalManagers.add(medicalManager);
         }
 //        userTable = new JTable(model);
     }
@@ -107,10 +109,10 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         sortByLabel1 = new javax.swing.JLabel();
         sortField = new javax.swing.JComboBox<>();
         jPanel7 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        doctorTable = new javax.swing.JTable();
         showResultsForPanel = new javax.swing.JPanel();
         showResultsForLabel = new javax.swing.JLabel();
+        tableScrollPane = new javax.swing.JScrollPane();
+        doctorTable = new javax.swing.JTable();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
@@ -285,9 +287,11 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         sortByPane1.setBackground(new java.awt.Color(255, 255, 255));
 
         assignDepartmentButton.setText("Assign Department");
+        assignDepartmentButton.addActionListener(this::assignDepartmentButtonActionPerformed);
         sortByPane1.add(assignDepartmentButton);
 
         assignMedicalManagerButton.setText("Assign Medical Manager");
+        assignMedicalManagerButton.addActionListener(this::assignMedicalManagerButtonActionPerformed);
         sortByPane1.add(assignMedicalManagerButton);
 
         sortByLabel1.setText("Sort By");
@@ -307,6 +311,17 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
+        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setAlignmentY(0.0F);
+        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        showResultsForPanel.add(showResultsForLabel);
+
+        jPanel7.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
+
+        tableScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+        tableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        doctorTable.setBackground(new java.awt.Color(255, 255, 255));
         doctorTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -315,7 +330,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Doctor ID", "Doctor Name", "Medical Manager", "Department"
+                "Doctor ID", "Name", "Medical Manager", "Department"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -326,16 +341,12 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(doctorTable);
+        doctorTable.setAlignmentY(0.0F);
+        doctorTable.setRowHeight(40);
+        doctorTable.setRowMargin(5);
+        tableScrollPane.setViewportView(doctorTable);
 
-        jPanel7.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
-        showResultsForPanel.setAlignmentY(0.0F);
-        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        showResultsForPanel.add(showResultsForLabel);
-
-        jPanel7.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
+        jPanel7.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
         usrMngContentArea.add(jPanel7, java.awt.BorderLayout.CENTER);
 
@@ -354,14 +365,12 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
         model.setRowCount(0);
         for (User usr: searchResults) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] patientData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
-            model.addRow(patientData);
+            Doctor doctor = (Doctor) usr;
+            MedicalManager medicalManager = doctor.getMedicalManager();
+            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
+            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
+            model.addRow(doctorData);
         }
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
     }//GEN-LAST:event_searchFilterButtonActionPerformed
@@ -384,16 +393,11 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
         model.setRowCount(0);
         for (User usr: searchResults) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
             Doctor doctor = (Doctor) usr;
             MedicalManager medicalManager = doctor.getMedicalManager();
             String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
-            String[] doctorData = {doctor.getId(), doctor.getName(), usr.getEmail(), joinedDateTime};
+            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
             model.addRow(doctorData);
         }
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
@@ -425,6 +429,84 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
     }//GEN-LAST:event_sortFieldActionPerformed
 
+    private void assignDepartmentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignDepartmentButtonActionPerformed
+        int selectedRow = doctorTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row first");
+            return;
+        }
+
+        String usrId = doctorTable.getValueAt(selectedRow, 0).toString();
+        Doctor selectedDoctor = (Doctor) UserManagement.getUserById(usrId);
+        
+        List<String> departmentNames = new ArrayList<>();
+        List<String> departmentIds = new ArrayList<>();
+        
+        List<MedicalDepartment> medicalDepartments = this.usrCtrl.getDoctorController().getAllMedicalDepartments();
+        
+        for (MedicalDepartment department: medicalDepartments) {
+            departmentNames.add(department.getDepartmentName());
+            departmentIds.add(department.getDepartmentId());
+        }
+        
+        // convert dynamic size list to fixed-size array
+        String[] departmentNameItems = departmentNames.toArray(new String[departmentNames.size()]);
+        
+        JComboBox<String> departmentCombo = new JComboBox<>(departmentNameItems);
+    
+        Object[] message = {
+            "Medical Department", departmentCombo
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Assign Medical Department", JOptionPane.OK_CANCEL_OPTION);
+        
+        if (option == JOptionPane.OK_OPTION) {
+            String doctorDepartment = departmentCombo.getSelectedItem().toString();
+            int selectedIndex = departmentCombo.getSelectedIndex();
+            // Search for medical department
+            LinkedHashMap<String, String> msg = this.usrCtrl.updateDoctorDepartment(usrId, departmentIds.get(selectedIndex));
+            if (msg.get("success").equals("true")) {
+                JOptionPane.showMessageDialog(this, msg.get("msg"));
+                loadDoctors();
+            } else {
+                JOptionPane.showMessageDialog(this, String.format("Fail to assign new Medical Department \'%s\' to Doctor '%s' :(\n", doctorDepartment, selectedDoctor.getName()) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_assignDepartmentButtonActionPerformed
+
+    private void assignMedicalManagerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignMedicalManagerButtonActionPerformed
+        int selectedRow = doctorTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row first");
+            return;
+        }
+
+        String usrId = doctorTable.getValueAt(selectedRow, 0).toString();
+        Doctor selectedDoctor = (Doctor) UserManagement.getUserById(usrId);
+        
+        String[] medicalManagerItems = medicalManagerLabels.toArray(new String[medicalManagerLabels.size()]);
+        
+        JComboBox<String> medicalManagerCombo = new JComboBox<>(medicalManagerItems);
+    
+        Object[] message = {
+            "Medical Manager", medicalManagerCombo
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Assign Medical Manager", JOptionPane.OK_CANCEL_OPTION);
+        
+        if (option == JOptionPane.OK_OPTION) {
+            String selectedMedicalManagerLabel = medicalManagerCombo.getSelectedItem().toString();
+            int selectedIndex = medicalManagerCombo.getSelectedIndex();
+            LinkedHashMap<String, String> msg = this.usrCtrl.assignDoctorToMedicalManager(selectedDoctor, medicalManagers.get(selectedIndex));
+            if (msg.get("success").equals("true")) {
+                JOptionPane.showMessageDialog(this, msg.get("msg"));
+                loadDoctors();
+            } else {
+                JOptionPane.showMessageDialog(this, String.format("Fail to assign Doctor '%s' to Medical Manager %s:(\n", selectedDoctor.getName(), selectedMedicalManagerLabel) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_assignMedicalManagerButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton assignDepartmentButton;
@@ -448,7 +530,6 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton resetFilterButton;
@@ -462,6 +543,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private javax.swing.JLabel sortByLabel1;
     private javax.swing.JPanel sortByPane1;
     private javax.swing.JComboBox<String> sortField;
+    private javax.swing.JScrollPane tableScrollPane;
     private javax.swing.JPanel usrMngContentArea;
     // End of variables declaration//GEN-END:variables
 }

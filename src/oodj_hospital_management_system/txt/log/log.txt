@@ -150,3 +150,15 @@
 [2026-08-27 10:57:10] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-27 10:58:55] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PAT72528 - Phang}
 [2026-08-27 10:59:36] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATaa85d - chee}
+[2026-08-27 15:23:52] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 15:28:48] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 15:29:35] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATb3d5f - paureen}
+[2026-08-27 15:32:06] User {admin staff - #ADMd4e8f - uehehe} modified email for User {patient - #PATb3d5f - paureen}
+[2026-08-27 16:42:45] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 16:43:09] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT001}
+[2026-08-27 16:43:21] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT001}
+[2026-08-27 16:46:16] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 16:49:02] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 16:49:10] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT002}
+[2026-08-27 17:21:41] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 17:23:35] User {admin staff - #ADMd4e8f - uehehe} logged in
