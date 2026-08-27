@@ -6,8 +6,21 @@ package oodj_hospital_management_system.gui.admin.doctorAssignment;
 
 import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.*;
+import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.UserManagement;
+import oodj_hospital_management_system.utils.DateTime;
 
 /**
  *
@@ -15,7 +28,7 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
  */
 public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
-    private CardLayout cl;
+    private List<User> currentDoctors;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -29,26 +42,27 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         initComponents();
     }
     
-    private void setNavButtonActive(javax.swing.JButton button, boolean active) {
-        oodj_hospital_management_system.gui.utils.RoundedButton rb = (oodj_hospital_management_system.gui.utils.RoundedButton) button;
-
-        java.awt.Color lightGrey = new java.awt.Color(230, 230, 230);
-        java.awt.Color hoverGrey = new java.awt.Color(200, 200, 200);
-        java.awt.Color pressedGrey = new java.awt.Color(180, 180, 180);
-
-        java.awt.Color blue = new java.awt.Color(41, 121, 255);
-        java.awt.Color hoverBlue = new java.awt.Color(25, 100, 230);
-        java.awt.Color pressedBlue = new java.awt.Color(15, 85, 210);
-
-        if (active) {
-            rb.setButtonColors(blue, hoverBlue, pressedBlue);
-            rb.setForeground(java.awt.Color.WHITE);
-            rb.setFont(rb.getFont().deriveFont(java.awt.Font.BOLD));
-        } else {
-            rb.setButtonColors(lightGrey, hoverGrey, pressedGrey);
-            rb.setForeground(new java.awt.Color(60, 60, 60));
-            rb.setFont(rb.getFont().deriveFont(java.awt.Font.PLAIN));
+    public void loadDoctors() {
+        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
+        model.setRowCount(0);
+//        UserManagement usrServices = this.usrCtrl.getUserServices();
+        List<User> allDoctors = UserManagement.getAllDoctors();
+        currentDoctors = allDoctors;
+        for (User usr: allDoctors) {
+            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
+            LocalDate date = DateTime.getDate(dateTimeObj);
+            LocalTime time = DateTime.getTime(dateTimeObj);
+            String joinedDate = DateTime.toDateStringWords(date);
+            String joinedTime = DateTime.toTimeString(time);
+            String joinedDateTime = joinedDate + " " + joinedTime;
+            String[] doctorData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
+            model.addRow(doctorData);
         }
+//        userTable = new JTable(model);
+    }
+    
+    private void updateResultLabel(String message, int count) {
+        showResultsForLabel.setText(message + " (" + count + " found)");
     }
 
     /**
@@ -67,12 +81,36 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        navigationPane = new javax.swing.JPanel();
+        filterPanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox<>();
+        searchFilterButton = new javax.swing.JButton();
+        resetFilterButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         usrMngContentArea = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        searchPane = new javax.swing.JPanel();
+        searchField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
+        resetSearchButton = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        sortByPane1 = new javax.swing.JPanel();
+        assignDepartmentButton = new javax.swing.JButton();
+        assignMedicalManagerButton = new javax.swing.JButton();
+        sortByLabel1 = new javax.swing.JLabel();
+        sortField = new javax.swing.JComboBox<>();
+        jPanel7 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        doctorTable = new javax.swing.JTable();
+        showResultsForPanel = new javax.swing.JPanel();
+        showResultsForLabel = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
@@ -118,50 +156,13 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        navigationPane.setBackground(new java.awt.Color(255, 255, 255));
-        navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
-        navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
-        navigationPane.setLayout(new java.awt.GridBagLayout());
+        filterPanel.setBackground(new java.awt.Color(255, 255, 255));
+        filterPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
+        filterPanel.setPreferredSize(new java.awt.Dimension(16897, 200));
+        filterPanel.setLayout(new java.awt.GridBagLayout());
 
-        patientButton.setText("Patient");
-        patientButton.setMaximumSize(new java.awt.Dimension(250, 50));
-        patientButton.setMinimumSize(new java.awt.Dimension(250, 50));
-        patientButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        patientButton.setSelected(true);
-        patientButton.addActionListener(this::patientButtonActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
-        navigationPane.add(patientButton, gridBagConstraints);
-
-        doctorButton.setText("Doctor");
-        doctorButton.setMaximumSize(new java.awt.Dimension(250, 50));
-        doctorButton.setMinimumSize(new java.awt.Dimension(250, 50));
-        doctorButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        doctorButton.addActionListener(this::doctorButtonActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
-        navigationPane.add(doctorButton, gridBagConstraints);
-
-        medicalManagerButton.setText("Medical Manager");
-        medicalManagerButton.setMaximumSize(new java.awt.Dimension(250, 50));
-        medicalManagerButton.setMinimumSize(new java.awt.Dimension(250, 50));
-        medicalManagerButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        medicalManagerButton.addActionListener(this::medicalManagerButtonActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
-        navigationPane.add(medicalManagerButton, gridBagConstraints);
-
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel2.setAlignmentX(0.0F);
         jPanel2.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanel2.setPreferredSize(new java.awt.Dimension(250, 50));
@@ -181,9 +182,73 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        navigationPane.add(jPanel2, gridBagConstraints);
+        filterPanel.add(jPanel2, gridBagConstraints);
 
-        jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
+        jPanel3.setAlignmentX(0.0F);
+        jPanel3.setMaximumSize(new java.awt.Dimension(250, 50));
+        jPanel3.setPreferredSize(new java.awt.Dimension(250, 50));
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel4.setText("Department");
+        jLabel4.setAlignmentY(0.0F);
+        jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel4.setIconTextGap(0);
+        jLabel4.setMaximumSize(new java.awt.Dimension(250, 16));
+        jLabel4.setPreferredSize(new java.awt.Dimension(250, 16));
+        jPanel3.add(jLabel4);
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel3.add(jComboBox2);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        filterPanel.add(jPanel3, gridBagConstraints);
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
+        jPanel4.setAlignmentX(0.0F);
+        jPanel4.setMaximumSize(new java.awt.Dimension(250, 50));
+        jPanel4.setPreferredSize(new java.awt.Dimension(250, 50));
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel5.setText("Assignment Status");
+        jLabel5.setAlignmentY(0.0F);
+        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabel5.setIconTextGap(0);
+        jLabel5.setMaximumSize(new java.awt.Dimension(250, 16));
+        jLabel5.setPreferredSize(new java.awt.Dimension(250, 16));
+        jPanel4.add(jLabel5);
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel4.add(jComboBox3);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        filterPanel.add(jPanel4, gridBagConstraints);
+
+        searchFilterButton.setText("Search");
+        searchFilterButton.addActionListener(this::searchFilterButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        filterPanel.add(searchFilterButton, gridBagConstraints);
+
+        resetFilterButton.setText("Reset");
+        resetFilterButton.addActionListener(this::resetFilterButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        filterPanel.add(resetFilterButton, gridBagConstraints);
+
+        jPanel5.add(filterPanel, java.awt.BorderLayout.CENTER);
 
         jSeparator1.setBackground(new java.awt.Color(210, 212, 220));
         jSeparator1.setForeground(new java.awt.Color(210, 212, 220));
@@ -193,7 +258,87 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         usrMngContentArea.setBackground(new java.awt.Color(255, 255, 255));
         usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
-        usrMngContentArea.setLayout(new java.awt.CardLayout());
+        usrMngContentArea.setLayout(new java.awt.BorderLayout());
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setPreferredSize(new java.awt.Dimension(1160, 50));
+        jPanel6.setLayout(new java.awt.BorderLayout());
+
+        searchPane.setBackground(new java.awt.Color(255, 255, 255));
+
+        searchField.setMinimumSize(new java.awt.Dimension(250, 22));
+        searchField.setPreferredSize(new java.awt.Dimension(250, 40));
+        searchField.addActionListener(this::searchFieldActionPerformed);
+        searchPane.add(searchField);
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(this::searchButtonActionPerformed);
+        searchPane.add(searchButton);
+
+        resetSearchButton.setText("Reset");
+        resetSearchButton.addActionListener(this::resetSearchButtonActionPerformed);
+        searchPane.add(resetSearchButton);
+
+        jPanel6.add(searchPane, java.awt.BorderLayout.WEST);
+        jPanel6.add(filler1, java.awt.BorderLayout.LINE_END);
+
+        sortByPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        assignDepartmentButton.setText("Assign Department");
+        sortByPane1.add(assignDepartmentButton);
+
+        assignMedicalManagerButton.setText("Assign Medical Manager");
+        sortByPane1.add(assignMedicalManagerButton);
+
+        sortByLabel1.setText("Sort By");
+        sortByPane1.add(sortByLabel1);
+
+        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Name", "Email" }));
+        sortField.setPreferredSize(new java.awt.Dimension(150, 30));
+        sortField.setRequestFocusEnabled(false);
+        sortField.addActionListener(this::sortFieldActionPerformed);
+        sortByPane1.add(sortField);
+
+        jPanel6.add(sortByPane1, java.awt.BorderLayout.LINE_END);
+
+        usrMngContentArea.add(jPanel6, java.awt.BorderLayout.NORTH);
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        doctorTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Doctor ID", "Doctor Name", "Medical Manager", "Department"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(doctorTable);
+
+        jPanel7.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setAlignmentY(0.0F);
+        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        showResultsForPanel.add(showResultsForLabel);
+
+        jPanel7.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
+
+        usrMngContentArea.add(jPanel7, java.awt.BorderLayout.CENTER);
+
         dashboardPanel.add(usrMngContentArea, java.awt.BorderLayout.CENTER);
 
         jScrollPane2.setViewportView(dashboardPanel);
@@ -201,34 +346,122 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         add(jScrollPane2);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void medicalManagerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicalManagerButtonActionPerformed
-        //
-    }//GEN-LAST:event_medicalManagerButtonActionPerformed
+    private void searchFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFilterButtonActionPerformed
+        String keyword = searchField.getText();
+        currentDoctors = UserManagement.getAllPatients();
+        List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentDoctors);
+        currentDoctors = searchResults;
+        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
+        model.setRowCount(0);
+        for (User usr: searchResults) {
+            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
+            LocalDate date = DateTime.getDate(dateTimeObj);
+            LocalTime time = DateTime.getTime(dateTimeObj);
+            String joinedDate = DateTime.toDateStringWords(date);
+            String joinedTime = DateTime.toTimeString(time);
+            String joinedDateTime = joinedDate + " " + joinedTime;
+            String[] patientData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
+            model.addRow(patientData);
+        }
+        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+    }//GEN-LAST:event_searchFilterButtonActionPerformed
 
-    private void patientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patientButtonActionPerformed
-        //
-    }//GEN-LAST:event_patientButtonActionPerformed
+    private void resetFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetFilterButtonActionPerformed
+        loadDoctors();
+        searchField.setText("");
+        showResultsForLabel.setText("");
+    }//GEN-LAST:event_resetFilterButtonActionPerformed
 
-    private void doctorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doctorButtonActionPerformed
-        //
-    }//GEN-LAST:event_doctorButtonActionPerformed
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchFieldActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String keyword = searchField.getText();
+        currentDoctors = UserManagement.getAllDoctors();
+        List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentDoctors);
+        currentDoctors = searchResults;
+        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
+        model.setRowCount(0);
+        for (User usr: searchResults) {
+            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
+            LocalDate date = DateTime.getDate(dateTimeObj);
+            LocalTime time = DateTime.getTime(dateTimeObj);
+            String joinedDate = DateTime.toDateStringWords(date);
+            String joinedTime = DateTime.toTimeString(time);
+            String joinedDateTime = joinedDate + " " + joinedTime;
+            Doctor doctor = (Doctor) usr;
+            MedicalManager medicalManager = doctor.getMedicalManager();
+            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
+            String[] doctorData = {doctor.getId(), doctor.getName(), usr.getEmail(), joinedDateTime};
+            model.addRow(doctorData);
+        }
+        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
+        loadDoctors();
+        searchField.setText("");
+        showResultsForLabel.setText("");
+    }//GEN-LAST:event_resetSearchButtonActionPerformed
+
+    private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
+        searchField.setText("");
+        showResultsForLabel.setText("");
+        String selected = (String) sortField.getSelectedItem();
+
+        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        doctorTable.setRowSorter(sorter);
+        int selectedIndex = sortField.getSelectedIndex();
+        int columnToSortIndex;
+        switch (selectedIndex) {
+            case 0: columnToSortIndex = 3; break; // "Joined At" -> table column 2
+            case 1: columnToSortIndex = 0; break;
+            case 2: columnToSortIndex = 1; break;
+            case 3: columnToSortIndex = 2; break;
+            default: columnToSortIndex = 3;
+        }
+        sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
+    }//GEN-LAST:event_sortFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton assignDepartmentButton;
+    private javax.swing.JButton assignMedicalManagerButton;
     private javax.swing.JPanel dashboardPanel;
-    private final javax.swing.JButton doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
+    private javax.swing.JTable doctorTable;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JPanel filterPanel;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private final javax.swing.JButton medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
-    private javax.swing.JPanel navigationPane;
-    private final javax.swing.JButton patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
+    private javax.swing.JButton resetFilterButton;
+    private javax.swing.JButton resetSearchButton;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchField;
+    private javax.swing.JButton searchFilterButton;
+    private javax.swing.JPanel searchPane;
+    private javax.swing.JLabel showResultsForLabel;
+    private javax.swing.JPanel showResultsForPanel;
+    private javax.swing.JLabel sortByLabel1;
+    private javax.swing.JPanel sortByPane1;
+    private javax.swing.JComboBox<String> sortField;
     private javax.swing.JPanel usrMngContentArea;
     // End of variables declaration//GEN-END:variables
 }
