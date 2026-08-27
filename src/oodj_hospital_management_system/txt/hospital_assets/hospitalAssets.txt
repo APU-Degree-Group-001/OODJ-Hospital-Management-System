@@ -1,6 +1,6 @@
 assetId, assetType, assetName, imagePath, location, description, totalBeds
 #ROOM001, Consultation Room, Updated Asset Name, , Level 2 - Updated, Updated via controller test, 
-#ROOM002, Consultation Room, Consultation Room 2, images/assets/room002.jpg, Block A Level 1, General consultation room, 
+#ROOM002, Consultation Room, Consultation Room 2, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block A Level 1, General consultation room, 
 #WARD001, Ward, General Ward A, , Block B Level 2, Updated via controller test, 15
 #LAB001, Laboratory, Main Laboratory, images/assets/lab001.jpg, Block C Level 1, Laboratory for medical testing, 
 #XRAY001, XRay Room, X-Ray Room 1, images/assets/xray001.jpg, Block C Level 2, Room equipped for X-ray imaging, 
@@ -8,4 +8,4 @@ assetId, assetType, assetName, imagePath, location, description, totalBeds
 #AST29ef6, Consultation Room, Room A, images/roomA.png, Level 2#|Block B, Standard consultation room with basic equipment, 
 #ASTe848a, Consultation Room, Room A, images/roomA.png, Level 2#|Block B, Standard consultation room with basic equipment, 
 #AST74cbd, EQUIPMENT, Test X-Ray Machine, , Level 2, Created via controller test, 
-#AST8f5e4, WARD, Test General Ward, , Level 3, Created via controller test, 10
+#AST8f5e4, WARD, Test General Ward, oodj_hospital_management_system/assets/img/hospital_assets/ward.jpeg, Level 3, Created via controller test, 10

@@ -162,3 +162,32 @@
 [2026-08-27 16:49:10] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT002}
 [2026-08-27 17:21:41] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-27 17:23:35] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:02:46] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:13:09] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:13:29] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOCd4e8c} to Medical Manager {#MNG79e32}
+[2026-08-27 20:13:36] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOCd4e8c} to Medical Manager {#MNG58321}
+[2026-08-27 20:17:50] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:34:44] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:36:09] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:38:33] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:46:09] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:57:07] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 20:58:42] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:21:15] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:22:16] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:24:41] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:30:17] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:45:00] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:45:53] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:48:26] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:52:17] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:54:56] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:57:58] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-27 23:59:40] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:01:32] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:04:51] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:08:00] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:19:15] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:26:25] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:27:49] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-28 00:32:55] User {admin staff - #ADMd4e8f - uehehe} logged in

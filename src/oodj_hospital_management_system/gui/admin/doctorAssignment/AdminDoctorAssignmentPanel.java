@@ -28,9 +28,10 @@ import oodj_hospital_management_system.services.UserManagement;
 public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private List<User> currentDoctors;
-    private List<String> medicalManagerLabels = new ArrayList<>();
-    private List<MedicalManager> medicalManagers = new ArrayList<>();
-        
+    private List<MedicalManager> medicalManagers = new ArrayList<>();;
+    private List<String> medicalManagerLabels = new ArrayList<>();;
+    private List<MedicalDepartment> medicalDepartments = new ArrayList<>();;
+    private List<String> medicalDepartmentLabels = new ArrayList<>();;
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
     private final java.awt.Color selectedTextColor = new java.awt.Color(41, 98, 255);
@@ -42,6 +43,41 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         loadDoctors();
+        loadSelections();
+    }
+    
+    public void loadSelections() {
+        medicalManagerLabels.clear();
+        medicalDepartmentLabels.clear();
+        medicalManagers = UserManagement.getAllMedicalManagers()
+                                        .stream()
+                                        .filter(usr -> usr instanceof MedicalManager)
+                                        .map(usr -> (MedicalManager) usr)
+                                        .toList();
+        medicalManagerLabels.add("Default");
+        medicalManagerLabels.add("Unassigned");
+        medicalManagerLabels.addAll(medicalManagers.stream()
+                                                .map(usr -> usr.getId() + " - " + usr.getName())
+                                                .toList());
+        medicalDepartments = this.usrCtrl.getDoctorController().getAllMedicalDepartments();
+        medicalDepartmentLabels.add("Default");
+        medicalDepartmentLabels.add("Unassigned");
+        medicalDepartmentLabels.addAll(medicalDepartments.stream()
+                                                .map(department -> department.getDepartmentName())
+                                                .toList());
+        
+        // Convert dynamic size list to fixed-size list array~~
+        String[] medicalManagerItems = medicalManagerLabels.toArray(new String[medicalManagerLabels.size()]);
+        String[] medicalDepartmentItems = medicalDepartmentLabels.toArray(new String[medicalDepartmentLabels.size()]);
+        
+        medicalManagerFilter.removeAllItems();
+        medicalDepartmentFilter.removeAllItems();
+        medicalManagerLabels.forEach(
+            item -> medicalManagerFilter.addItem(item)
+        );
+        medicalDepartmentLabels.forEach(
+            item -> medicalDepartmentFilter.addItem(item)
+        );
     }
     
     public void loadDoctors() {
@@ -52,13 +88,16 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         currentDoctors = allDoctors;
         for (User usr: allDoctors) {
             Doctor doctor = (Doctor) usr;
-            MedicalManager medicalManager = doctor.getMedicalManager();
-            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
-            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
-            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
+            MedicalManager doctorManager = doctor.getMedicalManager();
+            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
+                    ? doctorManager.getId() + " - " + doctorManager.getName()
+                    : "Unassigned";
+            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
+            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
+                    ? doctorDepartment.getDepartmentName()
+                    : "Unassigned";
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
             model.addRow(doctorData);
-            medicalManagerLabels.add(managerLabel);
-            medicalManagers.add(medicalManager);
         }
 //        userTable = new JTable(model);
     }
@@ -86,13 +125,10 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         filterPanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        medicalManagerFilter = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        medicalDepartmentFilter = new javax.swing.JComboBox<>();
         searchFilterButton = new javax.swing.JButton();
         resetFilterButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -179,8 +215,8 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jLabel3.setPreferredSize(new java.awt.Dimension(250, 16));
         jPanel2.add(jLabel3);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel2.add(jComboBox1);
+        medicalManagerFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.add(medicalManagerFilter);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -202,35 +238,12 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jLabel4.setPreferredSize(new java.awt.Dimension(250, 16));
         jPanel3.add(jLabel4);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox2);
+        medicalDepartmentFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel3.add(medicalDepartmentFilter);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         filterPanel.add(jPanel3, gridBagConstraints);
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
-        jPanel4.setAlignmentX(0.0F);
-        jPanel4.setMaximumSize(new java.awt.Dimension(250, 50));
-        jPanel4.setPreferredSize(new java.awt.Dimension(250, 50));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel5.setText("Assignment Status");
-        jLabel5.setAlignmentY(0.0F);
-        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jLabel5.setIconTextGap(0);
-        jLabel5.setMaximumSize(new java.awt.Dimension(250, 16));
-        jLabel5.setPreferredSize(new java.awt.Dimension(250, 16));
-        jPanel4.add(jLabel5);
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel4.add(jComboBox3);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        filterPanel.add(jPanel4, gridBagConstraints);
 
         searchFilterButton.setText("Search");
         searchFilterButton.addActionListener(this::searchFilterButtonActionPerformed);
@@ -358,26 +371,65 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFilterButtonActionPerformed
-        String keyword = searchField.getText();
-        currentDoctors = UserManagement.getAllPatients();
-        List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentDoctors);
-        currentDoctors = searchResults;
+        int managerIndex = medicalManagerFilter.getSelectedIndex();
+        int departmentIndex = medicalDepartmentFilter.getSelectedIndex();
+        String managerLabelSelected = (String) medicalManagerFilter.getSelectedItem();
+        String departmentLabelSelected = (String) medicalDepartmentFilter.getSelectedItem();
+
+        List<User> allDoctors = UserManagement.getAllDoctors();
+        List<User> filteredDoctors = new ArrayList<>();
+
+        for (User usr : allDoctors) {
+            Doctor doctor = (Doctor) usr;
+            boolean matchesManager = true;
+            boolean matchesDepartment = true;
+            if (managerIndex == 1) {
+                MedicalManager m = doctor.getMedicalManager();
+                matchesManager = (m == null || m.getId() == null || m.getId().isEmpty());
+            } else if (managerIndex > 1) {
+                MedicalManager selectedManager = medicalManagers.get(managerIndex - 2);
+                MedicalManager m = doctor.getMedicalManager();
+                matchesManager = (m != null && m.getId() != null && m.getId().equals(selectedManager.getId()));
+            }
+            if (departmentIndex == 1) {
+                MedicalDepartment d = doctor.getMedicalDepartment();
+                matchesDepartment = (d == null || d.getDepartmentId() == null || d.getDepartmentId().isEmpty());
+            } else if (departmentIndex > 1) {
+                MedicalDepartment selectedDepartment = medicalDepartments.get(departmentIndex - 2);
+                MedicalDepartment d = doctor.getMedicalDepartment();
+                matchesDepartment = (d != null && d.getDepartmentId() != null && d.getDepartmentId().equals(selectedDepartment.getDepartmentId()));
+            }
+
+            if (matchesManager && matchesDepartment) {
+                filteredDoctors.add(usr);
+            }
+        }
+
+        currentDoctors = filteredDoctors;
+
         DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
         model.setRowCount(0);
-        for (User usr: searchResults) {
+        for (User usr : filteredDoctors) {
             Doctor doctor = (Doctor) usr;
-            MedicalManager medicalManager = doctor.getMedicalManager();
-            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
-            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
-            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
+            MedicalManager doctorManager = doctor.getMedicalManager();
+            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
+                    ? doctorManager.getId() + " - " + doctorManager.getName()
+                    : "Unassigned";
+            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
+            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
+                    ? doctorDepartment.getDepartmentName()
+                    : "Unassigned";
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
             model.addRow(doctorData);
         }
-        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+
+        updateResultLabel("Showing results for Manager: \"" + managerLabelSelected + "\", Department: \"" + departmentLabelSelected + "\"", filteredDoctors.size());
     }//GEN-LAST:event_searchFilterButtonActionPerformed
 
     private void resetFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetFilterButtonActionPerformed
         loadDoctors();
-        searchField.setText("");
+        medicalManagerFilter.setSelectedIndex(0);
+        medicalDepartmentFilter.setSelectedIndex(0);
         showResultsForLabel.setText("");
     }//GEN-LAST:event_resetFilterButtonActionPerformed
 
@@ -394,10 +446,15 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         model.setRowCount(0);
         for (User usr: searchResults) {
             Doctor doctor = (Doctor) usr;
-            MedicalManager medicalManager = doctor.getMedicalManager();
-            String managerLabel = medicalManager.getId() + " - " + medicalManager.getName();
-            MedicalDepartment medicalDepartment = doctor.getMedicalDepartment();
-            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartment.getDepartmentName()};
+            MedicalManager doctorManager = doctor.getMedicalManager();
+            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
+                    ? doctorManager.getId() + " - " + doctorManager.getName()
+                    : "Unassigned";
+            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
+            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
+                    ? doctorDepartment.getDepartmentName()
+                    : "Unassigned";
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
             model.addRow(doctorData);
         }
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
@@ -442,14 +499,12 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         List<String> departmentNames = new ArrayList<>();
         List<String> departmentIds = new ArrayList<>();
         
-        List<MedicalDepartment> medicalDepartments = this.usrCtrl.getDoctorController().getAllMedicalDepartments();
-        
         for (MedicalDepartment department: medicalDepartments) {
             departmentNames.add(department.getDepartmentName());
             departmentIds.add(department.getDepartmentId());
         }
         
-        // convert dynamic size list to fixed-size array
+        // Convert dynamic size list to fixed-size array
         String[] departmentNameItems = departmentNames.toArray(new String[departmentNames.size()]);
         
         JComboBox<String> departmentCombo = new JComboBox<>(departmentNameItems);
@@ -515,23 +570,20 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
     private javax.swing.JTable doctorTable;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel filterPanel;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JComboBox<String> medicalDepartmentFilter;
+    private javax.swing.JComboBox<String> medicalManagerFilter;
     private javax.swing.JButton resetFilterButton;
     private javax.swing.JButton resetSearchButton;
     private javax.swing.JButton searchButton;

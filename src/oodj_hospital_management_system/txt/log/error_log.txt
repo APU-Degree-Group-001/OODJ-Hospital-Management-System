@@ -4122,3 +4122,7 @@ User Handling Error: Invalid email format
 	ErrorMsg: Incorrect Login Credentials
 [2026-08-26 22:02:24] User {admin staff - #ADMd4e8f - uehehe} failed to modify email for User {medical manager - #MNG79e32 - Reen}
 	ErrorMsg: User '#MNG79e32''s email is not modified: email 'reen@gmail.com' is already in use
+[2026-08-27 23:59:23] User with ID '#ADM4de8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-08-27 23:59:31] User with ID '#ADM4de8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
