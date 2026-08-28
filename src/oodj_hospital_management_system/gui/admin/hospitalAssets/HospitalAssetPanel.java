@@ -151,12 +151,12 @@ public class HospitalAssetPanel extends RoundedPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(descriptionField))
                     .addComponent(typeLabel)
                     .addComponent(nameLabel)
                     .addComponent(locationLabel)
                     .addComponent(statusLabel))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

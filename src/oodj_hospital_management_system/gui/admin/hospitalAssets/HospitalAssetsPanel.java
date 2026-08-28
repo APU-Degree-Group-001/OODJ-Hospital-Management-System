@@ -46,7 +46,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         loadAssets();
-        
+        jPanel2.setPreferredSize(null);
         jPanel2.setMaximumSize(new java.awt.Dimension(900, Integer.MAX_VALUE));
     }
     
@@ -164,14 +164,14 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         jPanel2.setAlignmentY(0.0F);
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);
 
         jPanel2.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
 
-        assetPanelWrapper.setBackground(new java.awt.Color(255, 255, 255));
+        assetPanelWrapper.setBackground(new java.awt.Color(246, 251, 255));
         assetPanelWrapper.setLayout(new javax.swing.BoxLayout(assetPanelWrapper, javax.swing.BoxLayout.Y_AXIS));
         jPanel2.add(assetPanelWrapper, java.awt.BorderLayout.CENTER);
 
@@ -212,23 +212,20 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-//        String keyword = searchField.getText();
-//        currentPatients = UserManagement.getAllPatients();
-//        List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentPatients);
-//        currentPatients = searchResults;
-//        DefaultTableModel model = (DefaultTableModel) patientTable.getModel();
-//        model.setRowCount(0);
-//        for (User usr: searchResults) {
-//            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-//            LocalDate date = DateTime.getDate(dateTimeObj);
-//            LocalTime time = DateTime.getTime(dateTimeObj);
-//            String joinedDate = DateTime.toDateStringWords(date);
-//            String joinedTime = DateTime.toTimeString(time);
-//            String joinedDateTime = joinedDate + " " + joinedTime;
-//            String[] patientData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
-//            model.addRow(patientData);
-//        }
-//        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+        String keyword = searchField.getText();
+        List<HospitalAsset> searchResults = this.usrCtrl.getHospitalAssetController().searchHospitalAssets(keyword);
+        currentAssets = searchResults;
+        assetPanelWrapper.removeAll();
+        for (HospitalAsset asset : searchResults) {
+            HospitalAssetPanel assetPanel = new HospitalAssetPanel(asset);
+            assetPanelWrapper.add(assetPanel);
+            assetPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+        }
+        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+        jPanel2.revalidate();      // let jPanel2 recompute its BorderLayout size
+        wrapperPane.revalidate();  // let the outer BoxLayout row recompute too
+        assetPanelWrapper.revalidate();
+        assetPanelWrapper.repaint();
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed

@@ -150,7 +150,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JButton" name="patientButton">
+                    <Component class="javax.swing.JButton" name="hospitalAssetsButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Hospital Assets"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -165,7 +165,7 @@
                         <Property name="selected" type="boolean" value="true"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="patientButtonActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hospitalAssetsButtonActionPerformed"/>
                       </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.RoundedButton(&quot;Patient&quot;, 15)"/>

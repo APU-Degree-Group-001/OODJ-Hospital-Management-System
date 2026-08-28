@@ -28,12 +28,19 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         
-        hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
-        hospitalAssetContentArea.add(new DoctorManagementPanel(usrCtrl), "doctorManagement");
-        hospitalAssetContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
-        hospitalAssetContentArea.add(new AdminStaffManagementPanel(usrCtrl), "adminStaffManagement");
+//        navigationPane.setPreferredSize(null);
+//        dashboardPanel.setPreferredSize(null);
+//        jPanel5.setPreferredSize(null);
+//        hospitalAssetContentArea.setPreferredSize(null);
+//        dashboardPanel.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
+//        jPanel5.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
+//        hospitalAssetContentArea.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
         
-        setNavButtonActive(patientButton, true);
+        hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
+//        hospitalAssetContentArea.add(new DoctorManagementPanel(usrCtrl), "doctorManagement");
+//        hospitalAssetContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
+        
+        setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
         
@@ -137,19 +144,19 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
         navigationPane.setLayout(new java.awt.GridBagLayout());
 
-        patientButton.setText("Hospital Assets");
-        patientButton.setMaximumSize(new java.awt.Dimension(250, 50));
-        patientButton.setMinimumSize(new java.awt.Dimension(250, 50));
-        patientButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        patientButton.setSelected(true);
-        patientButton.addActionListener(this::patientButtonActionPerformed);
+        hospitalAssetsButton.setText("Hospital Assets");
+        hospitalAssetsButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        hospitalAssetsButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        hospitalAssetsButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        hospitalAssetsButton.setSelected(true);
+        hospitalAssetsButton.addActionListener(this::hospitalAssetsButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
-        navigationPane.add(patientButton, gridBagConstraints);
+        navigationPane.add(hospitalAssetsButton, gridBagConstraints);
 
         doctorButton.setText("Hospital Assets Allocation");
         doctorButton.setMaximumSize(new java.awt.Dimension(250, 50));
@@ -195,21 +202,21 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void medicalManagerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicalManagerButtonActionPerformed
-        setNavButtonActive(patientButton, false);
+        setNavButtonActive(hospitalAssetsButton, false);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, true);
         cl.show(hospitalAssetContentArea, "medicalManagerManagement");
     }//GEN-LAST:event_medicalManagerButtonActionPerformed
 
-    private void patientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_patientButtonActionPerformed
-        setNavButtonActive(patientButton, true);
+    private void hospitalAssetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hospitalAssetsButtonActionPerformed
+        setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
-        cl.show(hospitalAssetContentArea, "patientManagement");
-    }//GEN-LAST:event_patientButtonActionPerformed
+        cl.show(hospitalAssetContentArea, "hospitalAssets");
+    }//GEN-LAST:event_hospitalAssetsButtonActionPerformed
 
     private void doctorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doctorButtonActionPerformed
-        setNavButtonActive(patientButton, false);
+        setNavButtonActive(hospitalAssetsButton, false);
         setNavButtonActive(doctorButton, true);
         setNavButtonActive(medicalManagerButton, false);
         cl.show(hospitalAssetContentArea, "doctorManagement");
@@ -220,6 +227,7 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel dashboardPanel;
     private final javax.swing.JButton doctorButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
     private javax.swing.JPanel hospitalAssetContentArea;
+    private final javax.swing.JButton hospitalAssetsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -228,6 +236,5 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator1;
     private final javax.swing.JButton medicalManagerButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Medical Manager", 15);
     private javax.swing.JPanel navigationPane;
-    private final javax.swing.JButton patientButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
     // End of variables declaration//GEN-END:variables
 }
