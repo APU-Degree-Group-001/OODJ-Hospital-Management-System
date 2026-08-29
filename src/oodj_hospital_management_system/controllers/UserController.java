@@ -28,6 +28,9 @@ public class UserController {
     private MedicalRecordController medicalRecordController;
 //    private ReportController reportController;
     private RequestController requestController;
+    private ConsultationTypeController consultationTypeController;
+    private LabResultTypeController labResultTypeController;
+    private PrescriptionTypeController prescriptionTypeController;
     private User activeUser;
     
     public UserController() {
@@ -41,6 +44,9 @@ public class UserController {
         this.medicalRecordController = null;
 //        this.reportController = null;
         this.requestController = null;
+        this.consultationTypeController = null;
+        this.labResultTypeController = null;
+        this.prescriptionTypeController = null;
     }
     
     public User getActiveUser() {
@@ -81,6 +87,18 @@ public class UserController {
     
     public RequestController getRequestController() {
         return this.requestController;
+    }
+    
+    public ConsultationTypeController getConsultationTypeController() {
+        return this.consultationTypeController;
+    }
+    
+    public LabResultTypeController getLabResultController() {
+        return this.labResultTypeController;
+    }
+    
+    public PrescriptionTypeController getPrescriptionTypeController() {
+        return this.prescriptionTypeController;
     }
     
     // Get All Users
@@ -151,11 +169,16 @@ public class UserController {
                 this.activeUser = loginUser;
                 this.userServices = new UserManagement(this.activeUser);
                 this.billingController = new BillingController(this.activeUser);
+                this.consultationController = new ConsultationController(this.activeUser);
                 this.doctorController = new DoctorController(this.activeUser);
+                this.hospitalAssetController = new HospitalAssetController(this.activeUser);
                 this.insuranceController = new InsuranceController(this.activeUser);
                 this.medicalRecordController = new MedicalRecordController(this.activeUser);
-//                this.reportController = new ReportController(this.activeUser);
+                //                this.reportController = new ReportController(this.activeUser);
                 this.requestController = new RequestController(this.activeUser);
+                this.consultationTypeController = new ConsultationTypeController(this.activeUser);
+                this.labResultTypeController = new LabResultTypeController(this.activeUser);
+                this.prescriptionTypeController = new PrescriptionTypeController(this.activeUser);
                 Logger.log(String.format("User {%s - %s - %s} logged in", activeUser.getType(), userId, activeUser.getName()));
                 return true;
             }
@@ -176,31 +199,36 @@ public class UserController {
     
     // update active user upon modifications
     public boolean updateActiveUser(User updatedActiveUser) {
-        this.activeUser = updatedActiveUser;
         this.userServices = new UserManagement(this.activeUser);
         this.billingController = new BillingController(this.activeUser);
+        this.consultationController = new ConsultationController(this.activeUser);
         this.doctorController = new DoctorController(this.activeUser);
+        this.hospitalAssetController = new HospitalAssetController(this.activeUser);
         this.insuranceController = new InsuranceController(this.activeUser);
         this.medicalRecordController = new MedicalRecordController(this.activeUser);
-//        this.reportController = new ReportController(this.activeUser);
+        //                this.reportController = new ReportController(this.activeUser);
         this.requestController = new RequestController(this.activeUser);
+        this.consultationTypeController = new ConsultationTypeController(this.activeUser);
+        this.labResultTypeController = new LabResultTypeController(this.activeUser);
+        this.prescriptionTypeController = new PrescriptionTypeController(this.activeUser);
         return true;
     }
 
     // used User as argument
     public boolean userLogout(User logoutUser) {
         Logger.log(String.format("User {%s - %s - %s} logged out", logoutUser.getType(), logoutUser.getId(), logoutUser.getName()));
-        this.activeUser = null;
-        this.userServices = null;
-        this.billingController = null;
-        this.consultationController = null;
-        this.doctorController = null;
-        this.hospitalAssetController = null;
-        this.insuranceController = null;
-        this.medicalRecordController = null;
-//        this.reportController = null;
-        this.requestController = null;
-//        logoutUser.invalidateUser();
+        this.userServices = new UserManagement(this.activeUser);
+        this.billingController = new BillingController(this.activeUser);
+        this.consultationController = new ConsultationController(this.activeUser);
+        this.doctorController = new DoctorController(this.activeUser);
+        this.hospitalAssetController = new HospitalAssetController(this.activeUser);
+        this.insuranceController = new InsuranceController(this.activeUser);
+        this.medicalRecordController = new MedicalRecordController(this.activeUser);
+        //        this.reportController = new ReportController(this.activeUser);
+        this.requestController = new RequestController(this.activeUser);
+        this.consultationTypeController = new ConsultationTypeController(this.activeUser);
+        this.labResultTypeController = new LabResultTypeController(this.activeUser);
+        this.prescriptionTypeController = new PrescriptionTypeController(this.activeUser);
         return true;
     }
     

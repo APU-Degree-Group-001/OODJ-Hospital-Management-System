@@ -14,10 +14,12 @@ import java.util.LinkedHashMap;
 import oodj_hospital_management_system.controllers.ConsultationController;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.ConsultationSlot;
+import oodj_hospital_management_system.models.ConsultationType;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.Feedback;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.ConsultationTypeManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
 
@@ -218,29 +220,31 @@ public class TestConsultationController {
     }
  
     static void testCreateConsultation() {
- 
+
         System.out.println("\n===== TEST CREATE CONSULTATION (via Controller) =====");
- 
+
         List<ConsultationSlot> slots = consultationCtrl.getAllConsultationSlots();
         Patient patient = (Patient) UserManagement.getPatientById("#PAT79a39");
- 
-        if (slots.isEmpty() || patient == null) {
-            System.out.println("No available slot or patient not found.");
+        ConsultationType consultationType = ConsultationTypeManagement.getConsultationTypeById("#CT001"); // replace with a real ID
+
+        if (slots.isEmpty() || patient == null || consultationType == null) {
+            System.out.println("No available slot, patient, or consultation type not found.");
             return;
         }
- 
+
         ConsultationSlot slot = slots.get(0);
- 
+
         LinkedHashMap<String, String> result = consultationCtrl.createConsultation(
                 slot,
                 patient,
+                consultationType,
                 "Testing consultation creation via controller"
         );
- 
+
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));
         System.out.println("New Consultation ID : " + result.get("newConsultationId"));
- 
+
         System.out.println(">> Now check logs.txt for the audit entry.");
     }
  

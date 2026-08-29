@@ -200,3 +200,45 @@
 [2026-08-28 21:20:56] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-28 21:48:17] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-28 21:49:36] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 20:24:22] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 20:25:29] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 20:26:25] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 20:29:21] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 20:34:03] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 21:15:05] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 21:15:41] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPE001}
+[2026-08-29 21:16:17] User {admin staff - #ADMd4e8f - uehehe} created Consultation Type {#CTYPEedccb}
+[2026-08-29 21:16:38] User {admin staff - #ADMd4e8f - uehehe} deactivated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:16:57] User {admin staff - #ADMd4e8f - uehehe} activated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:28:19] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 21:28:51] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:29:08] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:29:19] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:29:29] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:29:47] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 21:56:31] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 21:56:46] User {admin staff - #ADMd4e8f - uehehe} created Consultation Type {#CTYPE33119}
+[2026-08-29 21:56:58] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPE33119}
+[2026-08-29 21:57:31] User {admin staff - #ADMd4e8f - uehehe} updated Consultation Type {#CTYPEedccb}
+[2026-08-29 22:10:34] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:11:40] User {admin staff - #ADMd4e8f - uehehe} created Lab Result Type {#LRTYPEca8e0}
+[2026-08-29 22:12:56] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:46:32] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:50:45] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:51:07] User {admin staff - #ADMd4e8f - uehehe} updated Prescription Type {#PTYPE001}
+[2026-08-29 22:55:02] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:57:29] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 22:59:42] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 23:03:10] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 23:05:28] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 23:07:04] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 23:07:41] User {admin staff - #ADMd4e8f - uehehe} created Prescription Type {#PTYPEf3f51}
+[2026-08-29 23:08:27] User {admin staff - #ADMd4e8f - uehehe} updated Prescription Type {#PTYPEf3f51}
+[2026-08-29 23:08:35] User {admin staff - #ADMd4e8f - uehehe} activated Prescription Type {#PTYPE19f24}
+[2026-08-29 23:08:42] User {admin staff - #ADMd4e8f - uehehe} deactivated Prescription Type {#PTYPE19f24}
+[2026-08-29 23:18:45] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-29 23:19:17] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PATd0fa9 - hehe}
+[2026-08-29 23:19:35] User {admin staff - #ADMd4e8f - uehehe} modified name for User {patient - #PATd0fa9 - hehe}
+[2026-08-29 23:19:41] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATd0fa9 - hehe2}
+[2026-08-30 00:28:31] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 00:30:33] User {admin staff - #ADMd4e8f - uehehe} logged in

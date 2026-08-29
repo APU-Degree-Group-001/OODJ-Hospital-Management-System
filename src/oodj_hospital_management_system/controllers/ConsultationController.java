@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.ConsultationSlot;
+import oodj_hospital_management_system.models.ConsultationType;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.Feedback;
 import oodj_hospital_management_system.models.Patient;
@@ -59,8 +60,8 @@ public class ConsultationController {
     }
  
     // CRUD
-    public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, String description) {
-        LinkedHashMap<String, String> msg = consultationServices.createConsultation(consultationSlot, patient, description);
+    public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, ConsultationType consultationType, String description) {
+        LinkedHashMap<String, String> msg = consultationServices.createConsultation(consultationSlot, patient, consultationType, description);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
             Logger.log(String.format("User {%s - %s - %s} created Consultation {%s} for Patient {%s - %s}",
@@ -71,6 +72,22 @@ public class ConsultationController {
             Logger.errorLog(String.format("User {%s - %s - %s} failed to create a consultation for Patient {%s - %s}\n\tErrorMsg: %s",
                     activeUser.getType(), activeUser.getId(), activeUser.getName(),
                     patient.getId(), patient.getName(), msg.get("msg")));
+        }
+        return msg;
+    }
+
+    public LinkedHashMap<String, String> updateConsultation(Consultation consultation, ConsultationType newConsultationType, String newDescription) {
+        LinkedHashMap<String, String> msg = consultationServices.updateConsultation(consultation, newConsultationType, newDescription);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} updated Consultation {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    consultation.getConsultationId()));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to update Consultation {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    consultation.getConsultationId(), msg.get("msg")));
         }
         return msg;
     }

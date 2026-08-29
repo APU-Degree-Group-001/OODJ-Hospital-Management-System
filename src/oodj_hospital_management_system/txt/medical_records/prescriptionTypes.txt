@@ -1,0 +1,6 @@
+prescriptionTypeId, typeName, baseRate, status
+#PTYPE001, Ibuprofen, 0.6, ACTIVE
+#PTYPE002, Aspirin, 0.3, ACTIVE
+#PTYPE003, Paracetamol, 0.2, ACTIVE
+#PTYPE19f24, Amoxicillin, 0.8, INACTIVE
+#PTYPEf3f51, Lisinopril, 1.0, ACTIVE

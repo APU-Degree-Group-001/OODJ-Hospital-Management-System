@@ -31,6 +31,7 @@ public class SystemConfiguration {
     public static final String billFilePath = parentPath + "txt/consultations/bills.txt";
     public static final String insuranceFilePath = parentPath + "txt/consultations/insurance.txt";
     public static final String consultationFilePath = parentPath + "txt/consultations/consultations.txt";
+    public static final String consultationTypesFilePath = parentPath + "txt/consultations/consultationTypes.txt";
     public static final String consultationSlotFilePath = parentPath + "txt/consultations/consultationSlots.txt";
     public static final String feedbackFilePath = parentPath + "txt/consultations/feedback.txt";
     
@@ -38,8 +39,10 @@ public class SystemConfiguration {
     public static final String hospitalAssetFilePath = parentPath + "txt/hospital_assets/hospitalAssets.txt";
     
     public static final String labResultFilePath = parentPath + "txt/medical_records/labResults.txt";
+    public static final String labResultTypesFilePath = parentPath + "txt/medical_records/labResultTypes.txt";
     public static final String medicalAssessmentFilePath = parentPath + "txt/medical_records/medicalAssessments.txt";
     public static final String prescriptionFilePath = parentPath + "txt/medical_records/prescriptions.txt";
+    public static final String prescriptionTypesFilePath = parentPath + "txt/medical_records/prescriptionTypes.txt";
     
     public static final String backupDir = parentPath + "txt/backups/";
     

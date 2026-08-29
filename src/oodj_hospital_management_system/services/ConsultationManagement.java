@@ -13,6 +13,7 @@ import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.Consultation.ConsultationStatus;
 import oodj_hospital_management_system.models.ConsultationSlot;
+import oodj_hospital_management_system.models.ConsultationType;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.Feedback;
 import oodj_hospital_management_system.models.LabResult;
@@ -31,7 +32,6 @@ import oodj_hospital_management_system.utils.exceptions.UserException;
  *
  * @author sheaw
  */
-
 public class ConsultationManagement {
 
     private static final FileHandler consultationHandler = new FileHandler(SystemConfiguration.consultationFilePath);
@@ -47,6 +47,7 @@ public class ConsultationManagement {
     public ConsultationManagement(User user) {
         this.activeUser = user;
         HospitalAssetManagement.loadHospitalAssets();
+        ConsultationTypeManagement.loadConsultationTypes();
         loadAllFeedback();
         loadConsultationSlots();
         loadConsultations();
@@ -63,6 +64,7 @@ public class ConsultationManagement {
                     consultationId,
                     findConsultationSlotById(row.get("consultationSlotId")),
                     UserManagement.getPatientById(row.get("patientId")),
+                    ConsultationTypeManagement.getConsultationTypeById(row.get("consultationTypeId")),
                     row.get("description"),
                     MedicalRecordManagement.getMedicalAssessmentByConsultationId(consultationId),
                     MedicalRecordManagement.getLabResultsByConsultationId(consultationId),
@@ -110,6 +112,7 @@ public class ConsultationManagement {
 
     public static List<Consultation> getAllConsultations() {
         HospitalAssetManagement.loadHospitalAssets();
+        ConsultationTypeManagement.loadConsultationTypes();
         loadAllFeedback();
         loadConsultationSlots();
         loadConsultations();
@@ -130,6 +133,7 @@ public class ConsultationManagement {
 
     public static Consultation getConsultationById(String consultationId) {
         HospitalAssetManagement.loadHospitalAssets();
+        ConsultationTypeManagement.loadConsultationTypes();
         loadAllFeedback();
         loadConsultationSlots();
         loadConsultations();
@@ -310,7 +314,7 @@ public class ConsultationManagement {
         }
     }
 
-    public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, String description) {
+    public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, ConsultationType consultationType, String description) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -333,12 +337,22 @@ public class ConsultationManagement {
             return msgMap;
         }
 
+        if (consultationType == null) {
+            System.out.println("Error creating consultation\nConsultation type is required.");
+
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation is not created\nConsultation type is required.");
+
+            return msgMap;
+        }
+
         String newConsultationId = generateConsultationId();
 
         Consultation newConsultation = new Consultation(
                 newConsultationId,
                 consultationSlot,
                 patient,
+                consultationType,
                 description,
                 null,
                 new ArrayList<>(),
@@ -363,6 +377,43 @@ public class ConsultationManagement {
         msgMap.put("msg", String.format("Consultation '%s' is created and stored!", newConsultationId));
         msgMap.put("newConsultationId", newConsultationId);
 
+        return msgMap;
+    }
+
+    public LinkedHashMap<String, String> updateConsultation(Consultation consultation, ConsultationType newConsultationType, String newDescription) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+ 
+        // Validate on the passed-in object first, then re-fetch via ID before mutating
+        // (findConsultationById relies on the current in-memory list, so always
+        // resolve the live reference before setting fields)
+        if (consultation == null || findConsultationById(consultation.getConsultationId()) == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation is not updated\nConsultation not found.");
+            return msgMap;
+        }
+ 
+        if (newConsultationType == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation is not updated\nConsultation type is required.");
+            return msgMap;
+        }
+ 
+        if (newDescription == null || newDescription.trim().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation is not updated\nDescription cannot be empty.");
+            return msgMap;
+        }
+ 
+        Consultation targetConsultation = findConsultationById(consultation.getConsultationId());
+        targetConsultation.setConsultationType(newConsultationType);
+        targetConsultation.setDescription(newDescription);
+ 
+        writeConsultations();
+        loadConsultations();
+ 
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Consultation '%s' is updated!", targetConsultation.getConsultationId()));
+ 
         return msgMap;
     }
 

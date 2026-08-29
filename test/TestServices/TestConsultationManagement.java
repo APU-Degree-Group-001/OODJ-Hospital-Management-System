@@ -15,11 +15,13 @@ import java.util.LinkedHashMap;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.Consultation.ConsultationStatus;
 import oodj_hospital_management_system.models.ConsultationSlot;
+import oodj_hospital_management_system.models.ConsultationType;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.Feedback;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.services.ConsultationManagement;
+import oodj_hospital_management_system.services.ConsultationTypeManagement;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
 
@@ -45,22 +47,22 @@ public class TestConsultationManagement {
 
         // Test loading
         testLoadConsultations();
-//        testLoadConsultationSlots();
-//        testLoadAllFeedback();
+        testLoadConsultationSlots();
+        testLoadAllFeedback();
 
         // Test get-all
-//        testGetAllConsultations();
-//        testGetAllConsultationSlots();
-//        testGetAllFeedback();
+        testGetAllConsultations();
+        testGetAllConsultationSlots();
+        testGetAllFeedback();
 
         // Test get / find by ID
-//        testGetConsultationById();
-//        testFindConsultationByInvalidId();
-//        testGetConsultationSlotById();
-//        testGetFeedbackById();
+        testGetConsultationById();
+        testFindConsultationByInvalidId();
+        testGetConsultationSlotById();
+        testGetFeedbackById();
 
         // Test status parsing
-//        testGetConsultationStatus();
+        testGetConsultationStatus();
 
         // Test single consultation slot creation (non-bulk)
 //        testCreateConsultationSlot();
@@ -68,14 +70,18 @@ public class TestConsultationManagement {
         // Test consultation creation
         // Uncomment when needed because this modifies consultations.txt
 //         testCreateConsultation();
-//        testCreateConsultationWithMissingFields();
+        testCreateConsultationWithMissingFields();
+
+        // Test consultation update
+        // Uncomment when needed because this modifies consultations.txt
+//        testUpdateConsultation();
 
         // Test consultation deletion
         // Uncomment when needed because this modifies consultations.txt
 //         testDeleteConsultation();
 
         // Test ID generation
-//        testGenerateConsultationId();
+        testGenerateConsultationId();
         testGenerateConsultationSlotId();
     }
 
@@ -86,10 +92,11 @@ public class TestConsultationManagement {
     public static void testPrintConsultations(List<Consultation> consultationList) {
 
         System.out.printf(
-                "%-12s %-15s %-20s %-30s %-15s%n",
+                "%-12s %-15s %-20s %-15s %-30s %-15s%n",
                 "Consult ID",
                 "Slot ID",
                 "Patient",
+                "Type",
                 "Description",
                 "Status"
         );
@@ -101,12 +108,14 @@ public class TestConsultationManagement {
         for (Consultation consultation : consultationList) {
 
             System.out.printf(
-                    "%-12s %-15s %-20s %-30s %-15s%n",
+                    "%-12s %-15s %-20s %-15s %-30s %-15s%n",
                     consultation.getConsultationId(),
                     consultation.getConsultationSlot() != null
                             ? consultation.getConsultationSlot().getConsultationSlotId() : "N/A",
                     consultation.getPatient() != null
                             ? consultation.getPatient().getName() : "N/A",
+                    consultation.getConsultationType() != null
+                            ? consultation.getConsultationType().getTypeName() : "N/A",
                     consultation.getDescription(),
                     consultation.getConsultationStatus()
             );
@@ -282,6 +291,8 @@ public class TestConsultationManagement {
 
             System.out.println("Consultation found:");
             System.out.println("Consultation ID : " + consultation.getConsultationId());
+            System.out.println("Type            : " + (consultation.getConsultationType() != null
+                    ? consultation.getConsultationType().getTypeName() : "N/A"));
             System.out.println("Description     : " + consultation.getDescription());
             System.out.println("Status          : " + consultation.getConsultationStatus());
 
@@ -422,6 +433,9 @@ public class TestConsultationManagement {
 
         Patient patient = UserManagement.getPatientById("#PAT3fad4");
 
+        List<ConsultationType> consultationTypes =
+                ConsultationTypeManagement.getActiveConsultationTypes();
+
         if (slots.isEmpty()) {
             System.out.println("Test failed: No consultation slots available.");
             return;
@@ -432,11 +446,17 @@ public class TestConsultationManagement {
             return;
         }
 
+        if (consultationTypes.isEmpty()) {
+            System.out.println("Test failed: No active consultation types available.");
+            return;
+        }
+
         ConsultationSlot slot = slots.get(0);
+        ConsultationType consultationType = consultationTypes.get(0);
         String description = "General check-up for recurring headaches.";
 
         LinkedHashMap<String, String> result =
-                consultationMng.createConsultation(slot, patient, description);
+                consultationMng.createConsultation(slot, patient, consultationType, description);
 
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));
@@ -447,10 +467,14 @@ public class TestConsultationManagement {
             Consultation created =
                     ConsultationManagement.getConsultationById(result.get("newConsultationId"));
 
-            if (created != null && created.getConsultationStatus() == ConsultationStatus.SCHEDULED) {
-                System.out.println("Creation test PASSED! Status is SCHEDULED as expected.");
+            boolean typeMatches = created != null
+                    && created.getConsultationType() != null
+                    && created.getConsultationType().getConsultationTypeId().equals(consultationType.getConsultationTypeId());
+
+            if (created != null && created.getConsultationStatus() == ConsultationStatus.SCHEDULED && typeMatches) {
+                System.out.println("Creation test PASSED! Status is SCHEDULED and type matches as expected.");
             } else {
-                System.out.println("Creation test FAILED! Consultation missing or status incorrect.");
+                System.out.println("Creation test FAILED! Consultation missing, status incorrect, or type mismatch.");
             }
         }
     }
@@ -460,7 +484,7 @@ public class TestConsultationManagement {
         System.out.println("\n===== TEST CREATE CONSULTATION WITH MISSING FIELDS =====");
 
         LinkedHashMap<String, String> result =
-                consultationMng.createConsultation(null, null, "");
+                consultationMng.createConsultation(null, null, null, "");
 
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));
@@ -469,6 +493,70 @@ public class TestConsultationManagement {
             System.out.println("Test passed: Consultation correctly rejected due to missing fields.");
         } else {
             System.out.println("Test failed: Consultation was created despite missing fields.");
+        }
+    }
+
+    // =========================================================
+    // CONSULTATION UPDATE TEST
+    // =========================================================
+
+    static void testUpdateConsultation() {
+
+        System.out.println("\n===== TEST UPDATE CONSULTATION =====");
+
+        List<Consultation> consultations =
+                ConsultationManagement.getAllConsultations();
+
+        List<ConsultationType> consultationTypes =
+                ConsultationTypeManagement.getActiveConsultationTypes();
+
+        if (consultations.isEmpty()) {
+            System.out.println("Test failed: No consultations available.");
+            return;
+        }
+
+        if (consultationTypes.isEmpty()) {
+            System.out.println("Test failed: No active consultation types available.");
+            return;
+        }
+
+        Consultation targetConsultation = consultations.get(0);
+
+        // Pick a type different from the consultation's current type, if possible
+        ConsultationType newType = consultationTypes.get(0);
+        String currentTypeId = targetConsultation.getConsultationType() != null
+                ? targetConsultation.getConsultationType().getConsultationTypeId() : null;
+
+        for (ConsultationType ct : consultationTypes) {
+            if (!ct.getConsultationTypeId().equals(currentTypeId)) {
+                newType = ct;
+                break;
+            }
+        }
+
+        String newDescription = targetConsultation.getDescription() + " (Updated)";
+
+        System.out.println("Updating Consultation : " + targetConsultation.getConsultationId());
+        System.out.println("New Type : " + newType.getTypeName());
+        System.out.println("New Description : " + newDescription);
+
+        LinkedHashMap<String, String> result =
+                consultationMng.updateConsultation(targetConsultation, newType, newDescription);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+
+        Consultation updated =
+                ConsultationManagement.getConsultationById(targetConsultation.getConsultationId());
+
+        boolean typeMatches = updated != null && updated.getConsultationType() != null
+                && updated.getConsultationType().getConsultationTypeId().equals(newType.getConsultationTypeId());
+        boolean descriptionMatches = updated != null && updated.getDescription().equals(newDescription);
+
+        if (typeMatches && descriptionMatches) {
+            System.out.println("Update test PASSED! Consultation type and description updated correctly.");
+        } else {
+            System.out.println("Update test FAILED! Consultation was not updated correctly.");
         }
     }
 

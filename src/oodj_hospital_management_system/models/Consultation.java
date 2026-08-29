@@ -14,11 +14,11 @@ import oodj_hospital_management_system.models.interfaces.ConsultationWorkflow;
  *
  * @author sheaw
  */
-
 public class Consultation implements ConsultationWorkflow {
     private String consultationId;
     private ConsultationSlot consultationSlot;
     private Patient patient;
+    private ConsultationType consultationType;
     private String description;
     private MedicalAssessment medicalAssessment;
     private List<LabResult> labResults;
@@ -36,10 +36,11 @@ public class Consultation implements ConsultationWorkflow {
     private ConsultationStatus status;
 
     public Consultation() {
-//        consultationId, consultationSlotId, patientId, description, medicalAssessmentId, labResultIds, prescriptionIds, hospitalAssetAllocationId, feedbackId, billId, status
+//        consultationId, consultationSlotId, patientId, consultationTypeId, description, medicalAssessmentId, labResultIds, prescriptionIds, hospitalAssetAllocationId, feedbackId, billId, status
         this.consultationId = "";
         this.consultationSlot = null;
         this.patient = null;
+        this.consultationType = null;
         this.description = "";
         this.medicalAssessment = null;
         this.labResults = new ArrayList<>();
@@ -54,6 +55,7 @@ public class Consultation implements ConsultationWorkflow {
             String consultationId,
             ConsultationSlot consultationSlot,
             Patient patient,
+            ConsultationType consultationType,
             String description,
             MedicalAssessment medicalAssessment,
             List<LabResult> labResults,
@@ -66,6 +68,7 @@ public class Consultation implements ConsultationWorkflow {
         this.consultationId = consultationId;
         this.consultationSlot = consultationSlot;
         this.patient = patient;
+        this.consultationType = consultationType;
         this.description = description;
         this.medicalAssessment = medicalAssessment;
         this.labResults = labResults;
@@ -141,6 +144,10 @@ public class Consultation implements ConsultationWorkflow {
         return patient;
     }
 
+    public ConsultationType getConsultationType() {
+        return consultationType;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -181,6 +188,10 @@ public class Consultation implements ConsultationWorkflow {
         this.patient = patient;
     }
 
+    public void setConsultationType(ConsultationType consultationType) {
+        this.consultationType = consultationType;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -214,6 +225,7 @@ public class Consultation implements ConsultationWorkflow {
         consultationDetails.put("consultationId", this.consultationId);
         consultationDetails.put("consultationSlotId", this.consultationSlot == null ? "" : this.consultationSlot.getConsultationSlotId());
         consultationDetails.put("patientId", this.patient == null ? "" : this.patient.getId());
+        consultationDetails.put("consultationTypeId", this.consultationType == null ? "" : this.consultationType.getConsultationTypeId());
         consultationDetails.put("description", this.description);
         consultationDetails.put("hospitalAssetAllocationId", this.hospitalAssetAllocation == null ? "" : this.hospitalAssetAllocation.getAllocationId());
         consultationDetails.put("status", this.status.name());

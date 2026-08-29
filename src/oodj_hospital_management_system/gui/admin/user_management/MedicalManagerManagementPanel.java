@@ -35,6 +35,7 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private List<User> currentMedicalManagers;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+    private static final int MAX_NAME_LENGTH = 50;
 
     /**
      * Creates new form Medical ManagerManagement
@@ -71,6 +72,21 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
             model.addRow(medicalManagerData);
         }
 //        userTable = new JTable(model);
+    }
+    
+    private void populateTable(List<User> users) {
+        DefaultTableModel model = (DefaultTableModel) medicalManagerTable.getModel();
+        model.setRowCount(0);
+        for (User usr: users) {
+            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
+            LocalDate date = DateTime.getDate(dateTimeObj);
+            LocalTime time = DateTime.getTime(dateTimeObj);
+            String joinedDate = DateTime.toDateStringWords(date);
+            String joinedTime = DateTime.toTimeString(time);
+            String joinedDateTime = joinedDate + " " + joinedTime;
+            String[] medicalManagerData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
+            model.addRow(medicalManagerData);
+        }
     }
     
     private void updateResultLabel(String message, int count) {
@@ -141,6 +157,14 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
             label = "Showing MedicalManagers joined before " + display.format(java.sql.Date.valueOf(end));
         }
         updateResultLabel(label, filtered.size());
+    }
+    
+    private void resetFieldBorder(JTextField field) {
+        field.setBorder(javax.swing.UIManager.getBorder("TextField.border"));
+    }
+
+    private void setFieldError(JTextField field) {
+        field.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED));
     }
 
     /**
@@ -337,18 +361,7 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
         currentMedicalManagers = UserManagement.getAllMedicalManagers();
         List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentMedicalManagers);
         currentMedicalManagers = searchResults;
-        DefaultTableModel model = (DefaultTableModel) medicalManagerTable.getModel();
-        model.setRowCount(0);
-        for (User usr: searchResults) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] medicalManagerData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
-            model.addRow(medicalManagerData);
-        }
+        populateTable(searchResults);
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
     }//GEN-LAST:event_searchButtonActionPerformed
 
@@ -387,18 +400,7 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
             }
             return;
         } else {
-            DefaultTableModel model = (DefaultTableModel) medicalManagerTable.getModel();
-            model.setRowCount(0);
-            for (User usr: currentMedicalManagers) {
-                java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-                LocalDate date = DateTime.getDate(dateTimeObj);
-                LocalTime time = DateTime.getTime(dateTimeObj);
-                String joinedDate = DateTime.toDateStringWords(date);
-                String joinedTime = DateTime.toTimeString(time);
-                String joinedDateTime = joinedDate + " " + joinedTime;
-                String[] medicalManagerData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
-                model.addRow(medicalManagerData);
-            }
+            populateTable(currentMedicalManagers);
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
@@ -478,63 +480,105 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
         boolean editEmail = emailOption.isSelected() || bothOption.isSelected();
 
         JTextField nameField = new JTextField(selectedUsr.getName());
+        nameField.setPreferredSize(new java.awt.Dimension(300, 30));
         JTextField emailField = new JTextField(selectedUsr.getEmail());
+        emailField.setPreferredSize(new java.awt.Dimension(300, 30));
 
         JPanel fieldPanel = new JPanel();
         fieldPanel.setLayout(new javax.swing.BoxLayout(fieldPanel, javax.swing.BoxLayout.Y_AXIS));
         if (editName) {
-            fieldPanel.add(new JLabel("Name:"));
+            JLabel nameLabel = new JLabel("Name:");
+            nameLabel.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            nameField.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            fieldPanel.add(nameLabel);
             fieldPanel.add(nameField);
         }
         if (editEmail) {
-            fieldPanel.add(new JLabel("Email:"));
+            JLabel emailLabel = new JLabel("Email:");
+            emailLabel.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            emailField.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            fieldPanel.add(emailLabel);
             fieldPanel.add(emailField);
         }
 
-        int result = JOptionPane.showConfirmDialog(parentWindow, fieldPanel, "Modify Medical Manager", JOptionPane.OK_CANCEL_OPTION);
-        if (result != JOptionPane.OK_OPTION) {
-            return;
-        }
-
-        String newName = nameField.getText();
-        String newEmail = emailField.getText();
-
-        if (editName && newName.isEmpty()) {
-            JOptionPane.showMessageDialog(parentWindow, "Name cannot be empty", "Modify Failed", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (editEmail && (newEmail.isEmpty() || !this.usrCtrl.isValidEmail(newEmail))) {
-            JOptionPane.showMessageDialog(parentWindow, "Please enter a valid email address", "Modify Failed", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        StringBuilder errors = new StringBuilder();
-        boolean anyUpdated = false;
-
-        if (editName && !selectedUsr.getName().equals(newName)) {
-            LinkedHashMap<String, String> msg = this.usrCtrl.modifyUserName(newName, usrId);
-            if (msg.get("success") != null) {
-                anyUpdated = true;
-            } else {
-                errors.append("Name: ").append(msg.get("msg")).append("\n");
+        while (true) {
+            int result = JOptionPane.showConfirmDialog(parentWindow, fieldPanel, "Modify Medical Manager", JOptionPane.OK_CANCEL_OPTION);
+            if (result != JOptionPane.OK_OPTION) {
+                return;
             }
-        }
 
-        if (editEmail && !selectedUsr.getEmail().equals(newEmail)) {
-            LinkedHashMap<String, String> msg = this.usrCtrl.modifyEmail(newEmail, usrId);
-            if (msg.get("success") != null) {
-                anyUpdated = true;
-            } else {
-                errors.append("Email: ").append(msg.get("msg")).append("\n");
+            if (editName) resetFieldBorder(nameField);
+            if (editEmail) resetFieldBorder(emailField);
+
+            String newName = nameField.getText().trim();
+            String newEmail = emailField.getText().trim();
+            boolean hasError = false;
+
+            if (editName) {
+                if (newName.isEmpty()) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Name cannot be empty", "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                    setFieldError(nameField);
+                    hasError = true;
+                } else if (newName.length() > MAX_NAME_LENGTH) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Name must be " + MAX_NAME_LENGTH + " characters or fewer", "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                    setFieldError(nameField);
+                    hasError = true;
+                }
             }
-        }
 
-        if (errors.length() > 0) {
-            JOptionPane.showMessageDialog(parentWindow, "Some updates failed:\n" + errors, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        if (anyUpdated) {
-            JOptionPane.showMessageDialog(parentWindow, String.format("User '%s' updated!", usrId));
-            loadMedicalManagers(); // refresh whole table instead of manually patching cells
+            if (editEmail) {
+                if (newEmail.isEmpty()) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Email cannot be empty", "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                    setFieldError(emailField);
+                    hasError = true;
+                } else if (!this.usrCtrl.isValidEmail(newEmail)) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Please enter a valid email address", "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                    setFieldError(emailField);
+                    hasError = true;
+                }
+            }
+
+            if (hasError) {
+                continue;
+            }
+
+            StringBuilder errors = new StringBuilder();
+            boolean anyUpdated = false;
+
+            if (editName && !selectedUsr.getName().equals(newName)) {
+                LinkedHashMap<String, String> msg = this.usrCtrl.modifyUserName(newName, usrId);
+                if (msg.get("success") != null) {
+                    anyUpdated = true;
+                } else {
+                    errors.append("Name: ").append(msg.get("msg")).append("\n");
+                }
+            }
+
+            if (editEmail && !selectedUsr.getEmail().equals(newEmail)) {
+                LinkedHashMap<String, String> msg = this.usrCtrl.modifyEmail(newEmail, usrId);
+                if (msg.get("success") != null) {
+                    anyUpdated = true;
+                } else {
+                    errors.append("Email: ").append(msg.get("msg")).append("\n");
+                }
+            }
+
+            if (errors.length() > 0) {
+                JOptionPane.showMessageDialog(parentWindow, "Some updates failed:\n" + errors, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (anyUpdated) {
+                JOptionPane.showMessageDialog(parentWindow, String.format("User '%s' updated!", usrId));
+                loadMedicalManagers();
+            }
+            return;
         }
     }//GEN-LAST:event_modifyUserButtonActionPerformed
 

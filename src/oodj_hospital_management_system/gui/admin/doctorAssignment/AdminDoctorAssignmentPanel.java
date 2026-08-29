@@ -102,6 +102,24 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 //        userTable = new JTable(model);
     }
     
+    private void populateTable(List<User> doctors) {
+        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
+        model.setRowCount(0);
+        for (User usr : doctors) {
+            Doctor doctor = (Doctor) usr;
+            MedicalManager doctorManager = doctor.getMedicalManager();
+            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
+                    ? doctorManager.getId() + " - " + doctorManager.getName()
+                    : "Unassigned";
+            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
+            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
+                    ? doctorDepartment.getDepartmentName()
+                    : "Unassigned";
+            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
+            model.addRow(doctorData);
+        }
+    }
+    
     private void updateResultLabel(String message, int count) {
         showResultsForLabel.setText(message + " (" + count + " found)");
     }
@@ -407,21 +425,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         currentDoctors = filteredDoctors;
 
-        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
-        model.setRowCount(0);
-        for (User usr : filteredDoctors) {
-            Doctor doctor = (Doctor) usr;
-            MedicalManager doctorManager = doctor.getMedicalManager();
-            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
-                    ? doctorManager.getId() + " - " + doctorManager.getName()
-                    : "Unassigned";
-            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
-            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
-                    ? doctorDepartment.getDepartmentName()
-                    : "Unassigned";
-            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
-            model.addRow(doctorData);
-        }
+        populateTable(filteredDoctors);
 
         updateResultLabel("Showing results for Manager: \"" + managerLabelSelected + "\", Department: \"" + departmentLabelSelected + "\"", filteredDoctors.size());
     }//GEN-LAST:event_searchFilterButtonActionPerformed
@@ -442,21 +446,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         currentDoctors = UserManagement.getAllDoctors();
         List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentDoctors);
         currentDoctors = searchResults;
-        DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
-        model.setRowCount(0);
-        for (User usr: searchResults) {
-            Doctor doctor = (Doctor) usr;
-            MedicalManager doctorManager = doctor.getMedicalManager();
-            String managerLabel = (doctorManager.getId() != null && !doctorManager.getId().isEmpty())
-                    ? doctorManager.getId() + " - " + doctorManager.getName()
-                    : "Unassigned";
-            MedicalDepartment doctorDepartment = doctor.getMedicalDepartment();
-            String medicalDepartmentLabel = (doctorDepartment.getDepartmentId() != null && !doctorDepartment.getDepartmentId().isEmpty())
-                    ? doctorDepartment.getDepartmentName()
-                    : "Unassigned";
-            String[] doctorData = {doctor.getId(), doctor.getName(), managerLabel, medicalDepartmentLabel};
-            model.addRow(doctorData);
-        }
+        populateTable(searchResults);
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
     }//GEN-LAST:event_searchButtonActionPerformed
 

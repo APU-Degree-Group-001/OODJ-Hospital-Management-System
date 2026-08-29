@@ -4126,3 +4126,10 @@ User Handling Error: Invalid email format
 	ErrorMsg: Incorrect Login Credentials
 [2026-08-27 23:59:31] User with ID '#ADM4de8f' failed to logged in
 	ErrorMsg: Incorrect Login Credentials
+[2026-08-29 14:29:27] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CONinvalid' is not found
+[2026-08-29 14:39:26] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CON6319a' is not found
+[2026-08-29 14:54:13] Error finding consultation type -> Invalid Consultation Type ID: Consultation Type ID '#CTYPEinvalid' is not found
+[2026-08-29 14:55:22] Error finding consultation type -> Invalid Consultation Type ID: Consultation Type ID '#CTYPEinvalid' is not found
+[2026-08-29 18:27:46] Error finding lab result type -> Invalid Lab Result Type ID: Lab Result Type ID '#LRTYPEinvalid' is not found
+[2026-08-29 18:27:59] Error finding lab result type -> Invalid Lab Result Type Name: 'Bogus Test Name' is not found
+[2026-08-29 18:31:30] Error finding prescription type -> Invalid Prescription Type ID: Prescription Type ID '#PTYPEinvalid' is not found

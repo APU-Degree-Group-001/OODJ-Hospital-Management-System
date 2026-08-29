@@ -87,7 +87,7 @@ public class TestMedicalRecordManagement {
         // Uncomment when needed because these modify the respective .txt files
 //         testCreateMedicalAssessment();
 //         testCreateLabResult();
-//         testCreatePrescription();
+         testCreatePrescription();
 
         // Test modification
         // Uncomment when needed because these modify the respective .txt files
@@ -99,7 +99,7 @@ public class TestMedicalRecordManagement {
         // Uncomment when needed because these modify the respective .txt files
 //         testDeleteMedicalAssessment();
 //         testDeleteLabResult();
-         testDeletePrescription();
+//         testDeletePrescription();
     }
 
     // =========================================================

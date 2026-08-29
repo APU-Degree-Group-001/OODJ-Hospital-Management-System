@@ -6,6 +6,7 @@ package oodj_hospital_management_system.models;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import oodj_hospital_management_system.services.ConsultationManagement;
+import oodj_hospital_management_system.services.LabResultTypeManagement;
 /**
  *
  * @author sheaw
@@ -27,7 +28,6 @@ public class LabResult {
         this.resultDateTime = "";
     }
 
-    // Preferred constructor - takes consultationId directly, no eager lookup
     public LabResult(
             String resultId,
             String consultationId,
@@ -44,7 +44,6 @@ public class LabResult {
         this.resultDateTime = resultDateTime;
     }
 
-    // Backward-compatible constructor - accepts a Consultation object, stores only its ID
     public LabResult(
             String resultId,
             Consultation consultation,
@@ -57,6 +56,25 @@ public class LabResult {
             resultId,
             consultation != null ? consultation.getConsultationId() : "",
             resultType,
+            result,
+            remarks,
+            resultDateTime
+        );
+    }
+
+    // Convenience constructor - accepts a LabResultType object, stores only its typeName
+    public LabResult(
+            String resultId,
+            String consultationId,
+            LabResultType labResultType,
+            String result,
+            String remarks,
+            String resultDateTime
+    ) {
+        this(
+            resultId,
+            consultationId,
+            labResultType != null ? labResultType.getTypeName() : "",
             result,
             remarks,
             resultDateTime
@@ -96,7 +114,6 @@ public class LabResult {
         return this.consultationId;
     }
 
-    // Lazily resolves the Consultation - safe to call regardless of load order
     public Consultation getConsultation() {
         if (this.consultationId == null || this.consultationId.isEmpty()) {
             return null;
@@ -106,6 +123,13 @@ public class LabResult {
 
     public String getResultType() {
         return this.resultType;
+    }
+
+    public LabResultType getLabResultType() {
+        if (this.resultType == null || this.resultType.isEmpty()) {
+            return null;
+        }
+        return LabResultTypeManagement.findLabResultTypeByName(this.resultType);
     }
 
     public String getResult() {
@@ -131,6 +155,11 @@ public class LabResult {
 
     public void setResultType(String resultType) {
         this.resultType = resultType;
+    }
+
+    // Sets the result type via a LabResultType object, storing only its typeName
+    public void setLabResultType(LabResultType labResultType) {
+        this.resultType = labResultType != null ? labResultType.getTypeName() : "";
     }
 
     public void setResult(String result) {

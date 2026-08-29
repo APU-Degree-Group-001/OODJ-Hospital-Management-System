@@ -7,6 +7,7 @@ package oodj_hospital_management_system.models;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import oodj_hospital_management_system.services.ConsultationManagement;
+import oodj_hospital_management_system.services.PrescriptionTypeManagement;
 
 /**
  *
@@ -73,6 +74,27 @@ public class Prescription {
         );
     }
 
+    // Convenience constructor - accepts a PrescriptionType object, stores only its typeName
+    public Prescription(
+            String prescriptionId,
+            String consultationId,
+            PrescriptionType prescriptionType,
+            String dosage,
+            String frequencyPerDay,
+            String durationInDays,
+            String instructions
+    ) {
+        this(
+            prescriptionId,
+            consultationId,
+            prescriptionType != null ? prescriptionType.getTypeName() : "",
+            dosage,
+            frequencyPerDay,
+            durationInDays,
+            instructions
+        );
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -122,6 +144,14 @@ public class Prescription {
         return this.medicineName;
     }
 
+    // Lazily resolves the PrescriptionType by name - safe to call regardless of load order
+    public PrescriptionType getPrescriptionType() {
+        if (this.medicineName == null || this.medicineName.isEmpty()) {
+            return null;
+        }
+        return PrescriptionTypeManagement.findPrescriptionTypeByName(this.medicineName);
+    }
+
     public String getDosage() {
         return this.dosage;
     }
@@ -157,6 +187,11 @@ public class Prescription {
 
     public void setMedicineName(String medicineName) {
         this.medicineName = medicineName;
+    }
+
+    // Sets the medicine via a PrescriptionType object, storing only its typeName
+    public void setPrescriptionType(PrescriptionType prescriptionType) {
+        this.medicineName = prescriptionType != null ? prescriptionType.getTypeName() : "";
     }
 
     public void setDosage(String dosage) {
