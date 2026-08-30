@@ -15,6 +15,7 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
 public class AdminUserManagementPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    private Runnable refreshDoctorTable;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -23,12 +24,12 @@ public class AdminUserManagementPanel extends javax.swing.JPanel {
     /**
      * Creates new form adminDashboardPanel
      */
-    public AdminUserManagementPanel(UserController usrCtrl) {
+    public AdminUserManagementPanel(UserController usrCtrl, Runnable refreshDoctorTable) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        
+        this.refreshDoctorTable = refreshDoctorTable;
         usrMngContentArea.add(new PatientManagementPanel(usrCtrl), "patientManagement");
-        usrMngContentArea.add(new DoctorManagementPanel(usrCtrl), "doctorManagement");
+        usrMngContentArea.add(new DoctorManagementPanel(usrCtrl, this.refreshDoctorTable), "doctorManagement");
         usrMngContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
         usrMngContentArea.add(new AdminStaffManagementPanel(usrCtrl), "adminStaffManagement");
         

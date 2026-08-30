@@ -6,7 +6,7 @@ package oodj_hospital_management_system.gui.admin;
 
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.billing_settings.AdminBillingSettingsPanel;
-import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPane;
+import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
@@ -17,6 +17,11 @@ import oodj_hospital_management_system.gui.admin.user_management.AdminUserManage
  */
 public class AdminStaffGUI extends javax.swing.JFrame {
     private UserController usrCtrl;
+    private AdminDashboardPanel adminDashboard;
+    private AdminDoctorAssignmentPanel adminDoctorAssignment;
+    private AdminUserManagementPanel adminUserManagement;
+    private AdminHospitalAssetsPanel adminHospitalAssets;
+    private AdminBillingSettingsPanel adminBillingSettings;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminStaffGUI.class.getName());
 
@@ -26,12 +31,19 @@ public class AdminStaffGUI extends javax.swing.JFrame {
     public AdminStaffGUI(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        
+        adminDashboard= new AdminDashboardPanel();
+        adminDoctorAssignment = new AdminDoctorAssignmentPanel(this.usrCtrl);
+        adminUserManagement = new AdminUserManagementPanel(this.usrCtrl, adminDoctorAssignment::loadDoctors);
+        adminHospitalAssets = new AdminHospitalAssetsPanel(this.usrCtrl);
+        adminBillingSettings = new AdminBillingSettingsPanel(this.usrCtrl);
+        
         // Add cards to contentArea
-        contentArea.add(new AdminDashboardPane(), "adminStaffDashboard");
-        contentArea.add(new AdminUserManagementPanel(this.usrCtrl), "adminStaffUserManagement");
-        contentArea.add(new AdminDoctorAssignmentPanel(this.usrCtrl), "adminStaffDoctorAssignment");
-        contentArea.add(new AdminHospitalAssetsPanel(this.usrCtrl), "adminStaffHospitalAssets");
-        contentArea.add(new AdminBillingSettingsPanel(this.usrCtrl), "adminStaffBillingSettings");
+        contentArea.add(adminDashboard, "adminStaffDashboard");
+        contentArea.add(adminUserManagement, "adminStaffUserManagement");
+        contentArea.add(adminDoctorAssignment, "adminStaffDoctorAssignment");
+        contentArea.add(adminHospitalAssets, "adminStaffHospitalAssets");
+        contentArea.add(adminBillingSettings, "adminStaffBillingSettings");
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");
@@ -47,7 +59,7 @@ public class AdminStaffGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         contentArea = new javax.swing.JPanel();
-        sideBar = new oodj_hospital_management_system.gui.utils.side_bar.SideBar("admin staff", contentArea);
+        sideBar = new oodj_hospital_management_system.gui.utils.side_bar.SideBar(this.usrCtrl, "admin staff", contentArea);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 800));

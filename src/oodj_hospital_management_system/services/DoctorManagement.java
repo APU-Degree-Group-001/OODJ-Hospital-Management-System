@@ -480,7 +480,14 @@ public class DoctorManagement {
                 break;
             }
         }
+        if (deleteDept == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Medical department '%s' not found", departmentId));
+            return msgMap;
+        }
         if (checkDepartmentPermission()) {
+            // Clear this department from any doctors assigned to it, before removing the department itself
+            UserManagement.clearDoctorDepartment(departmentId);
             medicalDepartments.removeIf(d -> d.getDepartmentId().equals(departmentId));
             writeMedicalDepartments();
             loadMedicalDepartment();

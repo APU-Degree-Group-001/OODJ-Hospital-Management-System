@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.utils.RoundedButton;
 import oodj_hospital_management_system.gui.utils.RoundedPanel;
 
@@ -16,6 +17,7 @@ import oodj_hospital_management_system.gui.utils.RoundedPanel;
  * @author sheaw
  */
 public class SideBar extends JPanel {
+    private UserController usrCtrl;
     private String role;
     private JPanel contentArea;   // the CardLayout container it controls
     private List<NavItem> items;
@@ -28,7 +30,8 @@ public class SideBar extends JPanel {
     /**
      * Creates new form SideBar
      */
-    public SideBar(String role, JPanel contentArea) {
+    public SideBar(UserController usrCtrl, String role, JPanel contentArea) {
+        this.usrCtrl = usrCtrl;
         this.role = role;
         this.contentArea = contentArea;
         this.items = new ArrayList<>();
@@ -57,7 +60,13 @@ public class SideBar extends JPanel {
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("medical manager")) {
-            addNavItem("", "", "");
+            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
+            addNavItem("Clinical Departments", "", "medicalManagerClinicalDepartments");
+            addNavItem("Doctor Shift Rosters", "", "medicalManagerDoctorShiftRosters");
+            addNavItem("Billing Management", "", "medicalManagerBillingManagement");
+            addNavItem("Reporting", "", "medicalManagerReporting");
+            navItems.add(Box.createVerticalGlue());
+            addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("doctor")) {
             addNavItem("", "", "");
@@ -78,7 +87,7 @@ public class SideBar extends JPanel {
     }
     
     private void addLogoutButton(String label, String iconPath, String cardName) {
-        LogoutButton item = new LogoutButton(label, 12, iconPath);
+        LogoutButton item = new LogoutButton(this.usrCtrl, label, 12, iconPath);
         item.setAlignmentX(Component.CENTER_ALIGNMENT);
         item.addActionListener(e -> selectLogoutButton(item));
         this.logoutButton = item;
@@ -111,7 +120,7 @@ public class SideBar extends JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        welcomePane = new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, "Pau");
+        welcomePane = new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, this.usrCtrl.getActiveUser().getName());
         jSeparator3 = new javax.swing.JSeparator();
         navItems = new javax.swing.JPanel();
 

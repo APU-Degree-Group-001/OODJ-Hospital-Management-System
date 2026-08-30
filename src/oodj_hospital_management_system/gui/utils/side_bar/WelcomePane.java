@@ -7,6 +7,7 @@ package oodj_hospital_management_system.gui.utils.side_bar;
 import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import oodj_hospital_management_system.controllers.UserController;
 
 /**
  *
@@ -35,7 +36,7 @@ public class WelcomePane extends javax.swing.JPanel {
             case "admin staff":
                 return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
             case "medical manager":
-                return "";
+                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
             case "doctor":
                 return "";
             case "patient":

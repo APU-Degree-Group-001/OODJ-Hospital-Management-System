@@ -242,3 +242,48 @@
 [2026-08-29 23:19:41] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATd0fa9 - hehe2}
 [2026-08-30 00:28:31] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-08-30 00:30:33] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 14:34:40] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 14:36:13] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 14:42:18] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 14:44:12] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 15:29:20] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 17:03:18] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 17:11:53] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 17:12:29] User {medical manager - #MNG58321 - Chee} logged out
+[2026-08-30 18:48:49] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 18:49:30] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 18:52:47] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 18:53:43] User {medical manager - #MNG58321 - Chee} created Medical Department {#DEPTe1e74 - Testing}
+[2026-08-30 18:53:48] User {medical manager - #MNG58321 - Chee} logged out
+[2026-08-30 18:53:57] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 18:54:12] User {admin staff - #ADMd4e8f - uehehe} created a new 'doctor' account, User {#DOC30c95 - test}
+[2026-08-30 18:54:27] User {admin staff - #ADMd4e8f - uehehe} created a new 'doctor' account, User {#DOC56ea5 - test2}
+[2026-08-30 18:55:39] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOC30c95}'s Medical Department to {#DEPTe1e74}
+[2026-08-30 18:55:46] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOC56ea5}'s Medical Department to {#DEPTe1e74}
+[2026-08-30 18:56:01] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-08-30 18:56:12] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 18:56:28] User {medical manager - #MNG58321 - Chee} deleted Medical Department {#DEPTe1e74 - Testing}
+[2026-08-30 18:56:32] User {medical manager - #MNG58321 - Chee} logged out
+[2026-08-30 18:56:40] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 19:10:47] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 19:37:57] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 19:41:38] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-30 19:42:01] User {admin staff - #ADMd4e8f - uehehe} created a new 'doctor' account, User {#DOCbff0e - testtttt}
+[2026-08-30 19:44:02] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-08-30 19:44:12] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-30 19:44:43] User {medical manager - #MNG58321 - Chee} created Medical Department {#DEPT1cde9 - test}
+[2026-08-30 19:45:28] User {medical manager - #MNG58321 - Chee} modified Medical Department {#DEPT1cde9}
+[2026-08-31 01:00:03] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-31 01:01:38] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-31 01:06:54] User {medical manager - #MNG58321 - Chee} created Doctor Shift {#SHIFT19b3e} for Doctor {#DOCb8f50 - cheeeeee}
+[2026-08-31 01:09:27] User {medical manager - #MNG58321 - Chee} logged out
+[2026-08-31 01:09:34] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-31 01:10:10] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCb8f50}'s Medical Department to {#DEPT004}
+[2026-08-31 01:10:16] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOCb8f50} to Medical Manager {#MNG79e32}
+[2026-08-31 01:10:33] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOCb8f50} to Medical Manager {#MNG79e32}
+[2026-08-31 01:15:20] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-08-31 01:15:30] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOCb8f50} to Medical Manager {#MNG58321}
+[2026-08-31 01:15:34] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-08-31 01:15:47] User {medical manager - #MNG58321 - Chee} logged in
+[2026-08-31 01:16:43] User {medical manager - #MNG58321 - Chee} logged out
+[2026-08-31 01:16:54] User {admin staff - #ADMd4e8f - uehehe} logged in

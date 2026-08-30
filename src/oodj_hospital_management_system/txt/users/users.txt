@@ -1,6 +1,6 @@
 userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medicalManagerId
-#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, #DEPT002, #MNG74295
-#DOCd4e8c, Waka Waka, wakawaka123, doctor, 2026-07-30 14:22:07, waka@gmail.com, #DEPT002, #MNG58321
+#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, , #MNG74295
+#DOCd4e8c, Waka Waka, wakawaka123, doctor, 2026-07-30 14:22:07, waka@gmail.com, , #MNG58321
 #ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07, uehehe@gmail.com, , 
 #PAT3fad4, Pau, pau123, patient, 2026-08-04 17:04:24, pau@gmail.com, , 
 #PAT79a39, Chua, chua123, patient, 2026-08-04 17:10:01, chua@gmail.com, , 
@@ -10,7 +10,10 @@ userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medica
 #PATa6a72, Chuaaa, Testpwd@123, patient, 2026-08-16 17:02:19, chua1@xx.com, , 
 #PATe55bd, paureen, ECQlA$4A, patient, 2026-08-26 20:38:23, hrmm@gmail.com, , 
 #PAT31c63, paureen, C!YsBH3w, patient, 2026-08-26 20:45:19, kaboomAic@gmail.com, , 
-#DOCb8f50, cheeeeee, @b$5RfbD, doctor, 2026-08-26 22:01:55, cheee@gmail.com, , 
+#DOCb8f50, cheeeeee, @b$5RfbD, doctor, 2026-08-26 22:01:55, cheee@gmail.com, #DEPT004, #MNG58321
 #PAT72528, Phang, ziX$BV$7, patient, 2026-08-27 10:58:54, phang@gmail.com, , 
 #PATaa85d, chee, g2rxS%3e, patient, 2026-08-27 10:59:26, xuanxuanxuan@gmail.com, , 
 #PATb3d5f, paureen, 6k$#@TGh, patient, 2026-08-27 15:29:35, kaboomSna@apu.com, , 
+#DOC30c95, test, %w@Qn8JS, doctor, 2026-08-30 18:54:12, test@mail.com, , 
+#DOC56ea5, test2, 9O%diT9y, doctor, 2026-08-30 18:54:27, test2@mail.com, , 
+#DOCbff0e, testtttt, 4eR$aksh, doctor, 2026-08-30 19:42:01, test3@mail.com, , 

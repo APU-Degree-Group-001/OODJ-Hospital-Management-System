@@ -15,6 +15,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.utils.HighlightValueRenderer;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
@@ -44,6 +45,12 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         initComponents();
         loadDoctors();
         loadSelections();
+        applyTableRenderers();
+    }
+    
+    private void applyTableRenderers() {
+        doctorTable.getColumnModel().getColumn(2).setCellRenderer(new HighlightValueRenderer("Unassigned"));
+        doctorTable.getColumnModel().getColumn(3).setCellRenderer(new HighlightValueRenderer("Unassigned"));
     }
     
     public void loadSelections() {
@@ -525,24 +532,30 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Please select a row first");
             return;
         }
-
         String usrId = doctorTable.getValueAt(selectedRow, 0).toString();
         Doctor selectedDoctor = (Doctor) UserManagement.getUserById(usrId);
-        
+
         String[] medicalManagerItems = medicalManagerLabels.toArray(new String[medicalManagerLabels.size()]);
-        
+
         JComboBox<String> medicalManagerCombo = new JComboBox<>(medicalManagerItems);
-    
+
         Object[] message = {
             "Medical Manager", medicalManagerCombo
         };
-
         int option = JOptionPane.showConfirmDialog(this, message, "Assign Medical Manager", JOptionPane.OK_CANCEL_OPTION);
-        
+
         if (option == JOptionPane.OK_OPTION) {
             String selectedMedicalManagerLabel = medicalManagerCombo.getSelectedItem().toString();
             int selectedIndex = medicalManagerCombo.getSelectedIndex();
-            LinkedHashMap<String, String> msg = this.usrCtrl.assignDoctorToMedicalManager(selectedDoctor, medicalManagers.get(selectedIndex));
+
+            if (selectedIndex <= 1) {
+                // index 0 = "Default", index 1 = "Unassigned" — not a real manager
+                JOptionPane.showMessageDialog(this, "Please select an actual Medical Manager");
+                return;
+            }
+
+            MedicalManager selectedManager = medicalManagers.get(selectedIndex - 2);
+            LinkedHashMap<String, String> msg = this.usrCtrl.assignDoctorToMedicalManager(selectedDoctor, selectedManager);
             if (msg.get("success").equals("true")) {
                 JOptionPane.showMessageDialog(this, msg.get("msg"));
                 loadDoctors();

@@ -9,6 +9,7 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.AdminStaffGUI;
+import oodj_hospital_management_system.gui.medical_manager.MedicalManagerGUI;
 
 // BG Relative Path: oodj_hospital_management_system/assets/img/login/patient_login_bg.png
 
@@ -180,11 +181,12 @@ public class StaffLoginGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Login Success");
             dispose();
             if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("admin staff")) {
-                AdminStaffGUI adminDashboard = new AdminStaffGUI(usrCtrl);
-                adminDashboard.setVisible(true);
+                AdminStaffGUI adminStaffGui = new AdminStaffGUI(usrCtrl);
+                adminStaffGui.setVisible(true);
             }
             if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("medical manager")) {
-                // add ltr~
+                MedicalManagerGUI medicalManagerGui = new MedicalManagerGUI(usrCtrl);
+                medicalManagerGui.setVisible(true);
             }
             if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("doctor")) {
                 // add ltr~

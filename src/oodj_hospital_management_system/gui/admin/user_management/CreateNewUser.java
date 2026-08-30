@@ -19,6 +19,7 @@ public class CreateNewUser extends javax.swing.JDialog {
     private String role;
     java.awt.Window parent;
     private Runnable refreshTable;
+    private Runnable refreshDoctorTable;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CreateNewUser.class.getName());
 
@@ -31,6 +32,24 @@ public class CreateNewUser extends javax.swing.JDialog {
         this.usrCtrl = usrCtrl;
         this.role = role;
         this.refreshTable = refreshTable;
+        initComponents();
+        setLocationRelativeTo(parent);
+        switch(role) {
+            case "patient": roleField.setText("Patient"); break;
+            case "doctor": roleField.setText("Doctor"); break;
+            case "medical manager": roleField.setText("Medical Manager"); break;
+            case "admin staff": roleField.setText("Admin Staff"); break;
+            default: roleField.setText("");
+        }
+    }
+    
+    public CreateNewUser(java.awt.Frame parent, boolean modal, String role, UserController usrCtrl, Runnable refreshTable, Runnable refreshDoctorTable) {
+        super(parent, modal);
+        this.parent = parent;
+        this.usrCtrl = usrCtrl;
+        this.role = role;
+        this.refreshTable = refreshTable;
+        this.refreshDoctorTable = refreshDoctorTable;
         initComponents();
         setLocationRelativeTo(parent);
         switch(role) {
@@ -205,6 +224,7 @@ public class CreateNewUser extends javax.swing.JDialog {
                 String showNewUsr = String.format("User ID: %s\nUser Password: %s\n\nPlease notfy the user to update the password for security", newUsr.getId(), newUsr.getPwd());
                 JOptionPane.showMessageDialog(this, showNewUsr, "New User Credentials", JOptionPane.INFORMATION_MESSAGE);
                 this.refreshTable.run();
+                this.refreshDoctorTable.run();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, String.format("Fail to create new User '%s' :(\n", nameField.getText()) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);

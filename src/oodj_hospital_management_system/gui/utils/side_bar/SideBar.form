@@ -32,7 +32,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, &quot;Pau&quot;)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, this.usrCtrl.getActiveUser().getName())"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

@@ -6,16 +6,20 @@ package oodj_hospital_management_system.gui.utils.side_bar;
 
 import javax.swing.*;
 import java.awt.*;
+import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.utils.RoundedButton;
+import oodj_hospital_management_system.models.User;
 
 /**
  *
  * @author sheaw
  */
 public class LogoutButton extends RoundedButton {
+    private UserController usrCtrl;
 
-    public LogoutButton(String text, int radius, String iconPath) {
+    public LogoutButton(UserController usrCtrl, String text, int radius, String iconPath) {
         super(text, radius); // handles the rounded background + button text
+        this.usrCtrl = usrCtrl;
 
         // Load and attach the icon — JButton renders icon+text together automatically
 //        if (iconPath != null) {
@@ -51,11 +55,53 @@ public class LogoutButton extends RoundedButton {
             new Color(255, 215, 215),  // hover - slightly darker red
             new Color(255, 195, 195)   // pressed
         );
+        
+        
+        logOut();
     }
     
     @Override
     public Dimension getMaximumSize() {
 //        Integer.MAX_VALUE - infinite ~
         return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+    }
+    
+    private void logOut() {
+        this.addActionListener(evt -> {
+            int choice = JOptionPane.showConfirmDialog(
+                SwingUtilities.getWindowAncestor(this),
+                "Are you sure you want to log out?",
+                "Confirm Logout",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+                User activeUser = this.usrCtrl.getActiveUser();
+                this.usrCtrl.userLogout(activeUser);
+
+                java.awt.Window currentWindow = SwingUtilities.getWindowAncestor(this);
+
+                switch (activeUser.getType().toLowerCase()) {
+                    case "patient":
+                        oodj_hospital_management_system.gui.patient.PatientLoginGUI patientLoginGui =
+                            new oodj_hospital_management_system.gui.patient.PatientLoginGUI();
+                        patientLoginGui.setVisible(true);
+                        break;
+                    case "admin staff":
+                    case "medical manager":
+                    case "doctor":
+                    default:
+                        oodj_hospital_management_system.gui.StaffLoginGUI staffLoginGui =
+                            new oodj_hospital_management_system.gui.StaffLoginGUI();
+                        staffLoginGui.setVisible(true);
+                        break;
+                }
+
+                if (currentWindow != null) {
+                    currentWindow.dispose();
+                }
+            }
+        });
     }
 }

@@ -397,6 +397,31 @@ public class UserManagement {
         return msgMap;
     }
     
+    public static LinkedHashMap<String, String> clearDoctorDepartment(String departmentId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        int clearedCount = 0;
+        for (User user : allUsers) {
+            if (user instanceof Doctor) {
+                Doctor storedDoctor = (Doctor) user;
+                MedicalDepartment doctorDept = storedDoctor.getMedicalDepartment();
+                if (doctorDept != null
+                        && doctorDept.getDepartmentId() != null
+                        && doctorDept.getDepartmentId().equals(departmentId)) {
+                    storedDoctor.setMedicalDepartment(new MedicalDepartment()); // placeholder, matches no-arg Doctor() constructor convention
+                    clearedCount++;
+                }
+            }
+        }
+        if (clearedCount > 0) {
+            writeUsers();
+            loadUsers();
+        }
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Cleared department '%s' from %d doctor(s)", departmentId, clearedCount));
+        msgMap.put("clearedCount", String.valueOf(clearedCount));
+        return msgMap;
+    }
+    
     public LinkedHashMap<String, String> deleteUser(String userId) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         User deleteUser = null;

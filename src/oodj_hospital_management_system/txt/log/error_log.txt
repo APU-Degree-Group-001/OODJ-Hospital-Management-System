@@ -4133,3 +4133,17 @@ User Handling Error: Invalid email format
 [2026-08-29 18:27:46] Error finding lab result type -> Invalid Lab Result Type ID: Lab Result Type ID '#LRTYPEinvalid' is not found
 [2026-08-29 18:27:59] Error finding lab result type -> Invalid Lab Result Type Name: 'Bogus Test Name' is not found
 [2026-08-29 18:31:30] Error finding prescription type -> Invalid Prescription Type ID: Prescription Type ID '#PTYPEinvalid' is not found
+[2026-08-30 16:58:16] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPTxxxxx' is not found
+[2026-08-30 16:58:16] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPTxxxxx' is not found
+[2026-08-30 16:59:36] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPTxxxxx' is not found
+[2026-08-30 16:59:59] Error finding medical department -> Medical Department Handling Error: Invalid Medical Department ID: Department ID '#DEPT43f41' is not found
+[2026-08-30 18:48:38] User with ID '#MNG58321' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-08-30 18:48:43] User with ID '#MNG58321' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-08-30 18:54:23] User {admin staff - #ADMd4e8f - uehehe} failed to create a new user account
+	ErrorMsg: User 'test2' is not created: email 'test@mail.com' is already in use
+[2026-08-30 18:54:23] Error finding user -> User Handling Error: Invalid User ID: User ID 'null' is not found
+[2026-08-31 01:05:55] User {medical manager - #MNG58321 - Chee} failed to create a doctor shift for Doctor {#DOCb8f50 - cheeeeee}
+	ErrorMsg: Doctor shift is not created
+Doctor Shift Handling Error: End date/time must be after start date/time

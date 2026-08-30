@@ -36,12 +36,14 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
     private List<User> currentDoctors;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
     private static final int MAX_NAME_LENGTH = 50;
+    private Runnable refreshDoctorTable;
 
     /**
      * Creates new form DoctorManagement
      */
-    public DoctorManagementPanel(UserController usrCtrl) {
+    public DoctorManagementPanel(UserController usrCtrl, Runnable refreshDoctorTable) {
         this.usrCtrl = usrCtrl;
+        this.refreshDoctorTable = refreshDoctorTable;
         initComponents();
         loadDoctors();
         customStyleHeader();
@@ -438,6 +440,7 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
                 if (msg.get("success") != null) {                
                         JOptionPane.showMessageDialog(parentWindow, String.format("Doctor '%s' is deleted!", usrId));
                         loadDoctors();
+                        this.refreshDoctorTable.run();
                 } else {
                     JOptionPane.showMessageDialog(parentWindow, String.format("Fail to delete Doctor '%s' :(", usrId) + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -451,7 +454,7 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
         java.awt.Frame parent = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        CreateNewUser dialog = new CreateNewUser(parent, true, "doctor", usrCtrl, this::loadDoctors);
+        CreateNewUser dialog = new CreateNewUser(parent, true, "doctor", usrCtrl, this::loadDoctors, this.refreshDoctorTable);
         dialog.setVisible(true);
     }//GEN-LAST:event_addUserButtonActionPerformed
 
@@ -587,6 +590,7 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
             if (anyUpdated) {
                 JOptionPane.showMessageDialog(parentWindow, String.format("User '%s' updated!", usrId));
                 loadDoctors();
+                this.refreshDoctorTable.run();
             }
             return;
         }

@@ -88,6 +88,11 @@ public class TestDoctorManagement {
 //        testEditDepartment();
 //        testDeleteDepartment();
 //        testUpdateDoctorDepartment();
+
+//         testStep1_CreateThrowawayDepartment();
+//         testStep2_AssignDoctorsToDepartment();
+//         testStep3_DeleteDepartment();
+//         testStep4_VerifyDoctorsCleared();
     }
     
     public void testLoadConsultationSlots() {
@@ -928,6 +933,145 @@ public class TestDoctorManagement {
             System.out.println("Verified: doctor's department updated in file.");
         } else {
             System.out.println("Test failed: doctor's department was not updated correctly.");
+        }
+    }
+    
+    // =========================================================
+    // DELETE DEPARTMENT CLEARS DOCTOR ASSIGNMENT — STEP TESTS
+    // =========================================================
+
+    static void testStep1_CreateThrowawayDepartment() {
+
+        System.out.println(
+                "\n===== STEP 1: CREATE THROWAWAY DEPARTMENT ====="
+        );
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        DoctorManagement doctorMng = new DoctorManagement(manager);
+
+        LinkedHashMap<String, String> addResult =
+                doctorMng.addNewDepartment("Temp Multi-Doctor Test Department", "Created only to test deletion clearing multiple doctors.");
+
+        System.out.println("Success : " + addResult.get("success"));
+        System.out.println("Message : " + addResult.get("msg"));
+        System.out.println("New Department ID : " + addResult.get("newDepartmentId"));
+        System.out.println("\n>>> Copy this department ID into testStep2/3/4 below before running them.");
+    }
+
+    static void testStep2_AssignDoctorsToDepartment() {
+
+        System.out.println(
+                "\n===== STEP 2: ASSIGN DOCTORS TO DEPARTMENT ====="
+        );
+
+        // TODO: paste the department ID printed by testStep1_CreateThrowawayDepartment()
+        String targetDepartmentId = "#DEPT43f41";
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        UserManagement userMng = new UserManagement(manager);
+
+        String doctorId1 = "#DOCd4e8f";
+        String doctorId2 = "#DOCd4e8c";
+
+        LinkedHashMap<String, String> assign1 = userMng.updateDoctorDepartment(doctorId1, targetDepartmentId);
+        LinkedHashMap<String, String> assign2 = userMng.updateDoctorDepartment(doctorId2, targetDepartmentId);
+
+        System.out.println("Assign Doctor 1 (" + doctorId1 + ") Success : " + assign1.get("success"));
+        System.out.println("Assign Doctor 1 Message : " + assign1.get("msg"));
+        System.out.println("Assign Doctor 2 (" + doctorId2 + ") Success : " + assign2.get("success"));
+        System.out.println("Assign Doctor 2 Message : " + assign2.get("msg"));
+
+        Doctor doctor1 = UserManagement.getDoctorById(doctorId1);
+        Doctor doctor2 = UserManagement.getDoctorById(doctorId2);
+
+        System.out.println("Doctor 1 Department Now : "
+                + (doctor1.getMedicalDepartment() != null ? doctor1.getMedicalDepartment().getDepartmentId() : "None"));
+        System.out.println("Doctor 2 Department Now : "
+                + (doctor2.getMedicalDepartment() != null ? doctor2.getMedicalDepartment().getDepartmentId() : "None"));
+    }
+
+    static void testStep3_DeleteDepartment() {
+
+        System.out.println(
+                "\n===== STEP 3: DELETE DEPARTMENT ====="
+        );
+
+        // TODO: paste the same department ID used in testStep2
+        String targetDepartmentId = "#DEPT43f41";
+
+        MedicalManager manager =
+                UserManagement.getMedicalManagerById("#MNG74295");
+
+        if (manager == null) {
+            System.out.println("Test failed: Medical Manager not found.");
+            return;
+        }
+
+        DoctorManagement doctorMng = new DoctorManagement(manager);
+
+        LinkedHashMap<String, String> deleteResult = doctorMng.deleteDepartment(targetDepartmentId);
+
+        System.out.println("Delete Success : " + deleteResult.get("success"));
+        System.out.println("Delete Message : " + deleteResult.get("msg"));
+        System.out.println("Deleted Department ID : " + deleteResult.get("deleteDepartmentId"));
+        System.out.println("Deleted Department Name : " + deleteResult.get("deleteDepartmentName"));
+
+        MedicalDepartment shouldBeGone = DoctorManagement.getMedicalDepartmentById(targetDepartmentId);
+        if (shouldBeGone == null) {
+            System.out.println("Verified: department no longer exists.");
+        } else {
+            System.out.println("Test failed: department still exists after deletion.");
+        }
+    }
+
+    static void testStep4_VerifyDoctorsCleared() {
+
+        System.out.println(
+                "\n===== STEP 4: VERIFY DOCTORS' DEPARTMENT CLEARED ====="
+        );
+
+        String doctorId1 = "#DOCd4e8f";
+        String doctorId2 = "#DOCd4e8c";
+
+        Doctor doctor1 = UserManagement.getDoctorById(doctorId1);
+        Doctor doctor2 = UserManagement.getDoctorById(doctorId2);
+
+        if (doctor1 == null || doctor2 == null) {
+            System.out.println("Test failed: one or both doctors not found.");
+            return;
+        }
+
+        boolean doctor1Cleared = doctor1.getMedicalDepartment() == null
+                || doctor1.getMedicalDepartment().getDepartmentId() == null
+                || doctor1.getMedicalDepartment().getDepartmentId().isEmpty();
+
+        boolean doctor2Cleared = doctor2.getMedicalDepartment() == null
+                || doctor2.getMedicalDepartment().getDepartmentId() == null
+                || doctor2.getMedicalDepartment().getDepartmentId().isEmpty();
+
+        System.out.println("Doctor 1 (" + doctorId1 + ") Department : "
+                + (doctor1.getMedicalDepartment() != null ? "'" + doctor1.getMedicalDepartment().getDepartmentId() + "'" : "null"));
+        System.out.println("Doctor 2 (" + doctorId2 + ") Department : "
+                + (doctor2.getMedicalDepartment() != null ? "'" + doctor2.getMedicalDepartment().getDepartmentId() + "'" : "null"));
+
+        if (doctor1Cleared && doctor2Cleared) {
+            System.out.println("Test PASSED: both doctors' department assignments were correctly cleared.");
+        } else {
+            System.out.println("Test FAILED: at least one doctor's department was NOT cleared.");
         }
     }
 }

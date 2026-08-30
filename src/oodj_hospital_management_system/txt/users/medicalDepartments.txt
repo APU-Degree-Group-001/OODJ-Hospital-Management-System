@@ -5,3 +5,4 @@ departmentId, departmentName, description
 #DEPT004, Pediatrics, Provides medical care and treatment for infants children and adolescents.
 #DEPT005, Orthopedics, Provides diagnosis#|treatment#|and rehabilitation for bones#|joints#|muscles#|and the musculoskeletal system.
 #DEPTe8318, Dermatology, Provides diagnosis and treatment for skin#|hair#|and nail conditions.
+#DEPT1cde9, test, bibilabu

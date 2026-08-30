@@ -8,12 +8,12 @@ package oodj_hospital_management_system.gui.admin.dashboard;
  *
  * @author sheaw
  */
-public class AdminDashboardPane extends javax.swing.JPanel {
+public class AdminDashboardPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form adminDashboardPanel
      */
-    public AdminDashboardPane() {
+    public AdminDashboardPanel() {
         initComponents();
     }
 
