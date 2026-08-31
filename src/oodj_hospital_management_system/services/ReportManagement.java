@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -119,6 +120,109 @@ public class ReportManagement {
         }
         LocalDateTime dateTime = DateTime.toDateTimeObject(startDateTime);
         return dateTime.format(MONTH_FORMAT);
+    }
+    
+    // Billing totals filtered to a date range (inclusive), based on each bill's
+    // consultation slot start date. Pass null for either bound to leave it open.
+    public static LinkedHashMap<String, String> getBillingTotals(LocalDate startDate, LocalDate endDate) {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, String> totals = new LinkedHashMap<>();
+
+        double totalRevenue = 0;
+        double totalPaid = 0;
+        double totalUnpaid = 0;
+        int countPaid = 0;
+        int countUnpaid = 0;
+        int countVoid = 0;
+        int billsInRange = 0;
+
+        for (Bill bill : bills) {
+            LocalDate billDate = getBillDate(bill);
+            if (startDate != null && (billDate == null || billDate.isBefore(startDate))) continue;
+            if (endDate != null && (billDate == null || billDate.isAfter(endDate))) continue;
+
+            billsInRange++;
+            if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
+                countVoid++;
+                continue;
+            }
+            totalRevenue += bill.getPayableAmount();
+            if (Bill.BillStatus.PAID.equals(bill.getStatus())) {
+                totalPaid += bill.getPayableAmount();
+                countPaid++;
+            } else if (Bill.BillStatus.UNPAID.equals(bill.getStatus())) {
+                totalUnpaid += bill.getPayableAmount();
+                countUnpaid++;
+            }
+        }
+
+        totals.put("totalBills", String.valueOf(billsInRange));
+        totals.put("totalRevenue", String.format("%.2f", totalRevenue));
+        totals.put("totalPaid", String.format("%.2f", totalPaid));
+        totals.put("totalUnpaid", String.format("%.2f", totalUnpaid));
+        totals.put("countPaid", String.valueOf(countPaid));
+        totals.put("countUnpaid", String.valueOf(countUnpaid));
+        totals.put("countVoid", String.valueOf(countVoid));
+        return totals;
+    }
+    
+    // Revenue grouped by week within a date range (e.g. "Week 1", "Week 2", ...),
+    // based on the day-of-month of each bill's consultation slot start date.
+    // Excludes VOID bills, same as getRevenueByMonth().
+    public static LinkedHashMap<String, Double> getRevenueByWeek(LocalDate startDate, LocalDate endDate) {
+        List<Bill> bills = BillingManagement.getAllBills();
+        Map<Integer, Double> revenueByWeek = new TreeMap<>(); // week number -> total
+
+        for (Bill bill : bills) {
+            if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
+                continue;
+            }
+            LocalDate billDate = getBillDate(bill);
+            if (billDate == null) continue;
+            if (startDate != null && billDate.isBefore(startDate)) continue;
+            if (endDate != null && billDate.isAfter(endDate)) continue;
+
+            // Week number relative to the range's start, 1-indexed.
+            LocalDate rangeStart = (startDate != null) ? startDate : billDate.withDayOfMonth(1);
+            int dayOffset = (int) java.time.temporal.ChronoUnit.DAYS.between(rangeStart, billDate);
+            int weekNumber = (dayOffset / 7) + 1;
+
+            revenueByWeek.merge(weekNumber, bill.getPayableAmount(), Double::sum);
+        }
+
+        LinkedHashMap<String, Double> result = new LinkedHashMap<>();
+        for (Map.Entry<Integer, Double> entry : revenueByWeek.entrySet()) {
+            result.put("Week " + entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    // Bill status breakdown filtered to a date range, same rules as above.
+    public static LinkedHashMap<String, Double> getBillStatusBreakdown(LocalDate startDate, LocalDate endDate) {
+        List<Bill> bills = BillingManagement.getAllBills();
+        LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
+        breakdown.put(Bill.BillStatus.PAID.toString(), 0.0);
+        breakdown.put(Bill.BillStatus.UNPAID.toString(), 0.0);
+        breakdown.put(Bill.BillStatus.VOID.toString(), 0.0);
+
+        for (Bill bill : bills) {
+            if (bill.getStatus() == null) continue;
+            LocalDate billDate = getBillDate(bill);
+            if (startDate != null && (billDate == null || billDate.isBefore(startDate))) continue;
+            if (endDate != null && (billDate == null || billDate.isAfter(endDate))) continue;
+            breakdown.merge(bill.getStatus().toString(), 1.0, Double::sum);
+        }
+        return breakdown;
+    }
+
+    // Resolves a bill's actual consultation date (not just yyyy-MM) via Bill -> Consultation -> ConsultationSlot
+    private static LocalDate getBillDate(Bill bill) {
+        Consultation consultation = ConsultationManagement.getConsultationById(bill.getConsultationId());
+        if (consultation == null || consultation.getConsultationSlot() == null) return null;
+        String startDateTime = consultation.getConsultationSlot().getStartDateTime();
+        if (startDateTime == null || startDateTime.isEmpty()) return null;
+        LocalDateTime dt = DateTime.toDateTimeObject(startDateTime);
+        return dt == null ? null : dt.toLocalDate();
     }
 
     // =========================================================

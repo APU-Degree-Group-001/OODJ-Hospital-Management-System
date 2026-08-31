@@ -65,6 +65,12 @@ public class TestBillingManagement {
 //        testUpdateBill();
 //        testMarkBillAsPaid();
 //        testCancelBill();
+
+        // Test generate bill from consultation
+        // Uncomment when needed because these modify bills.txt
+//        testGenerateBillFromConsultation();
+//        testGenerateBillFromConsultationNoInsurance();
+        testGenerateBillFromConsultationInvalidId();
     }
 
     // =========================================================
@@ -305,6 +311,71 @@ public class TestBillingManagement {
         Bill bill = bills.get(bills.size() - 1);
 
         LinkedHashMap<String, String> result = billMng.cancelBill(bill);
+
+        System.out.println("Success : " + result.get("success"));
+        System.out.println("Message : " + result.get("msg"));
+    }
+
+    // =========================================================
+    // GENERATE BILL FROM CONSULTATION TESTS
+    // =========================================================
+
+    static void testGenerateBillFromConsultation() {
+
+        System.out.println("\n===== TEST GENERATE BILL FROM CONSULTATION =====");
+
+        // #CON001 has lab results (#LAB001, #LAB002, #LAB4f982) and
+        // prescriptions (#PRE001, #PRE002, #PREf0b85) attached to it.
+        // Remove/void the existing #BILL001 row in bills.txt first, otherwise
+        // this creates a duplicate bill on top of the already-paid one.
+        LinkedHashMap<String, String> result = billMng.generateBillFromConsultation(
+                "#CON001",
+                "#INS001"
+        );
+
+        System.out.println("Success              : " + result.get("success"));
+        System.out.println("Message              : " + result.get("msg"));
+        System.out.println("New Bill ID          : " + result.get("newBillId"));
+        System.out.println("Consultation Type    : " + result.get("consultationTypeName"));
+        System.out.println("Consultation Charge  : " + result.get("consultationCharge"));
+        System.out.println("Lab Types            : " + result.get("labTypeNames"));
+        System.out.println("Lab Charge           : " + result.get("labCharge"));
+        System.out.println("Prescription Types   : " + result.get("prescriptionTypeNames"));
+        System.out.println("Prescription Charge  : " + result.get("prescriptionCharge"));
+        System.out.println("Total Charge         : " + result.get("totalCharge"));
+    }
+
+    static void testGenerateBillFromConsultationNoInsurance() {
+
+        System.out.println("\n===== TEST GENERATE BILL FROM CONSULTATION (NO INSURANCE) =====");
+
+        // #CONd3224 has no existing bill and no lab/prescription records,
+        // exercises the empty-breakdown path with insuranceId = null
+        LinkedHashMap<String, String> result = billMng.generateBillFromConsultation(
+                "#CONd3224",
+                null
+        );
+
+        System.out.println("Success              : " + result.get("success"));
+        System.out.println("Message              : " + result.get("msg"));
+        System.out.println("New Bill ID          : " + result.get("newBillId"));
+        System.out.println("Consultation Type    : " + result.get("consultationTypeName"));
+        System.out.println("Consultation Charge  : " + result.get("consultationCharge"));
+        System.out.println("Lab Types            : " + result.get("labTypeNames"));
+        System.out.println("Lab Charge           : " + result.get("labCharge"));
+        System.out.println("Prescription Types   : " + result.get("prescriptionTypeNames"));
+        System.out.println("Prescription Charge  : " + result.get("prescriptionCharge"));
+        System.out.println("Total Charge         : " + result.get("totalCharge"));
+    }
+
+    static void testGenerateBillFromConsultationInvalidId() {
+
+        System.out.println("\n===== TEST GENERATE BILL FROM CONSULTATION (INVALID CONSULTATION ID) =====");
+
+        LinkedHashMap<String, String> result = billMng.generateBillFromConsultation(
+                "#CON999",
+                "#INS001"
+        );
 
         System.out.println("Success : " + result.get("success"));
         System.out.println("Message : " + result.get("msg"));

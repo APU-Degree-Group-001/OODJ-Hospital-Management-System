@@ -59,7 +59,8 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         rosterGrid = new ShiftRosterGridPanel();
         rosterGrid.setShiftClickListener(this::handleShiftCardClick);
         rosterGridContainer.setLayout(new java.awt.BorderLayout());
-        rosterGridContainer.add(rosterGrid, java.awt.BorderLayout.CENTER);
+        rosterGridContainer.add(rosterGrid, java.awt.BorderLayout.NORTH);
+        rosterGridContainer.setPreferredSize(null); // let it size to rosterGrid's content instead of the fixed 1160x500 from Design view
 
         allDoctors = loadAllDoctors();
         refreshRoster();
@@ -132,8 +133,9 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private void updateResultLabel(int count) {
         String keyword = searchField.getText().trim();
         if (keyword.isEmpty()) {
-            showResultsForLabel.setText("Showing all doctors (" + count + " found)");
+            showResultsForPanel.setVisible(false);
         } else {
+            showResultsForPanel.setVisible(true);
             showResultsForLabel.setText("Showing results for \"" + keyword + "\" (" + count + " found)");
         }
     }
@@ -202,15 +204,15 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         sortByLabel1 = new javax.swing.JLabel();
         sortField1 = new javax.swing.JComboBox<>();
         wrapperPane = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        showResultsForPanel = new javax.swing.JPanel();
-        showResultsForLabel = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         previousWeekButton = new javax.swing.JToggleButton();
         mondayLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         sundayLabel = new javax.swing.JLabel();
         nextWeekButton = new javax.swing.JToggleButton();
+        showResultsForPanel = new javax.swing.JPanel();
+        showResultsForLabel = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         rosterGridContainer = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
@@ -325,19 +327,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         wrapperPane.setBackground(new java.awt.Color(255, 255, 255));
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
-        wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.LINE_AXIS));
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
-        jPanel3.setAlignmentY(0.0F);
-        jPanel3.setLayout(new java.awt.BorderLayout());
-
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
-        showResultsForPanel.setAlignmentY(0.0F);
-        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        showResultsForPanel.add(showResultsForLabel);
-
-        jPanel3.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
+        wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -358,11 +348,23 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         nextWeekButton.addActionListener(this::nextWeekButtonActionPerformed);
         jPanel6.add(nextWeekButton);
 
-        jPanel3.add(jPanel6, java.awt.BorderLayout.NORTH);
+        wrapperPane.add(jPanel6);
+
+        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setAlignmentY(0.0F);
+        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        showResultsForPanel.add(showResultsForLabel);
+
+        wrapperPane.add(showResultsForPanel);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
+        jPanel3.setAlignmentY(0.0F);
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
         rosterGridContainer.setBackground(new java.awt.Color(255, 255, 255));
         rosterGridContainer.setPreferredSize(new java.awt.Dimension(1160, 500));
-        jPanel3.add(rosterGridContainer, java.awt.BorderLayout.CENTER);
+        jPanel3.add(rosterGridContainer, java.awt.BorderLayout.NORTH);
 
         wrapperPane.add(jPanel3);
 

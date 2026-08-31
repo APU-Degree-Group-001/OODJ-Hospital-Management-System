@@ -4147,3 +4147,20 @@ User Handling Error: Invalid email format
 [2026-08-31 01:05:55] User {medical manager - #MNG58321 - Chee} failed to create a doctor shift for Doctor {#DOCb8f50 - cheeeeee}
 	ErrorMsg: Doctor shift is not created
 Doctor Shift Handling Error: End date/time must be after start date/time
+[2026-08-31 14:29:54] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 14:30:55] Error finding consultation -> Invalid Consultation ID: Consultation ID '#CON999' is not found
+[2026-08-31 15:47:15] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 15:55:56] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 15:59:28] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:00:39] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:06:14] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:13:42] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:30:56] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:33:20] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:39:09] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 16:40:11] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 18:10:29] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 18:14:25] Error finding lab result type -> Invalid Lab Result Type Name: 'Blood Test' is not found
+[2026-08-31 18:49:28] User {medical manager - #MNG58321 - Chee} failed to generate a bill from Consultation {#CON167e9}
+	ErrorMsg: Bill is not created
+Bill Handling Error: Only Admin Staff can manage billing

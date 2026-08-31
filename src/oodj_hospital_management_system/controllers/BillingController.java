@@ -114,4 +114,20 @@ public class BillingController {
         }
         return msg;
     }
+    
+        public LinkedHashMap<String, String> generateBillFromConsultation(String consultationId, String insuranceId) {
+        LinkedHashMap<String, String> msg = billingServices.generateBillFromConsultation(consultationId, insuranceId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} generated Bill {%s} from Consultation {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    msg.get("newBillId"), consultationId));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to generate a bill from Consultation {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    consultationId, msg.get("msg")));
+        }
+        return msg;
+    }
 }

@@ -6,6 +6,7 @@ package oodj_hospital_management_system.gui.admin.hospitalAssets;
 
 import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.*;
 
@@ -27,28 +28,36 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     public AdminHospitalAssetsPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        
-//        navigationPane.setPreferredSize(null);
-//        dashboardPanel.setPreferredSize(null);
-//        jPanel5.setPreferredSize(null);
-//        hospitalAssetContentArea.setPreferredSize(null);
-//        dashboardPanel.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
-//        jPanel5.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
-//        hospitalAssetContentArea.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
-        
+
+        navigationPane.setPreferredSize(null);
+
+        // Cap dashboardPanel's WIDTH only; height stays dynamic so vertical
+        // scrolling keeps working as content grows/shrinks.
+        javax.swing.JPanel cappedDashboard = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10)) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(Math.min(d.width, 1020), d.height);
+            }
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+        };
+        cappedDashboard.setBackground(dashboardPanel.getBackground());
+        cappedDashboard.setBorder(dashboardPanel.getBorder());
+        cappedDashboard.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+        cappedDashboard.add(hospitalAssetContentArea, java.awt.BorderLayout.CENTER);
+
+        dashboardPanel = cappedDashboard;
+        jScrollPane2.setViewportView(dashboardPanel);
+
         hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
-//        hospitalAssetContentArea.add(new DoctorManagementPanel(usrCtrl), "doctorManagement");
-//        hospitalAssetContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
-        
+
         setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
-        
-        // me trying to fix ma content kena cutoff :DDDD
-//        dashboardPanel.setPreferredSize(null);
-//        dashboardPanel.setPreferredSize(1020, Integer.MAX_VALUE);
-//        dashboardPanel.setMaximumSize(new java.awt.Dimension(1020, Integer.MAX_VALUE));
-        
+
         this.cl = (CardLayout) hospitalAssetContentArea.getLayout();
         cl.show(hospitalAssetContentArea, "hospitalAssets");
     }

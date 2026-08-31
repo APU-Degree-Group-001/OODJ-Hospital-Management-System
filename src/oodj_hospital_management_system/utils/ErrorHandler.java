@@ -627,7 +627,7 @@ public class ErrorHandler {
                     }
                 }
             }
-            if (details.get(i).equalsIgnoreCase("admin staff")) {
+            if (details.get(i).equalsIgnoreCase("medical manager")) {
                 if (object == null) {
                     throw new BillException("Active User cannot be null");
                 }
@@ -635,8 +635,8 @@ public class ErrorHandler {
                     throw new BillException("Invalid active user");
                 }
                 User user = (User) object;
-                if (!"admin staff".equalsIgnoreCase(user.getType())) {
-                    throw new BillException("Only Admin Staff can manage billing");
+                if (!"medical manager".equalsIgnoreCase(user.getType())) {
+                    throw new BillException("Only Medical Manager can manage billing");
                 }
             }
             i++;

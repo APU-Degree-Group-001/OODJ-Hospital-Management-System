@@ -11,8 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.models.Bill;
+import oodj_hospital_management_system.models.Consultation;
+import oodj_hospital_management_system.models.ConsultationType;
 import oodj_hospital_management_system.models.Insurance;
+import oodj_hospital_management_system.models.LabResult;
+import oodj_hospital_management_system.models.LabResultType;
 import oodj_hospital_management_system.models.Patient;
+import oodj_hospital_management_system.models.Prescription;
+import oodj_hospital_management_system.models.PrescriptionType;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
@@ -293,6 +299,110 @@ public class BillingManagement {
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Bill '%s' is marked as paid!", targetBill.getBillId()));
         return msgMap;
+    }
+    
+    // Generate Bills
+    public LinkedHashMap<String, String> generateBillFromConsultation(String consultationId, String insuranceId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        Consultation consultation = ConsultationManagement.getConsultationById(consultationId);
+        if (consultation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Bill is not generated\nConsultation is not found");
+            return msgMap;
+        }
+
+        Patient patient = consultation.getPatient();
+        if (patient == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Bill is not generated\nPatient is not found");
+            return msgMap;
+        }
+
+        Insurance insurance = (insuranceId == null || insuranceId.isBlank())
+                ? null
+                : InsuranceManagement.getInsuranceById(insuranceId);
+
+        // Itemized breakdown — each computed separately so we can report the
+        // type names alongside their charges, even though Bill/bills.txt only
+        // stores the combined total
+        ConsultationType consultationType = consultation.getConsultationType();
+        double consultationCharge = (consultationType != null) ? consultationType.getBaseRate() : 0.0;
+
+        LinkedHashMap<String, String> labBreakdown = calculateLabCharges(consultation);
+        double labCharge = Double.parseDouble(labBreakdown.get("labCharge"));
+
+        LinkedHashMap<String, String> prescriptionBreakdown = calculatePrescriptionCharges(consultation);
+        double prescriptionCharge = Double.parseDouble(prescriptionBreakdown.get("prescriptionCharge"));
+
+        double totalCharge = consultationCharge + labCharge + prescriptionCharge;
+
+        // createBill()'s "consultationFee" param is really used internally as the
+        // pre-insurance totalAmount (see: double totalAmount = consultationFee;)
+        // so passing the combined total here matches existing behaviour
+        msgMap = createBill(consultationId, patient, insurance, totalCharge);
+
+        // Attach the itemized breakdown on top of createBill()'s own success/msg/newBillId
+        msgMap.put("consultationTypeName", (consultationType != null) ? consultationType.getTypeName() : "");
+        msgMap.put("consultationCharge", String.valueOf(consultationCharge));
+        msgMap.put("labItems", labBreakdown.get("labItems"));
+        msgMap.put("labCharge", String.valueOf(labCharge));
+        msgMap.put("prescriptionItems", prescriptionBreakdown.get("prescriptionItems"));
+        msgMap.put("prescriptionCharge", String.valueOf(prescriptionCharge));
+        msgMap.put("totalCharge", String.valueOf(totalCharge));
+
+        return msgMap;
+    }
+
+        private LinkedHashMap<String, String> calculateLabCharges(Consultation consultation) {
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        double labCharge = 0.0;
+        List<String> labItems = new ArrayList<>();
+
+        List<LabResult> labResults = consultation.getLabResults();
+        if (labResults != null) {
+            for (LabResult labResult : labResults) {
+                if (labResult.getResultId() != null) {
+                    LabResultType labResultType = LabResultTypeManagement.getLabResultTypeByName(labResult.getResultType());
+                    if (labResultType != null) {
+                        double itemCharge = labResultType.getBaseRate();
+                        labCharge += itemCharge;
+                        labItems.add(String.format("%s: RM%.2f", labResultType.getTypeName(), itemCharge));
+                    }
+                }
+            }
+        }
+
+        result.put("labCharge", String.valueOf(labCharge));
+        result.put("labItems", String.join(", ", labItems));
+        return result;
+    }
+
+    private LinkedHashMap<String, String> calculatePrescriptionCharges(Consultation consultation) {
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        double prescriptionCharge = 0.0;
+        List<String> prescriptionItems = new ArrayList<>();
+
+        List<Prescription> prescriptions = consultation.getPrescriptions();
+        if (prescriptions != null) {
+            for (Prescription prescription : prescriptions) {
+                if (prescription.getPrescriptionId() != null) {
+                    PrescriptionType prescriptionType = PrescriptionTypeManagement.getPrescriptionTypeByName(prescription.getMedicineName());
+                    if (prescriptionType != null) {
+                        int frequencyPerDay = Integer.parseInt(prescription.getFrequencyPerDay());
+                        int durationInDays = Integer.parseInt(prescription.getDurationInDays());
+                        int totalUnits = frequencyPerDay * durationInDays;
+                        double itemCharge = prescriptionType.getBaseRate() * totalUnits;
+                        prescriptionCharge += itemCharge;
+                        prescriptionItems.add(String.format("%s (x%d): RM%.2f", prescriptionType.getTypeName(), totalUnits, itemCharge));
+                    }
+                }
+            }
+        }
+
+        result.put("prescriptionCharge", String.valueOf(prescriptionCharge));
+        result.put("prescriptionItems", String.join(", ", prescriptionItems));
+        return result;
     }
 
     // Searching and Sorting

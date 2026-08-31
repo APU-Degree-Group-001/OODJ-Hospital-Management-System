@@ -26,7 +26,7 @@ public class UserController {
     private HospitalAssetController hospitalAssetController;
     private InsuranceController insuranceController;
     private MedicalRecordController medicalRecordController;
-//    private ReportController reportController;
+    private ReportController reportController;
     private RequestController requestController;
     private ConsultationTypeController consultationTypeController;
     private LabResultTypeController labResultTypeController;
@@ -42,7 +42,7 @@ public class UserController {
         this.hospitalAssetController = null;
         this.insuranceController = null;
         this.medicalRecordController = null;
-//        this.reportController = null;
+        this.reportController = null;
         this.requestController = null;
         this.consultationTypeController = null;
         this.labResultTypeController = null;
@@ -81,9 +81,9 @@ public class UserController {
         return this.medicalRecordController;
     }
     
-//    public ReportController getReportController() {
-//        return this.reportController;
-//    }
+    public ReportController getReportController() {
+        return this.reportController;
+    }
     
     public RequestController getRequestController() {
         return this.requestController;
@@ -174,7 +174,7 @@ public class UserController {
                 this.hospitalAssetController = new HospitalAssetController(this.activeUser);
                 this.insuranceController = new InsuranceController(this.activeUser);
                 this.medicalRecordController = new MedicalRecordController(this.activeUser);
-                //                this.reportController = new ReportController(this.activeUser);
+                this.reportController = new ReportController(this.activeUser);
                 this.requestController = new RequestController(this.activeUser);
                 this.consultationTypeController = new ConsultationTypeController(this.activeUser);
                 this.labResultTypeController = new LabResultTypeController(this.activeUser);

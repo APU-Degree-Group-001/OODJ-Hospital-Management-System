@@ -11,8 +11,10 @@ import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
+import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
+import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalManagerReportingPanel;
 
 /**
  *
@@ -33,8 +35,8 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
         contentArea.add(new AdminDashboardPanel(), "adminStaffDashboard");
         contentArea.add(new MedicalManagerClinicalDepartmentsPanel(this.usrCtrl), "medicalManagerClinicalDepartments");
         contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "medicalManagerDoctorShiftRosters");
-        contentArea.add(new AdminHospitalAssetsPanel(this.usrCtrl), "adminStaffHospitalAssets");
-        contentArea.add(new AdminBillingSettingsPanel(this.usrCtrl), "adminStaffBillingSettings");
+        contentArea.add(new MedicalManagerBillingManagementPanel(this.usrCtrl), "medicalManagerBillingManagement");
+        contentArea.add(new MedicalManagerReportingPanel(this.usrCtrl), "medicalManagerReporting");
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");

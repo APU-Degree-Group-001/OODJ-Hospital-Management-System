@@ -3,5 +3,5 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON002, #SLOT002, #PAT3fad4, #CTYPE002, Patient reported chest discomfort and shortness of breath, #ALLOC002, COMPLETED
 #CON003, #SLOT003, #PAT79a39, #CTYPE001, Patient attended routine health consultation, #ALLOC003, COMPLETED
 #CON004, #SLOT004, #PAT79a39, #CTYPE001, Patient complained of fever and sore throat, #ALLOC003, IN_PROGRESS
-#CONd3224, #SLOT001, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , SCHEDULED
-#CON167e9, #SLOT001, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , SCHEDULED
+#CONd3224, #SLOT98432, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
+#CON167e9, #SLOTb7795, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED

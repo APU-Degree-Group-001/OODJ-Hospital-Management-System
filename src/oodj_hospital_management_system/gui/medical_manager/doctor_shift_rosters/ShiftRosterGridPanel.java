@@ -22,7 +22,7 @@ import oodj_hospital_management_system.utils.DateTime;
  *
  * @author sheaw
  */
-public class ShiftRosterGridPanel extends JPanel {
+public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollable {
 
     /** Implemented by the parent to handle a click on a shift card (e.g. cancel dialog). */
     public interface ShiftClickListener {
@@ -32,7 +32,14 @@ public class ShiftRosterGridPanel extends JPanel {
     private static final DateTimeFormatter TIME_DISPLAY_FMT = DateTimeFormatter.ofPattern("h:mm a");
     private static final DateTimeFormatter DAY_HEADER_FMT = DateTimeFormatter.ofPattern("d MMM");
 
+    // Caps so GridLayout cells don't stretch to fill the parent/viewport.
+    private static final int DOCTOR_COL_WIDTH = 160;
+    private static final int DAY_COL_WIDTH = 130;
+    private static final int HEADER_ROW_HEIGHT = 50;
+    private static final int DAY_ROW_HEIGHT = 90;
+
     private ShiftClickListener shiftClickListener;
+    private int doctorRowCount = 0;
 
     public ShiftRosterGridPanel() {
         setBackground(java.awt.Color.WHITE);
@@ -40,6 +47,47 @@ public class ShiftRosterGridPanel extends JPanel {
 
     public void setShiftClickListener(ShiftClickListener listener) {
         this.shiftClickListener = listener;
+    }
+
+    private java.awt.Dimension computeGridSize() {
+        int width = DOCTOR_COL_WIDTH + (DAY_COL_WIDTH * 7);
+        int height = HEADER_ROW_HEIGHT + (DAY_ROW_HEIGHT * doctorRowCount);
+        return new java.awt.Dimension(width, height);
+    }
+
+    @Override
+    public java.awt.Dimension getPreferredSize() {
+        return computeGridSize();
+    }
+
+    @Override
+    public java.awt.Dimension getMaximumSize() {
+        return computeGridSize();
+    }
+
+    @Override
+    public java.awt.Dimension getPreferredScrollableViewportSize() {
+        return computeGridSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(java.awt.Rectangle visibleRect, int orientation, int direction) {
+        return orientation == javax.swing.SwingConstants.VERTICAL ? DAY_ROW_HEIGHT : DAY_COL_WIDTH;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(java.awt.Rectangle visibleRect, int orientation, int direction) {
+        return orientation == javax.swing.SwingConstants.VERTICAL ? DAY_ROW_HEIGHT * 3 : DAY_COL_WIDTH * 3;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return false;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
     }
 
     /**
@@ -50,6 +98,7 @@ public class ShiftRosterGridPanel extends JPanel {
      */
     public void updateData(List<Doctor> doctors, List<DoctorShift> shifts, LocalDate weekStart) {
         removeAll();
+        doctorRowCount = doctors.size();
         setLayout(new java.awt.GridLayout(doctors.size() + 1, 8, 0, 0));
 
         add(makeHeaderCell("Doctor"));

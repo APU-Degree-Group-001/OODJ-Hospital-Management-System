@@ -220,6 +220,10 @@ public class Consultation implements ConsultationWorkflow {
         this.bill = bill;
     }
     
+    public void setConsultationStatus(ConsultationStatus status) {
+        this.status = status;
+    }
+    
     public LinkedHashMap<String, String> getConsultationMap() {
         LinkedHashMap<String, String> consultationDetails = new LinkedHashMap<>();
         consultationDetails.put("consultationId", this.consultationId);

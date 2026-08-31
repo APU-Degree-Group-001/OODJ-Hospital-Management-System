@@ -148,13 +148,7 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         pnlBackground.add(pnlSignInCard, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(pnlBackground, gridBagConstraints);
+        getContentPane().add(pnlBackground, new java.awt.GridBagConstraints());
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

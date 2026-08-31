@@ -4,7 +4,9 @@
  */
 package oodj_hospital_management_system.controllers;
 
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.ReportManagement;
 
 /**
@@ -12,10 +14,13 @@ import oodj_hospital_management_system.services.ReportManagement;
  * @author paure
  */
 public class ReportController {
+    private ReportManagement reportServices;
+    private User activeUser;
     
     // Billing / Revenue Report
-    public LinkedHashMap<String, String> getBillingTotals() {
-        return ReportManagement.getBillingTotals();
+    public ReportController(User activeUser) {
+        this.activeUser = activeUser;
+        this.reportServices = new ReportManagement();
     }
  
     public LinkedHashMap<String, Double> getRevenueByMonth() {
@@ -24,6 +29,22 @@ public class ReportController {
  
     public LinkedHashMap<String, Double> getBillStatusBreakdown() {
         return ReportManagement.getBillStatusBreakdown();
+    }
+    
+    public LinkedHashMap<String, String> getBillingTotals() {
+        return ReportManagement.getBillingTotals();
+    }
+
+    public LinkedHashMap<String, String> getBillingTotals(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getBillingTotals(startDate, endDate);
+    }
+
+    public LinkedHashMap<String, Double> getBillStatusBreakdown(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getBillStatusBreakdown(startDate, endDate);
+    }
+    
+    public LinkedHashMap<String, Double> getRevenueByWeek(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getRevenueByWeek(startDate, endDate);
     }
  
     // Insurance Usage Report

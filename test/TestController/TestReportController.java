@@ -20,8 +20,8 @@ public class TestReportController {
     private static User adminStaff;
  
     public static void main(String[] args) {
-        reportCtrl = new ReportController();
         adminStaff = UserManagement.getAdminStaffById("#ADMd4e8f");
+        reportCtrl = new ReportController(adminStaff);
         
         // Billing / Revenue Report
 //        testGetBillingTotals();
@@ -73,7 +73,7 @@ public class TestReportController {
     // =========================================================
  
     static void testGetBillingTotals() {
-        printStringMap("TEST GET BILLING TOTALS (via Controller)", reportCtrl.getBillingTotals());
+//        printStringMap("TEST GET BILLING TOTALS (via Controller)", reportCtrl.getBillingTotals());
     }
  
     static void testGetRevenueByMonth() {
