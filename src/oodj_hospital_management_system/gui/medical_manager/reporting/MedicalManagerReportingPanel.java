@@ -58,8 +58,10 @@ public class MedicalManagerReportingPanel extends javax.swing.JPanel {
 
         reportingContentArea.add(new BillingRevenuePanel(usrCtrl), "billingRevenue");
         reportingContentArea.add(new InsurancePanel(usrCtrl), "insuranceProviders");
+        reportingContentArea.add(new ConsultationsPanel(usrCtrl), "consultations");
 
         setNavButtonActive(revenueButton, true);
+        setNavButtonActive(insuranceButton, false);
         setNavButtonActive(consultationButton, false);
 
         this.cl = (CardLayout) reportingContentArea.getLayout();

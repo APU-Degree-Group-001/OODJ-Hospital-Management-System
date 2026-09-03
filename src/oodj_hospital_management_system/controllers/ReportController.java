@@ -6,6 +6,8 @@ package oodj_hospital_management_system.controllers;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
+import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.ReportManagement;
 
@@ -77,17 +79,22 @@ public class ReportController {
         return ReportManagement.getConsultationsByMonth(startDate, endDate);
     }
  
+    public LinkedHashMap<String, Double> getConsultationsByWeek(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getConsultationsByWeek(startDate, endDate);
+    }
+ 
     // Doctor Shift Report
-    public LinkedHashMap<String, String> getDoctorShiftTotals() {
-        return ReportManagement.getDoctorShiftTotals();
+    // Doctor Shift Report
+    public LinkedHashMap<String, String> getDoctorShiftTotals(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getDoctorShiftTotals(doctors, startDate, endDate);
     }
- 
-    public LinkedHashMap<String, Double> getShiftsByStatus() {
-        return ReportManagement.getShiftsByStatus();
+
+    public LinkedHashMap<String, Double> getShiftsByStatus(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getShiftsByStatus(doctors, startDate, endDate);
     }
- 
-    public LinkedHashMap<String, Double> getScheduledShiftHoursByDoctor() {
-        return ReportManagement.getScheduledShiftHoursByDoctor();
+
+    public LinkedHashMap<String, Double> getScheduledShiftHoursByDoctor(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getScheduledShiftHoursByDoctor(doctors, startDate, endDate);
     }
  
     // Room / Hospital Asset Utilization Report

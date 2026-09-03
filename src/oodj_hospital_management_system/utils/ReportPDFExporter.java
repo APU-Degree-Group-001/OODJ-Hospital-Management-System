@@ -27,6 +27,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,6 +43,8 @@ public class ReportPDFExporter {
     private static final Color BORDER_GRAY = new DeviceRgb(210, 220, 227);
     private static final Color TEXT_GRAY = new DeviceRgb(90, 100, 110);
     private static final Color WHITE = new DeviceRgb(255, 255, 255);
+    private static final java.time.format.DateTimeFormatter REPORT_DATE_FMT =
+        java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy");
 
     public static String filePath(String fileName, String folderPath) {
         File dir = new File(folderPath);
@@ -54,6 +57,7 @@ public class ReportPDFExporter {
 
     // Billing / Revenue Report
     public static boolean exportBillingRevenueReport(String filePath, String generatedBy, String datetime,
+            LocalDate startDate, LocalDate endDate,
             LinkedHashMap<String, String> billingTotals, LinkedHashMap<String, Double> revenueByMonth,
             LinkedHashMap<String, Double> billStatusBreakdown) throws IOException {
         try {
@@ -61,7 +65,7 @@ public class ReportPDFExporter {
             PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
             PdfFont normalFont = PdfFontFactory.createFont("Helvetica");
 
-            addHeaderBanner(document, "Billing / Revenue Report", generatedBy, datetime, boldFont, normalFont);
+            addHeaderBanner(document, "Billing / Revenue Report", generatedBy, datetime, startDate, endDate, boldFont, normalFont);
             addIntroBox(document, "A summary of billing totals, monthly revenue trends, and bill status breakdown.", normalFont);
 
             addSectionHeading(document, "Billing Summary", boldFont);
@@ -83,6 +87,7 @@ public class ReportPDFExporter {
 
     // Insurance Usage Report
     public static boolean exportInsuranceUsageReport(String filePath, String generatedBy, String datetime,
+            LocalDate startDate, LocalDate endDate,
             LinkedHashMap<String, String> insuranceTotals, LinkedHashMap<String, Double> usageByProvider,
             LinkedHashMap<String, Double> payableAmountByInsurance) throws IOException {
         try {
@@ -90,7 +95,7 @@ public class ReportPDFExporter {
             PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
             PdfFont normalFont = PdfFontFactory.createFont("Helvetica");
 
-            addHeaderBanner(document, "Insurance Usage Report", generatedBy, datetime, boldFont, normalFont);
+            addHeaderBanner(document, "Insurance Usage Report", generatedBy, datetime, startDate, endDate, boldFont, normalFont);
             addIntroBox(document, "A summary of insurance coverage usage across all bills, grouped by provider.", normalFont);
 
             addSectionHeading(document, "Insurance Summary", boldFont);
@@ -112,6 +117,7 @@ public class ReportPDFExporter {
 
     // Consultation Report
     public static boolean exportConsultationReport(String filePath, String generatedBy, String datetime,
+            LocalDate startDate, LocalDate endDate,
             LinkedHashMap<String, String> consultationTotals, LinkedHashMap<String, Double> consultationsByStatus,
             LinkedHashMap<String, Double> consultationsByDoctor, LinkedHashMap<String, Double> consultationsByMonth) throws IOException {
         try {
@@ -119,7 +125,7 @@ public class ReportPDFExporter {
             PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
             PdfFont normalFont = PdfFontFactory.createFont("Helvetica");
 
-            addHeaderBanner(document, "Consultation Report", generatedBy, datetime, boldFont, normalFont);
+            addHeaderBanner(document, "Consultation Report", generatedBy, datetime, startDate, endDate, boldFont, normalFont);
             addIntroBox(document, "A summary of consultations, grouped by status, doctor, and month.", normalFont);
 
             addSectionHeading(document, "Consultation Summary", boldFont);
@@ -144,6 +150,8 @@ public class ReportPDFExporter {
 
     // Doctor Shift Report
     public static boolean exportDoctorShiftReport(String filePath, String generatedBy, String datetime,
+            LocalDate startDate, LocalDate endDate,
+            String doctorScope,
             LinkedHashMap<String, String> doctorShiftTotals, LinkedHashMap<String, Double> shiftsByStatus,
             LinkedHashMap<String, Double> scheduledShiftHoursByDoctor) throws IOException {
         try {
@@ -151,7 +159,8 @@ public class ReportPDFExporter {
             PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
             PdfFont normalFont = PdfFontFactory.createFont("Helvetica");
 
-            addHeaderBanner(document, "Doctor Shift Report", generatedBy, datetime, boldFont, normalFont);
+            addHeaderBanner(document, "Doctor Shift Report", generatedBy, datetime, startDate, endDate, boldFont, normalFont);
+            addScopeBox(document, doctorScope, normalFont);
             addIntroBox(document, "A summary of doctor shifts, grouped by status and scheduled hours per doctor.", normalFont);
 
             addSectionHeading(document, "Doctor Shift Summary", boldFont);
@@ -173,6 +182,7 @@ public class ReportPDFExporter {
 
     // Room / Hospital Asset Utilization Report
     public static boolean exportRoomUtilizationReport(String filePath, String generatedBy, String datetime,
+            LocalDate startDate, LocalDate endDate,
             LinkedHashMap<String, String> roomUtilizationTotals, LinkedHashMap<String, Double> allocationCountByAsset,
             LinkedHashMap<String, Double> occupiedMinutesByAsset) throws IOException {
         try {
@@ -180,7 +190,7 @@ public class ReportPDFExporter {
             PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
             PdfFont normalFont = PdfFontFactory.createFont("Helvetica");
 
-            addHeaderBanner(document, "Room / Hospital Asset Utilization Report", generatedBy, datetime, boldFont, normalFont);
+            addHeaderBanner(document, "Room / Hospital Asset Utilization Report", generatedBy, datetime, startDate, endDate, boldFont, normalFont);
             addIntroBox(document, "A summary of hospital asset allocations and occupancy, grouped by asset.", normalFont);
 
             addSectionHeading(document, "Room Utilization Summary", boldFont);
@@ -213,7 +223,8 @@ public class ReportPDFExporter {
     }
 
     // Header Banner: report title on the left, generated-by/date on the right,
-    private static void addHeaderBanner(Document document, String titleText, String generatedBy, String datetime, PdfFont boldFont, PdfFont normalFont) {
+    private static void addHeaderBanner(Document document, String titleText, String generatedBy, String datetime,
+        LocalDate startDate, LocalDate endDate, PdfFont boldFont, PdfFont normalFont) {
         Table banner = new Table(new float[]{3, 2}).useAllAvailableWidth();
         banner.setBackgroundColor(PRIMARY);
 
@@ -231,9 +242,29 @@ public class ReportPDFExporter {
                 .setPadding(16)
                 .setVerticalAlignment(com.itextpdf.layout.property.VerticalAlignment.MIDDLE);
 
+        if (startDate != null && endDate != null) {
+            String period = startDate.format(REPORT_DATE_FMT) + " - " + endDate.format(REPORT_DATE_FMT);
+            metaCell.add(new Paragraph("Period: " + period).setFont(normalFont).setFontSize(9).setFontColor(WHITE).setTextAlignment(TextAlignment.RIGHT).setMarginTop(2));
+        }
+
         banner.addCell(titleCell);
         banner.addCell(metaCell);
         document.add(banner.setMarginBottom(20));
+    }
+    
+    private static void addScopeBox(Document document, String doctorScope, PdfFont normalFont) {
+        Table scopeTable = new Table(1).useAllAvailableWidth();
+
+        scopeTable.addCell(new Cell()
+                .add(new Paragraph("Doctor Scope: " + doctorScope)
+                        .setFont(normalFont)
+                        .setFontSize(10)
+                        .setFontColor(PRIMARY))
+                .setBackgroundColor(LIGHT_BG)
+                .setBorder(new SolidBorder(ACCENT, 1))
+                .setPadding(8));
+
+        document.add(scopeTable.setMarginBottom(12));
     }
 
     // Summary Info Box

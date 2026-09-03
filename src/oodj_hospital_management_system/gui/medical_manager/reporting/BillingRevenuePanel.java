@@ -438,7 +438,7 @@ public class BillingRevenuePanel extends javax.swing.JPanel {
             LinkedHashMap<String, Double> billStatusBreakdown = this.usrCtrl.getReportController().getBillStatusBreakdown(selectedStartDate, selectedEndDate);
             if (fileName != null && !fileName.equals("")) {
                 try {
-                    if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, billingTotal, revenueByMonth, billStatusBreakdown)) {
+                    if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, selectedStartDate, selectedEndDate, billingTotal, revenueByMonth, billStatusBreakdown)) {
                         JOptionPane.showMessageDialog(parentWindow, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(parentWindow, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);

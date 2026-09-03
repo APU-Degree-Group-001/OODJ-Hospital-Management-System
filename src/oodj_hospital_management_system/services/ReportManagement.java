@@ -304,21 +304,37 @@ public class ReportManagement {
                                                         return !date.isBefore(startDate) && !date.isAfter(endDate);
                                                     })
                                                     .toList();
+
+        long completedCount = filteredConsultations.stream()
+                .filter(c -> Consultation.ConsultationStatus.COMPLETED.equals(c.getConsultationStatus()))
+                .count();
+        long scheduledCount = filteredConsultations.stream()
+                .filter(c -> Consultation.ConsultationStatus.SCHEDULED.equals(c.getConsultationStatus()))
+                .count();
+
         LinkedHashMap<String, String> totals = new LinkedHashMap<>();
         totals.put("totalConsultations", String.valueOf(filteredConsultations.size()));
+        totals.put("completedConsultations", String.valueOf(completedCount));
+        totals.put("scheduledConsultations", String.valueOf(scheduledCount));
         return totals;
     }
 
     // Consultation count grouped by status, ready for a pie chart
     public static LinkedHashMap<String, Double> getConsultationsByStatus(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        List<Consultation> filteredConsultations = consultations.stream()
+                                                    .filter(c -> {
+                                                        LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(c.getConsultationSlot().getEndDateTime()));
+                                                        return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                                    })
+                                                    .toList();
         LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
 
         for (Consultation.ConsultationStatus status : Consultation.ConsultationStatus.values()) {
             breakdown.put(status.toString(), 0.0);
         }
 
-        for (Consultation consultation : consultations) {
+        for (Consultation consultation : filteredConsultations) {
             if (consultation.getConsultationStatus() == null) {
                 continue;
             }
@@ -363,6 +379,34 @@ public class ReportManagement {
 
         return new LinkedHashMap<>(byMonth);
     }
+    
+    public static LinkedHashMap<String, Double> getConsultationsByWeek(LocalDate startDate, LocalDate endDate) {
+        List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        Map<Integer, Double> consultationsByWeek = new TreeMap<>(); // week number -> total
+
+        for (Consultation consultation : consultations) {
+            ConsultationSlot slot = consultation.getConsultationSlot();
+            if (slot == null || slot.getStartDateTime() == null || slot.getStartDateTime().isEmpty()) {
+                continue;
+            }
+            LocalDateTime dateTime = DateTime.toDateTimeObject(slot.getStartDateTime());
+            LocalDate consultationDate = dateTime.toLocalDate();
+
+            if (startDate != null && consultationDate.isBefore(startDate)) continue;
+            if (endDate != null && consultationDate.isAfter(endDate)) continue;
+
+            LocalDate rangeStart = (startDate != null) ? startDate : consultationDate.withDayOfMonth(1);
+            int dayOffset = (int) java.time.temporal.ChronoUnit.DAYS.between(rangeStart, consultationDate);
+            int weekNumber = (dayOffset / 7) + 1;
+            consultationsByWeek.merge(weekNumber, 1.0, Double::sum);
+        }
+
+        LinkedHashMap<String, Double> result = new LinkedHashMap<>();
+        for (Map.Entry<Integer, Double> entry : consultationsByWeek.entrySet()) {
+            result.put("Week " + entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
 
     // Resolves the doctor tied to a consultation via ConsultationSlot -> DoctorShift -> Doctor
     private static Doctor getDoctorFromConsultation(Consultation consultation) {
@@ -377,26 +421,42 @@ public class ReportManagement {
     // DOCTOR SHIFT REPORT
     // =========================================================
 
-    public static LinkedHashMap<String, String> getDoctorShiftTotals() {
+    public static LinkedHashMap<String, String> getDoctorShiftTotals(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
         List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
+        long count = shifts.stream()
+            .filter(s -> s.getStartDateTime() != null)
+            .filter(s -> {
+                LocalDate shiftDate = DateTime.toDateTimeObject(s.getStartDateTime()).toLocalDate();
+                return !shiftDate.isBefore(startDate) && !shiftDate.isAfter(endDate);
+            })
+            .filter(s -> doctors == null || doctors.isEmpty() || doctors.contains(s.getDoctor()))
+            .count();
+
         LinkedHashMap<String, String> totals = new LinkedHashMap<>();
-        totals.put("totalShifts", String.valueOf(shifts.size()));
+        totals.put("totalShifts", String.valueOf(count));
         return totals;
     }
 
     // Shift count grouped by status, ready for a pie chart
-    public static LinkedHashMap<String, Double> getShiftsByStatus() {
+    public static LinkedHashMap<String, Double> getShiftsByStatus(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
         List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
         LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
 
-        for (DoctorShift.DoctorShiftStatus status : DoctorShift.DoctorShiftStatus.values()) {
-            breakdown.put(status.toString(), 0.0);
-        }
-
         for (DoctorShift shift : shifts) {
-            if (shift.getStatus() == null) {
+            if (shift.getStatus() == null || shift.getStartDateTime() == null) {
                 continue;
             }
+
+            LocalDate shiftDate = DateTime.toDateTimeObject(shift.getStartDateTime()).toLocalDate();
+
+            if (shiftDate.isBefore(startDate) || shiftDate.isAfter(endDate)) {
+                continue;
+            }
+
+            if (doctors != null && !doctors.isEmpty() && !doctors.contains(shift.getDoctor())) {
+                continue;
+            }
+
             breakdown.merge(shift.getStatus().toString(), 1.0, Double::sum);
         }
 
@@ -404,14 +464,25 @@ public class ReportManagement {
     }
 
     // Total scheduled shift hours grouped by doctor (excludes cancelled shifts), ready for a bar chart
-    public static LinkedHashMap<String, Double> getScheduledShiftHoursByDoctor() {
+    public static LinkedHashMap<String, Double> getScheduledShiftHoursByDoctor(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
         List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
         LinkedHashMap<String, Double> hoursByDoctor = new LinkedHashMap<>();
 
         for (DoctorShift shift : shifts) {
-            if (DoctorShift.DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+            if (DoctorShift.DoctorShiftStatus.CANCELLED.equals(shift.getStatus()) || shift.getStartDateTime() == null || shift.getEndDateTime() == null) {
                 continue;
             }
+
+            LocalDate shiftDate = DateTime.toDateTimeObject(shift.getStartDateTime()).toLocalDate();
+
+            if (shiftDate.isBefore(startDate) || shiftDate.isAfter(endDate)) {
+                continue;
+            }
+
+            if (doctors != null && !doctors.isEmpty() && !doctors.contains(shift.getDoctor())) {
+                continue;
+            }
+
             LocalDateTime start = DateTime.toDateTimeObject(shift.getStartDateTime());
             LocalDateTime end = DateTime.toDateTimeObject(shift.getEndDateTime());
             double hours = DateTime.calculateDurationInHours(start, end);

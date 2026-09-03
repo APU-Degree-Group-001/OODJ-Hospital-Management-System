@@ -433,7 +433,7 @@ public class InsurancePanel extends javax.swing.JPanel {
             LinkedHashMap<String, Double> payableAmountByInsurance = this.usrCtrl.getReportController().getPayableAmountByInsurance(selectedStartDate, selectedEndDate);
             if (fileName != null && !fileName.equals("")) {
                 try {
-                    if (ReportPDFExporter.exportInsuranceUsageReport(filePath, manager, date, insuranceTotals, usageByProvider, payableAmountByInsurance)) {
+                    if (ReportPDFExporter.exportInsuranceUsageReport(filePath, manager, date, selectedStartDate, selectedEndDate, insuranceTotals, usageByProvider, payableAmountByInsurance)) {
                         JOptionPane.showMessageDialog(parentWindow, "Insurance Usage Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(parentWindow, "Fail to export Insurance Usage report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);

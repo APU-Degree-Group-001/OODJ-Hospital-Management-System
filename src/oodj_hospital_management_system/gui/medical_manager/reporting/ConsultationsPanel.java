@@ -58,19 +58,20 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         jLabel2.setText(selectedStartDate.format(MONTH_LABEL_FMT));
 
         loadSummaryPanel();
-        loadConsultationStatus();
-//        loadInsuranceByProviderBarChart();
-//        loadRevenueByMonthChart();
+        loadConsultationsByWeek();
+        loadConsultationsByStatus();
+        loadConsultationsByDoctor();
     }
     
     private void loadSummaryPanel() {
-        LinkedHashMap<String, String> totals = this.usrCtrl.getReportController().getInsuranceTotals(selectedStartDate, selectedEndDate);
+        LinkedHashMap<String, String> totals = this.usrCtrl.getReportController().getConsultationTotals(selectedStartDate, selectedEndDate);
 
-        totalConsultations.setText(String.format("%s", totals.get("billsWithInsurance")));
-        completedConsultations.setText(String.format("%s", totals.get("billsWithoutInsurance")));
+        totalConsultations.setText(String.format("%s", totals.get("totalConsultations")));
+        completedConsultations.setText(String.format("%s", totals.get("completedConsultations")));
+        scheduledConsultations.setText(String.format("%s", totals.get("scheduledConsultations")));
     }
     
-    private void loadConsultationStatus() {
+    private void loadConsultationsByStatus() {
         LinkedHashMap<String, Double> statusData = this.usrCtrl.getReportController().getConsultationsByStatus(selectedStartDate, selectedEndDate);
 
         DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
@@ -84,57 +85,37 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         styleChart(chart);
         ChartPanel chartPanel = new ChartPanel(chart);
 
-        consultationStatusPanel.removeAll();
-        consultationStatusPanel.setLayout(new BorderLayout());
-        consultationStatusPanel.add(chartPanel, BorderLayout.CENTER);
+        consultationsByStatusPanel.removeAll();
+        consultationsByStatusPanel.setLayout(new BorderLayout());
+        consultationsByStatusPanel.add(chartPanel, BorderLayout.CENTER);
 
-        consultationStatusPanel.revalidate();
-        consultationStatusPanel.repaint();
+        consultationsByStatusPanel.revalidate();
+        consultationsByStatusPanel.repaint();
     }
     
-    private void loadConsultationsByMonth() {
-        LinkedHashMap<String, Double> consultationData = this.usrCtrl.getReportController().getConsultationsByDoctor(selectedStartDate, selectedEndDate);
-
+    private void loadConsultationsByWeek() {
+        LinkedHashMap<String, Double> consultationData = this.usrCtrl.getReportController().getConsultationsByWeek(selectedStartDate, selectedEndDate);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         for (Map.Entry<String, Double> entry : consultationData.entrySet()) {
-
-            if (!entry.getKey().equals("No Doctor")) {
-                dataset.addValue( entry.getValue(), "Consultations", entry.getKey());
-            }
-        }
-
-        // Add No Insurance last
-        if (consultationData.containsKey("No Doctor")) {
-            dataset.addValue(
-                    consultationData.get("No Doctor"),
-                    "Consultations",
-                    "No Doctor"
-            );
+            dataset.addValue(entry.getValue(), "Consultations", entry.getKey());
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Consultations by Doctor",
-                "Doctor",
-                "Number of Consultatuons",
+                "Consultations by Week",
+                "Week",
+                "Number of Consultations",
                 dataset,
-                PlotOrientation.HORIZONTAL,
+                PlotOrientation.VERTICAL,
                 true,
                 true,
                 false
         );
-
         ChartPanel chartPanel = new ChartPanel(chart);
-
-        consultationsByDoctorPanel.removeAll();
-        consultationsByDoctorPanel.setLayout(new BorderLayout());
-        consultationsByDoctorPanel.add(
-                chartPanel,
-                BorderLayout.CENTER
-        );
-
-        consultationsByDoctorPanel.revalidate();
-        consultationsByDoctorPanel.repaint();
+        consultationsByMonthPanel.removeAll();
+        consultationsByMonthPanel.setLayout(new BorderLayout());
+        consultationsByMonthPanel.add(chartPanel, BorderLayout.CENTER);
+        consultationsByMonthPanel.revalidate();
+        consultationsByMonthPanel.repaint();
     }
 
     private void loadConsultationsByDoctor() {
@@ -304,8 +285,8 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         scheduledConsultations = new javax.swing.JLabel();
         chartPanel = new javax.swing.JPanel();
-        consultationStatusPanel = new javax.swing.JPanel();
-        consultationByMonthPanel = new javax.swing.JPanel();
+        consultationsByStatusPanel = new javax.swing.JPanel();
+        consultationsByMonthPanel = new javax.swing.JPanel();
         consultationsByDoctorPanel = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -412,8 +393,8 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         chartPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         chartPanel.setLayout(new java.awt.GridBagLayout());
 
-        consultationStatusPanel.setBackground(new java.awt.Color(246, 251, 255));
-        consultationStatusPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        consultationsByStatusPanel.setBackground(new java.awt.Color(246, 251, 255));
+        consultationsByStatusPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -421,10 +402,10 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 5);
-        chartPanel.add(consultationStatusPanel, gridBagConstraints);
+        chartPanel.add(consultationsByStatusPanel, gridBagConstraints);
 
-        consultationByMonthPanel.setBackground(new java.awt.Color(246, 251, 255));
-        consultationByMonthPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        consultationsByMonthPanel.setBackground(new java.awt.Color(246, 251, 255));
+        consultationsByMonthPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -432,7 +413,7 @@ public class ConsultationsPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 5);
-        chartPanel.add(consultationByMonthPanel, gridBagConstraints);
+        chartPanel.add(consultationsByMonthPanel, gridBagConstraints);
 
         consultationsByDoctorPanel.setBackground(new java.awt.Color(246, 251, 255));
         consultationsByDoctorPanel.setPreferredSize(new java.awt.Dimension(500, 500));
@@ -462,35 +443,37 @@ public class ConsultationsPanel extends javax.swing.JPanel {
 
         jLabel2.setText(selectedStartDate.format(MONTH_LABEL_FMT));
         loadSummaryPanel();
-//        loadInsuranceByProviderBarChart();
-//        loadPayableAmountByInsuranceProvider();
+        loadConsultationsByWeek();
+        loadConsultationsByStatus();
+        loadConsultationsByDoctor();
     }//GEN-LAST:event_selectMonthButtonActionPerformed
 
     private void generateReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportButtonActionPerformed
         String folderPath = selectFolderDir();
         if (folderPath != null) {
-            String fileName = JOptionPane.showInputDialog(this, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
+            String fileName = JOptionPane.showInputDialog(parentWindow, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
             String filePath = ReportPDFExporter.filePath(fileName, folderPath);
             String manager = this.usrCtrl.getActiveUser().getName();
             String date = DateTime.toDateTimeString(DateTime.currentDateTime());
-            LinkedHashMap<String, String> billingTotal = this.usrCtrl.getReportController().getBillingTotals();
-            LinkedHashMap<String, Double> revenueByMonth = this.usrCtrl.getReportController().getRevenueByWeek(selectedStartDate, selectedEndDate);
-            LinkedHashMap<String, Double> billStatusBreakdown = this.usrCtrl.getReportController().getBillStatusBreakdown(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, String> consultationTotals = this.usrCtrl.getReportController().getConsultationTotals(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> consultationsByStatus = this.usrCtrl.getReportController().getConsultationsByStatus(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> consultationsByDoctor = this.usrCtrl.getReportController().getConsultationsByDoctor(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> consultationsByWeek = this.usrCtrl.getReportController().getConsultationsByWeek(selectedStartDate, selectedEndDate);
             if (fileName != null && !fileName.equals("")) {
                 try {
-                    if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, billingTotal, revenueByMonth, billStatusBreakdown)) {
-                        JOptionPane.showMessageDialog(this, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
+                    if (ReportPDFExporter.exportConsultationReport(filePath, manager, date, selectedStartDate, selectedEndDate, consultationTotals, consultationsByStatus, consultationsByDoctor, consultationsByWeek)) {
+                        JOptionPane.showMessageDialog(parentWindow, "Consultation Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(parentWindow, "Fail to export Consultation report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ex) {
                     System.getLogger(ConsultationsPanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(parentWindow, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_generateReportButtonActionPerformed
 
@@ -500,9 +483,9 @@ public class ConsultationsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel chartPanel;
     private javax.swing.JLabel completedConsultations;
     private javax.swing.JPanel completedConsultationsPanel;
-    private javax.swing.JPanel consultationByMonthPanel;
-    private javax.swing.JPanel consultationStatusPanel;
     private javax.swing.JPanel consultationsByDoctorPanel;
+    private javax.swing.JPanel consultationsByMonthPanel;
+    private javax.swing.JPanel consultationsByStatusPanel;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JButton generateReportButton;

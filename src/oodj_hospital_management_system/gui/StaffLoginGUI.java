@@ -50,7 +50,6 @@ public class StaffLoginGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 800));
-        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         pnlBackground.setName("pnlBackground"); // NOI18N
         pnlBackground.setPreferredSize(new java.awt.Dimension(1280, 800));
@@ -148,7 +147,7 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         pnlBackground.add(pnlSignInCard, gridBagConstraints);
 
-        getContentPane().add(pnlBackground, new java.awt.GridBagConstraints());
+        getContentPane().add(pnlBackground, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

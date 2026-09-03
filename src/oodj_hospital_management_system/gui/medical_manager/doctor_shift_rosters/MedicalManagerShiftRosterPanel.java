@@ -4,16 +4,25 @@
  */
 package oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters;
 
+import com.toedter.calendar.JDateChooser;
+import java.awt.GridLayout;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,6 +41,7 @@ import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
+import oodj_hospital_management_system.utils.ReportPDFExporter;
 
 /**
  *
@@ -43,6 +53,8 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
     private LocalDate currentWeekStart;
     private List<Doctor> allDoctors = new ArrayList<>();
+    private List<Doctor> currentDoctors = new ArrayList<>();
+    private List<Doctor> assignedDoctors = new ArrayList<>();
 
     private static final DateTimeFormatter DAY_HEADER_FMT = DateTimeFormatter.ofPattern("d MMMM yyyy");
 
@@ -84,11 +96,22 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private void refreshRoster() {
         updateWeekLabels();
 
-        List<DoctorShift> allShifts = usrCtrl.getDoctorController().getAllDoctorShifts();
-        List<Doctor> doctorsToShow = getFilteredSortedDoctors(allShifts);
+        List<DoctorShift> allShifts =
+            usrCtrl.getDoctorController().getAllDoctorShifts();
 
-        rosterGrid.updateData(doctorsToShow, allShifts, currentWeekStart);
-        updateResultLabel(doctorsToShow.size());
+        MedicalManager currentManager =
+            (MedicalManager) usrCtrl.getActiveUser();
+
+        // Get doctors assigned to the current Medical Manager
+        assignedDoctors = allDoctors.stream()
+            .filter(doctor -> doctor.getMedicalManager().equals(currentManager))
+            .toList();
+
+        currentDoctors = getFilteredSortedDoctors(allShifts);
+
+        rosterGrid.updateData(currentDoctors, allShifts, currentWeekStart);
+
+        updateResultLabel(currentDoctors.size());
     }
 
 
@@ -185,10 +208,12 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         dashboardPanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         createShiftButton = new javax.swing.JButton();
+        generateReportButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         usrMngContentArea = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -231,7 +256,10 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setPreferredSize(new java.awt.Dimension(700, 77));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -257,13 +285,21 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         jPanel1.add(jLabel1, gridBagConstraints);
 
+        jPanel8.add(jPanel1);
+
         createShiftButton.setText("Create Shift");
-        createShiftButton.setMaximumSize(new java.awt.Dimension(150, 40));
+        createShiftButton.setMaximumSize(new java.awt.Dimension(115, 23));
         createShiftButton.setPreferredSize(new java.awt.Dimension(150, 40));
         createShiftButton.addActionListener(this::createShiftButtonActionPerformed);
-        jPanel1.add(createShiftButton, new java.awt.GridBagConstraints());
+        jPanel8.add(createShiftButton);
 
-        jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
+        generateReportButton.setText("Generate Report");
+        generateReportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        generateReportButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        generateReportButton.addActionListener(this::generateReportButtonActionPerformed);
+        jPanel8.add(generateReportButton);
+
+        jPanel5.add(jPanel8, java.awt.BorderLayout.CENTER);
 
         jSeparator1.setBackground(new java.awt.Color(210, 212, 220));
         jSeparator1.setForeground(new java.awt.Color(210, 212, 220));
@@ -400,12 +436,12 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void createShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createShiftButtonActionPerformed
-        if (allDoctors.isEmpty()) {
+        if (assignedDoctors.isEmpty()) {
             JOptionPane.showMessageDialog(parentWindow, "No doctors available to assign a shift to.", "Cannot Create Shift", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        String[] doctorItems = allDoctors.stream()
+        String[] doctorItems = assignedDoctors.stream()
             .map(d -> d.getId() + " - " + d.getName())
             .toArray(String[]::new);
         javax.swing.JComboBox<String> doctorCombo = new javax.swing.JComboBox<>(doctorItems);
@@ -454,7 +490,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
                 continue;
             }
 
-            Doctor selectedDoctor = allDoctors.get(doctorCombo.getSelectedIndex());
+            Doctor selectedDoctor = assignedDoctors.get(doctorCombo.getSelectedIndex());
             String startStr = startDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             String endStr = endDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -485,11 +521,134 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         refreshRoster();
     }//GEN-LAST:event_sortField1ActionPerformed
 
+    private String selectFolderDir() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select Directory to Save Report");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        int returnValue = fileChooser.showDialog(null, "Select Folder");
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedDirectory = fileChooser.getSelectedFile();
+            String folderPath = selectedDirectory.getAbsolutePath();
+            return folderPath;
+        } else {
+            return null;
+        }
+    }
+    
+    private void generateReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportButtonActionPerformed
+        String folderPath = selectFolderDir();
+        if (folderPath == null) {
+            JOptionPane.showMessageDialog(parentWindow, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Enter PDF name
+        String fileName = JOptionPane.showInputDialog(parentWindow, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
+
+        if (fileName == null || fileName.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Select date range
+        JDateChooser startDateChooser = new JDateChooser();
+        JDateChooser endDateChooser = new JDateChooser();
+        Date currentDate = new Date();
+
+        startDateChooser.setDateFormatString("yyyy-MM-dd");
+        endDateChooser.setDateFormatString("yyyy-MM-dd");
+        startDateChooser.setMaxSelectableDate(currentDate);
+        endDateChooser.setMaxSelectableDate(currentDate);
+
+        JPanel datePanel = new JPanel();
+        datePanel.add(new JLabel("From:"));
+        datePanel.add(startDateChooser);
+        datePanel.add(new JLabel("To:"));
+        datePanel.add(endDateChooser);
+
+        int dateChoice = JOptionPane.showConfirmDialog(parentWindow, datePanel, "Select Report Date Range", JOptionPane.OK_CANCEL_OPTION);
+
+        if (dateChoice != JOptionPane.OK_OPTION) {
+            JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        Date startDateRaw = startDateChooser.getDate();
+        Date endDateRaw = endDateChooser.getDate();
+
+        if (startDateRaw == null || endDateRaw == null) {
+            JOptionPane.showMessageDialog(parentWindow, "Please select both start and end dates.", "Missing Date", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        LocalDate selectedStartDate = LocalDate.parse(sdf.format(startDateRaw));
+        LocalDate selectedEndDate = LocalDate.parse(sdf.format(endDateRaw));
+
+        // Validate date range
+        if (selectedEndDate.isBefore(selectedStartDate)) {
+            JOptionPane.showMessageDialog(parentWindow, "End date cannot be before start date.", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Select doctor scope
+        String[] doctorOptions = {
+            "All Doctors",
+            "Assigned Doctors"
+        };
+
+        int doctorChoice = JOptionPane.showOptionDialog(parentWindow, "Select doctors to include in the report:", "Doctor Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, doctorOptions, doctorOptions[0]);
+
+        if (doctorChoice == JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Determine doctors for the report
+        List<Doctor> doctorsForReport;
+
+        String doctorScope = "";
+        if (doctorChoice == 0) {
+            // All Doctors
+            doctorsForReport = allDoctors;
+            doctorScope = "All Doctors";
+        } else {
+            doctorsForReport = assignedDoctors;
+            doctorScope = "Assigned Doctors";
+        }
+
+        // Generate report data
+        String filePath = ReportPDFExporter.filePath(fileName, folderPath);
+
+        String manager = this.usrCtrl.getActiveUser().getName();
+        String date = DateTime.toDateTimeString(DateTime.currentDateTime());
+
+        LinkedHashMap<String, String> doctorShiftTotals = this.usrCtrl.getReportController().getDoctorShiftTotals(doctorsForReport, selectedStartDate, selectedEndDate);
+
+        LinkedHashMap<String, Double> shiftsByStatus = this.usrCtrl.getReportController().getShiftsByStatus(doctorsForReport, selectedStartDate, selectedEndDate);
+
+        LinkedHashMap<String, Double> scheduledShiftHours = this.usrCtrl.getReportController().getScheduledShiftHoursByDoctor(doctorsForReport, selectedStartDate, selectedEndDate);
+
+        try {
+            if (ReportPDFExporter.exportDoctorShiftReport(filePath, manager, date, selectedStartDate, selectedEndDate, doctorScope, doctorShiftTotals, shiftsByStatus, scheduledShiftHours)) {
+                JOptionPane.showMessageDialog(parentWindow, "Doctor Shift Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(parentWindow, "Fail to export Doctor Shift report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ex) {
+            System.getLogger(MedicalManagerShiftRosterPanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_generateReportButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createShiftButton;
     private javax.swing.JPanel dashboardPanel;
     private javax.swing.Box.Filler filler1;
+    private javax.swing.JButton generateReportButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -499,6 +658,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel mondayLabel;

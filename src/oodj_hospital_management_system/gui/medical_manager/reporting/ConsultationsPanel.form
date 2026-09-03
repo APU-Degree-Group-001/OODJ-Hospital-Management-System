@@ -331,7 +331,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="consultationStatusPanel">
+            <Container class="javax.swing.JPanel" name="consultationsByStatusPanel">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="fb" red="f6" type="rgb"/>
@@ -348,7 +348,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
             </Container>
-            <Container class="javax.swing.JPanel" name="consultationByMonthPanel">
+            <Container class="javax.swing.JPanel" name="consultationsByMonthPanel">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="fb" red="f6" type="rgb"/>
