@@ -229,12 +229,18 @@ public class ReportManagement {
     // INSURANCE USAGE REPORT
     // =========================================================
 
-    public static LinkedHashMap<String, String> getInsuranceTotals() {
+    public static LinkedHashMap<String, String> getInsuranceTotals(LocalDate startDate, LocalDate endDate) {
         List<Bill> bills = BillingManagement.getAllBills();
+        List<Bill> filteredBills = bills.stream()
+                                    .filter(b -> {
+                                    LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(b.getGeneratedDateTime()));
+                                    return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                    })
+                                    .toList();
+        
         LinkedHashMap<String, String> totals = new LinkedHashMap<>();
-
-        long billsWithInsurance = bills.stream().filter(b -> b.getInsurance() != null).count();
-        long billsWithoutInsurance = bills.size() - billsWithInsurance;
+        long billsWithInsurance = filteredBills.stream().filter(b -> b.getInsurance() != null).count();
+        long billsWithoutInsurance = filteredBills.size() - billsWithInsurance;
 
         totals.put("totalBills", String.valueOf(bills.size()));
         totals.put("billsWithInsurance", String.valueOf(billsWithInsurance));

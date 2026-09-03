@@ -48,8 +48,8 @@ public class ReportController {
     }
  
     // Insurance Usage Report
-    public LinkedHashMap<String, String> getInsuranceTotals() {
-        return ReportManagement.getInsuranceTotals();
+    public LinkedHashMap<String, String> getInsuranceTotals(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getInsuranceTotals(startDate, endDate);
     }
  
     public LinkedHashMap<String, Double> getInsuranceUsageByProvider() {

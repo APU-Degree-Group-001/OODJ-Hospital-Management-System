@@ -23,6 +23,7 @@ public class Bill {
     private double totalAmount;
     private double payableAmount;
     private BillStatus status;
+    private String generatedDateTime;
 
     public Bill() {
         this.billId = "";
@@ -43,7 +44,8 @@ public class Bill {
             double consultationFee,
             double totalAmount,
             double payableAmount,
-            BillStatus status
+            BillStatus status,
+            String generatedDateTime
     ) {
         this.billId = billId;
         this.consultationId = consultation;
@@ -53,6 +55,7 @@ public class Bill {
         this.totalAmount = totalAmount;
         this.payableAmount = payableAmount;
         this.status = status;
+        this.generatedDateTime = generatedDateTime;
     }
 
     @Override
@@ -77,6 +80,7 @@ public class Bill {
     public double getTotalAmount() { return totalAmount; }
     public double getPayableAmount() { return payableAmount; }
     public BillStatus getStatus() { return status; }
+    public String getGeneratedDateTime() { return generatedDateTime; }
 
     // Setters
     public void setConsultationId(String consultationId) { this.consultationId = consultationId; }
@@ -86,6 +90,7 @@ public class Bill {
     public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
     public void setPayableAmount(double payableAmount) { this.payableAmount = payableAmount; }
     public void setStatus(BillStatus status) { this.status = status; }
+    public void setGeneratedDateTime(String generatedDateTime) { this.generatedDateTime = generatedDateTime; }
 
     public LinkedHashMap<String, String> getBillMap() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();

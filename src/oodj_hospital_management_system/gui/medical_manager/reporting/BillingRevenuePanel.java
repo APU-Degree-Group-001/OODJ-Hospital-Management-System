@@ -10,6 +10,8 @@ import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,11 +22,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.utils.DateTime;
+import oodj_hospital_management_system.utils.ReportPDFExporter;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -226,6 +230,22 @@ public class BillingRevenuePanel extends javax.swing.JPanel {
         }
     }
     
+    private String selectFolderDir() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select Directory to Save Report");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        int returnValue = fileChooser.showDialog(null, "Select Folder");
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedDirectory = fileChooser.getSelectedFile();
+            String folderPath = selectedDirectory.getAbsolutePath();
+            return folderPath;
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -401,12 +421,37 @@ public class BillingRevenuePanel extends javax.swing.JPanel {
         selectedEndDate = range[1];
 
         jLabel2.setText(selectedStartDate.format(MONTH_LABEL_FMT));
+        loadSummaryPanel();
         loadRevenueByWeekChart();
         loadBillStatusChart();
     }//GEN-LAST:event_selectMonthButtonActionPerformed
 
     private void generateReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportButtonActionPerformed
-        // TODO add your handling code here:
+        String folderPath = selectFolderDir();
+        if (folderPath != null) {
+            String fileName = JOptionPane.showInputDialog(this, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
+            String filePath = ReportPDFExporter.filePath(fileName, folderPath);
+            String manager = this.usrCtrl.getActiveUser().getName();
+            String date = DateTime.toDateTimeString(DateTime.currentDateTime());
+            LinkedHashMap<String, String> billingTotal = this.usrCtrl.getReportController().getBillingTotals();
+            LinkedHashMap<String, Double> revenueByMonth = this.usrCtrl.getReportController().getRevenueByWeek(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> billStatusBreakdown = this.usrCtrl.getReportController().getBillStatusBreakdown(selectedStartDate, selectedEndDate);
+            if (fileName != null && !fileName.equals("")) {
+                try {
+                    if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, billingTotal, revenueByMonth, billStatusBreakdown)) {
+                        JOptionPane.showMessageDialog(this, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ex) {
+                    System.getLogger(BillingRevenuePanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_generateReportButtonActionPerformed
 
 

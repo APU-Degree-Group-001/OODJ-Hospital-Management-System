@@ -57,6 +57,10 @@ public class DateTime {
         return time.format(timeFormatter);
     }
     
+    public static String toDateTimeString(LocalDateTime datetime) {
+        return toDateString(getDate(datetime)) + " " + toTimeString(getTime(datetime));
+    }
+    
     public static LocalDate currentDate() {
         return LocalDate.now();
     }

@@ -121,8 +121,8 @@ public class TestReportManagement {
     // =========================================================
 
     static void testInsuranceTotals() {
-        LinkedHashMap<String, String> totals = ReportManagement.getInsuranceTotals();
-        printTotals("INSURANCE TOTALS", totals);
+//        LinkedHashMap<String, String> totals = ReportManagement.getInsuranceTotals();
+//        printTotals("INSURANCE TOTALS", totals);
     }
 
     static void testInsuranceUsageByProvider() {

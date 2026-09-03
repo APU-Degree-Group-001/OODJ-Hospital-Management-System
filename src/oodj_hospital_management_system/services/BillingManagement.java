@@ -20,6 +20,7 @@ import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.Prescription;
 import oodj_hospital_management_system.models.PrescriptionType;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ErrorHandler;
 import oodj_hospital_management_system.utils.FileHandler;
 import oodj_hospital_management_system.utils.Logger;
@@ -56,7 +57,8 @@ public class BillingManagement {
                     Double.parseDouble(row.get("consultationFee")),
                     Double.parseDouble(row.get("totalAmount")),
                     Double.parseDouble(row.get("payableAmount")),
-                    getBillStatus(row.get("status"))
+                    getBillStatus(row.get("status")),
+                    row.get("generatedDateTime")
             );
             bills.add(bill);
         }
@@ -164,7 +166,8 @@ public class BillingManagement {
         double payableAmount = (insurance != null) ? insurance.calculatePayableAmount(totalAmount) : totalAmount;
 
         String newBillId = generateBillId();
-        Bill newBill = new Bill(newBillId, consultationId, patient, insurance, consultationFee, totalAmount, payableAmount, getBillStatus("UNPAID"));
+        String generatedDateTime = DateTime.toDateTimeString(DateTime.currentDateTime());
+        Bill newBill = new Bill(newBillId, consultationId, patient, insurance, consultationFee, totalAmount, payableAmount, getBillStatus("UNPAID"), generatedDateTime);
         bills.add(newBill);
         if (billHandler.checkFileExistence()) {
             appendBill(newBill);

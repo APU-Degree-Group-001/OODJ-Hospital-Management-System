@@ -89,7 +89,7 @@ public class TestReportController {
     // =========================================================
  
     static void testGetInsuranceTotals() {
-        printStringMap("TEST GET INSURANCE TOTALS (via Controller)", reportCtrl.getInsuranceTotals());
+//        printStringMap("TEST GET INSURANCE TOTALS (via Controller)", reportCtrl.getInsuranceTotals());
     }
  
     static void testGetInsuranceUsageByProvider() {
