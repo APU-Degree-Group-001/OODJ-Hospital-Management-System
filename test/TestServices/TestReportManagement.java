@@ -126,13 +126,13 @@ public class TestReportManagement {
     }
 
     static void testInsuranceUsageByProvider() {
-        LinkedHashMap<String, Double> data = ReportManagement.getInsuranceUsageByProvider();
-        printBarChart("BILLS BY INSURANCE PROVIDER (count)", data, " bill(s)");
+//        LinkedHashMap<String, Double> data = ReportManagement.getInsuranceUsageByProvider();
+//        printBarChart("BILLS BY INSURANCE PROVIDER (count)", data, " bill(s)");
     }
 
     static void testPayableAmountByInsurance() {
-        LinkedHashMap<String, Double> data = ReportManagement.getPayableAmountByInsurance();
-        printBarChart("PAYABLE AMOUNT BY INSURANCE PROVIDER", data, "");
+//        LinkedHashMap<String, Double> data = ReportManagement.getPayableAmountByInsurance();
+//        printBarChart("PAYABLE AMOUNT BY INSURANCE PROVIDER", data, "");
     }
 
     // =========================================================

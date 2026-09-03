@@ -89,8 +89,8 @@ public class TestPDFExporter {
         System.out.println("\n===== TEST EXPORT INSURANCE USAGE REPORT =====");
  
 //        LinkedHashMap<String, String> insuranceTotals = ReportManagement.getInsuranceTotals();
-        LinkedHashMap<String, Double> usageByProvider = ReportManagement.getInsuranceUsageByProvider();
-        LinkedHashMap<String, Double> payableAmountByInsurance = ReportManagement.getPayableAmountByInsurance();
+//        LinkedHashMap<String, Double> usageByProvider = ReportManagement.getInsuranceUsageByProvider();
+//        LinkedHashMap<String, Double> payableAmountByInsurance = ReportManagement.getPayableAmountByInsurance();
  
         String filePath = PDFExporter.filePath("InsuranceUsageReport", OUTPUT_FOLDER);
  

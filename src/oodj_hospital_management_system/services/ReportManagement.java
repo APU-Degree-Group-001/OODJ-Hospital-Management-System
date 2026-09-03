@@ -250,11 +250,17 @@ public class ReportManagement {
     }
 
     // Number of bills grouped by insurance provider, ready for a bar/pie chart
-    public static LinkedHashMap<String, Double> getInsuranceUsageByProvider() {
+    public static LinkedHashMap<String, Double> getInsuranceUsageByProvider(LocalDate startDate, LocalDate endDate) {
         List<Bill> bills = BillingManagement.getAllBills();
+        List<Bill> filteredBills = bills.stream()
+                                    .filter(b -> {
+                                    LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(b.getGeneratedDateTime()));
+                                    return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                    })
+                                    .toList();
         LinkedHashMap<String, Double> usage = new LinkedHashMap<>();
 
-        for (Bill bill : bills) {
+        for (Bill bill : filteredBills) {
             Insurance insurance = bill.getInsurance();
             String key = (insurance == null) ? "No Insurance" : insurance.getInsuranceName();
             usage.merge(key, 1.0, Double::sum);
@@ -264,11 +270,17 @@ public class ReportManagement {
     }
 
     // Total payable amount grouped by insurance provider (excludes VOID bills)
-    public static LinkedHashMap<String, Double> getPayableAmountByInsurance() {
+    public static LinkedHashMap<String, Double> getPayableAmountByInsurance(LocalDate startDate, LocalDate endDate) {
         List<Bill> bills = BillingManagement.getAllBills();
+        List<Bill> filteredBills = bills.stream()
+                                    .filter(b -> {
+                                    LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(b.getGeneratedDateTime()));
+                                    return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                    })
+                                    .toList();
         LinkedHashMap<String, Double> amountByInsurance = new LinkedHashMap<>();
 
-        for (Bill bill : bills) {
+        for (Bill bill : filteredBills) {
             if (Bill.BillStatus.VOID.equals(bill.getStatus())) {
                 continue;
             }
@@ -284,15 +296,21 @@ public class ReportManagement {
     // CONSULTATION REPORT
     // =========================================================
 
-    public static LinkedHashMap<String, String> getConsultationTotals() {
+    public static LinkedHashMap<String, String> getConsultationTotals(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        List<Consultation> filteredConsultations = consultations.stream()
+                                                    .filter(c -> {
+                                                        LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(c.getConsultationSlot().getEndDateTime()));
+                                                        return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                                    })
+                                                    .toList();
         LinkedHashMap<String, String> totals = new LinkedHashMap<>();
-        totals.put("totalConsultations", String.valueOf(consultations.size()));
+        totals.put("totalConsultations", String.valueOf(filteredConsultations.size()));
         return totals;
     }
 
     // Consultation count grouped by status, ready for a pie chart
-    public static LinkedHashMap<String, Double> getConsultationsByStatus() {
+    public static LinkedHashMap<String, Double> getConsultationsByStatus(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
         LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
 
@@ -311,21 +329,26 @@ public class ReportManagement {
     }
 
     // Consultation count grouped by doctor, via ConsultationSlot -> DoctorShift -> Doctor
-    public static LinkedHashMap<String, Double> getConsultationsByDoctor() {
+    public static LinkedHashMap<String, Double> getConsultationsByDoctor(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
+        List<Consultation> filteredConsultations = consultations.stream()
+                                                    .filter(c -> {
+                                                        LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(c.getConsultationSlot().getEndDateTime()));
+                                                        return !date.isBefore(startDate) && !date.isAfter(endDate);
+                                                    })
+                                                    .toList();
         LinkedHashMap<String, Double> breakdown = new LinkedHashMap<>();
 
-        for (Consultation consultation : consultations) {
+        for (Consultation consultation : filteredConsultations) {
             Doctor doctor = getDoctorFromConsultation(consultation);
             String key = (doctor == null) ? "Unknown Doctor" : doctor.getName();
             breakdown.merge(key, 1.0, Double::sum);
         }
-
         return breakdown;
     }
 
     // Consultation count grouped by month, based on the linked consultation slot's start date/time
-    public static LinkedHashMap<String, Double> getConsultationsByMonth() {
+    public static LinkedHashMap<String, Double> getConsultationsByMonth(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
         Map<String, Double> byMonth = new TreeMap<>();
 

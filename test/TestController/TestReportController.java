@@ -93,11 +93,11 @@ public class TestReportController {
     }
  
     static void testGetInsuranceUsageByProvider() {
-        printDoubleMap("TEST GET INSURANCE USAGE BY PROVIDER (via Controller)", reportCtrl.getInsuranceUsageByProvider());
+//        printDoubleMap("TEST GET INSURANCE USAGE BY PROVIDER (via Controller)", reportCtrl.getInsuranceUsageByProvider());
     }
  
     static void testGetPayableAmountByInsurance() {
-        printDoubleMap("TEST GET PAYABLE AMOUNT BY INSURANCE (via Controller)", reportCtrl.getPayableAmountByInsurance());
+//        printDoubleMap("TEST GET PAYABLE AMOUNT BY INSURANCE (via Controller)", reportCtrl.getPayableAmountByInsurance());
     }
  
     // =========================================================

@@ -57,7 +57,7 @@ public class MedicalManagerReportingPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(dashboardPanel);
 
         reportingContentArea.add(new BillingRevenuePanel(usrCtrl), "billingRevenue");
-        reportingContentArea.add(new CompletedConsultationsPanel(usrCtrl), "completedConsultations");
+        reportingContentArea.add(new InsurancePanel(usrCtrl), "insuranceProviders");
 
         setNavButtonActive(revenueButton, true);
         setNavButtonActive(consultationButton, false);
@@ -215,18 +215,23 @@ public class MedicalManagerReportingPanel extends javax.swing.JPanel {
 
     private void revenueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueButtonActionPerformed
         setNavButtonActive(revenueButton, true);
+        setNavButtonActive(insuranceButton, false);
         setNavButtonActive(consultationButton, false);
         cl.show(reportingContentArea, "billingRevenue");
     }//GEN-LAST:event_revenueButtonActionPerformed
 
     private void consultationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultationButtonActionPerformed
         setNavButtonActive(revenueButton, false);
+        setNavButtonActive(insuranceButton, false);
         setNavButtonActive(consultationButton, true);
-        cl.show(reportingContentArea, "completedConsultations");
+        cl.show(reportingContentArea, "consultations");
     }//GEN-LAST:event_consultationButtonActionPerformed
 
     private void insuranceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insuranceButtonActionPerformed
-        // TODO add your handling code here:
+        setNavButtonActive(revenueButton, false);
+        setNavButtonActive(insuranceButton, true);
+        setNavButtonActive(consultationButton, false);
+        cl.show(reportingContentArea, "insuranceProviders");
     }//GEN-LAST:event_insuranceButtonActionPerformed
 
 

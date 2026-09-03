@@ -33,6 +33,7 @@ import oodj_hospital_management_system.utils.ReportPDFExporter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -59,99 +60,91 @@ public class InsurancePanel extends javax.swing.JPanel {
         loadSummaryPanel();
         loadInsuranceByProviderBarChart();
 //        loadRevenueByMonthChart();
-        loadBillStatusChart();
+        loadPayableAmountByInsuranceProvider();
     }
     
     private void loadSummaryPanel() {
         LinkedHashMap<String, String> totals = this.usrCtrl.getReportController().getInsuranceTotals(selectedStartDate, selectedEndDate);
 
+        totalBills.setText(String.format("%s", totals.get("billsWithInsurance")));
         totalBillsWithInsurance.setText(String.format("%s", totals.get("billsWithInsurance")));
         totalBillsWithoutInsurance.setText(String.format("%s", totals.get("billsWithoutInsurance")));
     }
 
     private void loadInsuranceByProviderBarChart() {
-        LinkedHashMap<String, Double> insuranceData = this.usrCtrl.getReportController().getInsuranceUsageByProvider();
+        LinkedHashMap<String, Double> insuranceData = this.usrCtrl.getReportController().getInsuranceUsageByProvider(selectedStartDate, selectedEndDate);
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
+        // Add insurance providers first
         for (Map.Entry<String, Double> entry : insuranceData.entrySet()) {
-            dataset.addValue(entry.getValue(), "Revenue", entry.getKey());
+
+            if (!entry.getKey().equals("No Insurance")) {
+                dataset.addValue( entry.getValue(), "Bills", entry.getKey());
+            }
         }
 
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Revenue by Week",
-                "Week",
-                "Revenue (RM)",
-                dataset
-        );
-
-        ChartPanel chartPanel = new ChartPanel(chart);
-
-        revenueByMonthChartPanel.removeAll();
-        revenueByMonthChartPanel.setLayout(new BorderLayout());
-        revenueByMonthChartPanel.add(chartPanel, BorderLayout.CENTER);
-
-        revenueByMonthChartPanel.revalidate();
-        revenueByMonthChartPanel.repaint();
-    }
-    
-    private void loadRevenueByMonthChart() {
-        LinkedHashMap<String, Double> revenueData = this.usrCtrl.getReportController().getRevenueByMonth();
-
-        DefaultCategoryDataset dataset =
-                new DefaultCategoryDataset();
-
-        for (Map.Entry<String, Double> entry : revenueData.entrySet()) {
-
+        // Add No Insurance last
+        if (insuranceData.containsKey("No Insurance")) {
             dataset.addValue(
-                    entry.getValue(),
-                    "Revenue",
-                    entry.getKey()
+                    insuranceData.get("No Insurance"),
+                    "Bills",
+                    "No Insurance"
             );
         }
 
-        JFreeChart chart = ChartFactory.createLineChart(
-                "Revenue by Month",
-                "Month",
-                "Revenue (RM)",
-                dataset
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Bills by Insurance Provider",
+                "Insurance Provider",
+                "Number of Bills",
+                dataset,
+                PlotOrientation.HORIZONTAL,
+                true,
+                true,
+                false
         );
 
-        styleChart(chart);
         ChartPanel chartPanel = new ChartPanel(chart);
 
-        revenueByMonthChartPanel.removeAll();
-        revenueByMonthChartPanel.setLayout(new BorderLayout());
-        revenueByMonthChartPanel.add(
+        billsByInsuranceProviderPanel.removeAll();
+        billsByInsuranceProviderPanel.setLayout(new BorderLayout());
+        billsByInsuranceProviderPanel.add(
                 chartPanel,
                 BorderLayout.CENTER
         );
 
-        revenueByMonthChartPanel.revalidate();
-        revenueByMonthChartPanel.repaint();
+        billsByInsuranceProviderPanel.revalidate();
+        billsByInsuranceProviderPanel.repaint();
     }
     
-    private void loadBillStatusChart() {
-        LinkedHashMap<String, Double> statusData = this.usrCtrl.getReportController()
-            .getBillStatusBreakdown(selectedStartDate, selectedEndDate);   // <-- pass the selected range
+    private void loadPayableAmountByInsuranceProvider() {
+        LinkedHashMap<String, Double> payableAmount = this.usrCtrl.getReportController().getPayableAmountByInsurance(selectedStartDate, selectedEndDate);
 
-        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        for (Map.Entry<String, Double> entry : statusData.entrySet()) {
-            dataset.setValue(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Double> entry : payableAmount.entrySet()) {
+            dataset.addValue(entry.getValue(), "Payable Amounts", entry.getKey());
         }
 
-        JFreeChart chart = ChartFactory.createRingChart("Bill Status", dataset, true, true, false);
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Payable Amounts by Insurance Provider",
+                "Insurance Provider",
+                "Payable Amounts",
+                dataset,
+                PlotOrientation.HORIZONTAL,
+                true,
+                true,
+                false
+        );
 
-        styleChart(chart);
         ChartPanel chartPanel = new ChartPanel(chart);
 
-        billStatusChartPanel.removeAll();
-        billStatusChartPanel.setLayout(new BorderLayout());
-        billStatusChartPanel.add(chartPanel, BorderLayout.CENTER);
+        payableAmountByInsuranceProviderPanel.removeAll();
+        payableAmountByInsuranceProviderPanel.setLayout(new BorderLayout());
+        payableAmountByInsuranceProviderPanel.add(chartPanel, BorderLayout.CENTER);
 
-        billStatusChartPanel.revalidate();
-        billStatusChartPanel.repaint();
+        payableAmountByInsuranceProviderPanel.revalidate();
+        payableAmountByInsuranceProviderPanel.repaint();
     }
 
         /** Shows a month/year picker dialog, returns {firstDayOfMonth, lastDayOfMonth} or null if cancelled. */
@@ -233,7 +226,7 @@ public class InsurancePanel extends javax.swing.JPanel {
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setAcceptAllFileFilterUsed(false);
 
-        int returnValue = fileChooser.showDialog(null, "Select Folder");
+        int returnValue = fileChooser.showDialog(parentWindow, "Select Folder");
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedDirectory = fileChooser.getSelectedFile();
             String folderPath = selectedDirectory.getAbsolutePath();
@@ -264,6 +257,10 @@ public class InsurancePanel extends javax.swing.JPanel {
         selectMonthButton = new javax.swing.JButton();
         billingContentArea = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
+        totalBillsPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(15);
+        jLabel8 = new javax.swing.JLabel();
+        totalBills = new javax.swing.JLabel();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         billsWithInsutancePanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(15);
         jLabel5 = new javax.swing.JLabel();
         totalBillsWithInsurance = new javax.swing.JLabel();
@@ -273,8 +270,8 @@ public class InsurancePanel extends javax.swing.JPanel {
         totalBillsWithoutInsurance = new javax.swing.JLabel();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         chartPanel = new javax.swing.JPanel();
-        revenueByMonthChartPanel = new javax.swing.JPanel();
-        billStatusChartPanel = new javax.swing.JPanel();
+        billsByInsuranceProviderPanel = new javax.swing.JPanel();
+        payableAmountByInsuranceProviderPanel = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1160, 2147483647));
@@ -328,6 +325,21 @@ public class InsurancePanel extends javax.swing.JPanel {
         summaryPanel.setMaximumSize(new java.awt.Dimension(1160, 80));
         summaryPanel.setPreferredSize(new java.awt.Dimension(1160, 100));
 
+        totalBillsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        totalBillsPanel.setPreferredSize(new java.awt.Dimension(160, 60));
+        totalBillsPanel.setRequestFocusEnabled(false);
+        totalBillsPanel.setLayout(new javax.swing.BoxLayout(totalBillsPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel8.setText("Total Bills");
+        totalBillsPanel.add(jLabel8);
+
+        totalBills.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        totalBills.setText("wi");
+        totalBillsPanel.add(totalBills);
+
+        summaryPanel.add(totalBillsPanel);
+        summaryPanel.add(filler4);
+
         billsWithInsutancePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15));
         billsWithInsutancePanel.setPreferredSize(new java.awt.Dimension(160, 60));
         billsWithInsutancePanel.setRequestFocusEnabled(false);
@@ -337,7 +349,7 @@ public class InsurancePanel extends javax.swing.JPanel {
         billsWithInsutancePanel.add(jLabel5);
 
         totalBillsWithInsurance.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        totalBillsWithInsurance.setText("RM 1000.00");
+        totalBillsWithInsurance.setText("wi");
         billsWithInsutancePanel.add(totalBillsWithInsurance);
 
         summaryPanel.add(billsWithInsutancePanel);
@@ -352,7 +364,7 @@ public class InsurancePanel extends javax.swing.JPanel {
         billsWithoutInsurancePanel.add(jLabel7);
 
         totalBillsWithoutInsurance.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        totalBillsWithoutInsurance.setText("RM 600.00");
+        totalBillsWithoutInsurance.setText("wi");
         billsWithoutInsurancePanel.add(totalBillsWithoutInsurance);
 
         summaryPanel.add(billsWithoutInsurancePanel);
@@ -364,8 +376,8 @@ public class InsurancePanel extends javax.swing.JPanel {
         chartPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         chartPanel.setLayout(new java.awt.GridBagLayout());
 
-        revenueByMonthChartPanel.setBackground(new java.awt.Color(246, 251, 255));
-        revenueByMonthChartPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        billsByInsuranceProviderPanel.setBackground(new java.awt.Color(246, 251, 255));
+        billsByInsuranceProviderPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -373,18 +385,18 @@ public class InsurancePanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 5);
-        chartPanel.add(revenueByMonthChartPanel, gridBagConstraints);
+        chartPanel.add(billsByInsuranceProviderPanel, gridBagConstraints);
 
-        billStatusChartPanel.setBackground(new java.awt.Color(246, 251, 255));
-        billStatusChartPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        payableAmountByInsuranceProviderPanel.setBackground(new java.awt.Color(246, 251, 255));
+        payableAmountByInsuranceProviderPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 10);
-        chartPanel.add(billStatusChartPanel, gridBagConstraints);
+        chartPanel.add(payableAmountByInsuranceProviderPanel, gridBagConstraints);
 
         billingContentArea.add(chartPanel);
 
@@ -403,59 +415,66 @@ public class InsurancePanel extends javax.swing.JPanel {
         jLabel2.setText(selectedStartDate.format(MONTH_LABEL_FMT));
         loadSummaryPanel();
         loadInsuranceByProviderBarChart();
-        loadBillStatusChart();
+        loadPayableAmountByInsuranceProvider();
     }//GEN-LAST:event_selectMonthButtonActionPerformed
 
+//    exportInsuranceUsageReport(String filePath, String generatedBy, String datetime,
+//            LinkedHashMap<String, String> insuranceTotals, LinkedHashMap<String, Double> usageByProvider,
+//            LinkedHashMap<String, Double> payableAmountByInsurance)
     private void generateReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportButtonActionPerformed
         String folderPath = selectFolderDir();
         if (folderPath != null) {
-            String fileName = JOptionPane.showInputDialog(this, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
+            String fileName = JOptionPane.showInputDialog(parentWindow, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
             String filePath = ReportPDFExporter.filePath(fileName, folderPath);
             String manager = this.usrCtrl.getActiveUser().getName();
             String date = DateTime.toDateTimeString(DateTime.currentDateTime());
-            LinkedHashMap<String, String> billingTotal = this.usrCtrl.getReportController().getBillingTotals();
-            LinkedHashMap<String, Double> revenueByMonth = this.usrCtrl.getReportController().getRevenueByWeek(selectedStartDate, selectedEndDate);
-            LinkedHashMap<String, Double> billStatusBreakdown = this.usrCtrl.getReportController().getBillStatusBreakdown(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, String> insuranceTotals = this.usrCtrl.getReportController().getInsuranceTotals(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> usageByProvider = this.usrCtrl.getReportController().getInsuranceUsageByProvider(selectedStartDate, selectedEndDate);
+            LinkedHashMap<String, Double> payableAmountByInsurance = this.usrCtrl.getReportController().getPayableAmountByInsurance(selectedStartDate, selectedEndDate);
             if (fileName != null && !fileName.equals("")) {
                 try {
-                    if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, billingTotal, revenueByMonth, billStatusBreakdown)) {
-                        JOptionPane.showMessageDialog(this, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
+                    if (ReportPDFExporter.exportInsuranceUsageReport(filePath, manager, date, insuranceTotals, usageByProvider, payableAmountByInsurance)) {
+                        JOptionPane.showMessageDialog(parentWindow, "Insurance Usage Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(parentWindow, "Fail to export Insurance Usage report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ex) {
                     System.getLogger(InsurancePanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(parentWindow, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_generateReportButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel billStatusChartPanel;
     private javax.swing.JPanel billingContentArea;
+    private javax.swing.JPanel billsByInsuranceProviderPanel;
     private javax.swing.JPanel billsWithInsutancePanel;
     private javax.swing.JPanel billsWithoutInsurancePanel;
     private javax.swing.JPanel chartPanel;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
     private javax.swing.JButton generateReportButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel revenueByMonthChartPanel;
+    private javax.swing.JPanel payableAmountByInsuranceProviderPanel;
     private javax.swing.JPanel searchPane;
     private javax.swing.JButton selectMonthButton;
     private javax.swing.JPanel sortByPane3;
     private javax.swing.JPanel summaryPanel;
+    private javax.swing.JLabel totalBills;
+    private javax.swing.JPanel totalBillsPanel;
     private javax.swing.JLabel totalBillsWithInsurance;
     private javax.swing.JLabel totalBillsWithoutInsurance;
     // End of variables declaration//GEN-END:variables

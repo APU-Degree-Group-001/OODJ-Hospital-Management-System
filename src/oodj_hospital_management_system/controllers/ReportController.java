@@ -52,29 +52,29 @@ public class ReportController {
         return ReportManagement.getInsuranceTotals(startDate, endDate);
     }
  
-    public LinkedHashMap<String, Double> getInsuranceUsageByProvider() {
-        return ReportManagement.getInsuranceUsageByProvider();
+    public LinkedHashMap<String, Double> getInsuranceUsageByProvider(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getInsuranceUsageByProvider(startDate, endDate);
     }
  
-    public LinkedHashMap<String, Double> getPayableAmountByInsurance() {
-        return ReportManagement.getPayableAmountByInsurance();
+    public LinkedHashMap<String, Double> getPayableAmountByInsurance(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getPayableAmountByInsurance(startDate, endDate);
     }
  
     // Consultation Report
-    public LinkedHashMap<String, String> getConsultationTotals() {
-        return ReportManagement.getConsultationTotals();
+    public LinkedHashMap<String, String> getConsultationTotals(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getConsultationTotals(startDate, endDate);
     }
  
-    public LinkedHashMap<String, Double> getConsultationsByStatus() {
-        return ReportManagement.getConsultationsByStatus();
+    public LinkedHashMap<String, Double> getConsultationsByStatus(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getConsultationsByStatus(startDate, endDate);
     }
  
-    public LinkedHashMap<String, Double> getConsultationsByDoctor() {
-        return ReportManagement.getConsultationsByDoctor();
+    public LinkedHashMap<String, Double> getConsultationsByDoctor(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getConsultationsByDoctor(startDate, endDate);
     }
  
-    public LinkedHashMap<String, Double> getConsultationsByMonth() {
-        return ReportManagement.getConsultationsByMonth();
+    public LinkedHashMap<String, Double> getConsultationsByMonth(LocalDate startDate, LocalDate endDate) {
+        return ReportManagement.getConsultationsByMonth(startDate, endDate);
     }
  
     // Doctor Shift Report

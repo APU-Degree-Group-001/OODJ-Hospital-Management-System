@@ -429,7 +429,7 @@ public class BillingRevenuePanel extends javax.swing.JPanel {
     private void generateReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportButtonActionPerformed
         String folderPath = selectFolderDir();
         if (folderPath != null) {
-            String fileName = JOptionPane.showInputDialog(this, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
+            String fileName = JOptionPane.showInputDialog(parentWindow, "Enter PDF Name: ", "Report PDF Name", JOptionPane.QUESTION_MESSAGE);
             String filePath = ReportPDFExporter.filePath(fileName, folderPath);
             String manager = this.usrCtrl.getActiveUser().getName();
             String date = DateTime.toDateTimeString(DateTime.currentDateTime());
@@ -439,18 +439,18 @@ public class BillingRevenuePanel extends javax.swing.JPanel {
             if (fileName != null && !fileName.equals("")) {
                 try {
                     if (ReportPDFExporter.exportBillingRevenueReport(filePath, manager, date, billingTotal, revenueByMonth, billStatusBreakdown)) {
-                        JOptionPane.showMessageDialog(this, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(parentWindow, "Billing and Revenue Report has been exported!", "Report Exporting", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(parentWindow, "Fail to export Billing and Revenue report :(", "Report Exporting", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ex) {
                     System.getLogger(BillingRevenuePanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(parentWindow, "Report exporting is cancelled", "Cancelled", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(parentWindow, "No directory selected.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_generateReportButtonActionPerformed
 
