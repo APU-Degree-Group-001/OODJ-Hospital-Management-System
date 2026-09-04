@@ -60,7 +60,7 @@ public class SideBar extends JPanel {
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("medical manager")) {
-            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
+            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "medicalManagerDashboard");
             addNavItem("Clinical Departments", "", "medicalManagerClinicalDepartments");
             addNavItem("Doctor Shift Rosters", "", "medicalManagerDoctorShiftRosters");
             addNavItem("Billing Management", "", "medicalManagerBillingManagement");
@@ -69,7 +69,11 @@ public class SideBar extends JPanel {
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("doctor")) {
-            addNavItem("", "", "");
+            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "doctorDashboard");
+            addNavItem("Consultations", "", "doctorConsultations");
+            addNavItem("Hospital Assets", "", "doctorHospitalAssets");
+            navItems.add(Box.createVerticalGlue());
+            addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("patient")) {
             addNavItem("", "", "");

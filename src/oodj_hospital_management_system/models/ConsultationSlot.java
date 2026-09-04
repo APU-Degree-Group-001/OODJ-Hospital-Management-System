@@ -15,6 +15,8 @@ import java.util.Objects;
 public class ConsultationSlot {
     public static final String STATUS_AVAILABLE = "AVAILABLE";
     public static final String STATUS_BOOKED = "BOOKED";
+    public static final String STATUS_ENDED = "ENDED";
+    public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_CANCELLED = "CANCELLED";
 
     private String consultationSlotId;
@@ -107,6 +109,8 @@ public class ConsultationSlot {
     public void setStatus(String status) {
         if (status.equals(STATUS_AVAILABLE)
                 || status.equals(STATUS_BOOKED)
+                || status.equals(STATUS_ENDED)
+                || status.equals(STATUS_COMPLETED)
                 || status.equals(STATUS_CANCELLED)) {
             this.status = status;
         }

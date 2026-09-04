@@ -91,15 +91,26 @@ public class ConsultationManagement {
     public static void loadConsultationSlots() {
         consultationSlots.clear();
         List<LinkedHashMap<String, String>> rawData = consultationSlotHandler.readFile();
+        boolean statusChanged = false;
+
         for (LinkedHashMap<String, String> row : rawData) {
             ConsultationSlot consultationSlot = new ConsultationSlot(
                     row.get("consultationSlotId"),
                     DoctorManagement.getDoctorShiftById(row.get("doctorShiftId")),
                     row.get("startDateTime"),
                     row.get("endDateTime"),
-                    ConsultationSlot.STATUS_AVAILABLE
+                    row.get("status")
             );
+
+            if (autoUpdateSlotStatusByTime(consultationSlot)) {
+                statusChanged = true;
+            }
+
             consultationSlots.add(consultationSlot);
+        }
+
+        if (statusChanged) {
+            writeConsultationSlots();
         }
     }
 
@@ -357,18 +368,19 @@ public class ConsultationManagement {
         
         if (isConsultationSlotTaken(consultationSlot.getConsultationSlotId())) {
             System.out.println("Error creating consultation\nConsultation slot is already booked.");
-
             msgMap.put("success", null);
             msgMap.put("msg", "Consultation is not created\nConsultation slot is already booked.");
-
             return msgMap;
         }
+
+        // resolve the live reference before mutating, same pattern used elsewhere
+        ConsultationSlot targetSlot = findConsultationSlotById(consultationSlot.getConsultationSlotId());
 
         String newConsultationId = generateConsultationId();
 
         Consultation newConsultation = new Consultation(
                 newConsultationId,
-                consultationSlot,
+                targetSlot,          // use the live reference, not the passed-in one
                 patient,
                 consultationType,
                 description,
@@ -388,6 +400,12 @@ public class ConsultationManagement {
         } else {
             writeConsultations();
         }
+
+        // mark the slot as booked and persist it BEFORE reloading consultations,
+        // so findConsultationSlotById() picks up the updated status downstream
+        targetSlot.setStatus(ConsultationSlot.STATUS_BOOKED);
+        writeConsultationSlots();
+        loadConsultationSlots();
 
         loadConsultations();
 
@@ -447,8 +465,18 @@ public class ConsultationManagement {
         }
 
         consultations.removeIf(consultation -> consultation.getConsultationId().equals(consultationId));
-
         writeConsultations();
+
+        // free up the slot again, if it still exists
+        if (deleteConsultation.getConsultationSlot() != null) {
+            ConsultationSlot targetSlot = findConsultationSlotById(deleteConsultation.getConsultationSlot().getConsultationSlotId());
+            if (targetSlot != null) {
+                targetSlot.setStatus(ConsultationSlot.STATUS_AVAILABLE);
+                writeConsultationSlots();
+                loadConsultationSlots();
+            }
+        }
+
         loadConsultations();
 
         msgMap.put("success", "true");
@@ -558,26 +586,89 @@ public class ConsultationManagement {
         return msgMap;
     }
     
-    public static boolean deleteConsultationSlotsInBulk(String doctorShiftId) {
+    public static LinkedHashMap<String, String> deleteConsultationSlotsInBulk(String doctorShiftId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
         try {
-            int originalSize = consultationSlots.size();
+            List<ConsultationSlot> affectedSlots = consultationSlots.stream()
+                    .filter(slot -> slot.getDoctorShift() != null
+                            && slot.getDoctorShift().getShiftId().equals(doctorShiftId))
+                    .toList();
 
-            consultationSlots.removeIf(slot -> slot.getDoctorShift() != null && slot.getDoctorShift().getShiftId().equals(doctorShiftId));
-
-            if (consultationSlots.size() == originalSize) {
-                return true;
+            if (affectedSlots.isEmpty()) {
+                msgMap.put("success", "true");
+                msgMap.put("msg", String.format("No consultation slots found for Doctor Shift '%s'; nothing to delete.", doctorShiftId));
+                msgMap.put("slotCount", "0");
+                msgMap.put("cancelledConsultationCount", "0");
+                return msgMap;
             }
+
+            List<String> affectedSlotIds = affectedSlots.stream()
+                    .map(ConsultationSlot::getConsultationSlotId)
+                    .toList();
+
+            // Cancel any non-terminal consultations on these slots BEFORE touching the slots,
+            // so we know which slots have a consultation history worth keeping.
+            int cancelledCount = 0;
+            for (Consultation consultation : consultations) {
+                if (consultation.getConsultationSlot() != null
+                        && affectedSlotIds.contains(consultation.getConsultationSlot().getConsultationSlotId())
+                        && consultation.getConsultationStatus() != ConsultationStatus.CANCELLED
+                        && consultation.getConsultationStatus() != ConsultationStatus.COMPLETED) {
+                    consultation.setConsultationStatus(ConsultationStatus.CANCELLED);
+                    cancelledCount++;
+                }
+            }
+            if (cancelledCount > 0) {
+                writeConsultations();
+            }
+
+            // A slot with ANY consultation (even a completed/already-cancelled one) is kept
+            // as CANCELLED so consultation history can still resolve its date/time.
+            // A slot with no consultation at all is removed outright.
+            int removedCount = 0;
+            int keptCount = 0;
+
+            for (ConsultationSlot slot : affectedSlots) {
+                boolean hasConsultation = consultations.stream().anyMatch(c ->
+                        c.getConsultationSlot() != null
+                        && c.getConsultationSlot().getConsultationSlotId().equals(slot.getConsultationSlotId()));
+
+                if (hasConsultation) {
+                    slot.setStatus(ConsultationSlot.STATUS_CANCELLED);
+                    keptCount++;
+                } else {
+                    removedCount++;
+                }
+            }
+
+            consultationSlots.removeIf(slot ->
+                    affectedSlotIds.contains(slot.getConsultationSlotId())
+                    && consultations.stream().noneMatch(c ->
+                            c.getConsultationSlot() != null
+                            && c.getConsultationSlot().getConsultationSlotId().equals(slot.getConsultationSlotId())));
 
             writeConsultationSlots();
             loadConsultationSlots();
+            loadConsultations();
 
-            System.out.printf("Consultation slots for Doctor Shift '%s' are deleted!%n", doctorShiftId);
-            return true;
+            System.out.printf("Doctor Shift '%s': %d slot(s) removed, %d slot(s) marked CANCELLED (had bookings), %d consultation(s) cancelled!%n",
+                    doctorShiftId, removedCount, keptCount, cancelledCount);
+
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format(
+                    "%d consultation slot(s) removed, %d slot(s) kept as cancelled (had bookings), %d consultation(s) cancelled for Doctor Shift '%s'.",
+                    removedCount, keptCount, cancelledCount, doctorShiftId));
+            msgMap.put("slotCount", String.valueOf(affectedSlots.size()));
+            msgMap.put("cancelledConsultationCount", String.valueOf(cancelledCount));
+            return msgMap;
 
         } catch (Exception e) {
             System.out.println("Error deleting consultation slots in bulk: " + e.getMessage());
             Logger.errorLog("Error deleting consultation slots in bulk (System Error) -> " + e.getMessage());
-            return false;
+            msgMap.put("success", null);
+            msgMap.put("msg", "Consultation slots are not deleted\n" + e.getMessage());
+            return msgMap;
         }
     }
     
@@ -614,6 +705,25 @@ public class ConsultationManagement {
         }
 
         return false;
+    }
+    
+    private static boolean autoUpdateSlotStatusByTime(ConsultationSlot slot) {
+        String currentStatus = slot.getStatus();
+
+        // ENDED and COMPLETED are terminal; only AVAILABLE/BOOKED auto-transition.
+        boolean isAvailable = ConsultationSlot.STATUS_AVAILABLE.equals(currentStatus);
+        boolean isBooked = ConsultationSlot.STATUS_BOOKED.equals(currentStatus);
+        if (!isAvailable && !isBooked) {
+            return false;
+        }
+
+        LocalDateTime slotEnd = DateTime.toDateTimeObject(slot.getEndDateTime());
+        if (slotEnd == null || !LocalDateTime.now().isAfter(slotEnd)) {
+            return false;
+        }
+
+        slot.setStatus(isAvailable ? ConsultationSlot.STATUS_ENDED : ConsultationSlot.STATUS_COMPLETED);
+        return true;
     }
 
     public static String generateConsultationId() {

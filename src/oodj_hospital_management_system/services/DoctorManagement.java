@@ -280,10 +280,20 @@ public class DoctorManagement {
         writeDoctorShifts();
         loadDoctorShift();
 
-        ConsultationManagement.deleteConsultationSlotsInBulk(shift.getShiftId());
+        LinkedHashMap<String, String> slotResult = ConsultationManagement.deleteConsultationSlotsInBulk(shift.getShiftId());
+
+        if (!"true".equals(slotResult.get("success"))) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format(
+                    "Doctor shift '%s' is cancelled, but consultation slots failed to be deleted.\n%s",
+                    shift.getShiftId(), slotResult.get("msg")));
+            return msgMap;
+        }
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled and its consultation slots are deleted!", shift.getShiftId()));
+        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled!\n%s", shift.getShiftId(), slotResult.get("msg")));
+        msgMap.put("slotCount", slotResult.get("slotCount"));
+        msgMap.put("cancelledConsultationCount", slotResult.get("cancelledConsultationCount"));
 
         return msgMap;
     }

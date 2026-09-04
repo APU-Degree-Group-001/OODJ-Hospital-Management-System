@@ -4164,3 +4164,5 @@ Doctor Shift Handling Error: End date/time must be after start date/time
 [2026-08-31 18:49:28] User {medical manager - #MNG58321 - Chee} failed to generate a bill from Consultation {#CON167e9}
 	ErrorMsg: Bill is not created
 Bill Handling Error: Only Admin Staff can manage billing
+[2026-09-04 15:27:53] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials

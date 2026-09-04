@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.controllers;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.models.Consultation;
@@ -138,15 +139,56 @@ public class ConsultationController {
         return msg;
     }
  
-    public boolean deleteConsultationSlotsInBulk(String doctorShiftId) {
-        boolean success = ConsultationManagement.deleteConsultationSlotsInBulk(doctorShiftId);
-        if (success) {
-            Logger.log(String.format("User {%s - %s - %s} deleted consultation slots in bulk for Doctor Shift {%s}",
-                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorShiftId));
+    public LinkedHashMap<String, String> deleteConsultationSlotsInBulk(String doctorShiftId) {
+        LinkedHashMap<String, String> result = ConsultationManagement.deleteConsultationSlotsInBulk(doctorShiftId);
+
+        if ("true".equals(result.get("success"))) {
+            Logger.log(String.format("User {%s - %s - %s} deleted consultation slots in bulk for Doctor Shift {%s} -> %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorShiftId, result.get("msg")));
         } else {
-            Logger.errorLog(String.format("User {%s - %s - %s} failed to delete consultation slots in bulk for Doctor Shift {%s}",
-                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorShiftId));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to delete consultation slots in bulk for Doctor Shift {%s} -> %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), doctorShiftId, result.get("msg")));
         }
-        return success;
+
+        return result;
+    }
+    
+    public List<ConsultationSlot> getAvailableConsultationSlots() {
+        List<ConsultationSlot> all = ConsultationManagement.getAllConsultationSlots();
+        List<ConsultationSlot> available = new ArrayList<>();
+        for (ConsultationSlot slot : all) {
+            if (ConsultationSlot.STATUS_AVAILABLE.equals(slot.getStatus())) {
+                available.add(slot);
+            }
+        }
+        return available;
+    }
+    
+    public List<ConsultationSlot> getAvailableConsultationSlotsForDoctor(String doctorId) {
+        List<ConsultationSlot> available = getAvailableConsultationSlots();
+        List<ConsultationSlot> filtered = new ArrayList<>();
+        for (ConsultationSlot slot : available) {
+            if (slot.getDoctorShift() != null
+                    && slot.getDoctorShift().getDoctor() != null
+                    && doctorId.equals(slot.getDoctorShift().getDoctor().getId())) {
+                filtered.add(slot);
+            }
+        }
+        return filtered;
+    }
+    
+    public List<Consultation> getBookedConsultationsForDoctor(String doctorId) {
+        List<Consultation> all = ConsultationManagement.getAllConsultations();
+        List<Consultation> booked = new ArrayList<>();
+        for (Consultation c : all) {
+            if (c.getConsultationSlot() != null
+                    && c.getConsultationSlot().getDoctorShift() != null
+                    && c.getConsultationSlot().getDoctorShift().getDoctor() != null
+                    && doctorId.equals(c.getConsultationSlot().getDoctorShift().getDoctor().getId())
+                    && c.getConsultationStatus() == Consultation.ConsultationStatus.SCHEDULED) {
+                booked.add(c);
+            }
+        }
+        return booked;
     }
 }

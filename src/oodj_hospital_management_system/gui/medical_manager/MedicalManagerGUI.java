@@ -32,7 +32,7 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
         this.usrCtrl = usrCtrl;
         initComponents();
         // Add cards to contentArea
-        contentArea.add(new AdminDashboardPanel(), "adminStaffDashboard");
+        contentArea.add(new AdminDashboardPanel(), "medicalManagerDashboard");
         contentArea.add(new MedicalManagerClinicalDepartmentsPanel(this.usrCtrl), "medicalManagerClinicalDepartments");
         contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "medicalManagerDoctorShiftRosters");
         contentArea.add(new MedicalManagerBillingManagementPanel(this.usrCtrl), "medicalManagerBillingManagement");

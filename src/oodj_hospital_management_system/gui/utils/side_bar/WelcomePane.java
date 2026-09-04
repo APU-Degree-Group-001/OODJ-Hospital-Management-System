@@ -38,9 +38,9 @@ public class WelcomePane extends javax.swing.JPanel {
             case "medical manager":
                 return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
             case "doctor":
-                return "";
+                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
             case "patient":
-                return "";
+                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
             default:
                 return "oodj_hospital_management_system/assets/img/icons/testing_welcome.png";
         }
