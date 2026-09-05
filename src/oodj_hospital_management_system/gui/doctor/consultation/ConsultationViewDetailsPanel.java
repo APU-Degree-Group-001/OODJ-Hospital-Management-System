@@ -56,6 +56,7 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
     public ConsultationViewDetailsPanel(UserController usrCtrl, Consultation consultation, Runnable onBack) {
         this.usrCtrl = usrCtrl;
         this.consultation = consultation;
+        this.onBack = onBack;
         initComponents();
         applyWrappingRenderers();
 
@@ -64,10 +65,16 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
             labResultsCrudPanel.setVisible(false);
             prescriptionsCrudPanel.setVisible(false);
         }
+        
+        if (loadBill(consultation.getConsultationId())) {
+            medicalAssessmentCrudPanel.setVisible(false);
+            labResultsCrudPanel.setVisible(false);
+            prescriptionsCrudPanel.setVisible(false);
+        }
 
         loadConsultationDetails();
 
-        jButton1.addActionListener(e -> {
+        backButton.addActionListener(e -> {
             if (this.onBack != null) this.onBack.run();
         });
 
@@ -87,18 +94,18 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         Patient patient = consultation.getPatient(); // confirm: eager ref vs lazy patientId lookup
         if (patient != null) {
             patientName.setText(patient.getName());
-            patientID.setText("#" + patient.getId());
+            patientID.setText(patient.getId());
         }
 
         // --- Doctor info ---
         Doctor doctor = resolveDoctor(consultation);
         if (doctor != null) {
             doctorName.setText(doctor.getName());
-            doctorID.setText("#" + doctor.getId());
+            doctorID.setText(doctor.getId());
         }
 
         // --- Consultation info ---
-        consultationID.setText("#" + consultationId);
+        consultationID.setText(consultationId);
         ConsultationType type = consultation.getConsultationType();
         consultationType.setText(type != null ? type.getTypeName() : "N/A");
         consultationDescription.setText(consultation.getDescription());
@@ -112,7 +119,6 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         }
 
         loadMedicalRecords(consultationId);
-        loadBill(consultationId);
     }
     
     private Doctor resolveDoctor(Consultation c) {
@@ -227,7 +233,7 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void loadBill(String consultationId) {
+    private boolean loadBill(String consultationId) {
         Bill bill = usrCtrl.getBillingController().getBillByConsultationId(consultationId);
         boolean hasBill = bill != null;
 
@@ -255,6 +261,7 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         billPanel.repaint();
         wrapperPane.revalidate();
         wrapperPane.repaint();
+        return hasBill;
     }
 
     private LabResult getSelectedLabResult() {
@@ -327,7 +334,7 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
 
         jOptionPane1 = new javax.swing.JOptionPane();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
         wrapperPane = new javax.swing.JPanel();
         patientInformationPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -392,10 +399,11 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(1160, 50));
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jButton1.setText("⟵ Back");
-        jButton1.setMaximumSize(new java.awt.Dimension(150, 40));
-        jButton1.setPreferredSize(new java.awt.Dimension(150, 40));
-        jPanel1.add(jButton1);
+        backButton.setText("⟵ Back");
+        backButton.setMaximumSize(new java.awt.Dimension(150, 40));
+        backButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        backButton.addActionListener(this::backButtonActionPerformed);
+        jPanel1.add(backButton);
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -1345,11 +1353,18 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_addPrescriptionButtonActionPerformed
 
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        if (this.onBack != null) {
+            this.onBack.run();
+        }
+    }//GEN-LAST:event_backButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAssessmentButton;
     private javax.swing.JButton addPrescriptionButton;
     private javax.swing.JButton addResultButton;
+    private javax.swing.JButton backButton;
     private javax.swing.JPanel billPanel;
     private javax.swing.JLabel consultationDate;
     private javax.swing.JLabel consultationDescription;
@@ -1369,7 +1384,6 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

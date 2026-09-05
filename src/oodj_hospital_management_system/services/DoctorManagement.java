@@ -298,6 +298,64 @@ public class DoctorManagement {
         return msgMap;
     }
     
+    public LinkedHashMap<String, String> startShift(DoctorShift shift) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        if (shift == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Shift not found.");
+            return msgMap;
+        }
+        if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' is cancelled and cannot be started.", shift.getShiftId()));
+            return msgMap;
+        }
+        if (shift.getActualStartDateTime() != null && !shift.getActualStartDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been started.", shift.getShiftId()));
+            return msgMap;
+        }
+
+        String now = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+        shift.setActualStartDateTime(now);
+        writeDoctorShifts();
+        loadDoctorShift();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Doctor shift '%s' started at %s.", shift.getShiftId(), now));
+        return msgMap;
+    }
+
+    public LinkedHashMap<String, String> endShift(DoctorShift shift) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        if (shift == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Shift not found.");
+            return msgMap;
+        }
+        if (shift.getActualStartDateTime() == null || shift.getActualStartDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has not been started yet.", shift.getShiftId()));
+            return msgMap;
+        }
+        if (shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been ended.", shift.getShiftId()));
+            return msgMap;
+        }
+
+        String now = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+        shift.setActualEndDateTime(now);
+        writeDoctorShifts();
+        loadDoctorShift();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Doctor shift '%s' ended at %s.", shift.getShiftId(), now));
+        return msgMap;
+    }
+    
     // Shift Management
     public static Doctor.ShiftStatus getDoctorAttendanceStatus(Doctor doctor) {
         loadDoctorShift();

@@ -82,7 +82,6 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
         currentConsultations = usrCtrl.getConsultationController()
             .getBookedConsultationsForDoctor(currentDoctor.getId());
         populateTable(currentConsultations);
-        updateResultLabel("Showing your booked consultations", currentConsultations.size());
     }
 
     private String formatPatient(Patient p) {

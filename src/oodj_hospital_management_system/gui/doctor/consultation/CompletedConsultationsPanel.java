@@ -89,14 +89,19 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     public void loadCompletedConsultations() {
         List<Consultation> all = usrCtrl.getConsultationController().getAllConsultations();
         List<Consultation> completed = new ArrayList<>();
+
+        Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
+        String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
+
         for (Consultation c : all) {
-            if (c.getConsultationStatus() == ConsultationStatus.COMPLETED) {
+            if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
+            Doctor doctor = resolveDoctor(c);
+            if (doctor != null && activeDoctorId != null && doctor.getId().equals(activeDoctorId)) {
                 completed.add(c);
             }
         }
         currentConsultations = completed;
         rebuildCards(completed);
-        updateResultLabel("Showing completed consultations", completed.size());
     }
 
     private void openConsultationDetails(Consultation consultation) {
@@ -429,18 +434,23 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         String rawKeyword = searchField.getText();
         String keyword = rawKeyword.trim().toLowerCase();
 
+        Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
+        String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
+
         List<Consultation> all = usrCtrl.getConsultationController().getAllConsultations();
         List<Consultation> results = new ArrayList<>();
         for (Consultation c : all) {
             if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
 
-            Patient p = c.getPatient();
             Doctor doctor = resolveDoctor(c);
+            if (doctor == null || activeDoctorId == null || !doctor.getId().equals(activeDoctorId)) continue;
+
+            Patient p = c.getPatient();
             String description = c.getDescription() != null ? c.getDescription() : "";
 
             boolean match = c.getConsultationId().toLowerCase().contains(keyword)
                 || (p != null && (p.getId().toLowerCase().contains(keyword) || p.getName().toLowerCase().contains(keyword)))
-                || (doctor != null && doctor.getName().toLowerCase().contains(keyword))
+                || doctor.getName().toLowerCase().contains(keyword)
                 || description.toLowerCase().contains(keyword);
 
             if (match) {
@@ -505,9 +515,16 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         if (currentConsultations != null) {
             base = currentConsultations;
         } else {
+            Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
+            String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
+
             base = new ArrayList<>();
             for (Consultation c : usrCtrl.getConsultationController().getAllConsultations()) {
-                if (c.getConsultationStatus() == ConsultationStatus.COMPLETED) base.add(c);
+                if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
+                Doctor doctor = resolveDoctor(c);
+                if (doctor != null && activeDoctorId != null && doctor.getId().equals(activeDoctorId)) {
+                    base.add(c);
+                }
             }
         }
 
