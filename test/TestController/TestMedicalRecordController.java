@@ -182,9 +182,9 @@ public class TestMedicalRecordController {
  
         String consultationId = "#CON001"; // replace with a consultation that actually has an assessment
  
-        MedicalAssessment assessment = recordCtrl.getMedicalAssessmentByConsultationId(consultationId);
+        List<MedicalAssessment> assessment = recordCtrl.getMedicalAssessmentsByConsultationId(consultationId);
  
-        System.out.println(assessment != null ? "Found: " + assessment.getAssessmentId() : "No assessment for " + consultationId);
+//        System.out.println(assessment != null ? "Found: " + assessment.getAssessmentId() : "No assessment for " + consultationId);
     }
  
     static void testGetLabResultsByConsultationId() {

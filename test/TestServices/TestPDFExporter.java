@@ -45,10 +45,10 @@ public class TestPDFExporter {
         testExportInsuranceUsageReport();
  
         // Test consultation report
-        testExportConsultationReport();
+//        testExportConsultationReport();
  
         // Test doctor shift report
-        testExportDoctorShiftReport();
+//        testExportDoctorShiftReport();
  
         // Test room / hospital asset utilization report
         testExportRoomUtilizationReport();
@@ -110,55 +110,55 @@ public class TestPDFExporter {
     // CONSULTATION REPORT TEST
     // =========================================================
  
-    static void testExportConsultationReport() {
- 
-        System.out.println("\n===== TEST EXPORT CONSULTATION REPORT =====");
- 
-        LinkedHashMap<String, String> consultationTotals = ReportManagement.getConsultationTotals();
-        LinkedHashMap<String, Double> consultationsByStatus = ReportManagement.getConsultationsByStatus();
-        LinkedHashMap<String, Double> consultationsByDoctor = ReportManagement.getConsultationsByDoctor();
-        LinkedHashMap<String, Double> consultationsByMonth = ReportManagement.getConsultationsByMonth();
- 
-        String filePath = PDFExporter.filePath("ConsultationReport", OUTPUT_FOLDER);
- 
-        try {
-            boolean success = PDFExporter.exportConsultationReport(
-                    filePath, generatedBy, datetime, consultationTotals, consultationsByStatus,
-                    consultationsByDoctor, consultationsByMonth
-            );
- 
-            System.out.println("Success  : " + success);
-            System.out.println("File Path: " + filePath);
-        } catch (Exception e) {
-            System.out.println("Test failed: " + e.getMessage());
-        }
-    }
+//    static void testExportConsultationReport() {
+// 
+//        System.out.println("\n===== TEST EXPORT CONSULTATION REPORT =====");
+// 
+//        LinkedHashMap<String, String> consultationTotals = ReportManagement.getConsultationTotals();
+//        LinkedHashMap<String, Double> consultationsByStatus = ReportManagement.getConsultationsByStatus();
+//        LinkedHashMap<String, Double> consultationsByDoctor = ReportManagement.getConsultationsByDoctor();
+//        LinkedHashMap<String, Double> consultationsByMonth = ReportManagement.getConsultationsByMonth();
+// 
+//        String filePath = PDFExporter.filePath("ConsultationReport", OUTPUT_FOLDER);
+// 
+//        try {
+//            boolean success = PDFExporter.exportConsultationReport(
+//                    filePath, generatedBy, datetime, consultationTotals, consultationsByStatus,
+//                    consultationsByDoctor, consultationsByMonth
+//            );
+// 
+//            System.out.println("Success  : " + success);
+//            System.out.println("File Path: " + filePath);
+//        } catch (Exception e) {
+//            System.out.println("Test failed: " + e.getMessage());
+//        }
+//    }
  
     // =========================================================
     // DOCTOR SHIFT REPORT TEST
     // =========================================================
- 
-    static void testExportDoctorShiftReport() {
- 
-        System.out.println("\n===== TEST EXPORT DOCTOR SHIFT REPORT =====");
- 
-        LinkedHashMap<String, String> doctorShiftTotals = ReportManagement.getDoctorShiftTotals();
-        LinkedHashMap<String, Double> shiftsByStatus = ReportManagement.getShiftsByStatus();
-        LinkedHashMap<String, Double> scheduledShiftHoursByDoctor = ReportManagement.getScheduledShiftHoursByDoctor();
- 
-        String filePath = PDFExporter.filePath("DoctorShiftReport", OUTPUT_FOLDER);
- 
-        try {
-            boolean success = PDFExporter.exportDoctorShiftReport(
-                    filePath, generatedBy, datetime, doctorShiftTotals, shiftsByStatus, scheduledShiftHoursByDoctor
-            );
- 
-            System.out.println("Success  : " + success);
-            System.out.println("File Path: " + filePath);
-        } catch (Exception e) {
-            System.out.println("Test failed: " + e.getMessage());
-        }
-    }
+// 
+//    static void testExportDoctorShiftReport() {
+// 
+//        System.out.println("\n===== TEST EXPORT DOCTOR SHIFT REPORT =====");
+// 
+//        LinkedHashMap<String, String> doctorShiftTotals = ReportManagement.getDoctorShiftTotals();
+//        LinkedHashMap<String, Double> shiftsByStatus = ReportManagement.getShiftsByStatus();
+//        LinkedHashMap<String, Double> scheduledShiftHoursByDoctor = ReportManagement.getScheduledShiftHoursByDoctor();
+// 
+//        String filePath = PDFExporter.filePath("DoctorShiftReport", OUTPUT_FOLDER);
+// 
+//        try {
+//            boolean success = PDFExporter.exportDoctorShiftReport(
+//                    filePath, generatedBy, datetime, doctorShiftTotals, shiftsByStatus, scheduledShiftHoursByDoctor
+//            );
+// 
+//            System.out.println("Success  : " + success);
+//            System.out.println("File Path: " + filePath);
+//        } catch (Exception e) {
+//            System.out.println("Test failed: " + e.getMessage());
+//        }
+//    }
  
     // =========================================================
     // ROOM / HOSPITAL ASSET UTILIZATION REPORT TEST

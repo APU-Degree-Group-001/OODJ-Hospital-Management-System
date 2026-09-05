@@ -277,8 +277,8 @@ public class TestConsultationController {
  
         String doctorShiftId = "#SHIFT001"; // replace with a real shift ID that has slots to clear
  
-        boolean success = consultationCtrl.deleteConsultationSlotsInBulk(doctorShiftId);
+//        boolean success = consultationCtrl.deleteConsultationSlotsInBulk(doctorShiftId);
  
-        System.out.println("Success : " + success);
+//        System.out.println("Success : " + success);
     }
 }

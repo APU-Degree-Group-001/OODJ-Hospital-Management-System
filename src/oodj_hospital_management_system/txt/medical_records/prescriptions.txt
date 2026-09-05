@@ -1,4 +1,2 @@
-prescriptionId, consultationId, prescriptionTypeId, dosage, frequencyPerDay, durationInDays, instructions
-#PRE001, #CON001, #PTYPE001, 200mg, 2, 7, Take before meals
-#PRE002, #CON001, #PTYPE001, 200mg, 2, 3, Take after meals
-#PREf0b85, #CON001, #PTYPE003, 500mg, 3, 5, Take after meals
+prescriptionId, consultationId, medicineName, dosage, frequencyPerDay, durationInDays, instructions
+#PRE001, #CON001, Ibuprofen, 400mg, 3, 5, Take after meals to reduce stomach irritation

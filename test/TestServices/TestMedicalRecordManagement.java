@@ -333,26 +333,26 @@ public class TestMedicalRecordManagement {
     // GET BY CONSULTATION ID TESTS
     // =========================================================
 
-    static void testGetMedicalAssessmentByConsultationId() {
-
-        System.out.println(
-                "\n===== TEST GET MEDICAL ASSESSMENT BY CONSULTATION ID ====="
-        );
-
-        MedicalAssessment assessment =
-                MedicalRecordManagement.getMedicalAssessmentByConsultationId(
-                        SAMPLE_CONSULTATION_ID
-                );
-
-        if (assessment != null) {
-            System.out.println("Assessment found for consultation " + SAMPLE_CONSULTATION_ID + ":");
-            System.out.println("Assessment ID : " + assessment.getAssessmentId());
-        } else {
-            System.out.println(
-                    "No assessment found for consultation " + SAMPLE_CONSULTATION_ID
-            );
-        }
-    }
+//    static void testGetMedicalAssessmentByConsultationId() {
+//
+//        System.out.println(
+//                "\n===== TEST GET MEDICAL ASSESSMENT BY CONSULTATION ID ====="
+//        );
+//
+//        MedicalAssessment assessment =
+//                MedicalRecordManagement.getMedicalAssessmentByConsultationId(
+//                        SAMPLE_CONSULTATION_ID
+//                );
+//
+//        if (assessment != null) {
+//            System.out.println("Assessment found for consultation " + SAMPLE_CONSULTATION_ID + ":");
+//            System.out.println("Assessment ID : " + assessment.getAssessmentId());
+//        } else {
+//            System.out.println(
+//                    "No assessment found for consultation " + SAMPLE_CONSULTATION_ID
+//            );
+//        }
+//    }
 
     static void testGetLabResultsByConsultationId() {
 

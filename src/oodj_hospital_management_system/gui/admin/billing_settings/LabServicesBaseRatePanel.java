@@ -52,7 +52,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
     public void loadLabResultTypes() {
         DefaultTableModel model = (DefaultTableModel) labResultsTypeTable.getModel();
         model.setRowCount(0);
-        List<LabResultType> allLabResultTypes = this.usrCtrl.getLabResultController().getAllLabResultTypes();
+        List<LabResultType> allLabResultTypes = this.usrCtrl.getLabResultTypeController().getAllLabResultTypes();
         currentLabResultTypes = allLabResultTypes;
         for (LabResultType type : allLabResultTypes) {
             String[] rowData = {type.getLabResultTypeId(), type.getTypeName(), String.format("%.2f", type.getBaseRate()), type.getStatus().name()};
@@ -378,7 +378,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchField.getText();
-        List<LabResultType> allTypes = this.usrCtrl.getLabResultController().getAllLabResultTypes();
+        List<LabResultType> allTypes = this.usrCtrl.getLabResultTypeController().getAllLabResultTypes();
         List<LabResultType> searchResults = searchLabResultTypes(keyword, allTypes);
         currentLabResultTypes = searchResults;
         populateTable(searchResults);
@@ -454,7 +454,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
         }
 
         String typeId = labResultsTypeTable.getValueAt(selectedRow, 0).toString();
-        LabResultType targetType = this.usrCtrl.getLabResultController().getLabResultTypeById(typeId);
+        LabResultType targetType = this.usrCtrl.getLabResultTypeController().getLabResultTypeById(typeId);
 
         if (targetType == null) {
             JOptionPane.showMessageDialog(parentWindow, "Lab result type not found", "Error", JOptionPane.ERROR_MESSAGE);
@@ -474,8 +474,8 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
 
         if (choice == JOptionPane.YES_OPTION) {
             LinkedHashMap<String, String> msg = isActive
-                ? this.usrCtrl.getLabResultController().deactivateLabResultType(typeId)
-                : this.usrCtrl.getLabResultController().activateLabResultType(typeId);
+                ? this.usrCtrl.getLabResultTypeController().deactivateLabResultType(typeId)
+                : this.usrCtrl.getLabResultTypeController().activateLabResultType(typeId);
 
             if (msg.get("success") != null) {
                 JOptionPane.showMessageDialog(parentWindow, String.format("Lab result type '%s' is %sd!", typeId, action));
@@ -558,7 +558,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
                 continue;
             }
 
-            LinkedHashMap<String, String> msg = this.usrCtrl.getLabResultController().createLabResultType(typeName, baseRate);
+            LinkedHashMap<String, String> msg = this.usrCtrl.getLabResultTypeController().createLabResultType(typeName, baseRate);
             if (msg.get("success") != null) {
                 JOptionPane.showMessageDialog(parentWindow, String.format("Lab result type '%s' is created!", msg.get("newLabResultTypeId")));
                 loadLabResultTypes();
@@ -577,7 +577,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
         }
 
         String typeId = labResultsTypeTable.getValueAt(selectedRow, 0).toString();
-        LabResultType selectedType = this.usrCtrl.getLabResultController().getLabResultTypeById(typeId);
+        LabResultType selectedType = this.usrCtrl.getLabResultTypeController().getLabResultTypeById(typeId);
 
         if (selectedType == null) {
             JOptionPane.showMessageDialog(parentWindow, "Lab result type not found", "Error", JOptionPane.ERROR_MESSAGE);
@@ -687,7 +687,7 @@ public class LabServicesBaseRatePanel extends javax.swing.JPanel {
             String finalTypeName = editName ? newTypeName : selectedType.getTypeName();
             double finalBaseRate = editRate ? newBaseRate : selectedType.getBaseRate();
 
-            LinkedHashMap<String, String> msg = this.usrCtrl.getLabResultController().updateLabResultType(selectedType, finalTypeName, finalBaseRate);
+            LinkedHashMap<String, String> msg = this.usrCtrl.getLabResultTypeController().updateLabResultType(selectedType, finalTypeName, finalBaseRate);
             if (msg.get("success") != null) {
                 JOptionPane.showMessageDialog(parentWindow, String.format("Lab result type '%s' updated!", typeId));
                 loadLabResultTypes();

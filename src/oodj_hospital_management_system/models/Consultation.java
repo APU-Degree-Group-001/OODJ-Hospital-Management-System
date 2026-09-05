@@ -20,7 +20,7 @@ public class Consultation implements ConsultationWorkflow {
     private Patient patient;
     private ConsultationType consultationType;
     private String description;
-    private MedicalAssessment medicalAssessment;
+    private List<MedicalAssessment> medicalAssessment;
     private List<LabResult> labResults;
     private List<Prescription> prescriptions;
     private HospitalAssetAllocation hospitalAssetAllocation;
@@ -57,7 +57,7 @@ public class Consultation implements ConsultationWorkflow {
             Patient patient,
             ConsultationType consultationType,
             String description,
-            MedicalAssessment medicalAssessment,
+            List<MedicalAssessment> medicalAssessment,
             List<LabResult> labResults,
             List<Prescription> prescriptions,
             HospitalAssetAllocation hospitalAssetAllocation,
@@ -152,7 +152,7 @@ public class Consultation implements ConsultationWorkflow {
         return description;
     }
 
-    public MedicalAssessment getMedicalAssessment() {
+    public List<MedicalAssessment> getMedicalAssessment() {
         return medicalAssessment;
     }
 
@@ -196,7 +196,7 @@ public class Consultation implements ConsultationWorkflow {
         this.description = description;
     }
 
-    public void setMedicalAssessment(MedicalAssessment medicalAssessment) {
+    public void setMedicalAssessment(ArrayList<MedicalAssessment> medicalAssessment) {
         this.medicalAssessment = medicalAssessment;
     }
 

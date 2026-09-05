@@ -176,12 +176,12 @@ public class LabResult {
 
     public LinkedHashMap<String, String> getLabResultMap() {
         LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
-        resultMap.put("resultId", this.resultId);
+        resultMap.put("resultId", this.resultId != null ? this.resultId : "");
         resultMap.put("consultationId", this.consultationId != null ? this.consultationId : "");
-        resultMap.put("resultType", this.resultType);
-        resultMap.put("result", this.result);
-        resultMap.put("remarks", this.remarks);
-        resultMap.put("resultDateTime", this.resultDateTime);
+        resultMap.put("resultType", this.resultType != null ? this.resultType : "");
+        resultMap.put("result", this.result != null ? this.result : "");
+        resultMap.put("remarks", this.remarks != null ? this.remarks : "");
+        resultMap.put("resultDateTime", this.resultDateTime != null ? this.resultDateTime : "");
         return resultMap;
     }
 }

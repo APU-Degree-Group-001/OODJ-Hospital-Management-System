@@ -93,7 +93,7 @@ public class UserController {
         return this.consultationTypeController;
     }
     
-    public LabResultTypeController getLabResultController() {
+    public LabResultTypeController getLabResultTypeController() {
         return this.labResultTypeController;
     }
     

@@ -105,19 +105,19 @@ public class TestReportController {
     // =========================================================
  
     static void testGetConsultationTotals() {
-        printStringMap("TEST GET CONSULTATION TOTALS (via Controller)", reportCtrl.getConsultationTotals());
+//        printStringMap("TEST GET CONSULTATION TOTALS (via Controller)", reportCtrl.getConsultationTotals());
     }
  
     static void testGetConsultationsByStatus() {
-        printDoubleMap("TEST GET CONSULTATIONS BY STATUS (via Controller)", reportCtrl.getConsultationsByStatus());
+//        printDoubleMap("TEST GET CONSULTATIONS BY STATUS (via Controller)", reportCtrl.getConsultationsByStatus());
     }
  
     static void testGetConsultationsByDoctor() {
-        printDoubleMap("TEST GET CONSULTATIONS BY DOCTOR (via Controller)", reportCtrl.getConsultationsByDoctor());
+//        printDoubleMap("TEST GET CONSULTATIONS BY DOCTOR (via Controller)", reportCtrl.getConsultationsByDoctor());
     }
  
     static void testGetConsultationsByMonth() {
-        printDoubleMap("TEST GET CONSULTATIONS BY MONTH (via Controller)", reportCtrl.getConsultationsByMonth());
+//        printDoubleMap("TEST GET CONSULTATIONS BY MONTH (via Controller)", reportCtrl.getConsultationsByMonth());
     }
  
     // =========================================================
@@ -125,15 +125,15 @@ public class TestReportController {
     // =========================================================
  
     static void testGetDoctorShiftTotals() {
-        printStringMap("TEST GET DOCTOR SHIFT TOTALS (via Controller)", reportCtrl.getDoctorShiftTotals());
+//        printStringMap("TEST GET DOCTOR SHIFT TOTALS (via Controller)", reportCtrl.getDoctorShiftTotals());
     }
  
     static void testGetShiftsByStatus() {
-        printDoubleMap("TEST GET SHIFTS BY STATUS (via Controller)", reportCtrl.getShiftsByStatus());
+//        printDoubleMap("TEST GET SHIFTS BY STATUS (via Controller)", reportCtrl.getShiftsByStatus());
     }
  
     static void testGetScheduledShiftHoursByDoctor() {
-        printDoubleMap("TEST GET SCHEDULED SHIFT HOURS BY DOCTOR (via Controller)", reportCtrl.getScheduledShiftHoursByDoctor());
+//        printDoubleMap("TEST GET SCHEDULED SHIFT HOURS BY DOCTOR (via Controller)", reportCtrl.getScheduledShiftHoursByDoctor());
     }
  
     // =========================================================

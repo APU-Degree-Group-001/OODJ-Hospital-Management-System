@@ -212,15 +212,13 @@ public class Prescription {
 
     public LinkedHashMap<String, String> getPrescriptionMap() {
         LinkedHashMap<String, String> prescriptionMap = new LinkedHashMap<>();
-
-        prescriptionMap.put("prescriptionId", this.prescriptionId);
+        prescriptionMap.put("prescriptionId", this.prescriptionId != null ? this.prescriptionId : "");
         prescriptionMap.put("consultationId", this.consultationId != null ? this.consultationId : "");
-        prescriptionMap.put("medicineName", this.medicineName);
-        prescriptionMap.put("dosage", this.dosage);
-        prescriptionMap.put("frequencyPerDay", this.frequencyPerDay);
-        prescriptionMap.put("durationInDays", this.durationInDays);
-        prescriptionMap.put("instructions", this.instructions);
-
+        prescriptionMap.put("medicineName", this.medicineName != null ? this.medicineName : "");
+        prescriptionMap.put("dosage", this.dosage != null ? this.dosage : "");
+        prescriptionMap.put("frequencyPerDay", this.frequencyPerDay != null ? this.frequencyPerDay : "");
+        prescriptionMap.put("durationInDays", this.durationInDays != null ? this.durationInDays : "");
+        prescriptionMap.put("instructions", this.instructions != null ? this.instructions : "");
         return prescriptionMap;
     }
 }

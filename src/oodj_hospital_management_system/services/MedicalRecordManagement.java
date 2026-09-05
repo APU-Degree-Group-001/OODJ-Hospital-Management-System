@@ -166,16 +166,15 @@ public class MedicalRecordManagement {
         }
     }
     
-    public static MedicalAssessment getMedicalAssessmentByConsultationId(String consultationId) {
+    public static List<MedicalAssessment> getMedicalAssessmentsByConsultationId(String consultationId) {
         loadMedicalAssessments();
-
+        List<MedicalAssessment> matchedAssessments = new ArrayList<>();
         for (MedicalAssessment assessment : medicalAssessments) {
             if (assessment.getConsultationId().equals(consultationId)) {
-                return assessment;
+                matchedAssessments.add(assessment);
             }
         }
-
-        return null;
+        return matchedAssessments;
     }
     
     public static List<LabResult> getLabResultsByConsultationId(String consultationId) {

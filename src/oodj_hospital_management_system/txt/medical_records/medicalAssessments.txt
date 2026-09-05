@@ -1,4 +1,4 @@
 assessmentId, consultationId, assessmentType, findings, diagnosis
-#MED001, #CON001, Follow-up Examination, Swelling reduced significantly, Recovering well
+#MED001, #CON001, Follow-up Examination, Swelling reduced significantly, Recovering well :3
 #MED002, #CON002, Cardiac Assessment, Patient reports mild chest discomfort, No immediate cardiac abnormality
 #MED003, #CON003, Routine Check-up, Patient is generally healthy, No abnormal findings

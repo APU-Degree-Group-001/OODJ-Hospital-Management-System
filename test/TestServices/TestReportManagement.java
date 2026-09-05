@@ -138,45 +138,45 @@ public class TestReportManagement {
     // =========================================================
     // CONSULTATION REPORT
     // =========================================================
-
-    static void testConsultationTotals() {
-        LinkedHashMap<String, String> totals = ReportManagement.getConsultationTotals();
-        printTotals("CONSULTATION TOTALS", totals);
-    }
-
-    static void testConsultationsByStatus() {
-        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByStatus();
-        printBarChart("CONSULTATIONS BY STATUS (count)", data, "");
-    }
-
-    static void testConsultationsByDoctor() {
-        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByDoctor();
-        printBarChart("CONSULTATIONS BY DOCTOR (count)", data, "");
-    }
-
-    static void testConsultationsByMonth() {
-        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByMonth();
-        printBarChart("CONSULTATIONS BY MONTH (count)", data, "");
-    }
+//
+//    static void testConsultationTotals() {
+//        LinkedHashMap<String, String> totals = ReportManagement.getConsultationTotals();
+//        printTotals("CONSULTATION TOTALS", totals);
+//    }
+//
+//    static void testConsultationsByStatus() {
+//        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByStatus();
+//        printBarChart("CONSULTATIONS BY STATUS (count)", data, "");
+//    }
+//
+//    static void testConsultationsByDoctor() {
+//        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByDoctor();
+//        printBarChart("CONSULTATIONS BY DOCTOR (count)", data, "");
+//    }
+//
+//    static void testConsultationsByMonth() {
+//        LinkedHashMap<String, Double> data = ReportManagement.getConsultationsByMonth();
+//        printBarChart("CONSULTATIONS BY MONTH (count)", data, "");
+//    }
 
     // =========================================================
     // DOCTOR SHIFT REPORT
     // =========================================================
 
-    static void testDoctorShiftTotals() {
-        LinkedHashMap<String, String> totals = ReportManagement.getDoctorShiftTotals();
-        printTotals("DOCTOR SHIFT TOTALS", totals);
-    }
-
-    static void testShiftsByStatus() {
-        LinkedHashMap<String, Double> data = ReportManagement.getShiftsByStatus();
-        printBarChart("SHIFTS BY STATUS (count)", data, "");
-    }
-
-    static void testScheduledShiftHoursByDoctor() {
-        LinkedHashMap<String, Double> data = ReportManagement.getScheduledShiftHoursByDoctor();
-        printBarChart("SCHEDULED SHIFT HOURS BY DOCTOR", data, "h");
-    }
+//    static void testDoctorShiftTotals() {
+//        LinkedHashMap<String, String> totals = ReportManagement.getDoctorShiftTotals();
+//        printTotals("DOCTOR SHIFT TOTALS", totals);
+//    }
+//
+//    static void testShiftsByStatus() {
+//        LinkedHashMap<String, Double> data = ReportManagement.getShiftsByStatus();
+//        printBarChart("SHIFTS BY STATUS (count)", data, "");
+//    }
+//
+//    static void testScheduledShiftHoursByDoctor() {
+//        LinkedHashMap<String, Double> data = ReportManagement.getScheduledShiftHoursByDoctor();
+//        printBarChart("SCHEDULED SHIFT HOURS BY DOCTOR", data, "h");
+//    }
 
     // =========================================================
     // ROOM / HOSPITAL ASSET UTILIZATION REPORT

@@ -53,8 +53,8 @@ public class MedicalRecordController {
     }
  
     // Lookup by Consultation ID
-    public MedicalAssessment getMedicalAssessmentByConsultationId(String consultationId) {
-        return MedicalRecordManagement.getMedicalAssessmentByConsultationId(consultationId);
+    public List<MedicalAssessment> getMedicalAssessmentsByConsultationId(String consultationId) {
+        return MedicalRecordManagement.getMedicalAssessmentsByConsultationId(consultationId);
     }
  
     public List<LabResult> getLabResultsByConsultationId(String consultationId) {

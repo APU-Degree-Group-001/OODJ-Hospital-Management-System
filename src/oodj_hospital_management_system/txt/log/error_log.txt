@@ -4166,3 +4166,25 @@ Doctor Shift Handling Error: End date/time must be after start date/time
 Bill Handling Error: Only Admin Staff can manage billing
 [2026-09-04 15:27:53] User with ID '#DOCd4e8f' failed to logged in
 	ErrorMsg: Incorrect Login Credentials
+[2026-09-05 14:32:21] Error deleting lab result (System Error) -> Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "java.util.List.get(int)" is null
+
+[2026-09-05 14:32:21] User {doctor - #DOCd4e8f - bug1} failed to delete Lab Result {#LAB3f546}
+[2026-09-05 15:13:32] Error finding prescription -> Prescription Handling Error: Invalid Prescription ID: Prescription ID '#PRE5e106' is not found
+[2026-09-05 15:13:32] User {doctor - #DOCd4e8f - bug1} failed to modify medicine name for Prescription {#PRE5e106}
+	ErrorMsg: Prescription '#PRE5e106' is not found
+[2026-09-05 15:13:32] Error finding prescription -> Prescription Handling Error: Invalid Prescription ID: Prescription ID '#PRE5e106' is not found
+[2026-09-05 15:13:32] User {doctor - #DOCd4e8f - bug1} failed to modify dosage for Prescription {#PRE5e106}
+	ErrorMsg: Prescription '#PRE5e106' is not found
+[2026-09-05 15:13:32] Error finding prescription -> Prescription Handling Error: Invalid Prescription ID: Prescription ID '#PRE5e106' is not found
+[2026-09-05 15:13:32] User {doctor - #DOCd4e8f - bug1} failed to modify frequency per day for Prescription {#PRE5e106}
+	ErrorMsg: Prescription '#PRE5e106' frequency is not found!
+[2026-09-05 15:13:32] Error finding prescription -> Prescription Handling Error: Invalid Prescription ID: Prescription ID '#PRE5e106' is not found
+[2026-09-05 15:13:32] User {doctor - #DOCd4e8f - bug1} failed to modify duration (days) for Prescription {#PRE5e106}
+	ErrorMsg: Prescription '#PRE5e106' is not found
+[2026-09-05 15:13:32] Error finding prescription -> Prescription Handling Error: Invalid Prescription ID: Prescription ID '#PRE5e106' is not found
+[2026-09-05 15:13:32] User {doctor - #DOCd4e8f - bug1} failed to modify instructions for Prescription {#PRE5e106}
+	ErrorMsg: Prescription '#PRE5e106' instructions is not found!
+[2026-09-05 15:13:51] Error deleting prescription -> Prescription Handling Error: Prescription is not found
+[2026-09-05 15:13:51] User {doctor - #DOCd4e8f - bug1} failed to delete Prescription {#PRE5e106}
+[2026-09-05 15:31:50] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials

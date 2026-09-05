@@ -67,7 +67,7 @@ public class ConsultationManagement {
                     UserManagement.getPatientById(row.get("patientId")),
                     ConsultationTypeManagement.getConsultationTypeById(row.get("consultationTypeId")),
                     row.get("description"),
-                    MedicalRecordManagement.getMedicalAssessmentByConsultationId(consultationId),
+                    MedicalRecordManagement.getMedicalAssessmentsByConsultationId(consultationId),
                     MedicalRecordManagement.getLabResultsByConsultationId(consultationId),
                     MedicalRecordManagement.getPrescriptionsByConsultationId(consultationId),
                     HospitalAssetManagement.getHospitalAssetAllocationById(row.get("hospitalAssetAllocationId")),
