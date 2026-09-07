@@ -88,7 +88,6 @@ public class RequestManagement {
         switch (type) {
             case "CANCEL_SHIFT": requestType = RequestType.CANCEL_SHIFT; break;
             case "ASSET_REQUEST": requestType = RequestType.ASSET_REQUEST; break;
-            case "CONSULTATION_RESCHEDULE": requestType = RequestType.CONSULTATION_RESCHEDULE; break;
             default: System.out.println("Unknown Request Type");
         }
         return requestType;
@@ -277,10 +276,6 @@ public class RequestManagement {
                 downstreamResult = doctorManagement.cancelShift(shift);
                 break;
             case ASSET_REQUEST:
-                downstreamResult = new LinkedHashMap<>();
-                downstreamResult.put("success", "true");
-                break;
-            case CONSULTATION_RESCHEDULE:
                 downstreamResult = new LinkedHashMap<>();
                 downstreamResult.put("success", "true");
                 break;

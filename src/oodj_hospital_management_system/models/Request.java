@@ -13,14 +13,14 @@ import java.util.Objects;
  */
 
 public class Request {
-    public enum RequestType { CANCEL_SHIFT, ASSET_REQUEST, CONSULTATION_RESCHEDULE }
+    public enum RequestType { CANCEL_SHIFT, ASSET_REQUEST }
     public enum RequestStatus { PENDING, APPROVED, REJECTED, WITHDRAWN }
 
     private String requestId;
     private RequestType requestType;
     private User requester;
     private User target; // nullable - e.g. any admin staff can act on ASSET_REQUEST
-    private String referenceId; // shiftId / assetId / consultationId depending on type
+    private String referenceId; // shiftId / assetId  depending on type
     private String reason;
     private RequestStatus status;
     private String createdDateTime;

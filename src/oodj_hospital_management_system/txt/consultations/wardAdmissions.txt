@@ -1,0 +1,9 @@
+admissionId, patientId, wardId, admittingDoctorId, admittedDateTime, dischargedDateTime, status, reason
+#WA001, #PAT3fad4, #WARD_GEN01, #DOCd4e8f, 2026-08-05 09:30:00, 2026-08-09 11:00:00, DISCHARGED, Post-surgery observation and recovery
+#WA002, #PAT79a39, #WARD_ICU01, #DOCd4e8c, 2026-08-10 22:15:00, 2026-08-13 08:45:00, DISCHARGED, Acute cardiac event requiring intensive monitoring
+#WA003, #PATa6a72, #WARD_GEN01, #DOCb8f50, 2026-08-17 14:00:00, , ADMITTED, Suspected appendicitis pending further tests
+#WA004, #PATe55bd, #WARD_MAT01, #DOCd4e8f, 2026-08-27 03:20:00, 2026-08-29 10:00:00, DISCHARGED, Childbirth and postnatal monitoring
+#WA5f2a1, #PAT31c63, #WARD_PED01, #DOC30c95, 2026-08-27 16:40:00, , ADMITTED, High fever with dehydration, under pediatric care
+#WA005, #PAT72528, #WARD_GEN01, #DOCd4e8c, 2026-08-28 08:00:00, 2026-08-30 12:00:00, DISCHARGED, Fall injury, fractured wrist, casted and monitored
+#WAb7e94, #PATaa85d, #WARD_ICU01, #DOCbff0e, 2026-08-31 19:05:00, , ADMITTED, Severe allergic reaction requiring close observation
+#WA006, #PATb3d5f, #WARD_MAT01, #DOC56ea5, 2026-09-01 06:30:00, , ADMITTED, Complications during pregnancy, under observation

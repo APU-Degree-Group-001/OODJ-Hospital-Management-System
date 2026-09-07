@@ -14,6 +14,7 @@ import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAss
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
 import oodj_hospital_management_system.gui.doctor.consultation.DoctorConsultationsPanel;
 import oodj_hospital_management_system.gui.doctor.dashboard.DoctorDashboardPanel;
+import oodj_hospital_management_system.gui.doctor.shift_roster.DoctorShiftRosterPanel;
 import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
@@ -36,6 +37,7 @@ public class DoctorGUI extends javax.swing.JFrame {
         initComponents();
         // Add cards to contentArea
         contentArea.add(new DoctorDashboardPanel(), "doctorDashboard");
+        contentArea.add(new DoctorShiftRosterPanel(this.usrCtrl), "doctorShiftRoster");
         contentArea.add(new DoctorConsultationsPanel(this.usrCtrl), "doctorConsultations");
 //        contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "doctorHospitalAssets");
 

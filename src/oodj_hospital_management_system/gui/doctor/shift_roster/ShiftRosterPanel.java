@@ -8,8 +8,11 @@ import oodj_hospital_management_system.gui.admin.user_management.*;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +27,11 @@ import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.models.Doctor;
+import oodj_hospital_management_system.models.DoctorShift;
+import oodj_hospital_management_system.models.Request;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
 
@@ -34,7 +41,7 @@ import oodj_hospital_management_system.utils.DateTime;
  */
 public class ShiftRosterPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
-    private List<User> currentAdminStaffs;
+    private List<DoctorShift> currentDoctorShifts;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
     private static final int MAX_NAME_LENGTH = 50;
 
@@ -44,7 +51,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     public ShiftRosterPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        loadAdminStaffs();
+        loadDoctorShifts();
         customStyleHeader();
         shiftTable.setPreferredScrollableViewportSize(
             new java.awt.Dimension(1160, shiftTable.getRowHeight() * shiftTable.getRowCount())
@@ -56,38 +63,95 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         shiftTable.getTableHeader().setPreferredSize(new java.awt.Dimension(0, 45));
     }
     
-    public void loadAdminStaffs() {
-        DefaultTableModel model = (DefaultTableModel) shiftTable.getModel();
-        model.setRowCount(0);
-//        UserManagement usrServices = this.usrCtrl.getUserServices();
-        List<User> allAdminStaffs = UserManagement.getAllAdminStaffs();
-        currentAdminStaffs = allAdminStaffs;
-        for (User usr: allAdminStaffs) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
-            model.addRow(adminStaffData);
-        }
-//        userTable = new JTable(model);
+    public void loadDoctorShifts() {
+        List<DoctorShift> myShifts = getBaseShifts();
+        currentDoctorShifts = myShifts;
+        populateShiftTable(myShifts);
     }
     
-    private void populateTable(List<User> users) {
+    private void populateShiftTable(List<DoctorShift> shifts) {
         DefaultTableModel model = (DefaultTableModel) shiftTable.getModel();
         model.setRowCount(0);
-        for (User usr : users) {
-            java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
-            LocalDate date = DateTime.getDate(dateTimeObj);
-            LocalTime time = DateTime.getTime(dateTimeObj);
-            String joinedDate = DateTime.toDateStringWords(date);
-            String joinedTime = DateTime.toTimeString(time);
-            String joinedDateTime = joinedDate + " " + joinedTime;
-            String[] adminStaffData = {usr.getId(), usr.getName(), usr.getEmail(),joinedDateTime};
-            model.addRow(adminStaffData);
+
+        for (DoctorShift shift : shifts) {
+            LocalDateTime startDt = DateTime.toDateTimeObject(shift.getStartDateTime());
+            LocalDateTime endDt = DateTime.toDateTimeObject(shift.getEndDateTime());
+
+            String date = DateTime.toDateStringWords(DateTime.getDate(startDt));
+            String scheduledStart = DateTime.toTimeString(DateTime.getTime(startDt));
+            String scheduledEnd = DateTime.toTimeString(DateTime.getTime(endDt));
+
+            String actualStart = "-";
+            if (shift.getActualStartDateTime() != null && !shift.getActualStartDateTime().isEmpty()) {
+                actualStart = DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(shift.getActualStartDateTime())));
+            }
+
+            String actualEnd = "-";
+            if (shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty()) {
+                actualEnd = DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(shift.getActualEndDateTime())));
+            }
+
+            String status = shift.getStatus() != null ? shift.getStatus().toString() : "-";
+
+            model.addRow(new String[]{shift.getShiftId(), date, scheduledStart, scheduledEnd, actualStart, actualEnd, status});
         }
+    }
+    
+    private List<DoctorShift> getBaseShifts() {
+        Doctor activeDoctor = (usrCtrl.getActiveUser() instanceof Doctor)
+            ? (Doctor) usrCtrl.getActiveUser() : null;
+
+        List<DoctorShift> myShifts = new ArrayList<>();
+        if (activeDoctor != null) {
+            for (DoctorShift shift : DoctorManagement.getAllDoctorShifts()) {
+                if (shift.getDoctor() != null && shift.getDoctor().getId().equals(activeDoctor.getId())) {
+                    myShifts.add(shift);
+                }
+            }
+        }
+        return myShifts;
+    }
+    
+    private DoctorShift getSelectedShift() {
+        int viewRow = shiftTable.getSelectedRow();
+        if (viewRow == -1) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "Please select a shift first", "No Selection", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        int modelRow = shiftTable.convertRowIndexToModel(viewRow);
+        String shiftId = (String) shiftTable.getModel().getValueAt(modelRow, 0);
+        for (DoctorShift s : currentDoctorShifts) {
+            if (s.getShiftId().equals(shiftId)) return s;
+        }
+        return null;
+    }
+    
+    private DoctorShift.DoctorShiftStatus selectStatus() {
+        javax.swing.JComboBox<DoctorShift.DoctorShiftStatus> statusCombo =
+            new javax.swing.JComboBox<>(DoctorShift.DoctorShiftStatus.values());
+
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 5, 5));
+        panel.add(new JLabel("Status:"));
+        panel.add(statusCombo);
+
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+            "Filter by Status", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result != JOptionPane.OK_OPTION) return null;
+        return (DoctorShift.DoctorShiftStatus) statusCombo.getSelectedItem();
+    }
+
+    private void filterByStatus(DoctorShift.DoctorShiftStatus status) {
+        List<DoctorShift> filtered = new ArrayList<>();
+        for (DoctorShift shift : currentDoctorShifts) {
+            if (status.equals(shift.getStatus())) {
+                filtered.add(shift);
+            }
+        }
+        currentDoctorShifts = filtered;
+        populateShiftTable(filtered);
+        updateResultLabel("Showing shifts with status \"" + status + "\"", filtered.size());
     }
     
     private void updateResultLabel(String message, int count) {
@@ -134,27 +198,54 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         return dateRange;
     }
     
-    private void filterByDateRange(String start, String end) {
-        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, currentAdminStaffs);
-        populateTable(filtered);
-        SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
-        String label;
-        if (start != null && end != null) {
-            label = "Showing AdminStaffs joined between " + display.format(java.sql.Date.valueOf(start)) + " and " + display.format(java.sql.Date.valueOf(end));
-        } else if (start != null) {
-            label = "Showing AdminStaffs joined after " + display.format(java.sql.Date.valueOf(start));
-        } else {
-            label = "Showing AdminStaffs joined before " + display.format(java.sql.Date.valueOf(end));
+    private void filterByScheduledDateRange(String start, String end) {
+        List<DoctorShift> filtered = new ArrayList<>();
+        for (DoctorShift shift : currentDoctorShifts) {
+            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getStartDateTime()));
+            boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
+            boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
+            if (afterStart && beforeEnd) filtered.add(shift);
         }
+        currentDoctorShifts = filtered;
+        populateShiftTable(filtered);
+
+        SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
+        String label = buildRangeLabel("Showing shifts scheduled", start, end, display);
         updateResultLabel(label, filtered.size());
     }
-    
-    private void resetFieldBorder(JTextField field) {
-        field.setBorder(javax.swing.UIManager.getBorder("TextField.border"));
+
+    private void filterByActualDateRange(String start, String end) {
+        List<DoctorShift> filtered = new ArrayList<>();
+        for (DoctorShift shift : currentDoctorShifts) {
+            if (shift.getActualStartDateTime() == null || shift.getActualStartDateTime().isEmpty()) continue;
+            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getActualStartDateTime()));
+            boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
+            boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
+            if (afterStart && beforeEnd) filtered.add(shift);
+        }
+        currentDoctorShifts = filtered;
+        populateShiftTable(filtered);
+
+        SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
+        String label = buildRangeLabel("Showing shifts actually started", start, end, display);
+        updateResultLabel(label, filtered.size());
     }
 
-    private void setFieldError(JTextField field) {
-        field.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED));
+    private String buildRangeLabel(String prefix, String start, String end, SimpleDateFormat display) {
+        if (start != null && end != null) {
+            return prefix + " between " + display.format(java.sql.Date.valueOf(start))
+                + " and " + display.format(java.sql.Date.valueOf(end));
+        } else if (start != null) {
+            return prefix + " after " + display.format(java.sql.Date.valueOf(start));
+        } else {
+            return prefix + " before " + display.format(java.sql.Date.valueOf(end));
+        }
+    }
+    
+    private boolean isScheduledForToday(DoctorShift shift) {
+        LocalDate scheduledDate = DateTime.getDate(DateTime.toDateTimeObject(shift.getStartDateTime()));
+        LocalDate today = DateTime.getDate(DateTime.currentDateTime());
+        return scheduledDate.equals(today);
     }
 
     /**
@@ -233,7 +324,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         sortByLabel1.setText("Filter By");
         sortByPane.add(sortByLabel1);
 
-        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Scheduled Date Time", "Actual Date Time" }));
+        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Scheduled Date Time", "Actual Date Time", "Status" }));
         filterByField.setPreferredSize(new java.awt.Dimension(150, 30));
         filterByField.setRequestFocusEnabled(false);
         filterByField.addActionListener(this::filterByFieldActionPerformed);
@@ -258,17 +349,17 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         shiftTable.setBackground(new java.awt.Color(255, 255, 255));
         shiftTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Shift ID", "Date", "Scheduled Start Time", "Scheduled End Time", "Actual Start Time", "Actual End Time"
+                "Shift ID", "Date", "Scheduled Start Time", "Scheduled End Time", "Actual Start Time", "Actual End Time", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -334,16 +425,55 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        // TODO add your handling code here:
+        if (currentDoctorShifts == null) return;
+        String selected = (String) sortField.getSelectedItem();
+        List<DoctorShift> sorted = new ArrayList<>(currentDoctorShifts);
+
+        switch (selected) {
+            case "ID":
+                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
+                break;
+
+            case "Scheduled Date Time":
+                sorted.sort(Comparator.comparing(s -> DateTime.toDateTimeObject(s.getStartDateTime())));
+                break;
+
+            case "Actual Date Time":
+                sorted.sort((a, b) -> {
+                    boolean aEmpty = a.getActualStartDateTime() == null || a.getActualStartDateTime().isEmpty();
+                    boolean bEmpty = b.getActualStartDateTime() == null || b.getActualStartDateTime().isEmpty();
+                    if (aEmpty && bEmpty) return 0;
+                    if (aEmpty) return 1;   // shifts not yet started sink to the bottom
+                    if (bEmpty) return -1;
+                    return DateTime.toDateTimeObject(a.getActualStartDateTime())
+                        .compareTo(DateTime.toDateTimeObject(b.getActualStartDateTime()));
+                });
+                break;
+
+            default: // "Default" -> fall back to shift ID
+                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
+    }
+
+    currentDoctorShifts = sorted;
+    populateShiftTable(sorted);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        String keyword = searchField.getText();
-        currentAdminStaffs = UserManagement.getAllAdminStaffs();
-        List<User> searchResults = this.usrCtrl.searchUsers(keyword, currentAdminStaffs);
-        currentAdminStaffs = searchResults;
-        populateTable(searchResults);
-        updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
+        String rawKeyword = searchField.getText();
+        String keyword = rawKeyword.trim().toLowerCase();
+
+        List<DoctorShift> results = new ArrayList<>();
+        for (DoctorShift shift : getBaseShifts()) {
+            boolean match = shift.getShiftId().toLowerCase().contains(keyword)
+                || shift.getStatus().toString().toLowerCase().contains(keyword)
+                || (shift.getMedicalManager() != null
+                    && shift.getMedicalManager().getName().toLowerCase().contains(keyword));
+            if (match) results.add(shift);
+        }
+
+        currentDoctorShifts = results;
+        populateShiftTable(results);
+        updateResultLabel("Showing results for \"" + rawKeyword + "\"", results.size());
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
@@ -367,42 +497,149 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
-        searchField.setText("");
-        showResultsForLabel.setText("");
         String selected = (String) filterByField.getSelectedItem();
 
-        if ("Joined At".equals(selected)) {
-            LinkedHashMap<String, String> dateRange = selectDateRange();
-            if (dateRange.get("startDate") != null || dateRange.get("endDate") != null) {
-                filterByDateRange(dateRange.get("startDate"), dateRange.get("endDate"));
-            } else {
-                // user cancelled or picked invalid range -> reset dropdown
-                filterByField.setSelectedIndex(0);
+        List<DoctorShift> base = (currentDoctorShifts != null) ? currentDoctorShifts : getBaseShifts();
+
+        switch (selected) {
+            case "Scheduled Date Time": {
+                currentDoctorShifts = base;
+                LinkedHashMap<String, String> range = selectDateRange();
+                if (range.get("startDate") != null || range.get("endDate") != null) {
+                    filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
             }
-            return;
-        } else {
-            populateTable(currentAdminStaffs);
+
+            case "Actual Date Time": {
+                currentDoctorShifts = base;
+                LinkedHashMap<String, String> range = selectDateRange();
+                if (range.get("startDate") != null || range.get("endDate") != null) {
+                    filterByActualDateRange(range.get("startDate"), range.get("endDate"));
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
+            }
+
+            case "Status": {
+                currentDoctorShifts = base;
+                DoctorShift.DoctorShiftStatus status = selectStatus();
+                if (status != null) {
+                    filterByStatus(status);
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
+            }
+
+            default: // "Default" -> no filter
+                currentDoctorShifts = base;
+                populateShiftTable(base);
+                updateResultLabel("Showing " + base.size() + " shift(s)", base.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadAdminStaffs();
+        loadDoctorShifts();
         searchField.setText("");
         showResultsForLabel.setText("");
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
     private void requestShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestShiftButtonActionPerformed
-        java.awt.Frame parent = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        CreateNewUser dialog = new CreateNewUser(parent, true, "admin staff", usrCtrl, this::loadAdminStaffs);
-        dialog.setVisible(true);
+        DoctorShift selected = getSelectedShift();
+        if (selected == null) return;
+
+        if (DoctorShift.DoctorShiftStatus.CANCELLED.equals(selected.getStatus())) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This shift is already cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (DoctorShift.DoctorShiftStatus.COMPLETED.equals(selected.getStatus())) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This shift has already been completed and cannot be cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JTextField reasonField = new JTextField(20);
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+        panel.add(new JLabel("Reason for cancellation:"));
+        panel.add(reasonField);
+
+        while (true) {
+            int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+                "Request Shift Cancellation", JOptionPane.OK_CANCEL_OPTION);
+            if (result != JOptionPane.OK_OPTION) return;
+
+            String reason = reasonField.getText().trim();
+            if (reason.isEmpty()) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Please provide a reason.", "Missing Information", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+
+            LinkedHashMap<String, String> msg = usrCtrl.getRequestController().createRequest(
+                Request.RequestType.CANCEL_SHIFT,
+                selected.getMedicalManager(),
+                selected.getShiftId(),
+                reason
+            );
+
+            if (msg.get("success") != null) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Cancellation request submitted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(parentWindow,
+                    msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
     }//GEN-LAST:event_requestShiftButtonActionPerformed
 
     private void startShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startShiftButtonActionPerformed
-        // TODO add your handling code here:
+        DoctorShift selected = getSelectedShift();
+        if (selected == null) return;
+
+        if (!isScheduledForToday(selected)) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This shift is not scheduled for today. You can only start a shift on its scheduled date.",
+                "Cannot Start Shift", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(parentWindow,
+            "Start this shift now?", "Confirm Start Shift", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        LinkedHashMap<String, String> result = new DoctorManagement(usrCtrl.getActiveUser()).startShift(selected);
+        JOptionPane.showMessageDialog(parentWindow, result.get("msg"),
+            result.get("success") != null ? "Success" : "Error",
+            result.get("success") != null ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+        loadDoctorShifts();
     }//GEN-LAST:event_startShiftButtonActionPerformed
 
     private void endShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endShiftButtonActionPerformed
-        // TODO add your handling code here:
+        DoctorShift selected = getSelectedShift();
+        if (selected == null) return;
+
+        if (!isScheduledForToday(selected)) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This shift is not scheduled for today. You can only end a shift on its scheduled date.",
+                "Cannot End Shift", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(parentWindow,
+            "End this shift now?", "Confirm End Shift", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        LinkedHashMap<String, String> result = new DoctorManagement(usrCtrl.getActiveUser()).endShift(selected);
+        JOptionPane.showMessageDialog(parentWindow, result.get("msg"),
+            result.get("success") != null ? "Success" : "Error",
+            result.get("success") != null ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+        loadDoctorShifts();
     }//GEN-LAST:event_endShiftButtonActionPerformed
 
 

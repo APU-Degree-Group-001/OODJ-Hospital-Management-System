@@ -45,6 +45,7 @@ public class DoctorManagement {
     public static void loadDoctorShift() {
         doctorShifts.clear();
         List<LinkedHashMap<String, String>> rawData = shiftHandler.readFile();
+        boolean anyChanged = false;
         for (LinkedHashMap<String, String> row : rawData) {
             // String shiftId, Doctor doctor, LocalDateTime startDateTime, LocalDateTime endDateTime, DoctorShiftStatus status
             // shiftId,doctorId,startDateTime,endDateTime
@@ -58,7 +59,15 @@ public class DoctorManagement {
                     getDoctorShiftStatus(row.get("status")),
                     UserManagement.getMedicalManagerById(row.get("medicalManagerId"))
             );
+            DoctorShiftStatus before = doctorShift.getStatus();
+            updateShiftStatus(doctorShift);
+            if (doctorShift.getStatus() != before) {
+                anyChanged = true;
+            }
             doctorShifts.add(doctorShift);
+        }
+        if (anyChanged) {
+            writeDoctorShifts();
         }
     }
     
@@ -125,12 +134,12 @@ public class DoctorManagement {
     }
     
     public static DoctorShiftStatus getDoctorShiftStatus(String status) {
-//        SCHEDULED, COMPLETED, CANCELLED
         DoctorShiftStatus shiftStaus = null;
         switch (status) {
             case "SCHEDULED": shiftStaus = DoctorShiftStatus.SCHEDULED; break;
-            case "COMPLETED": shiftStaus = DoctorShiftStatus.COMPLETED; break;
             case "IN_PROGRESS": shiftStaus = DoctorShiftStatus.IN_PROGRESS; break;
+            case "COMPLETED": shiftStaus = DoctorShiftStatus.COMPLETED; break;
+            case "OVERDUE": shiftStaus = DoctorShiftStatus.OVERDUE; break;
             case "CANCELLED": shiftStaus = DoctorShiftStatus.CANCELLED; break;
             default: System.out.println("Unknown Doctor Shift Status");
         }
@@ -251,9 +260,21 @@ public class DoctorManagement {
     
     public LinkedHashMap<String, String> cancelShift(DoctorShift shift) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        if (shift == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Doctor shift is not cancelled\nShift not found.");
+            return msgMap;
+        }
+
+        DoctorShift liveShift = getDoctorShiftById(shift.getShiftId());
+        if (liveShift == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' not found.", shift.getShiftId()));
+            return msgMap;
+        }
 
         try {
-            ErrorHandler.doctorShiftErrorHandler(Arrays.asList("delete shift"), shift);
+            ErrorHandler.doctorShiftErrorHandler(Arrays.asList("delete shift"), liveShift);
         } catch (DoctorShiftException e) {
             msgMap.put("success", null);
             msgMap.put("msg", "Doctor shift is not cancelled\n" + e.getMessage());
@@ -264,34 +285,33 @@ public class DoctorManagement {
             return msgMap;
         }
 
-        if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+        if (DoctorShiftStatus.CANCELLED.equals(liveShift.getStatus())) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' is already cancelled!", shift.getShiftId()));
+            msgMap.put("msg", String.format("Doctor shift '%s' is already cancelled!", liveShift.getShiftId()));
+            return msgMap;
+        }
+        if (DoctorShiftStatus.COMPLETED.equals(liveShift.getStatus())) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been completed and cannot be cancelled!", liveShift.getShiftId()));
             return msgMap;
         }
 
-        if (DoctorShiftStatus.COMPLETED.equals(shift.getStatus())) {
-            msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' has already been completed and cannot be cancelled!", shift.getShiftId()));
-            return msgMap;
-        }
-
-        shift.setStatus(DoctorShiftStatus.CANCELLED);
+        liveShift.setStatus(DoctorShiftStatus.CANCELLED);
         writeDoctorShifts();
         loadDoctorShift();
 
-        LinkedHashMap<String, String> slotResult = ConsultationManagement.deleteConsultationSlotsInBulk(shift.getShiftId());
+        LinkedHashMap<String, String> slotResult = ConsultationManagement.deleteConsultationSlotsInBulk(liveShift.getShiftId());
 
         if (!"true".equals(slotResult.get("success"))) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format(
                     "Doctor shift '%s' is cancelled, but consultation slots failed to be deleted.\n%s",
-                    shift.getShiftId(), slotResult.get("msg")));
+                    liveShift.getShiftId(), slotResult.get("msg")));
             return msgMap;
         }
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled!\n%s", shift.getShiftId(), slotResult.get("msg")));
+        msgMap.put("msg", String.format("Doctor shift '%s' is cancelled!\n%s", liveShift.getShiftId(), slotResult.get("msg")));
         msgMap.put("slotCount", slotResult.get("slotCount"));
         msgMap.put("cancelledConsultationCount", slotResult.get("cancelledConsultationCount"));
 
@@ -306,24 +326,35 @@ public class DoctorManagement {
             msgMap.put("msg", "Shift not found.");
             return msgMap;
         }
-        if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
+
+        // Re-fetch the live object - the reference passed in may be stale
+        // if it was loaded before this DoctorManagement instance's constructor
+        // (or any other call) last reloaded the static doctorShifts list.
+        DoctorShift liveShift = getDoctorShiftById(shift.getShiftId());
+        if (liveShift == null) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' is cancelled and cannot be started.", shift.getShiftId()));
+            msgMap.put("msg", String.format("Doctor shift '%s' not found.", shift.getShiftId()));
             return msgMap;
         }
-        if (shift.getActualStartDateTime() != null && !shift.getActualStartDateTime().isEmpty()) {
+
+        if (DoctorShiftStatus.CANCELLED.equals(liveShift.getStatus())) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' has already been started.", shift.getShiftId()));
+            msgMap.put("msg", String.format("Doctor shift '%s' is cancelled and cannot be started.", liveShift.getShiftId()));
+            return msgMap;
+        }
+        if (liveShift.getActualStartDateTime() != null && !liveShift.getActualStartDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been started.", liveShift.getShiftId()));
             return msgMap;
         }
 
         String now = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
-        shift.setActualStartDateTime(now);
+        liveShift.setActualStartDateTime(now);
         writeDoctorShifts();
         loadDoctorShift();
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' started at %s.", shift.getShiftId(), now));
+        msgMap.put("msg", String.format("Doctor shift '%s' started at %s.", liveShift.getShiftId(), now));
         return msgMap;
     }
 
@@ -335,24 +366,32 @@ public class DoctorManagement {
             msgMap.put("msg", "Shift not found.");
             return msgMap;
         }
-        if (shift.getActualStartDateTime() == null || shift.getActualStartDateTime().isEmpty()) {
+
+        DoctorShift liveShift = getDoctorShiftById(shift.getShiftId());
+        if (liveShift == null) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' has not been started yet.", shift.getShiftId()));
+            msgMap.put("msg", String.format("Doctor shift '%s' not found.", shift.getShiftId()));
             return msgMap;
         }
-        if (shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty()) {
+
+        if (liveShift.getActualStartDateTime() == null || liveShift.getActualStartDateTime().isEmpty()) {
             msgMap.put("success", null);
-            msgMap.put("msg", String.format("Doctor shift '%s' has already been ended.", shift.getShiftId()));
+            msgMap.put("msg", String.format("Doctor shift '%s' has not been started yet.", liveShift.getShiftId()));
+            return msgMap;
+        }
+        if (liveShift.getActualEndDateTime() != null && !liveShift.getActualEndDateTime().isEmpty()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' has already been ended.", liveShift.getShiftId()));
             return msgMap;
         }
 
         String now = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
-        shift.setActualEndDateTime(now);
+        liveShift.setActualEndDateTime(now);
         writeDoctorShifts();
         loadDoctorShift();
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Doctor shift '%s' ended at %s.", shift.getShiftId(), now));
+        msgMap.put("msg", String.format("Doctor shift '%s' ended at %s.", liveShift.getShiftId(), now));
         return msgMap;
     }
     
@@ -389,16 +428,37 @@ public class DoctorManagement {
         if (DoctorShiftStatus.CANCELLED.equals(shift.getStatus())) {
             return;
         }
+
         LocalDateTime now = DateTime.currentDateTime();
         LocalDateTime start = DateTime.toDateTimeObject(shift.getStartDateTime());
         LocalDateTime end = DateTime.toDateTimeObject(shift.getEndDateTime());
 
+        boolean hasActualStart = shift.getActualStartDateTime() != null && !shift.getActualStartDateTime().isEmpty();
+        boolean hasActualEnd = shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty();
+
+        // Fully completed: doctor signed in and signed out
+        if (hasActualStart && hasActualEnd) {
+            shift.setStatus(DoctorShiftStatus.COMPLETED);
+            return;
+        }
+
+        // Signed in but not signed out yet
+        if (hasActualStart) {
+            if (DateTime.isBefore(now, end)) {
+                shift.setStatus(DoctorShiftStatus.IN_PROGRESS);
+            } else {
+                // scheduled end has passed and doctor never ended the shift
+                shift.setStatus(DoctorShiftStatus.OVERDUE);
+            }
+            return;
+        }
+
+        // Not signed in yet
         if (DateTime.isBefore(now, start)) {
             shift.setStatus(DoctorShiftStatus.SCHEDULED);
-        } else if (DateTime.isBefore(now, end)) {
-            shift.setStatus(DoctorShiftStatus.IN_PROGRESS);
         } else {
-            shift.setStatus(DoctorShiftStatus.COMPLETED);
+            // scheduled start has passed and doctor never signed in
+            shift.setStatus(DoctorShiftStatus.OVERDUE);
         }
     }
 

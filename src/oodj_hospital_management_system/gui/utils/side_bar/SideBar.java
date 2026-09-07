@@ -70,6 +70,7 @@ public class SideBar extends JPanel {
             // ...
         } else if (role.equals("doctor")) {
             addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "doctorDashboard");
+            addNavItem("Shift Roster", "", "doctorShiftRoster");
             addNavItem("Consultations", "", "doctorConsultations");
             addNavItem("Hospital Assets", "", "doctorHospitalAssets");
             navItems.add(Box.createVerticalGlue());

@@ -15,8 +15,9 @@ import oodj_hospital_management_system.utils.DateTime;
 public class DoctorShift {
     public enum DoctorShiftStatus {
         SCHEDULED,
-        COMPLETED,
         IN_PROGRESS,
+        COMPLETED,
+        OVERDUE,
         CANCELLED
     }
 
