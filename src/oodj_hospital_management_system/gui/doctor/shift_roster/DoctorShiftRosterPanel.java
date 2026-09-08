@@ -28,7 +28,7 @@ public class DoctorShiftRosterPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         shiftRosterContentArea.add(new ShiftRosterPanel(usrCtrl), "shiftRoster");
-//        shiftRosterContentArea.add(new ShiftRosterPanel(usrCtrl), "adminStaffManagement");
+        shiftRosterContentArea.add(new RequestPanel(usrCtrl), "cancelShiftRequest");
         
         setNavButtonActive(shiftButton, true);
         setNavButtonActive(requestButton, false);
@@ -181,7 +181,7 @@ public class DoctorShiftRosterPanel extends javax.swing.JPanel {
     private void requestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestButtonActionPerformed
         setNavButtonActive(shiftButton, false);
         setNavButtonActive(requestButton, true);
-        cl.show(shiftRosterContentArea, "shiftRequests");
+        cl.show(shiftRosterContentArea, "cancelShiftRequest");
     }//GEN-LAST:event_requestButtonActionPerformed
 
 

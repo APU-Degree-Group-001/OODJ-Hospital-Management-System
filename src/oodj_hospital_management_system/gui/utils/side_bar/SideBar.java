@@ -72,7 +72,8 @@ public class SideBar extends JPanel {
             addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "doctorDashboard");
             addNavItem("Shift Roster", "", "doctorShiftRoster");
             addNavItem("Consultations", "", "doctorConsultations");
-            addNavItem("Hospital Assets", "", "doctorHospitalAssets");
+            addNavItem("Lab Services", "", "doctorLabServices");
+            addNavItem("Ward Admission", "", "doctorWardAdmission");
             navItems.add(Box.createVerticalGlue());
             addLogoutButton("Logout", "", "");
             // ...

@@ -1,10 +1,11 @@
 requestId, requestType, requesterId, requesterType, targetId, referenceId, reason, status, createdDateTime, resolvedDateTime, resolverId
-#REQ001, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT001, Updated reason for testing, WITHDRAWN, 2026-08-01 09:00:00, 2026-08-12T16:18:53.004284900, #DOCd4e8f
+#REQ001, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT001, Updated reason for testing, WITHDRAWN, 2026-08-01 09:00:00, 2026-08-12 16:18:53, #DOCd4e8f
 #REQ002, CANCEL_SHIFT, #DOCd4e8c, doctor, #MNG58321, #SHIFT002, Double booked with another clinic on that date, APPROVED, 2026-07-28 14:20:00, 2026-07-28 16:00:00, #MNG58321
 #REQ003, ASSET_REQUEST, #DOCd4e8f, doctor, , #ASSET_XRAY01, Need X-ray room booked for patient #PAT3fad4 consultation follow-up, PENDING, 2026-08-05 10:15:00, , 
 #REQ004, ASSET_REQUEST, #DOCd4e8c, doctor, , #ASSET_ECG01, ECG machine needed for cardiac assessment, REJECTED, 2026-08-02 11:00:00, 2026-08-02 13:30:00, #ADMd4e8f
 #REQ007, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT003, Requested shift swap approved separately no longer needed, WITHDRAWN, 2026-08-03 07:00:00, 2026-08-03 07:45:00, #DOCd4e8f
-#REQ235fb, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT001, Testing request creation - please ignore, REJECTED, 2026-08-12T16:18:10.410043800, 2026-08-12T16:19:56.579761, #MNG74295
-#REQc760d, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Updated reason via controller test, WITHDRAWN, 2026-08-16T15:09:33.129039600, 2026-08-16T15:11:05.565983400, #ADMd4e8f
-#REQ06d36, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Testing request creation via controller, APPROVED, 2026-08-16T15:11:45.728653700, 2026-08-16T15:12:21.450972900, #ADMd4e8f
-#REQ95720, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Testing request creation via controller, REJECTED, 2026-08-16T15:11:48.415409900, 2026-08-16T15:12:21.572234400, #ADMd4e8f
+#REQ235fb, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT001, Testing request creation - please ignore, REJECTED, 2026-08-12 16:18:10, 2026-08-12 16:19:56, #MNG74295
+#REQc760d, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Updated reason via controller test, WITHDRAWN, 2026-08-16 15:09:33, 2026-08-16 15:11:05, #ADMd4e8f
+#REQ06d36, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Testing request creation via controller, APPROVED, 2026-08-16 15:11:45, 2026-08-16 15:12:21, #ADMd4e8f
+#REQ95720, ASSET_REQUEST, #ADMd4e8f, admin staff, , #CON003, Testing request creation via controller, REJECTED, 2026-08-16 15:11:48, 2026-08-16 15:12:21, #ADMd4e8f
+#REQ159f4, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFTeaae1, test hehe, PENDING, 2026-09-08 22:19:30, , 

@@ -37,6 +37,7 @@ public class SystemConfiguration {
     
     public static final String hospitalAssetAllocationFilePath = parentPath + "txt/hospital_assets/hospitalAssetAllocation.txt";
     public static final String hospitalAssetFilePath = parentPath + "txt/hospital_assets/hospitalAssets.txt";
+    public static final String wardAdmissionFilePath = parentPath + "txt/hospital_assets/wardAdmissions.txt";
     
     public static final String labResultFilePath = parentPath + "txt/medical_records/labResults.txt";
     public static final String labResultTypesFilePath = parentPath + "txt/medical_records/labResultTypes.txt";

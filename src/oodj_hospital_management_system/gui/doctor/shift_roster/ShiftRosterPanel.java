@@ -247,6 +247,12 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         LocalDate today = DateTime.getDate(DateTime.currentDateTime());
         return scheduledDate.equals(today);
     }
+    
+    private boolean isOverdue(DoctorShift shift) {
+        LocalDateTime scheduledEnd = DateTime.toDateTimeObject(shift.getEndDateTime());
+        LocalDateTime now = DateTime.currentDateTime();
+        return now.isAfter(scheduledEnd);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -452,10 +458,10 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
 
             default: // "Default" -> fall back to shift ID
                 sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
-    }
+        }
 
-    currentDoctorShifts = sorted;
-    populateShiftTable(sorted);
+        currentDoctorShifts = sorted;
+        populateShiftTable(sorted);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -560,6 +566,11 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
         if (DoctorShift.DoctorShiftStatus.COMPLETED.equals(selected.getStatus())) {
             JOptionPane.showMessageDialog(parentWindow,
                 "This shift has already been completed and cannot be cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (isOverdue(selected)) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This shift is overdue and can no longer be cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

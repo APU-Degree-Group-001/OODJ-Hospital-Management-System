@@ -416,3 +416,12 @@
 [2026-09-07 15:36:45] User {doctor - #DOCd4e8f - bug1} logged in
 [2026-09-07 15:40:34] User {doctor - #DOCd4e8f - bug1} logged out
 [2026-09-07 17:04:43] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-08 21:12:47] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-08 21:57:31] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-08 22:06:56] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-08 22:08:41] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-08 22:19:30] User {doctor - #DOCd4e8f - bug1} submitted Request {#REQ159f4} of type {CANCEL_SHIFT}
+[2026-09-08 22:19:39] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-08 22:19:50] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-09 00:05:14] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-09 00:07:21] User {doctor - #DOCd4e8f - bug1} logged in

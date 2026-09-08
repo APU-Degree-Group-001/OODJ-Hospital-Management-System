@@ -26,10 +26,14 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import oodj_hospital_management_system.controllers.RequestController;
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.utils.WrappingCellRenderer;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.Request;
+import oodj_hospital_management_system.models.Request.RequestStatus;
+import oodj_hospital_management_system.models.Request.RequestType;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
@@ -41,123 +45,155 @@ import oodj_hospital_management_system.utils.DateTime;
  */
 public class RequestPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
-    private List<DoctorShift> currentDoctorShifts;
+    private RequestController reqCtrl;
+    private List<Request> currentRequests;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
-    private static final int MAX_NAME_LENGTH = 50;
 
     /**
      * Creates new form Admin StaffManagement
      */
     public RequestPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
+        this.reqCtrl = new RequestController(usrCtrl.getActiveUser());
         initComponents();
-        loadDoctorShifts();
+        loadDoctorRequests();
         customStyleHeader();
-        shiftTable.setPreferredScrollableViewportSize(
-            new java.awt.Dimension(1160, shiftTable.getRowHeight() * shiftTable.getRowCount())
+        requestTable.setPreferredScrollableViewportSize(
+            new java.awt.Dimension(1160, requestTable.getRowHeight() * requestTable.getRowCount())
         );
     }
     
     private void customStyleHeader() {
-        shiftTable.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
-        shiftTable.getTableHeader().setPreferredSize(new java.awt.Dimension(0, 45));
-    }
-    
-    public void loadDoctorShifts() {
-        List<DoctorShift> myShifts = getBaseShifts();
-        currentDoctorShifts = myShifts;
-        populateShiftTable(myShifts);
-    }
-    
-    private void populateShiftTable(List<DoctorShift> shifts) {
-        DefaultTableModel model = (DefaultTableModel) shiftTable.getModel();
-        model.setRowCount(0);
+        requestTable.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        requestTable.getTableHeader().setPreferredSize(new java.awt.Dimension(0, 45));
 
-        for (DoctorShift shift : shifts) {
-            LocalDateTime startDt = DateTime.toDateTimeObject(shift.getStartDateTime());
-            LocalDateTime endDt = DateTime.toDateTimeObject(shift.getEndDateTime());
-
-            String date = DateTime.toDateStringWords(DateTime.getDate(startDt));
-            String scheduledStart = DateTime.toTimeString(DateTime.getTime(startDt));
-            String scheduledEnd = DateTime.toTimeString(DateTime.getTime(endDt));
-
-            String actualStart = "-";
-            if (shift.getActualStartDateTime() != null && !shift.getActualStartDateTime().isEmpty()) {
-                actualStart = DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(shift.getActualStartDateTime())));
-            }
-
-            String actualEnd = "-";
-            if (shift.getActualEndDateTime() != null && !shift.getActualEndDateTime().isEmpty()) {
-                actualEnd = DateTime.toTimeString(DateTime.getTime(DateTime.toDateTimeObject(shift.getActualEndDateTime())));
-            }
-
-            String status = shift.getStatus() != null ? shift.getStatus().toString() : "-";
-
-            model.addRow(new String[]{shift.getShiftId(), date, scheduledStart, scheduledEnd, actualStart, actualEnd, status});
+        for (int i = 0; i < requestTable.getColumnCount(); i++) {
+            requestTable.getColumnModel().getColumn(i).setCellRenderer(new WrappingCellRenderer());
         }
     }
-    
-    private List<DoctorShift> getBaseShifts() {
-        Doctor activeDoctor = (usrCtrl.getActiveUser() instanceof Doctor)
-            ? (Doctor) usrCtrl.getActiveUser() : null;
-
-        List<DoctorShift> myShifts = new ArrayList<>();
-        if (activeDoctor != null) {
-            for (DoctorShift shift : DoctorManagement.getAllDoctorShifts()) {
-                if (shift.getDoctor() != null && shift.getDoctor().getId().equals(activeDoctor.getId())) {
-                    myShifts.add(shift);
+ 
+    public void loadDoctorRequests() {
+        List<Request> myRequests = getBaseRequests();
+        currentRequests = myRequests;
+        populateRequestTable(myRequests);
+    }
+ 
+    private void populateRequestTable(List<Request> requests) {
+        DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
+        model.setRowCount(0);
+ 
+        for (Request req : requests) {
+            String createdDt = "-";
+            if (req.getCreatedDateTime() != null && !req.getCreatedDateTime().isEmpty()) {
+                createdDt = DateTime.toDateStringWords(
+                    DateTime.getDate(DateTime.toDateTimeObject(req.getCreatedDateTime())));
+            }
+ 
+            String resolvedDt = "-";
+            if (req.getResolvedDateTime() != null && !req.getResolvedDateTime().isEmpty()) {
+                resolvedDt = DateTime.toDateStringWords(
+                    DateTime.getDate(DateTime.toDateTimeObject(req.getResolvedDateTime())));
+            }
+ 
+            String status = req.getStatus() != null ? req.getStatus().toString() : "-";
+            String resolver = req.getResolver() != null ? req.getResolver().getName() : "-";
+ 
+            model.addRow(new String[]{
+                req.getRequestId(), req.getReason(), createdDt, resolvedDt, status, resolver
+            });
+        }
+    }
+ 
+    private List<Request> getBaseRequests() {
+        User activeUser = usrCtrl.getActiveUser();
+        List<Request> myCancelRequests = new ArrayList<>();
+        if (activeUser != null) {
+            for (Request req : reqCtrl.getRequestsByRequester(activeUser)) {
+                if (RequestType.CANCEL_SHIFT.equals(req.getRequestType())) {
+                    myCancelRequests.add(req);
                 }
             }
         }
-        return myShifts;
+        return myCancelRequests;
     }
-    
-    private DoctorShift getSelectedShift() {
-        int viewRow = shiftTable.getSelectedRow();
+ 
+    private Request getSelectedRequest() {
+        int viewRow = requestTable.getSelectedRow();
         if (viewRow == -1) {
             JOptionPane.showMessageDialog(parentWindow,
-                "Please select a shift first", "No Selection", JOptionPane.INFORMATION_MESSAGE);
+                "Please select a request first", "No Selection", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
-        int modelRow = shiftTable.convertRowIndexToModel(viewRow);
-        String shiftId = (String) shiftTable.getModel().getValueAt(modelRow, 0);
-        for (DoctorShift s : currentDoctorShifts) {
-            if (s.getShiftId().equals(shiftId)) return s;
+        int modelRow = requestTable.convertRowIndexToModel(viewRow);
+        String requestId = (String) requestTable.getModel().getValueAt(modelRow, 0);
+        for (Request r : currentRequests) {
+            if (r.getRequestId().equals(requestId)) return r;
         }
         return null;
     }
-    
-    private DoctorShift.DoctorShiftStatus selectStatus() {
-        javax.swing.JComboBox<DoctorShift.DoctorShiftStatus> statusCombo =
-            new javax.swing.JComboBox<>(DoctorShift.DoctorShiftStatus.values());
-
+ 
+    private RequestStatus selectStatus() {
+        javax.swing.JComboBox<RequestStatus> statusCombo =
+            new javax.swing.JComboBox<>(RequestStatus.values());
+ 
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 5, 5));
         panel.add(new JLabel("Status:"));
         panel.add(statusCombo);
-
+ 
         int result = JOptionPane.showConfirmDialog(parentWindow, panel,
             "Filter by Status", JOptionPane.OK_CANCEL_OPTION);
-
+ 
         if (result != JOptionPane.OK_OPTION) return null;
-        return (DoctorShift.DoctorShiftStatus) statusCombo.getSelectedItem();
+        return (RequestStatus) statusCombo.getSelectedItem();
     }
-
-    private void filterByStatus(DoctorShift.DoctorShiftStatus status) {
-        List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
-            if (status.equals(shift.getStatus())) {
-                filtered.add(shift);
+ 
+    private void filterByStatus(RequestStatus status) {
+        List<Request> filtered = new ArrayList<>();
+        for (Request req : currentRequests) {
+            if (status.equals(req.getStatus())) {
+                filtered.add(req);
             }
         }
-        currentDoctorShifts = filtered;
-        populateShiftTable(filtered);
-        updateResultLabel("Showing shifts with status \"" + status + "\"", filtered.size());
+        currentRequests = filtered;
+        populateRequestTable(filtered);
+        updateResultLabel("Showing requests with status \"" + status + "\"", filtered.size());
     }
-    
+ 
+    private String selectResolverKeyword() {
+        javax.swing.JTextField resolverField = new javax.swing.JTextField();
+ 
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 5, 5));
+        panel.add(new JLabel("Resolver name/ID:"));
+        panel.add(resolverField);
+ 
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+            "Filter by Resolver", JOptionPane.OK_CANCEL_OPTION);
+ 
+        if (result != JOptionPane.OK_OPTION) return null;
+        String keyword = resolverField.getText().trim();
+        return keyword.isEmpty() ? null : keyword;
+    }
+ 
+    private void filterByResolver(String keyword) {
+        String lower = keyword.toLowerCase();
+        List<Request> filtered = new ArrayList<>();
+        for (Request req : currentRequests) {
+            User resolver = req.getResolver();
+            if (resolver != null &&
+                (resolver.getName().toLowerCase().contains(lower)
+                    || resolver.getId().toLowerCase().contains(lower))) {
+                filtered.add(req);
+            }
+        }
+        currentRequests = filtered;
+        populateRequestTable(filtered);
+        updateResultLabel("Showing requests resolved by \"" + keyword + "\"", filtered.size());
+    }
+ 
     private void updateResultLabel(String message, int count) {
         showResultsForLabel.setText(message + " (" + count + " found)");
     }
-    
+ 
     private LinkedHashMap<String, String> selectDateRange() {
         LinkedHashMap<String, String> dateRange = new LinkedHashMap<>();
         JDateChooser startDateChooser = new JDateChooser();
@@ -165,72 +201,73 @@ public class RequestPanel extends javax.swing.JPanel {
         Date currentDate = new Date();
         startDateChooser.setMaxSelectableDate(currentDate);
         endDateChooser.setMaxSelectableDate(currentDate);
-
+ 
         javax.swing.JPanel panel = new javax.swing.JPanel();
         panel.add(new javax.swing.JLabel("From:"));
         panel.add(startDateChooser);
         panel.add(new javax.swing.JLabel("To:"));
         panel.add(endDateChooser);
-
-        int result = javax.swing.JOptionPane.showConfirmDialog(parentWindow, panel, "Select Date Range Joined", javax.swing.JOptionPane.OK_CANCEL_OPTION);
-
+ 
+        int result = javax.swing.JOptionPane.showConfirmDialog(parentWindow, panel, "Select Date Range", javax.swing.JOptionPane.OK_CANCEL_OPTION);
+ 
         if (result == javax.swing.JOptionPane.OK_OPTION) {
             Date startDateRaw = startDateChooser.getDate();
             Date endDateRaw = endDateChooser.getDate();
-
+ 
             if (startDateRaw == null && endDateRaw == null) {
                 javax.swing.JOptionPane.showMessageDialog(parentWindow,
                     "Please select at least one date", "Missing Date",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
                 return dateRange;
             }
-
+ 
             if (startDateRaw != null && endDateRaw != null && endDateRaw.compareTo(startDateRaw) < 0) {
                 javax.swing.JOptionPane.showMessageDialog(parentWindow,
                     "Invalid date range", "WARNING", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return dateRange;
             }
-
+ 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             dateRange.put("startDate", startDateRaw != null ? sdf.format(startDateRaw) : null);
             dateRange.put("endDate", endDateRaw != null ? sdf.format(endDateRaw) : null);
         }
         return dateRange;
     }
-    
-    private void filterByScheduledDateRange(String start, String end) {
-        List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
-            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getStartDateTime()));
+ 
+    private void filterByRequestedDateRange(String start, String end) {
+        List<Request> filtered = new ArrayList<>();
+        for (Request req : currentRequests) {
+            if (req.getCreatedDateTime() == null || req.getCreatedDateTime().isEmpty()) continue;
+            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(req.getCreatedDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
             boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
-            if (afterStart && beforeEnd) filtered.add(shift);
+            if (afterStart && beforeEnd) filtered.add(req);
         }
-        currentDoctorShifts = filtered;
-        populateShiftTable(filtered);
-
+        currentRequests = filtered;
+        populateRequestTable(filtered);
+ 
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
-        String label = buildRangeLabel("Showing shifts scheduled", start, end, display);
+        String label = buildRangeLabel("Showing requests made", start, end, display);
         updateResultLabel(label, filtered.size());
     }
-
-    private void filterByActualDateRange(String start, String end) {
-        List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
-            if (shift.getActualStartDateTime() == null || shift.getActualStartDateTime().isEmpty()) continue;
-            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getActualStartDateTime()));
+ 
+    private void filterByResolvedDateRange(String start, String end) {
+        List<Request> filtered = new ArrayList<>();
+        for (Request req : currentRequests) {
+            if (req.getResolvedDateTime() == null || req.getResolvedDateTime().isEmpty()) continue;
+            LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(req.getResolvedDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
             boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
-            if (afterStart && beforeEnd) filtered.add(shift);
+            if (afterStart && beforeEnd) filtered.add(req);
         }
-        currentDoctorShifts = filtered;
-        populateShiftTable(filtered);
-
+        currentRequests = filtered;
+        populateRequestTable(filtered);
+ 
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
-        String label = buildRangeLabel("Showing shifts actually started", start, end, display);
+        String label = buildRangeLabel("Showing requests resolved", start, end, display);
         updateResultLabel(label, filtered.size());
     }
-
+ 
     private String buildRangeLabel(String prefix, String start, String end, SimpleDateFormat display) {
         if (start != null && end != null) {
             return prefix + " between " + display.format(java.sql.Date.valueOf(start))
@@ -240,12 +277,6 @@ public class RequestPanel extends javax.swing.JPanel {
         } else {
             return prefix + " before " + display.format(java.sql.Date.valueOf(end));
         }
-    }
-    
-    private boolean isScheduledForToday(DoctorShift shift) {
-        LocalDate scheduledDate = DateTime.getDate(DateTime.toDateTimeObject(shift.getStartDateTime()));
-        LocalDate today = DateTime.getDate(DateTime.currentDateTime());
-        return scheduledDate.equals(today);
     }
 
     /**
@@ -272,7 +303,7 @@ public class RequestPanel extends javax.swing.JPanel {
         wrapperPane = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
-        shiftTable = new javax.swing.JTable();
+        requestTable = new javax.swing.JTable();
         showResultsForPanel = new javax.swing.JPanel();
         showResultsForLabel = new javax.swing.JLabel();
         operationsPanel1 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
@@ -280,9 +311,7 @@ public class RequestPanel extends javax.swing.JPanel {
         );
         operationsLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        startShiftButton = new javax.swing.JButton();
-        endShiftButton = new javax.swing.JButton();
-        requestShiftButton = new javax.swing.JButton();
+        withdrawRequestButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1160, 2147483647));
@@ -315,7 +344,7 @@ public class RequestPanel extends javax.swing.JPanel {
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
 
-        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Scheduled Date Time", "Actual Date Time" }));
+        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Requested Date Time", "Resolved Date Time", "Resolver" }));
         sortField.setPreferredSize(new java.awt.Dimension(150, 30));
         sortField.setRequestFocusEnabled(false);
         sortField.addActionListener(this::sortFieldActionPerformed);
@@ -324,7 +353,7 @@ public class RequestPanel extends javax.swing.JPanel {
         sortByLabel1.setText("Filter By");
         sortByPane.add(sortByLabel1);
 
-        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Scheduled Date Time", "Actual Date Time", "Status" }));
+        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Requested Date Time", "Resolved Date Time", "Status", "Resolver" }));
         filterByField.setPreferredSize(new java.awt.Dimension(150, 30));
         filterByField.setRequestFocusEnabled(false);
         filterByField.addActionListener(this::filterByFieldActionPerformed);
@@ -346,30 +375,30 @@ public class RequestPanel extends javax.swing.JPanel {
         tableScrollPane.setBackground(new java.awt.Color(255, 255, 255));
         tableScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        shiftTable.setBackground(new java.awt.Color(255, 255, 255));
-        shiftTable.setModel(new javax.swing.table.DefaultTableModel(
+        requestTable.setBackground(new java.awt.Color(255, 255, 255));
+        requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Shift ID", "Date", "Scheduled Start Time", "Scheduled End Time", "Actual Start Time", "Actual End Time", "Status"
+                "Request ID", "Reason", "Request Date Time", "Resolved Date Time", "Status", "Resolver"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        shiftTable.setAlignmentY(0.0F);
-        shiftTable.setRowHeight(40);
-        shiftTable.setRowMargin(5);
-        tableScrollPane.setViewportView(shiftTable);
+        requestTable.setAlignmentY(0.0F);
+        requestTable.setRowHeight(40);
+        requestTable.setRowMargin(5);
+        tableScrollPane.setViewportView(requestTable);
 
         jPanel2.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
@@ -399,23 +428,11 @@ public class RequestPanel extends javax.swing.JPanel {
         jPanel3.setPreferredSize(new java.awt.Dimension(566, 140));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
-        startShiftButton.setText("Start Shift");
-        startShiftButton.setMaximumSize(new java.awt.Dimension(150, 40));
-        startShiftButton.setPreferredSize(new java.awt.Dimension(150, 40));
-        startShiftButton.addActionListener(this::startShiftButtonActionPerformed);
-        jPanel3.add(startShiftButton);
-
-        endShiftButton.setText("End Shift");
-        endShiftButton.setMaximumSize(new java.awt.Dimension(150, 40));
-        endShiftButton.setPreferredSize(new java.awt.Dimension(150, 40));
-        endShiftButton.addActionListener(this::endShiftButtonActionPerformed);
-        jPanel3.add(endShiftButton);
-
-        requestShiftButton.setText("Request Cancel Shift");
-        requestShiftButton.setMaximumSize(new java.awt.Dimension(150, 40));
-        requestShiftButton.setPreferredSize(new java.awt.Dimension(150, 40));
-        requestShiftButton.addActionListener(this::requestShiftButtonActionPerformed);
-        jPanel3.add(requestShiftButton);
+        withdrawRequestButton.setText("Wtihdraw Request");
+        withdrawRequestButton.setMaximumSize(new java.awt.Dimension(150, 40));
+        withdrawRequestButton.setPreferredSize(new java.awt.Dimension(150, 40));
+        withdrawRequestButton.addActionListener(this::withdrawRequestButtonActionPerformed);
+        jPanel3.add(withdrawRequestButton);
 
         operationsPanel1.add(jPanel3);
 
@@ -425,108 +442,120 @@ public class RequestPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        if (currentDoctorShifts == null) return;
+        if (currentRequests == null) return;
         String selected = (String) sortField.getSelectedItem();
-        List<DoctorShift> sorted = new ArrayList<>(currentDoctorShifts);
-
+        List<Request> sorted = new ArrayList<>(currentRequests);
+ 
         switch (selected) {
             case "ID":
-                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
+                sorted.sort((a, b) -> a.getRequestId().compareToIgnoreCase(b.getRequestId()));
                 break;
-
-            case "Scheduled Date Time":
-                sorted.sort(Comparator.comparing(s -> DateTime.toDateTimeObject(s.getStartDateTime())));
+ 
+            case "Requested Date Time":
+                sorted.sort(Comparator.comparing(r -> DateTime.toDateTimeObject(r.getCreatedDateTime())));
                 break;
-
-            case "Actual Date Time":
+ 
+            case "Resolved Date Time":
                 sorted.sort((a, b) -> {
-                    boolean aEmpty = a.getActualStartDateTime() == null || a.getActualStartDateTime().isEmpty();
-                    boolean bEmpty = b.getActualStartDateTime() == null || b.getActualStartDateTime().isEmpty();
+                    boolean aEmpty = a.getResolvedDateTime() == null || a.getResolvedDateTime().isEmpty();
+                    boolean bEmpty = b.getResolvedDateTime() == null || b.getResolvedDateTime().isEmpty();
                     if (aEmpty && bEmpty) return 0;
-                    if (aEmpty) return 1;   // shifts not yet started sink to the bottom
+                    if (aEmpty) return 1;   // unresolved requests sink to the bottom
                     if (bEmpty) return -1;
-                    return DateTime.toDateTimeObject(a.getActualStartDateTime())
-                        .compareTo(DateTime.toDateTimeObject(b.getActualStartDateTime()));
+                    return DateTime.toDateTimeObject(a.getResolvedDateTime())
+                        .compareTo(DateTime.toDateTimeObject(b.getResolvedDateTime()));
                 });
                 break;
-
-            default: // "Default" -> fall back to shift ID
-                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
-    }
-
-    currentDoctorShifts = sorted;
-    populateShiftTable(sorted);
+ 
+            case "Resolver":
+                sorted.sort((a, b) -> {
+                    String aName = a.getResolver() != null ? a.getResolver().getName() : null;
+                    String bName = b.getResolver() != null ? b.getResolver().getName() : null;
+                    if (aName == null && bName == null) return 0;
+                    if (aName == null) return 1;   // unresolved requests sink to the bottom
+                    if (bName == null) return -1;
+                    return aName.compareToIgnoreCase(bName);
+                });
+                break;
+ 
+            default: // "Default" -> fall back to request ID
+                sorted.sort((a, b) -> a.getRequestId().compareToIgnoreCase(b.getRequestId()));
+        }
+ 
+        currentRequests = sorted;
+        populateRequestTable(sorted);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String rawKeyword = searchField.getText();
         String keyword = rawKeyword.trim().toLowerCase();
-
-        List<DoctorShift> results = new ArrayList<>();
-        for (DoctorShift shift : getBaseShifts()) {
-            boolean match = shift.getShiftId().toLowerCase().contains(keyword)
-                || shift.getStatus().toString().toLowerCase().contains(keyword)
-                || (shift.getMedicalManager() != null
-                    && shift.getMedicalManager().getName().toLowerCase().contains(keyword));
-            if (match) results.add(shift);
+ 
+        List<Request> results = new ArrayList<>();
+        for (Request req : getBaseRequests()) {
+            boolean match = req.getRequestId().toLowerCase().contains(keyword)
+                || (req.getReason() != null && req.getReason().toLowerCase().contains(keyword))
+                || req.getStatus().toString().toLowerCase().contains(keyword)
+                || (req.getResolver() != null
+                    && req.getResolver().getName().toLowerCase().contains(keyword));
+            if (match) results.add(req);
         }
-
-        currentDoctorShifts = results;
-        populateShiftTable(results);
+ 
+        currentRequests = results;
+        populateRequestTable(results);
         updateResultLabel("Showing results for \"" + rawKeyword + "\"", results.size());
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
         searchField.setText("");
         showResultsForLabel.setText("");
-        String selected = (String) sortField.getSelectedItem();
-
-        DefaultTableModel model = (DefaultTableModel) shiftTable.getModel();
+ 
+        DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
-        shiftTable.setRowSorter(sorter);
+        requestTable.setRowSorter(sorter);
         int selectedIndex = sortField.getSelectedIndex();
         int columnToSortIndex;
         switch (selectedIndex) {
-            case 0: columnToSortIndex = 3; break; // "Joined At" -> table column 2
-            case 1: columnToSortIndex = 0; break;
-            case 2: columnToSortIndex = 1; break;
-            case 3: columnToSortIndex = 2; break;
-            default: columnToSortIndex = 3;
+            case 0: columnToSortIndex = 2; break; // "Default" -> Request Date Time
+            case 1: columnToSortIndex = 0; break; // "ID"
+            case 2: columnToSortIndex = 2; break; // "Requested Date Time"
+            case 3: columnToSortIndex = 3; break; // "Resolved Date Time"
+            case 4: columnToSortIndex = 5; break; // "Resolver"
+            default: columnToSortIndex = 2;
         }
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
-
-        List<DoctorShift> base = (currentDoctorShifts != null) ? currentDoctorShifts : getBaseShifts();
-
+ 
+        List<Request> base = (currentRequests != null) ? currentRequests : getBaseRequests();
+ 
         switch (selected) {
-            case "Scheduled Date Time": {
-                currentDoctorShifts = base;
+            case "Requested Date Time": {
+                currentRequests = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
+                    filterByRequestedDateRange(range.get("startDate"), range.get("endDate"));
                 } else {
                     filterByField.setSelectedIndex(0);
                 }
                 break;
             }
-
-            case "Actual Date Time": {
-                currentDoctorShifts = base;
+ 
+            case "Resolved Date Time": {
+                currentRequests = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByActualDateRange(range.get("startDate"), range.get("endDate"));
+                    filterByResolvedDateRange(range.get("startDate"), range.get("endDate"));
                 } else {
                     filterByField.setSelectedIndex(0);
                 }
                 break;
             }
-
+ 
             case "Status": {
-                currentDoctorShifts = base;
-                DoctorShift.DoctorShiftStatus status = selectStatus();
+                currentRequests = base;
+                RequestStatus status = selectStatus();
                 if (status != null) {
                     filterByStatus(status);
                 } else {
@@ -534,117 +563,55 @@ public class RequestPanel extends javax.swing.JPanel {
                 }
                 break;
             }
-
+ 
+            case "Resolver": {
+                currentRequests = base;
+                String keyword = selectResolverKeyword();
+                if (keyword != null) {
+                    filterByResolver(keyword);
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
+            }
+ 
             default: // "Default" -> no filter
-                currentDoctorShifts = base;
-                populateShiftTable(base);
-                updateResultLabel("Showing " + base.size() + " shift(s)", base.size());
+                currentRequests = base;
+                populateRequestTable(base);
+                updateResultLabel("Showing " + base.size() + " request(s)", base.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadDoctorShifts();
+        loadDoctorRequests();
         searchField.setText("");
         showResultsForLabel.setText("");
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
-    private void requestShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestShiftButtonActionPerformed
-        DoctorShift selected = getSelectedShift();
+    private void withdrawRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawRequestButtonActionPerformed
+        Request selected = getSelectedRequest();
         if (selected == null) return;
-
-        if (DoctorShift.DoctorShiftStatus.CANCELLED.equals(selected.getStatus())) {
+ 
+        if (!RequestStatus.PENDING.equals(selected.getStatus())) {
             JOptionPane.showMessageDialog(parentWindow,
-                "This shift is already cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
+                "This request has already been resolved and cannot be withdrawn.",
+                "Cannot Withdraw", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (DoctorShift.DoctorShiftStatus.COMPLETED.equals(selected.getStatus())) {
-            JOptionPane.showMessageDialog(parentWindow,
-                "This shift has already been completed and cannot be cancelled.", "Cannot Request", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        JTextField reasonField = new JTextField(20);
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("Reason for cancellation:"));
-        panel.add(reasonField);
-
-        while (true) {
-            int result = JOptionPane.showConfirmDialog(parentWindow, panel,
-                "Request Shift Cancellation", JOptionPane.OK_CANCEL_OPTION);
-            if (result != JOptionPane.OK_OPTION) return;
-
-            String reason = reasonField.getText().trim();
-            if (reason.isEmpty()) {
-                JOptionPane.showMessageDialog(parentWindow,
-                    "Please provide a reason.", "Missing Information", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
-
-            LinkedHashMap<String, String> msg = usrCtrl.getRequestController().createRequest(
-                Request.RequestType.CANCEL_SHIFT,
-                selected.getMedicalManager(),
-                selected.getShiftId(),
-                reason
-            );
-
-            if (msg.get("success") != null) {
-                JOptionPane.showMessageDialog(parentWindow,
-                    "Cancellation request submitted.", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(parentWindow,
-                    msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            return;
-        }
-    }//GEN-LAST:event_requestShiftButtonActionPerformed
-
-    private void startShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startShiftButtonActionPerformed
-        DoctorShift selected = getSelectedShift();
-        if (selected == null) return;
-
-        if (!isScheduledForToday(selected)) {
-            JOptionPane.showMessageDialog(parentWindow,
-                "This shift is not scheduled for today. You can only start a shift on its scheduled date.",
-                "Cannot Start Shift", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+ 
         int confirm = JOptionPane.showConfirmDialog(parentWindow,
-            "Start this shift now?", "Confirm Start Shift", JOptionPane.YES_NO_OPTION);
+            "Withdraw this request?", "Confirm Withdraw", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
-
-        LinkedHashMap<String, String> result = new DoctorManagement(usrCtrl.getActiveUser()).startShift(selected);
+ 
+        LinkedHashMap<String, String> result = reqCtrl.withdrawRequest(selected);
         JOptionPane.showMessageDialog(parentWindow, result.get("msg"),
             result.get("success") != null ? "Success" : "Error",
             result.get("success") != null ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-        loadDoctorShifts();
-    }//GEN-LAST:event_startShiftButtonActionPerformed
-
-    private void endShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endShiftButtonActionPerformed
-        DoctorShift selected = getSelectedShift();
-        if (selected == null) return;
-
-        if (!isScheduledForToday(selected)) {
-            JOptionPane.showMessageDialog(parentWindow,
-                "This shift is not scheduled for today. You can only end a shift on its scheduled date.",
-                "Cannot End Shift", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(parentWindow,
-            "End this shift now?", "Confirm End Shift", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        LinkedHashMap<String, String> result = new DoctorManagement(usrCtrl.getActiveUser()).endShift(selected);
-        JOptionPane.showMessageDialog(parentWindow, result.get("msg"),
-            result.get("success") != null ? "Success" : "Error",
-            result.get("success") != null ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-        loadDoctorShifts();
-    }//GEN-LAST:event_endShiftButtonActionPerformed
+        loadDoctorRequests();
+    }//GEN-LAST:event_withdrawRequestButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton endShiftButton;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JComboBox<String> filterByField;
     private javax.swing.JOptionPane jOptionPane1;
@@ -653,20 +620,19 @@ public class RequestPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel operationsLabel1;
     private javax.swing.JPanel operationsPanel1;
-    private javax.swing.JButton requestShiftButton;
+    private javax.swing.JTable requestTable;
     private javax.swing.JButton resetSearchButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JPanel searchPane;
-    private javax.swing.JTable shiftTable;
     private javax.swing.JLabel showResultsForLabel;
     private javax.swing.JPanel showResultsForPanel;
     private javax.swing.JLabel sortByLabel;
     private javax.swing.JLabel sortByLabel1;
     private javax.swing.JPanel sortByPane;
     private javax.swing.JComboBox<String> sortField;
-    private javax.swing.JButton startShiftButton;
     private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JButton withdrawRequestButton;
     private javax.swing.JPanel wrapperPane;
     // End of variables declaration//GEN-END:variables
 }

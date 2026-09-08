@@ -151,7 +151,7 @@ public class RequestManagement {
         }
 
         String newRequestId = generateRequestId();
-        String now = DateTime.currentDateTime().toString();
+        String now = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
         Request newRequest = new Request(newRequestId, type, activeUser, target, referenceId, reason, RequestStatus.PENDING, now, null, null);
         requests.add(newRequest);
         if (requestHandler.checkFileExistence()) {
@@ -235,7 +235,7 @@ public class RequestManagement {
 
         // Withdrawn is a distinct outcome from Rejected (requester pulled it, not staff decision)
         targetRequest.setStatus(RequestStatus.WITHDRAWN);
-        targetRequest.setResolvedDateTime(DateTime.currentDateTime().toString());
+        targetRequest.setResolvedDateTime(DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
         targetRequest.setResolver(targetRequest.getRequester());
         writeRequests();
         loadRequests();
@@ -292,7 +292,7 @@ public class RequestManagement {
         }
 
         targetRequest.setStatus(RequestStatus.APPROVED);
-        targetRequest.setResolvedDateTime(DateTime.currentDateTime().toString());
+        targetRequest.setResolvedDateTime(DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
         targetRequest.setResolver(activeUser);
         writeRequests();
         loadRequests();
@@ -325,7 +325,7 @@ public class RequestManagement {
         }
 
         targetRequest.setStatus(RequestStatus.REJECTED);
-        targetRequest.setResolvedDateTime(DateTime.currentDateTime().toString());
+        targetRequest.setResolvedDateTime(DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
         targetRequest.setResolver(activeUser);
         writeRequests();
         loadRequests();
