@@ -29,9 +29,11 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         labServicesContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
+        labServicesContentArea.add(new ScheduledPanel(usrCtrl), "scheduled");
         labServicesContentArea.add(new RequestPanel(usrCtrl), "request");
         
         setNavButtonActive(assetsButton, true);
+        setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, false);
         
         this.cl = (CardLayout) labServicesContentArea.getLayout();
@@ -187,18 +189,23 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
 
     private void assetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetsButtonActionPerformed
         setNavButtonActive(assetsButton, true);
+        setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, false);
         cl.show(labServicesContentArea, "hospitalAssets");
     }//GEN-LAST:event_assetsButtonActionPerformed
 
     private void requestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestButtonActionPerformed
         setNavButtonActive(assetsButton, false);
+        setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, true);
         cl.show(labServicesContentArea, "request");
     }//GEN-LAST:event_requestButtonActionPerformed
 
     private void scheduledButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduledButtonActionPerformed
-        // TODO add your handling code here:
+        setNavButtonActive(assetsButton, false);
+        setNavButtonActive(scheduledButton, false);
+        setNavButtonActive(requestButton, true);
+        cl.show(labServicesContentArea, "scheduled");
     }//GEN-LAST:event_scheduledButtonActionPerformed
 
 

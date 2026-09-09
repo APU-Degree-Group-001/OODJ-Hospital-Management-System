@@ -18,6 +18,7 @@ public class DoctorShift {
         IN_PROGRESS,
         COMPLETED,
         OVERDUE,
+        OVERRUNNING,
         CANCELLED
     }
 

@@ -15,9 +15,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 public class DateTime {
-    private final static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final static DateTimeFormatter dateTimeFormat = new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd HH:mm")
+        .optionalStart()
+        .appendPattern(":ss")
+        .optionalEnd()
+        .toFormatter();
     private final static DateTimeFormatter dateFormatter1 = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     private final static DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");

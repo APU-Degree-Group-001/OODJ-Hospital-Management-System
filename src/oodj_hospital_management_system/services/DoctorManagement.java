@@ -140,6 +140,7 @@ public class DoctorManagement {
             case "IN_PROGRESS": shiftStaus = DoctorShiftStatus.IN_PROGRESS; break;
             case "COMPLETED": shiftStaus = DoctorShiftStatus.COMPLETED; break;
             case "OVERDUE": shiftStaus = DoctorShiftStatus.OVERDUE; break;
+            case "OVERRUNNING": shiftStaus = DoctorShiftStatus.OVERRUNNING; break;
             case "CANCELLED": shiftStaus = DoctorShiftStatus.CANCELLED; break;
             default: System.out.println("Unknown Doctor Shift Status");
         }
@@ -447,8 +448,8 @@ public class DoctorManagement {
             if (DateTime.isBefore(now, end)) {
                 shift.setStatus(DoctorShiftStatus.IN_PROGRESS);
             } else {
-                // scheduled end has passed and doctor never ended the shift
-                shift.setStatus(DoctorShiftStatus.OVERDUE);
+                // scheduled end has passed but doctor never ended the shift
+                shift.setStatus(DoctorShiftStatus.OVERRUNNING);
             }
             return;
         }
