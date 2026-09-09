@@ -27,15 +27,18 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import oodj_hospital_management_system.controllers.HospitalAssetController;
 import oodj_hospital_management_system.controllers.RequestController;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.utils.WrappingCellRenderer;
 import oodj_hospital_management_system.models.Doctor;
 import oodj_hospital_management_system.models.DoctorShift;
+import oodj_hospital_management_system.models.HospitalAsset;
 import oodj_hospital_management_system.models.Request;
 import oodj_hospital_management_system.models.Request.RequestStatus;
 import oodj_hospital_management_system.models.Request.RequestType;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.models.Ward;
 import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
@@ -47,6 +50,7 @@ import oodj_hospital_management_system.utils.DateTime;
 public class RequestPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private RequestController reqCtrl;
+    private HospitalAssetController assetCtrl;
     private List<Request> currentRequests;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
 
@@ -56,6 +60,7 @@ public class RequestPanel extends javax.swing.JPanel {
     public RequestPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         this.reqCtrl = new RequestController(usrCtrl.getActiveUser());
+        this.assetCtrl = new HospitalAssetController(usrCtrl.getActiveUser());
         initComponents();
         loadDoctorRequests();
         customStyleHeader();
@@ -82,40 +87,47 @@ public class RequestPanel extends javax.swing.JPanel {
     private void populateRequestTable(List<Request> requests) {
         DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
         model.setRowCount(0);
- 
+
         for (Request req : requests) {
             String createdDt = "-";
             if (req.getCreatedDateTime() != null && !req.getCreatedDateTime().isEmpty()) {
                 createdDt = DateTime.toDateStringWords(
                     DateTime.getDate(DateTime.toDateTimeObject(req.getCreatedDateTime())));
             }
- 
+
             String resolvedDt = "-";
             if (req.getResolvedDateTime() != null && !req.getResolvedDateTime().isEmpty()) {
                 resolvedDt = DateTime.toDateStringWords(
                     DateTime.getDate(DateTime.toDateTimeObject(req.getResolvedDateTime())));
             }
- 
+
+            HospitalAsset asset = assetCtrl.getHospitalAssetById(req.getReferenceId());
+            String assetName = asset != null ? asset.getAssetName() : "-";
+
+            String reason = req.getReason() != null && !req.getReason().isEmpty() ? req.getReason() : "-";
             String status = req.getStatus() != null ? req.getStatus().toString() : "-";
             String resolver = req.getResolver() != null ? req.getResolver().getName() : "-";
- 
+
             model.addRow(new String[]{
-                req.getRequestId(), req.getReason(), createdDt, resolvedDt, status, resolver
+                req.getRequestId(), assetName, createdDt, resolvedDt, reason, status, resolver
             });
         }
     }
  
     private List<Request> getBaseRequests() {
         User activeUser = usrCtrl.getActiveUser();
-        List<Request> myCancelRequests = new ArrayList<>();
+        List<Request> myAssetRequests = new ArrayList<>();
         if (activeUser != null) {
             for (Request req : reqCtrl.getRequestsByRequester(activeUser)) {
-                if (RequestType.CANCEL_SHIFT.equals(req.getRequestType())) {
-                    myCancelRequests.add(req);
-                }
+                if (!RequestType.ASSET_REQUEST.equals(req.getRequestType())) continue;
+
+                HospitalAsset asset = assetCtrl.getHospitalAssetById(req.getReferenceId());
+                if (asset instanceof Ward) continue; // ward-related requests are out of scope here
+
+                myAssetRequests.add(req);
             }
         }
-        return myCancelRequests;
+        return myAssetRequests;
     }
  
     private Request getSelectedRequest() {
@@ -380,17 +392,17 @@ public class RequestPanel extends javax.swing.JPanel {
         requestTable.setBackground(new java.awt.Color(255, 255, 255));
         requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Reason", "Request Date Time", "Resolved Date Time", "Status", "Resolver"
+                "Request ID", "Asset", "Request Date Time", "Resolved Date Time", "Reason", "Status", "Resolver"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -497,17 +509,21 @@ public class RequestPanel extends javax.swing.JPanel {
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String rawKeyword = searchField.getText();
         String keyword = rawKeyword.trim().toLowerCase();
- 
+
         List<Request> results = new ArrayList<>();
         for (Request req : getBaseRequests()) {
+            HospitalAsset asset = assetCtrl.getHospitalAssetById(req.getReferenceId());
+            String assetName = asset != null ? asset.getAssetName() : "";
+
             boolean match = req.getRequestId().toLowerCase().contains(keyword)
+                || assetName.toLowerCase().contains(keyword)
                 || (req.getReason() != null && req.getReason().toLowerCase().contains(keyword))
                 || req.getStatus().toString().toLowerCase().contains(keyword)
                 || (req.getResolver() != null
                     && req.getResolver().getName().toLowerCase().contains(keyword));
             if (match) results.add(req);
         }
- 
+
         currentRequests = results;
         populateRequestTable(results);
         updateResultLabel("Showing results for \"" + rawKeyword + "\"", results.size());
@@ -619,7 +635,63 @@ public class RequestPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_withdrawRequestButtonActionPerformed
 
     private void createRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createRequestButtonActionPerformed
-        // TODO add your handling code here:
+        List<HospitalAsset> availableAssets = new ArrayList<>();
+        for (HospitalAsset asset : assetCtrl.getAllHospitalAssets()) {
+            if (!(asset instanceof Ward)) {
+                availableAssets.add(asset);
+            }
+        }
+
+        if (availableAssets.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "No assets available to request", "No Assets", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        javax.swing.JComboBox<HospitalAsset> assetCombo = new javax.swing.JComboBox<>(availableAssets.toArray(new HospitalAsset[0]));
+        assetCombo.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof HospitalAsset) {
+                    HospitalAsset asset = (HospitalAsset) value;
+                    setText(asset.getAssetName() + " (" + asset.getAssetId() + ")");
+                }
+                return this;
+            }
+        });
+
+        javax.swing.JTextArea reasonArea = new javax.swing.JTextArea(4, 20);
+        javax.swing.JScrollPane reasonScroll = new javax.swing.JScrollPane(reasonArea);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+        panel.add(new JLabel("Asset:"));
+        panel.add(assetCombo);
+        panel.add(new JLabel("Reason:"));
+        panel.add(reasonScroll);
+
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+            "Create Asset Request", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return;
+
+        HospitalAsset selectedAsset = (HospitalAsset) assetCombo.getSelectedItem();
+        String reason = reasonArea.getText().trim();
+
+        if (reason.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "Please provide a reason", "Missing Reason", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // target is null - per the Request model, any admin staff can act on an ASSET_REQUEST
+        LinkedHashMap<String, String> resultMap = reqCtrl.createRequest(
+            RequestType.ASSET_REQUEST, null, selectedAsset.getAssetId(), reason);
+
+        JOptionPane.showMessageDialog(parentWindow, resultMap.get("msg"),
+            resultMap.get("success") != null ? "Success" : "Error",
+            resultMap.get("success") != null ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+
+        loadDoctorRequests();
     }//GEN-LAST:event_createRequestButtonActionPerformed
 
 

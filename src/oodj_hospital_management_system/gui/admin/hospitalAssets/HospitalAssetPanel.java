@@ -104,6 +104,7 @@ public class HospitalAssetPanel extends RoundedPanel {
         jLabel6 = new javax.swing.JLabel();
         modifyButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
+        viewButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -135,6 +136,8 @@ public class HospitalAssetPanel extends RoundedPanel {
 
         deleteButton.setText("Delete");
 
+        viewButton.setText("View");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,17 +148,22 @@ public class HospitalAssetPanel extends RoundedPanel {
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(modifyButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(15, 15, 15)
                         .addComponent(descriptionField))
-                    .addComponent(typeLabel)
-                    .addComponent(nameLabel)
-                    .addComponent(locationLabel)
-                    .addComponent(statusLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(typeLabel)
+                            .addComponent(nameLabel)
+                            .addComponent(locationLabel)
+                            .addComponent(statusLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(viewButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(modifyButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(deleteButton)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -178,7 +186,8 @@ public class HospitalAssetPanel extends RoundedPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(modifyButton)
-                            .addComponent(deleteButton)))
+                            .addComponent(deleteButton)
+                            .addComponent(viewButton)))
                     .addComponent(imageHolder, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
@@ -195,5 +204,6 @@ public class HospitalAssetPanel extends RoundedPanel {
     private javax.swing.JLabel nameLabel;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JLabel typeLabel;
+    private javax.swing.JButton viewButton;
     // End of variables declaration//GEN-END:variables
 }

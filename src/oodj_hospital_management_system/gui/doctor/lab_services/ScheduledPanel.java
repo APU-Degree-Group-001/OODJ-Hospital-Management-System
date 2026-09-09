@@ -52,7 +52,6 @@ import oodj_hospital_management_system.utils.DateTime;
  */
 public class ScheduledPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
-    private ConsultationController consultationCtrl;
     private HospitalAssetController assetCtrl;
     private List<HospitalAssetAllocation> currentAllocations;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
@@ -62,7 +61,6 @@ public class ScheduledPanel extends javax.swing.JPanel {
      */
     public ScheduledPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
-        this.consultationCtrl = new ConsultationController(usrCtrl.getActiveUser());
         this.assetCtrl = new HospitalAssetController(usrCtrl.getActiveUser());
         initComponents();
         loadDoctorAllocations();
@@ -98,7 +96,6 @@ public class ScheduledPanel extends javax.swing.JPanel {
 
             model.addRow(new String[]{
                 alloc.getAllocationId(),
-                alloc.getConsultationId(),
                 assetName,
                 formatDateTimeOrDash(alloc.getScheduledStartDateTime()),
                 formatDateTimeOrDash(alloc.getScheduledEndDateTime()),
@@ -111,7 +108,9 @@ public class ScheduledPanel extends javax.swing.JPanel {
 
     private String formatDateTimeOrDash(String dateTime) {
         if (dateTime == null || dateTime.isEmpty()) return "-";
-        return DateTime.toDateStringWords(DateTime.getDate(DateTime.toDateTimeObject(dateTime)));
+        LocalDateTime dt = DateTime.toDateTimeObject(dateTime);
+        return DateTime.toDateStringWords(dt.toLocalDate()) + ", "
+            + dt.toLocalTime().format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
     }
 
     /**
@@ -153,18 +152,8 @@ public class ScheduledPanel extends javax.swing.JPanel {
         }
         String doctorId = activeUser.getId();
 
-        List<String> myConsultationIds = new ArrayList<>();
-        for (Consultation c : consultationCtrl.getAllConsultations()) {
-            if (c.getConsultationSlot() != null
-                    && c.getConsultationSlot().getDoctorShift() != null
-                    && c.getConsultationSlot().getDoctorShift().getDoctor() != null
-                    && doctorId.equals(c.getConsultationSlot().getDoctorShift().getDoctor().getId())) {
-                myConsultationIds.add(c.getConsultationId());
-            }
-        }
-
         for (HospitalAssetAllocation alloc : assetCtrl.getAllHospitalAssetAllocations()) {
-            if (!myConsultationIds.contains(alloc.getConsultationId())) continue;
+            if (!doctorId.equals(alloc.getDoctorId())) continue;
 
             HospitalAsset asset = assetCtrl.getHospitalAssetById(alloc.getAssetId());
             if (asset instanceof Ward) continue; // wards handled via Ward Admission
@@ -436,17 +425,17 @@ public class ScheduledPanel extends javax.swing.JPanel {
         requestTable.setBackground(new java.awt.Color(255, 255, 255));
         requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Allocation ID", "Consultation ID", "Asset", "Scheduled Start", "Schedule End", "Actual Start", "Actual End", "Status"
+                "Allocation ID", "Asset", "Scheduled Start", "Schedule End", "Actual Start", "Actual End", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -523,10 +512,9 @@ public class ScheduledPanel extends javax.swing.JPanel {
             String assetName = asset != null ? asset.getAssetName() : "";
 
             boolean match = alloc.getAllocationId().toLowerCase().contains(keyword)
-                || alloc.getConsultationId().toLowerCase().contains(keyword)
-                || assetName.toLowerCase().contains(keyword)
-                || getAllocationStatus(alloc).toLowerCase().contains(keyword);
-            if (match) results.add(alloc);
+                            || alloc.getDoctorId().toLowerCase().contains(keyword)
+                            || assetName.toLowerCase().contains(keyword)
+                            || getAllocationStatus(alloc).toLowerCase().contains(keyword);
         }
 
         currentAllocations = results;

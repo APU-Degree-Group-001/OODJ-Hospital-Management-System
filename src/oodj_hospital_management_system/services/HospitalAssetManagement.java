@@ -82,11 +82,11 @@ public class HospitalAssetManagement {
         List<LinkedHashMap<String, String>> rawData = allocationHandler.readFile();
 
         for (LinkedHashMap<String, String> row : rawData) {
-            // allocationId, consultationId, assetId, scheduledStartDateTime, scheduledEndDateTime, allocatedDateTime, releasedDateTime
+            // allocationId, doctorId, assetId, scheduledStartDateTime, scheduledEndDateTime, allocatedDateTime, releasedDateTime
             HospitalAssetAllocation allocation = new HospitalAssetAllocation(
                     row.get("allocationId"),
                     row.get("assetId"),
-                    row.get("consultationId"),
+                    row.get("doctorId"),
                     row.get("scheduledStartDateTime"),
                     row.get("scheduledEndDateTime"),
                     row.get("allocatedDateTime"),
@@ -491,15 +491,15 @@ public class HospitalAssetManagement {
      * allocatedDateTime (actual start) defaults to "now" if not supplied.
      */
     public LinkedHashMap<String, String> createHospitalAssetAllocation(
-            String assetId,
-            String consultationId,
-            String scheduledStartDateTime,
-            String scheduledEndDateTime,
-            String allocatedDateTime
+        String assetId,
+        String doctorId,
+        String scheduledStartDateTime,
+        String scheduledEndDateTime,
+        String allocatedDateTime
     ) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        loadHospitalAssetAllocations(); // keep in-memory list synced with disk before mutating
+        loadHospitalAssetAllocations();
 
         if (assetId == null || assetId.isBlank() || getHospitalAssetById(assetId) == null) {
             msgMap.put("success", null);
@@ -507,9 +507,9 @@ public class HospitalAssetManagement {
             return msgMap;
         }
 
-        if (consultationId == null || consultationId.isBlank()) {
+        if (doctorId == null || doctorId.isBlank()) {
             msgMap.put("success", null);
-            msgMap.put("msg", "Hospital asset allocation is not created\nConsultation ID is required");
+            msgMap.put("msg", "Hospital asset allocation is not created\nDoctor ID is required");
             return msgMap;
         }
 
@@ -518,7 +518,7 @@ public class HospitalAssetManagement {
         HospitalAssetAllocation newAllocation = new HospitalAssetAllocation(
                 newAllocationId,
                 assetId,
-                consultationId,
+                doctorId,
                 scheduledStartDateTime != null ? scheduledStartDateTime : "",
                 scheduledEndDateTime != null ? scheduledEndDateTime : "",
                 (allocatedDateTime == null || allocatedDateTime.isBlank())

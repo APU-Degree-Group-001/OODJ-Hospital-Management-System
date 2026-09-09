@@ -15,7 +15,7 @@ import oodj_hospital_management_system.utils.DateTime;
 public class HospitalAssetAllocation {
     private String allocationId;
     private String assetId;
-    private String consultationId;
+    private String doctorId;
     private String scheduledStartDateTime;
     private String scheduledEndDateTime;
     private String allocationDateTime;
@@ -23,7 +23,7 @@ public class HospitalAssetAllocation {
     public HospitalAssetAllocation() {
         this.allocationId = "";
         this.assetId = "";
-        this.consultationId = "";
+        this.doctorId = "";
         this.scheduledStartDateTime = "";
         this.scheduledEndDateTime = "";
         this.allocationDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
@@ -32,7 +32,7 @@ public class HospitalAssetAllocation {
     public HospitalAssetAllocation(
             String allocationId,
             String assetId,
-            String consultationId,
+            String doctorId,
             String scheduledStartDateTime,
             String scheduledEndDateTime,
             String allocationDateTime,
@@ -40,7 +40,7 @@ public class HospitalAssetAllocation {
     ) {
         this.allocationId = allocationId;
         this.assetId = assetId;
-        this.consultationId = consultationId;
+        this.doctorId = doctorId;
         this.scheduledStartDateTime = scheduledStartDateTime;
         this.scheduledEndDateTime = scheduledEndDateTime;
         this.allocationDateTime = allocationDateTime;
@@ -79,8 +79,8 @@ public class HospitalAssetAllocation {
     public String getAssetId() {
         return this.assetId;
     }
-    public String getConsultationId() {
-        return this.consultationId;
+    public String getDoctorId() {
+        return this.doctorId;
     }
     public String getScheduledStartDateTime() {
         return this.scheduledStartDateTime;
@@ -98,8 +98,8 @@ public class HospitalAssetAllocation {
     public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-    public void setConsultationId(String consultationId) {
-        this.consultationId = consultationId;
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
     }
     public void setScheduledStartDateTime(String scheduledStartDateTime) {
         this.scheduledStartDateTime = scheduledStartDateTime;
@@ -116,7 +116,7 @@ public class HospitalAssetAllocation {
     public LinkedHashMap<String, String> getHospitalAssetAllocationMap() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("allocationId", allocationId);
-        map.put("consultationId", consultationId != null ? consultationId : "");
+        map.put("doctorId", doctorId != null ? doctorId : "");
         map.put("assetId", assetId != null ? assetId : "");
         map.put("scheduledStartDateTime", scheduledStartDateTime != null ? scheduledStartDateTime : "");
         map.put("scheduledEndDateTime", scheduledEndDateTime != null ? scheduledEndDateTime : "");

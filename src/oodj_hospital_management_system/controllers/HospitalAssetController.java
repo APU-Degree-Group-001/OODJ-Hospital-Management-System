@@ -135,18 +135,18 @@ public class HospitalAssetController {
         return msg;
     }
  
-    public LinkedHashMap<String, String> createHospitalAssetAllocation(String assetId, String consultationId, String scheduledStartDateTime, String scheduledEndDateTime, String allocatedDateTime) {
-        LinkedHashMap<String, String> msg = hospitalAssetServices.createHospitalAssetAllocation(assetId, consultationId, scheduledStartDateTime, scheduledEndDateTime, allocatedDateTime);
+    public LinkedHashMap<String, String> createHospitalAssetAllocation(String assetId, String doctorId, String scheduledStartDateTime, String scheduledEndDateTime, String allocatedDateTime) {
+        LinkedHashMap<String, String> msg = hospitalAssetServices.createHospitalAssetAllocation(assetId, doctorId, scheduledStartDateTime, scheduledEndDateTime, allocatedDateTime);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
-            Logger.log(String.format("User {%s - %s - %s} created Hospital Asset Allocation {%s} for Asset {%s} on Consultation {%s}",
+            Logger.log(String.format("User {%s - %s - %s} created Hospital Asset Allocation {%s} for Asset {%s} for Doctor {%s}",
                     activeUser.getType(), activeUser.getId(), activeUser.getName(),
-                    msg.get("newAllocationId"), assetId, consultationId));
+                    msg.get("newAllocationId"), assetId, doctorId));
         } else {
             System.out.println(msg.get("msg"));
-            Logger.errorLog(String.format("User {%s - %s - %s} failed to create Hospital Asset Allocation for Asset {%s} on Consultation {%s}\n\tErrorMsg: %s",
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to create Hospital Asset Allocation for Asset {%s} for Doctor {%s}\n\tErrorMsg: %s",
                     activeUser.getType(), activeUser.getId(), activeUser.getName(),
-                    assetId, consultationId, msg.get("msg")));
+                    assetId, doctorId, msg.get("msg")));
         }
         return msg;
     }

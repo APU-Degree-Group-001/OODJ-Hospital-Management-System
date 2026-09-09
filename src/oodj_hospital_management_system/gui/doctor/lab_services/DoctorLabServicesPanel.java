@@ -203,8 +203,8 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
 
     private void scheduledButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduledButtonActionPerformed
         setNavButtonActive(assetsButton, false);
-        setNavButtonActive(scheduledButton, false);
-        setNavButtonActive(requestButton, true);
+        setNavButtonActive(scheduledButton, true);
+        setNavButtonActive(requestButton, false);
         cl.show(labServicesContentArea, "scheduled");
     }//GEN-LAST:event_scheduledButtonActionPerformed
 

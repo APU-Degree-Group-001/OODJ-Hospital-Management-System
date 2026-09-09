@@ -4188,3 +4188,5 @@ Bill Handling Error: Only Admin Staff can manage billing
 [2026-09-05 15:13:51] User {doctor - #DOCd4e8f - bug1} failed to delete Prescription {#PRE5e106}
 [2026-09-05 15:31:50] User with ID '#DOCd4e8f' failed to logged in
 	ErrorMsg: Incorrect Login Credentials
+[2026-09-10 00:09:43] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ASSET_XRAY01' is not found
+[2026-09-10 00:09:43] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ASSET_XRAY01' is not found
