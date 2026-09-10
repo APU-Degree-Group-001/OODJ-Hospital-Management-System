@@ -43,6 +43,10 @@ public class HospitalAssetController {
     public HospitalAssetAllocation getHospitalAssetAllocationById(String allocationId) {
         return HospitalAssetManagement.getHospitalAssetAllocationById(allocationId);
     }
+    
+    public List<HospitalAssetAllocation> getHospitalAssetAllocationsByAssetId(String assetId) {
+        return HospitalAssetManagement.getHospitalAssetAllocationsByAssetId(assetId);
+    }
  
     // Search and Sort
     public List<HospitalAsset> searchHospitalAssets(String keyword) {

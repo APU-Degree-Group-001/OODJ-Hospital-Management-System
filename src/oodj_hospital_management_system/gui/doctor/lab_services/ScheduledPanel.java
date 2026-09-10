@@ -631,9 +631,16 @@ public class ScheduledPanel extends javax.swing.JPanel {
         HospitalAssetAllocation selected = getSelectedAllocation();
         if (selected == null) return;
 
-        if (!selected.getReleasedDateTime().isEmpty()) {
+        if (selected.getReleasedDateTime() != null && !selected.getReleasedDateTime().isEmpty()) {
             JOptionPane.showMessageDialog(parentWindow,
                 "This allocation has already ended and cannot be started again.",
+                "Cannot Start", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (selected.getAllocationDateTime() != null && !selected.getAllocationDateTime().isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This allocation has already been started.",
                 "Cannot Start", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -657,9 +664,16 @@ public class ScheduledPanel extends javax.swing.JPanel {
         HospitalAssetAllocation selected = getSelectedAllocation();
         if (selected == null) return;
 
-        if (!selected.getReleasedDateTime().isEmpty()) {
+        if (selected.getReleasedDateTime() != null && !selected.getReleasedDateTime().isEmpty()) {
             JOptionPane.showMessageDialog(parentWindow,
                 "This allocation has already ended.",
+                "Cannot End", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (selected.getAllocationDateTime() == null || selected.getAllocationDateTime().isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This allocation has not been started yet and cannot be ended.",
                 "Cannot End", JOptionPane.WARNING_MESSAGE);
             return;
         }

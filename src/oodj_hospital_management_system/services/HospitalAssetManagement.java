@@ -159,6 +159,24 @@ public class HospitalAssetManagement {
             return null;
         }
     }
+    
+    // =========================================================
+    // GET HOSPITAL ASSET ALLOCATION BY ASSET ID
+    // =========================================================
+
+    public static List<HospitalAssetAllocation> getHospitalAssetAllocationsByAssetId(String keyword) {
+        loadHospitalAssetAllocations();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>(allHospitalAssetAllocations);
+        }
+
+        String searchKeyword = keyword.toLowerCase().trim();
+
+        return allHospitalAssetAllocations.stream()
+                .filter(allocation -> allocation.getAssetId().equals(searchKeyword))
+                .collect(Collectors.toList());
+    }
 
     // =========================================================
     // SEARCH
