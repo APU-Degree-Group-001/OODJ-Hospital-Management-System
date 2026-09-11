@@ -38,12 +38,16 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private List<HospitalAsset> currentAssets;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+    private java.awt.CardLayout cardLayout;
+    private javax.swing.JPanel cardContainer;
 
     /**
      * Creates new form PatientManagement
      */
-    public HospitalAssetsPanel(UserController usrCtrl) {
+    public HospitalAssetsPanel(UserController usrCtrl, javax.swing.JPanel cardContainer) {
         this.usrCtrl = usrCtrl;
+        this.cardLayout = (java.awt.CardLayout) cardContainer.getLayout();
+        this.cardContainer = cardContainer;
         initComponents();
         loadAssets();
         jPanel2.setPreferredSize(null);
@@ -57,7 +61,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         currentAssets = allAssets;
 
         for (HospitalAsset asset : allAssets) {
-            HospitalAssetPanel assetPanel = new HospitalAssetPanel(asset);
+            HospitalAssetPanel assetPanel = new HospitalAssetPanel(usrCtrl, asset, () -> openAssetAllocation(asset));
             assetPanelWrapper.add(assetPanel);
             assetPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         }
@@ -66,6 +70,21 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         wrapperPane.revalidate();  // let the outer BoxLayout row recompute too
         assetPanelWrapper.revalidate();
         assetPanelWrapper.repaint();
+    }
+    
+    private void openAssetAllocation(HospitalAsset asset) {
+        HospitalAssetViewTimeTablePanel detailsPanel = new HospitalAssetViewTimeTablePanel(
+            usrCtrl,
+            asset,
+            () -> {
+                // Back button: drop this card and return to the completed-consultations list
+                cardLayout.show(cardContainer, "hospitalAssets");
+            }
+        );
+
+        String cardName = "assetAllocation-" + asset.getAssetId();
+        cardContainer.add(detailsPanel, cardName);
+        cardLayout.show(cardContainer, cardName);
     }
     
     private void updateResultLabel(String message, int count) {
@@ -217,7 +236,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         currentAssets = searchResults;
         assetPanelWrapper.removeAll();
         for (HospitalAsset asset : searchResults) {
-            HospitalAssetPanel assetPanel = new HospitalAssetPanel(asset);
+            HospitalAssetPanel assetPanel = new HospitalAssetPanel(usrCtrl, asset, () -> openAssetAllocation(asset));
             assetPanelWrapper.add(assetPanel);
             assetPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         }

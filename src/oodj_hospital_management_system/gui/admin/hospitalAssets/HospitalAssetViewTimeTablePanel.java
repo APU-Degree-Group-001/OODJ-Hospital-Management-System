@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -38,6 +39,7 @@ import oodj_hospital_management_system.models.PrescriptionType;
 import oodj_hospital_management_system.models.User;
 import oodj_hospital_management_system.services.BillingManagement;
 import oodj_hospital_management_system.services.ConsultationManagement;
+import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
 
 /**
@@ -61,7 +63,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         initComponents();
         applyWrappingRenderers();
 
-        if (isPatientView()) {
+        if (!isAdminView()) {
             allocationCrudPanel.setVisible(false);
         }
 
@@ -81,49 +83,40 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     
     private void loadAssetDetails() {
         if (asset == null) return;
-        String assetId = asset.getAssetId();
+        String id = asset.getAssetId();
 
         // Consultation info
-        assetId.setText(assetId);
+        assetId.setText(id);
         assetType.setText(asset.getAssetType());
         assetName.setText(asset.getAssetName());
 
-        loadAssetAllocation(assetId);
+        loadAssetAllocations(id);
     }
 
-    private LocalDateTime resolveConsultationDateTime(Consultation c) {
-        if (c == null || c.getConsultationSlot() == null) return null;
-        String raw = c.getConsultationSlot().getStartDateTime();
-        if (raw == null || raw.isBlank()) return null;
-        try {
-            return DateTime.toDateTimeObject(raw);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private void loadAssetAllocation(String assetId) {
+    private void loadAssetAllocations(String id) {
         List<HospitalAssetAllocation> allocation = usrCtrl.getHospitalAssetController()
-            .getHospitalAssetAllocationsByAssetId(assetId);
-
-        this.currentAllocation = allocation;
-
-        boolean isPatient = isPatientView();
-
-        populateTimeTable(allocation != null ? allocation : new ArrayList<>());
-
+            .getHospitalAssetAllocationsByAssetId(id);
+ 
+        this.currentAllocations = allocation != null ? allocation : new ArrayList<>();
+ 
+        populateTimeTable(this.currentAllocations);
+        
+        System.out.println("Asset ID: " + id);
+        System.out.println("Allocations found: " +
+                (allocation == null ? "NULL" : allocation.size()));
+ 
         timetablePanel.setMaximumSize(
             new Dimension(Integer.MAX_VALUE, timetablePanel.getPreferredSize().height));
-
+ 
         timetablePanel.revalidate();
         timetablePanel.repaint();
         wrapperPane.revalidate();
         wrapperPane.repaint();
     }
     
-    private boolean isPatientView() {
+    private boolean isAdminView() {
         return usrCtrl.getActiveUser() != null
-            && "patient".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
+            && "admin staff".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
     }
 
     private void populateTimeTable(List<HospitalAssetAllocation> allocation) {
@@ -142,7 +135,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     }
     
     private String getDoctorLabel(String doctorId) {
-        return doctorId + " - " + this.usrCtrl.getDoctorById(doctorId).getName();
+        Doctor d = this.usrCtrl.getDoctorById(doctorId);
+        return doctorId + " - " + (d != null ? d.getName() : "Unknown");
     }
     
     private String getAllocationStatus(HospitalAssetAllocation alloc) {
@@ -176,6 +170,114 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             if (a.getAllocationId().equals(allocationId)) return a;
         }
         return null;
+    }
+    
+    private List<HospitalAssetAllocation> getBaseAllocations() {
+        List<HospitalAssetAllocation> base = usrCtrl.getHospitalAssetController()
+            .getHospitalAssetAllocationsByAssetId(asset.getAssetId());
+        return base != null ? base : new ArrayList<>();
+    }
+ 
+    private LinkedHashMap<String, String> selectDateRange() {
+        JDateChooser startChooser = new JDateChooser();
+        JDateChooser endChooser = new JDateChooser();
+        startChooser.setDateFormatString("yyyy-MM-dd");
+        endChooser.setDateFormatString("yyyy-MM-dd");
+ 
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+        panel.add(new JLabel("From:"));
+        panel.add(startChooser);
+        panel.add(new JLabel("To:"));
+        panel.add(endChooser);
+ 
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+            "Select Date Range", JOptionPane.OK_CANCEL_OPTION);
+ 
+        LinkedHashMap<String, String> range = new LinkedHashMap<>();
+        if (result != JOptionPane.OK_OPTION) {
+            return range; // both entries null -> caller treats as "cancelled"
+        }
+ 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = startChooser.getDate();
+        Date endDate = endChooser.getDate();
+        range.put("startDate", startDate != null ? sdf.format(startDate) : null);
+        range.put("endDate", endDate != null ? sdf.format(endDate) : null);
+        return range;
+    }
+ 
+    private List<HospitalAssetAllocation> filterByScheduledDateRange(
+            List<HospitalAssetAllocation> base, String startDate, String endDate) {
+        List<HospitalAssetAllocation> filtered = new ArrayList<>();
+        for (HospitalAssetAllocation a : base) {
+            String raw = a.getScheduledStartDateTime();
+            if (raw == null || raw.isEmpty()) continue;
+            LocalDate date = DateTime.toDateTimeObject(raw).toLocalDate();
+            if (startDate != null && date.isBefore(LocalDate.parse(startDate))) continue;
+            if (endDate != null && date.isAfter(LocalDate.parse(endDate))) continue;
+            filtered.add(a);
+        }
+        return filtered;
+    }
+ 
+    private List<HospitalAssetAllocation> filterByActualDateRange(
+            List<HospitalAssetAllocation> base, String startDate, String endDate) {
+        List<HospitalAssetAllocation> filtered = new ArrayList<>();
+        for (HospitalAssetAllocation a : base) {
+            String raw = a.getAllocationDateTime();
+            if (raw == null || raw.isEmpty()) continue;
+            LocalDate date = DateTime.toDateTimeObject(raw).toLocalDate();
+            if (startDate != null && date.isBefore(LocalDate.parse(startDate))) continue;
+            if (endDate != null && date.isAfter(LocalDate.parse(endDate))) continue;
+            filtered.add(a);
+        }
+        return filtered;
+    }
+ 
+    private String selectAllocationStatus() {
+        String[] statuses = {"Scheduled", "In Progress", "Overrunning", "Overdue", "Completed"};
+        return (String) JOptionPane.showInputDialog(parentWindow, "Select status:",
+            "Filter by Status", JOptionPane.QUESTION_MESSAGE, null, statuses, statuses[0]);
+    }
+ 
+    private List<HospitalAssetAllocation> filterByStatus(List<HospitalAssetAllocation> base, String status) {
+        List<HospitalAssetAllocation> filtered = new ArrayList<>();
+        for (HospitalAssetAllocation a : base) {
+            if (getAllocationStatus(a).equals(status)) filtered.add(a);
+        }
+        return filtered;
+    }
+ 
+    private String selectDoctor(List<HospitalAssetAllocation> base) {
+        // why?
+        LinkedHashSet<String> doctorIds = new LinkedHashSet<>();
+        for (HospitalAssetAllocation a : base) doctorIds.add(a.getDoctorId());
+ 
+        if (doctorIds.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "No doctors found for this asset.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+ 
+        LinkedHashMap<String, String> labelToId = new LinkedHashMap<>();
+        for (String id : doctorIds) {
+            Doctor d = usrCtrl.getDoctorById(id);
+            labelToId.put(id + " - " + (d != null ? d.getName() : "Unknown"), id);
+        }
+ 
+        String[] labels = labelToId.keySet().toArray(new String[0]);
+        String choice = (String) JOptionPane.showInputDialog(parentWindow, "Select doctor:",
+            "Filter by Doctor", JOptionPane.QUESTION_MESSAGE, null, labels, labels[0]);
+ 
+        return choice != null ? labelToId.get(choice) : null;
+    }
+ 
+    private List<HospitalAssetAllocation> filterByDoctor(List<HospitalAssetAllocation> base, String doctorId) {
+        List<HospitalAssetAllocation> filtered = new ArrayList<>();
+        for (HospitalAssetAllocation a : base) {
+            if (doctorId.equals(a.getDoctorId())) filtered.add(a);
+        }
+        return filtered;
     }
     
     private void applyWrappingRenderers() {
@@ -218,6 +320,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         editButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
         sortByPane = new javax.swing.JPanel();
+        resetButton = new javax.swing.JButton();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         sortByLabel = new javax.swing.JLabel();
         sortField = new javax.swing.JComboBox<>();
         sortByLabel1 = new javax.swing.JLabel();
@@ -392,6 +496,11 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         sortByPane.setBackground(new java.awt.Color(246, 251, 255));
         sortByPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 10, 1));
 
+        resetButton.setText("Reset Table");
+        resetButton.addActionListener(this::resetButtonActionPerformed);
+        sortByPane.add(resetButton);
+        sortByPane.add(filler5);
+
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
 
@@ -421,64 +530,91 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
         HospitalAssetAllocation selected = getSelectedAllocation();
         if (selected == null) return;
-
+ 
         int confirm = JOptionPane.showConfirmDialog(parentWindow,
-            "Delete this medical assessment? This cannot be undone.",
+            "Delete this allocation? This cannot be undone.",
             "Confirm Delete", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (confirm != JOptionPane.YES_OPTION) return;
-
-        boolean success = usrCtrl.getMedicalRecordController().deleteMedicalAssessment(selected);
-        if (success) {
+ 
+        String success = usrCtrl.getHospitalAssetController().deleteHospitalAssetAllocation(selected.getAllocationId()).get("success");
+        if (success != null) {
             JOptionPane.showMessageDialog(parentWindow,
-                "Medical assessment deleted.", "Success", JOptionPane.INFORMATION_MESSAGE);
-            loadConsultationDetails();
+                "Allocation deleted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            loadAssetDetails();
         } else {
             JOptionPane.showMessageDialog(parentWindow,
-                "Failed to delete medical assessment.", "Error", JOptionPane.ERROR_MESSAGE);
+                "Failed to delete allocation.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void allocateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allocateButtonActionPerformed
-    JTextField typeField = new JTextField(20);
-        JTextField findingsField = new JTextField(20);
-        JTextField diagnosisField = new JTextField(20);
-
+        JTextField doctorIdField = new JTextField(20);
+        JTextField startField = new JTextField(20);
+        JTextField endField = new JTextField(20);
+ 
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("Assessment Type:"));
-        panel.add(typeField);
-        panel.add(new JLabel("Findings:"));
-        panel.add(findingsField);
-        panel.add(new JLabel("Diagnosis:"));
-        panel.add(diagnosisField);
-
+        panel.add(new JLabel("Doctor ID:"));
+        panel.add(doctorIdField);
+        panel.add(new JLabel("Scheduled Start (yyyy-MM-dd HH:mm):"));
+        panel.add(startField);
+        panel.add(new JLabel("Scheduled End (yyyy-MM-dd HH:mm):"));
+        panel.add(endField);
+ 
         while (true) {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
-                "Add Medical Assessment", JOptionPane.OK_CANCEL_OPTION);
+                "Allocate Asset", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
-
-            String type = typeField.getText().trim();
-            String findings = findingsField.getText().trim();
-            String diagnosis = diagnosisField.getText().trim();
-
-            if (type.isEmpty() || findings.isEmpty() || diagnosis.isEmpty()) {
+ 
+            String doctorId = doctorIdField.getText().trim();
+            String start = startField.getText().trim();
+            String end = endField.getText().trim();
+ 
+            if (doctorId.isEmpty() || start.isEmpty() || end.isEmpty()) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-
-            String newAssessmentId = oodj_hospital_management_system.services.MedicalRecordManagement
-                .generateMedicalAssessmentId();
-            MedicalAssessment newAssessment = new MedicalAssessment(
-                newAssessmentId, consultation.getConsultationId(), type, findings, diagnosis);
-
-            boolean success = usrCtrl.getMedicalRecordController().createMedicalAssessment(newAssessment);
-            if (success) {
+ 
+            if (usrCtrl.getDoctorById(doctorId) == null) {
                 JOptionPane.showMessageDialog(parentWindow,
-                    "Medical assessment added.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadConsultationDetails();
+                    "No doctor found with that ID.", "Invalid Doctor", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+ 
+            LocalDateTime startDateTime;
+            LocalDateTime endDateTime;
+            try {
+                startDateTime = DateTime.toDateTimeObject(start);
+                endDateTime = DateTime.toDateTimeObject(end);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Dates must be in the format yyyy-MM-dd HH:mm.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+ 
+            if (!endDateTime.isAfter(startDateTime)) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+ 
+            LinkedHashMap<String, String> msg =
+            usrCtrl.getHospitalAssetController().createHospitalAssetAllocation(
+                    asset.getAssetId(),
+                    doctorId,
+                    DateTime.formattedLocalDateTime(startDateTime),
+                    DateTime.formattedLocalDateTime(endDateTime),
+                    DateTime.formattedLocalDateTime(LocalDateTime.now())
+            );
+
+            if (msg.get("success") != null) {
+                JOptionPane.showMessageDialog(parentWindow,
+                        "Allocation added.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                loadAssetDetails();
             } else {
                 JOptionPane.showMessageDialog(parentWindow,
-                    "Failed to add medical assessment.", "Error", JOptionPane.ERROR_MESSAGE);
+                        "Failed to add allocation.\n" + msg.get("msg"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
@@ -494,104 +630,190 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         if (currentAllocations == null) return;
         String selected = (String) sortField.getSelectedItem();
         List<HospitalAssetAllocation> sorted = new ArrayList<>(currentAllocations);
-
+ 
         switch (selected) {
             case "ID":
-            sorted.sort((a, b) -> a.getAllocationId().compareToIgnoreCase(b.getAllocationId()));
-            break;
-
+                sorted.sort((a, b) -> a.getAllocationId().compareToIgnoreCase(b.getAllocationId()));
+                break;
+ 
             case "Scheduled Date Time":
-            sorted.sort((a, b) -> {
-                boolean aEmpty = a.getScheduledStartDateTime() == null || a.getScheduledStartDateTime().isEmpty();
-                boolean bEmpty = b.getScheduledStartDateTime() == null || b.getScheduledStartDateTime().isEmpty();
-                if (aEmpty && bEmpty) return 0;
-                if (aEmpty) return 1;   // unscheduled allocations sink to the bottom
-                if (bEmpty) return -1;
-                return DateTime.toDateTimeObject(a.getScheduledStartDateTime())
-                .compareTo(DateTime.toDateTimeObject(b.getScheduledStartDateTime()));
-            });
-            break;
-
+                sorted.sort((a, b) -> {
+                    boolean aEmpty = a.getScheduledStartDateTime() == null || a.getScheduledStartDateTime().isEmpty();
+                    boolean bEmpty = b.getScheduledStartDateTime() == null || b.getScheduledStartDateTime().isEmpty();
+                    if (aEmpty && bEmpty) return 0;
+                    if (aEmpty) return 1;   // unscheduled allocations sink to the bottom
+                    if (bEmpty) return -1;
+                    return DateTime.toDateTimeObject(a.getScheduledStartDateTime())
+                        .compareTo(DateTime.toDateTimeObject(b.getScheduledStartDateTime()));
+                });
+                break;
+ 
             case "Actual Date Time":
-            sorted.sort((a, b) -> {
-                boolean aEmpty = a.getAllocationDateTime() == null || a.getAllocationDateTime().isEmpty();
-                boolean bEmpty = b.getAllocationDateTime() == null || b.getAllocationDateTime().isEmpty();
-                if (aEmpty && bEmpty) return 0;
-                if (aEmpty) return 1;   // not-yet-started allocations sink to the bottom
-                if (bEmpty) return -1;
-                return DateTime.toDateTimeObject(a.getAllocationDateTime())
-                .compareTo(DateTime.toDateTimeObject(b.getAllocationDateTime()));
-            });
-            break;
-
+                sorted.sort((a, b) -> {
+                    boolean aEmpty = a.getAllocationDateTime() == null || a.getAllocationDateTime().isEmpty();
+                    boolean bEmpty = b.getAllocationDateTime() == null || b.getAllocationDateTime().isEmpty();
+                    if (aEmpty && bEmpty) return 0;
+                    if (aEmpty) return 1;   // not-yet-started allocations sink to the bottom
+                    if (bEmpty) return -1;
+                    return DateTime.toDateTimeObject(a.getAllocationDateTime())
+                        .compareTo(DateTime.toDateTimeObject(b.getAllocationDateTime()));
+                });
+                break;
+ 
             default: // "Default" -> fall back to allocation ID
-            sorted.sort((a, b) -> a.getAllocationId().compareToIgnoreCase(b.getAllocationId()));
+                sorted.sort((a, b) -> a.getAllocationId().compareToIgnoreCase(b.getAllocationId()));
         }
-
+ 
         currentAllocations = sorted;
-        populateAllocationTable(sorted);
+        populateTimeTable(sorted);
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
-
-        List<HospitalAssetAllocation> base = (currentAllocations != null) ? currentAllocations : getBaseAllocations();
-
+        List<HospitalAssetAllocation> base = getBaseAllocations();
+ 
         switch (selected) {
+            case "Doctor": {
+                String doctorId = selectDoctor(base);
+                if (doctorId != null) {
+                    currentAllocations = filterByDoctor(base, doctorId);
+                    populateTimeTable(currentAllocations);
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
+            }
+ 
             case "Scheduled Date Time": {
-                currentAllocations = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
+                    currentAllocations = filterByScheduledDateRange(base, range.get("startDate"), range.get("endDate"));
+                    populateTimeTable(currentAllocations);
                 } else {
                     filterByField.setSelectedIndex(0);
                 }
                 break;
             }
-
+ 
             case "Actual Date Time": {
-                currentAllocations = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByActualDateRange(range.get("startDate"), range.get("endDate"));
+                    currentAllocations = filterByActualDateRange(base, range.get("startDate"), range.get("endDate"));
+                    populateTimeTable(currentAllocations);
                 } else {
                     filterByField.setSelectedIndex(0);
                 }
                 break;
             }
-
+ 
             case "Status": {
-                currentAllocations = base;
                 String status = selectAllocationStatus();
                 if (status != null) {
-                    filterByStatus(status);
+                    currentAllocations = filterByStatus(base, status);
+                    populateTimeTable(currentAllocations);
                 } else {
                     filterByField.setSelectedIndex(0);
                 }
                 break;
             }
-
-            case "Asset": {
-                currentAllocations = base;
-                String keyword = selectAssetKeyword();
-                if (keyword != null) {
-                    filterByAsset(keyword);
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
-            }
-
+ 
             default: // "Default" -> no filter
-            currentAllocations = base;
-            populateAllocationTable(base);
-            updateResultLabel("Showing " + base.size() + " allocation(s)", base.size());
+                currentAllocations = base;
+                populateTimeTable(base);
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-        // TODO add your handling code here:
+        HospitalAssetAllocation selected = getSelectedAllocation();
+        if (selected == null) return;
+ 
+        List<Doctor> doctors = UserManagement.getAllDoctors().stream().filter(d -> d instanceof Doctor).map(d -> (Doctor) d).toList();
+        if (doctors == null || doctors.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "No active doctors are available.", "Cannot Edit", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+ 
+        JComboBox<Doctor> doctorCombo = new JComboBox<>(doctors.toArray(new Doctor[0]));
+        doctorCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value,
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Doctor) {
+                    setText(((Doctor) value).getName());
+                }
+                return this;
+            }
+        });
+        for (Doctor d : doctors) {
+            if (d.getId().equals(selected.getDoctorId())) {
+                doctorCombo.setSelectedItem(d);
+                break;
+            }
+        }
+ 
+        JTextField startField = new JTextField(selected.getScheduledStartDateTime(), 20);
+        JTextField endField = new JTextField(selected.getScheduledEndDateTime(), 20);
+ 
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+        panel.add(new JLabel("Doctor:"));
+        panel.add(doctorCombo);
+        panel.add(new JLabel("Scheduled Start (yyyy-MM-dd HH:mm):"));
+        panel.add(startField);
+        panel.add(new JLabel("Scheduled End (yyyy-MM-dd HH:mm):"));
+        panel.add(endField);
+ 
+        while (true) {
+            int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+                "Edit Allocation", JOptionPane.OK_CANCEL_OPTION);
+            if (result != JOptionPane.OK_OPTION) return;
+ 
+            Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
+            String start = startField.getText().trim();
+            String end = endField.getText().trim();
+ 
+            if (selectedDoctor == null || start.isEmpty() || end.isEmpty()) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+ 
+            try {
+                LocalDateTime startDt = DateTime.toDateTimeObject(start);
+                LocalDateTime endDt = DateTime.toDateTimeObject(end);
+                if (!endDt.isAfter(startDt)) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Dates must be in yyyy-MM-dd HH:mm format.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+ 
+            String allocationId = selected.getAllocationId();
+            LinkedHashMap<String, String> scheduleMsg = usrCtrl.getHospitalAssetController().setHospitalAssetAllocationSchedule(allocationId, start, end);
+ 
+            boolean success = scheduleMsg.get("success") != null;
+ 
+            if (success) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Allocation updated.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                loadAssetAllocations(asset.getAssetId());
+            } else {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Some fields failed to update. Check the log for details.",
+                    "Partial Failure", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
     }//GEN-LAST:event_editButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        loadAssetAllocations(asset.getAssetId());
+    }//GEN-LAST:event_resetButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -606,6 +828,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
     private javax.swing.JComboBox<String> filterByField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -617,6 +840,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel patientInformationPanel;
     private javax.swing.JButton removeButton;
+    private javax.swing.JButton resetButton;
     private javax.swing.JLabel sortByLabel;
     private javax.swing.JLabel sortByLabel1;
     private javax.swing.JPanel sortByPane;

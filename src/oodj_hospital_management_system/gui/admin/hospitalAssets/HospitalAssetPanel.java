@@ -7,6 +7,7 @@ package oodj_hospital_management_system.gui.admin.hospitalAssets;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
+import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.utils.RoundedPanel;
 import oodj_hospital_management_system.models.HospitalAsset;
 
@@ -15,22 +16,35 @@ import oodj_hospital_management_system.models.HospitalAsset;
  * @author sheaw
  */
 public class HospitalAssetPanel extends RoundedPanel {
-        private HospitalAsset asset;
-        private static final int IMG_WIDTH = 215;
-        private static final int IMG_HEIGHT = 215;
+    private UserController usrCtrl;
+    private HospitalAsset asset;
+    private final Runnable onViewAllocation;
+    private static final int IMG_WIDTH = 215;
+    private static final int IMG_HEIGHT = 215;
 
     /**
      * Creates new form HospitalAssetPanel
      */
-    public HospitalAssetPanel(HospitalAsset asset) {
+    public HospitalAssetPanel(UserController usrCtrl, HospitalAsset asset, Runnable onViewAllocation) {
 //        [246,251,255]
 //        [229,243,255]
         super(15, new java.awt.Color(229,243,255), 10, 15, 10, 15);
+        this.usrCtrl = usrCtrl;
         initComponents();
         this.asset = asset;
+        this.onViewAllocation = onViewAllocation;
         loadAssetData();
+        if (!isAdminView()) {
+            modifyButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
         imageHolder.setMaximumSize(new java.awt.Dimension(215, 215));
         imageHolder.setPreferredSize(new java.awt.Dimension(215, 215));
+    }
+    
+    private boolean isAdminView() {
+        return usrCtrl.getActiveUser() != null
+            && "admin staff".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
     }
     
     private void loadAssetData() {
@@ -129,6 +143,7 @@ public class HospitalAssetPanel extends RoundedPanel {
         descriptionField.setRows(5);
         descriptionField.setText("Standard consultation room with basic equipment hahahhaha");
         descriptionField.setWrapStyleWord(true);
+        descriptionField.setEnabled(false);
 
         jLabel6.setText("Description:");
 
@@ -137,6 +152,7 @@ public class HospitalAssetPanel extends RoundedPanel {
         deleteButton.setText("Delete");
 
         viewButton.setText("View");
+        viewButton.addActionListener(this::viewButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -192,6 +208,10 @@ public class HospitalAssetPanel extends RoundedPanel {
                 .addGap(15, 15, 15))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
+        if (onViewAllocation != null) onViewAllocation.run();
+    }//GEN-LAST:event_viewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

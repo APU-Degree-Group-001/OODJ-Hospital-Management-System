@@ -52,7 +52,7 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
 
-        hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
+        hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl, hospitalAssetContentArea), "hospitalAssets");
 
         setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(doctorButton, false);

@@ -133,6 +133,7 @@
         <Property name="rows" type="int" value="5"/>
         <Property name="text" type="java.lang.String" value="Standard consultation room with basic equipment hahahhaha"/>
         <Property name="wrapStyleWord" type="boolean" value="true"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
@@ -154,6 +155,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="View"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -9,6 +9,7 @@ import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.dashboard.*;
+import oodj_hospital_management_system.gui.admin.hospitalAssets.HospitalAssetsPanel;
 
 /**
  *
@@ -28,7 +29,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
     public DoctorLabServicesPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        labServicesContentArea.add(new HospitalAssetsPanel(usrCtrl), "hospitalAssets");
+        labServicesContentArea.add(new HospitalAssetsPanel(usrCtrl, labServicesContentArea), "hospitalAssets");
         labServicesContentArea.add(new ScheduledPanel(usrCtrl), "scheduled");
         labServicesContentArea.add(new RequestPanel(usrCtrl), "request");
         
