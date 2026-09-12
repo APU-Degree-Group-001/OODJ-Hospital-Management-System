@@ -134,7 +134,8 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
     }
     
     private void filterByDateRange(String start, String end) {
-        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, currentMedicalManagers);
+        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, UserManagement.getAllMedicalManagers());
+        currentMedicalManagers = filtered;
         DefaultTableModel model = (DefaultTableModel) medicalManagerTable.getModel();
         model.setRowCount(0);
         for (User usr : filtered) {
@@ -400,7 +401,10 @@ public class MedicalManagerManagementPanel extends javax.swing.JPanel {
             }
             return;
         } else {
-            populateTable(currentMedicalManagers);
+            List<User> allMedicalManagers = UserManagement.getAllMedicalManagers(); // adjust to your actual service method name
+            currentMedicalManagers = allMedicalManagers;
+            populateTable(allMedicalManagers);
+            updateResultLabel("Showing " + allMedicalManagers.size() + " medical manager(s)", allMedicalManagers.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

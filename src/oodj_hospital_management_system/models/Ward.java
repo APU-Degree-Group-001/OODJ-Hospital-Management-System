@@ -20,9 +20,10 @@ public class Ward extends HospitalAsset {
             String imagePath,
             String location,
             String description,
+            String status,
             int totalBeds
     ) {
-        super(assetId, assetName, assetType, imagePath, location, description);
+        super(assetId, assetName, assetType, imagePath, location, description, status);
         this.totalBeds = totalBeds;
     }
     

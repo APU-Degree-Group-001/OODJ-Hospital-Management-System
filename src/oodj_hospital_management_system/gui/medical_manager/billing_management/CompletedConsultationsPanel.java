@@ -182,7 +182,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
  
     private void filterByDateRange(String start, String end) {
         List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : getCompletedConsultations()) {
             LocalDateTime dt = DateTime.toDateTimeObject(c.getConsultationSlot().getStartDateTime());
             LocalDate date = DateTime.getDate(dt);
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -191,6 +191,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
                 filtered.add(c);
             }
         }
+        currentConsultations = filtered;   // keep state in sync
         populateTable(filtered);
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
         String label;
@@ -220,12 +221,13 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     private void filterByDoctor(String keyword) {
         String kw = keyword.toLowerCase();
         List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : getCompletedConsultations()) {
             Doctor d = getDoctorForConsultation(c);
             if (d != null && (d.getId().toLowerCase().contains(kw) || d.getName().toLowerCase().contains(kw))) {
                 filtered.add(c);
             }
         }
+        currentConsultations = filtered;
         populateTable(filtered);
         updateResultLabel("Showing consultations for doctor \"" + keyword + "\"", filtered.size());
     }
@@ -271,7 +273,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         LocalTime startTime = start != null ? LocalTime.parse(start) : null;
         LocalTime endTime = end != null ? LocalTime.parse(end) : null;
 
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : getCompletedConsultations()) {
             LocalDateTime dt = DateTime.toDateTimeObject(c.getConsultationSlot().getStartDateTime());
             LocalTime slotTime = DateTime.getTime(dt);
 
@@ -282,6 +284,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
             }
         }
 
+        currentConsultations = filtered;
         populateTable(filtered);
 
         String startLabel = startTime != null ? DateTime.toTimeString(startTime) : "any time";
@@ -461,7 +464,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        // TODO add your handling code here:
+        searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -513,42 +516,46 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         searchField.setText("");
         showResultsForLabel.setText("");
         String selected = (String) filterByField.getSelectedItem();
- 
+
         if (selected == null) {
             return;
         }
- 
+
         switch (selected) {
-        case "Assigned Doctor": {
-            String keyword = JOptionPane.showInputDialog(parentWindow, "Enter Doctor ID or Name:", "Filter by Doctor", JOptionPane.PLAIN_MESSAGE);
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                filterByDoctor(keyword.trim());
-            } else {
-                filterByField.setSelectedIndex(0);
+            case "Assigned Doctor": {
+                String keyword = JOptionPane.showInputDialog(parentWindow, "Enter Doctor ID or Name:", "Filter by Doctor", JOptionPane.PLAIN_MESSAGE);
+                if (keyword != null && !keyword.trim().isEmpty()) {
+                    filterByDoctor(keyword.trim());
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
             }
-            break;
-        }
-        case "Date": {
-            LinkedHashMap<String, String> dateRange = selectDateRange();
-            if (dateRange.get("startDate") != null || dateRange.get("endDate") != null) {
-                filterByDateRange(dateRange.get("startDate"), dateRange.get("endDate"));
-            } else {
-                filterByField.setSelectedIndex(0);
+            case "Date": {
+                LinkedHashMap<String, String> dateRange = selectDateRange();
+                if (dateRange.get("startDate") != null || dateRange.get("endDate") != null) {
+                    filterByDateRange(dateRange.get("startDate"), dateRange.get("endDate"));
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
             }
-            break;
-        }
-        case "Time": {
-            LinkedHashMap<String, String> timeRange = selectTimeRange();
-            if (timeRange.get("startTime") != null || timeRange.get("endTime") != null) {
-                filterByTimeRange(timeRange.get("startTime"), timeRange.get("endTime"));
-            } else {
-                filterByField.setSelectedIndex(0);
+            case "Time": {
+                LinkedHashMap<String, String> timeRange = selectTimeRange();
+                if (timeRange.get("startTime") != null || timeRange.get("endTime") != null) {
+                    filterByTimeRange(timeRange.get("startTime"), timeRange.get("endTime"));
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
             }
-            break;
+            default: {
+                List<Consultation> allConsultations = getCompletedConsultations();
+                currentConsultations = allConsultations;
+                populateTable(allConsultations);
+                updateResultLabel("Showing " + allConsultations.size() + " consultation(s)", allConsultations.size());
+            }
         }
-        default:
-            populateTable(currentConsultations);
-    }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed

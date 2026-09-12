@@ -59,6 +59,7 @@ public class HospitalAssetManagement {
                         row.get("imagePath"),
                         row.get("location"),
                         row.get("description"),
+                        row.get("status"),
                         Integer.parseInt(row.get("totalBeds"))
                 );
                 allHospitalAssets.add(asset);
@@ -69,13 +70,42 @@ public class HospitalAssetManagement {
                         row.get("assetName"),
                         row.get("imagePath"),
                         row.get("location"),
-                        row.get("description")
+                        row.get("description"),
+                        row.get("status")
                 );
                 allHospitalAssets.add(asset);
             }
         }
+        loadHospitalAssetAllocations(); // ensure allocations are current before recomputing
+        boolean changed = recomputeStatuses();
+        if (changed) {
+            writeHospitalAssets();
+        }
     }
 
+    private static boolean recomputeStatuses() {
+        boolean changed = false;
+
+        for (HospitalAsset asset : allHospitalAssets) {
+            if (HospitalAsset.STATUS_MAINTENANCE.equals(asset.getStatus())) {
+                continue; // manual override — leave it as-is
+            }
+            boolean occupied = allHospitalAssetAllocations.stream()
+                .anyMatch(alloc -> alloc.getAssetId().equals(asset.getAssetId())
+                    && alloc.getAllocationDateTime() != null && !alloc.getAllocationDateTime().isEmpty()
+                    && (alloc.getReleasedDateTime() == null || alloc.getReleasedDateTime().isEmpty()));
+
+            String newStatus = occupied ? HospitalAsset.STATUS_OCCUPIED : HospitalAsset.STATUS_AVAILABLE;
+
+            if (!newStatus.equals(asset.getStatus())) {
+                asset.setStatus(newStatus);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+    
     public static void loadHospitalAssetAllocations() {
         allHospitalAssetAllocations.clear();
 
@@ -101,14 +131,14 @@ public class HospitalAssetManagement {
     // ACCESSORS
     // =========================================================
 
-    public static List<HospitalAsset> getAllHospitalAssets() {
-        loadHospitalAssets();
-        return allHospitalAssets;
-    }
-
     public static List<HospitalAssetAllocation> getAllHospitalAssetAllocations() {
         loadHospitalAssetAllocations();
-        return allHospitalAssetAllocations;
+        return new ArrayList<>(allHospitalAssetAllocations);
+    }
+
+    public static List<HospitalAsset> getAllHospitalAssets() {
+        loadHospitalAssets();
+        return new ArrayList<>(allHospitalAssets);
     }
 
     // =========================================================
@@ -338,7 +368,8 @@ public class HospitalAssetManagement {
                 assetName,
                 imagePath,
                 location,
-                description
+                description,
+                HospitalAsset.STATUS_AVAILABLE
         );
 
         allHospitalAssets.add(newAsset);
@@ -374,6 +405,7 @@ public class HospitalAssetManagement {
                 imagePath,
                 location,
                 description,
+                HospitalAsset.STATUS_AVAILABLE,
                 totalBeds
         );
 
@@ -525,6 +557,53 @@ public class HospitalAssetManagement {
             return msgMap;
         }
 
+        boolean hasSchedule = scheduledStartDateTime != null && !scheduledStartDateTime.isBlank()
+                && scheduledEndDateTime != null && !scheduledEndDateTime.isBlank();
+
+        if (hasSchedule) {
+            java.time.LocalDateTime newStart;
+            java.time.LocalDateTime newEnd;
+            try {
+                newStart = DateTime.toDateTimeObject(scheduledStartDateTime);
+                newEnd = DateTime.toDateTimeObject(scheduledEndDateTime);
+            } catch (Exception e) {
+                msgMap.put("success", null);
+                msgMap.put("msg", "Hospital asset allocation is not created\nInvalid scheduled date/time format");
+                return msgMap;
+            }
+
+            if (!newEnd.isAfter(newStart)) {
+                msgMap.put("success", null);
+                msgMap.put("msg", "Hospital asset allocation is not created\nScheduled end must be after scheduled start");
+                return msgMap;
+            }
+
+            if (newStart.isBefore(DateTime.currentDateTime())) {
+                msgMap.put("success", null);
+                msgMap.put("msg", "Hospital asset allocation is not created\nScheduled start cannot be in the past");
+                return msgMap;
+            }
+
+            // Overlap check: same asset, overlapping scheduled window
+            boolean hasOverlap = allHospitalAssetAllocations.stream()
+                    .filter(a -> a.getAssetId().equals(assetId))
+                    .filter(a -> a.getScheduledStartDateTime() != null && !a.getScheduledStartDateTime().isEmpty()
+                            && a.getScheduledEndDateTime() != null && !a.getScheduledEndDateTime().isEmpty())
+                    .anyMatch(a -> {
+                        java.time.LocalDateTime existingStart = DateTime.toDateTimeObject(a.getScheduledStartDateTime());
+                        java.time.LocalDateTime existingEnd = DateTime.toDateTimeObject(a.getScheduledEndDateTime());
+                        return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+                    });
+
+            if (hasOverlap) {
+                msgMap.put("success", null);
+                msgMap.put("msg", String.format(
+                        "Hospital asset allocation is not created\nAsset '%s' already has an overlapping scheduled allocation",
+                        assetId));
+                return msgMap;
+            }
+        }
+
         String newAllocationId = generateHospitalAssetAllocationId();
 
         HospitalAssetAllocation newAllocation = new HospitalAssetAllocation(
@@ -547,7 +626,7 @@ public class HospitalAssetManagement {
             writeHospitalAssetAllocations();
         }
 
-        loadHospitalAssetAllocations();
+        loadHospitalAssets();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Hospital asset allocation '%s' is created and stored!", newAllocationId));
@@ -615,7 +694,7 @@ public class HospitalAssetManagement {
         );
 
         writeHospitalAssetAllocations();
-        loadHospitalAssetAllocations();
+        loadHospitalAssets(); // reloads allocations internally, recomputes asset status, writes txt if it changed
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Hospital asset allocation '%s' actual start is updated!", allocationId));
@@ -647,10 +726,54 @@ public class HospitalAssetManagement {
         allocation.setReleasedDateTime(DateTime.formattedLocalDateTime(DateTime.currentDateTime()));
 
         writeHospitalAssetAllocations();
-        loadHospitalAssetAllocations();
+        loadHospitalAssets(); // reloads allocations internally, recomputes asset status, writes txt if it changed
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Hospital asset allocation '%s' is released!", allocationId));
+
+        return msgMap;
+    }
+    
+    // =========================================================
+    // SET HOSPITAL ASSET MAINTENANCE STATUS
+    // =========================================================
+
+    public LinkedHashMap<String, String> setHospitalAssetMaintenance(String assetId, boolean maintenance) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        HospitalAsset asset = getHospitalAssetById(assetId);
+
+        if (asset == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Hospital asset '%s' not found", assetId));
+            return msgMap;
+        }
+
+        if (maintenance) {
+            boolean hasActiveAllocation = getHospitalAssetAllocationsByAssetId(assetId).stream()
+                    .anyMatch(a -> a.getAllocationDateTime() != null && !a.getAllocationDateTime().isEmpty()
+                            && (a.getReleasedDateTime() == null || a.getReleasedDateTime().isEmpty()));
+
+            if (hasActiveAllocation) {
+                msgMap.put("success", null);
+                msgMap.put("msg", String.format("Hospital asset '%s' has an active allocation and cannot be set to maintenance", assetId));
+                return msgMap;
+            }
+        }
+
+        if (maintenance && HospitalAsset.STATUS_MAINTENANCE.equals(asset.getStatus())) {
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("Hospital asset '%s' is already under maintenance.", assetId));
+            return msgMap;
+        }
+
+        asset.setStatus(maintenance ? HospitalAsset.STATUS_MAINTENANCE : HospitalAsset.STATUS_AVAILABLE);
+
+        writeHospitalAssets();
+        loadHospitalAssets(); // will recompute Available/Occupied correctly if maintenance was turned off
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Hospital asset '%s' is now %s.", assetId, maintenance ? "under maintenance" : "available"));
 
         return msgMap;
     }

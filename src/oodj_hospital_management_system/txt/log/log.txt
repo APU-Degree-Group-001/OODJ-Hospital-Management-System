@@ -441,3 +441,29 @@
 [2026-09-11 22:52:12] User {doctor - #DOCd4e8f - bug1} logged in
 [2026-09-11 22:59:10] User {doctor - #DOCd4e8f - bug1} logged in
 [2026-09-11 23:03:27] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-12 11:43:43] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-12 11:54:10] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-12 11:54:25] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 12:19:22] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 12:19:53] User {admin staff - #ADMd4e8f - uehehe} modified Hospital Asset {#ROOM001 - Consultation Room 1}
+[2026-09-12 13:41:44] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 13:43:19] User {admin staff - #ADMd4e8f - uehehe} modified Hospital Asset {#ROOM001 - Consultation Room 1}
+[2026-09-12 13:49:06] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 14:47:05] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 14:54:50] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 14:55:44] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#AST59d1a - Consultation Room 3}
+[2026-09-12 15:01:22] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 15:01:51] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#AST1373d - Consultation Room 3}
+[2026-09-12 15:02:26] User {admin staff - #ADMd4e8f - uehehe} created Ward {#AST2c564 - Ward I}
+[2026-09-12 15:09:55] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 15:12:34] User {admin staff - #ADMd4e8f - uehehe} deleted Hospital Asset {#AST2c564}
+[2026-09-12 16:28:41] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 16:29:09] User {admin staff - #ADMd4e8f - uehehe} set Hospital Asset {#LAB001} maintenance status to Available
+[2026-09-12 16:45:55] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 16:46:48] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOC87db7} for Asset {#ROOM001} for Doctor {#DOCb8f50}
+[2026-09-12 16:50:37] User {admin staff - #ADMd4e8f - uehehe} deleted Hospital Asset Allocation {#ALLOC87db7}
+[2026-09-12 16:51:02] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-12 16:53:00] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOCeaabd} for Asset {#ROOM001} for Doctor {#DOCb8f50}
+[2026-09-12 16:53:41] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-12 16:53:50] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-12 17:19:20] User {doctor - #DOCd4e8f - bug1} logged in

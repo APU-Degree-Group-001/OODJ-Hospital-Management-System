@@ -152,7 +152,9 @@ public class ScheduledPanel extends javax.swing.JPanel {
         }
         String doctorId = activeUser.getId();
 
-        for (HospitalAssetAllocation alloc : assetCtrl.getAllHospitalAssetAllocations()) {
+        List<HospitalAssetAllocation> allAllocations = new ArrayList<>(assetCtrl.getAllHospitalAssetAllocations());
+
+        for (HospitalAssetAllocation alloc : allAllocations) {
             if (!doctorId.equals(alloc.getDoctorId())) continue;
 
             HospitalAsset asset = assetCtrl.getHospitalAssetById(alloc.getAssetId());
@@ -195,7 +197,7 @@ public class ScheduledPanel extends javax.swing.JPanel {
 
     private void filterByStatus(String status) {
         List<HospitalAssetAllocation> filtered = new ArrayList<>();
-        for (HospitalAssetAllocation alloc : currentAllocations) {
+        for (HospitalAssetAllocation alloc : getBaseAllocations()) {
             if (status.equals(getAllocationStatus(alloc))) {
                 filtered.add(alloc);
             }
@@ -204,6 +206,7 @@ public class ScheduledPanel extends javax.swing.JPanel {
         populateAllocationTable(filtered);
         updateResultLabel("Showing allocations with status \"" + status + "\"", filtered.size());
     }
+   
 
     private String selectAssetKeyword() {
         javax.swing.JTextField assetField = new javax.swing.JTextField();
@@ -223,7 +226,7 @@ public class ScheduledPanel extends javax.swing.JPanel {
     private void filterByAsset(String keyword) {
         String lower = keyword.toLowerCase();
         List<HospitalAssetAllocation> filtered = new ArrayList<>();
-        for (HospitalAssetAllocation alloc : currentAllocations) {
+        for (HospitalAssetAllocation alloc : getBaseAllocations()) {
             HospitalAsset asset = assetCtrl.getHospitalAssetById(alloc.getAssetId());
             if (asset != null &&
                 (asset.getAssetName().toLowerCase().contains(lower)
@@ -282,7 +285,7 @@ public class ScheduledPanel extends javax.swing.JPanel {
 
     private void filterByScheduledDateRange(String start, String end) {
         List<HospitalAssetAllocation> filtered = new ArrayList<>();
-        for (HospitalAssetAllocation alloc : currentAllocations) {
+        for (HospitalAssetAllocation alloc : getBaseAllocations()) {
             if (alloc.getScheduledStartDateTime() == null || alloc.getScheduledStartDateTime().isEmpty()) continue;
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(alloc.getScheduledStartDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -299,7 +302,7 @@ public class ScheduledPanel extends javax.swing.JPanel {
 
     private void filterByActualDateRange(String start, String end) {
         List<HospitalAssetAllocation> filtered = new ArrayList<>();
-        for (HospitalAssetAllocation alloc : currentAllocations) {
+        for (HospitalAssetAllocation alloc : getBaseAllocations()) {
             if (alloc.getAllocationDateTime() == null || alloc.getAllocationDateTime().isEmpty()) continue;
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(alloc.getAllocationDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -515,6 +518,10 @@ public class ScheduledPanel extends javax.swing.JPanel {
                             || alloc.getDoctorId().toLowerCase().contains(keyword)
                             || assetName.toLowerCase().contains(keyword)
                             || getAllocationStatus(alloc).toLowerCase().contains(keyword);
+
+            if (match) {
+                results.add(alloc);
+            }
         }
 
         currentAllocations = results;
@@ -567,11 +574,8 @@ public class ScheduledPanel extends javax.swing.JPanel {
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
 
-        List<HospitalAssetAllocation> base = (currentAllocations != null) ? currentAllocations : getBaseAllocations();
-
         switch (selected) {
             case "Scheduled Date Time": {
-                currentAllocations = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
@@ -582,7 +586,6 @@ public class ScheduledPanel extends javax.swing.JPanel {
             }
 
             case "Actual Date Time": {
-                currentAllocations = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByActualDateRange(range.get("startDate"), range.get("endDate"));
@@ -593,7 +596,6 @@ public class ScheduledPanel extends javax.swing.JPanel {
             }
 
             case "Status": {
-                currentAllocations = base;
                 String status = selectAllocationStatus();
                 if (status != null) {
                     filterByStatus(status);
@@ -604,7 +606,6 @@ public class ScheduledPanel extends javax.swing.JPanel {
             }
 
             case "Asset": {
-                currentAllocations = base;
                 String keyword = selectAssetKeyword();
                 if (keyword != null) {
                     filterByAsset(keyword);
@@ -614,10 +615,12 @@ public class ScheduledPanel extends javax.swing.JPanel {
                 break;
             }
 
-            default: // "Default" -> no filter
+            default: { // "Default" -> no filter
+                List<HospitalAssetAllocation> base = getBaseAllocations();
                 currentAllocations = base;
                 populateAllocationTable(base);
                 updateResultLabel("Showing " + base.size() + " allocation(s)", base.size());
+            }
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

@@ -211,4 +211,19 @@ public class HospitalAssetController {
         }
         return msg;
     }
+    
+    public LinkedHashMap<String, String> setHospitalAssetMaintenance(String assetId, boolean maintenance) {
+        LinkedHashMap<String, String> msg = hospitalAssetServices.setHospitalAssetMaintenance(assetId, maintenance);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} set Hospital Asset {%s} maintenance status to %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    assetId, maintenance ? "Maintenance" : "Available"));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to set Hospital Asset {%s} maintenance status\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), assetId, msg.get("msg")));
+        }
+        return msg;
+    }
 }

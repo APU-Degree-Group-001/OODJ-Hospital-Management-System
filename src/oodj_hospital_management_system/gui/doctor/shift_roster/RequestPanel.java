@@ -149,7 +149,7 @@ public class RequestPanel extends javax.swing.JPanel {
  
     private void filterByStatus(RequestStatus status) {
         List<Request> filtered = new ArrayList<>();
-        for (Request req : currentRequests) {
+        for (Request req : getBaseRequests()) {
             if (status.equals(req.getStatus())) {
                 filtered.add(req);
             }
@@ -177,7 +177,7 @@ public class RequestPanel extends javax.swing.JPanel {
     private void filterByResolver(String keyword) {
         String lower = keyword.toLowerCase();
         List<Request> filtered = new ArrayList<>();
-        for (Request req : currentRequests) {
+        for (Request req : getBaseRequests()) {
             User resolver = req.getResolver();
             if (resolver != null &&
                 (resolver.getName().toLowerCase().contains(lower)
@@ -236,7 +236,7 @@ public class RequestPanel extends javax.swing.JPanel {
  
     private void filterByRequestedDateRange(String start, String end) {
         List<Request> filtered = new ArrayList<>();
-        for (Request req : currentRequests) {
+        for (Request req : getBaseRequests()) {
             if (req.getCreatedDateTime() == null || req.getCreatedDateTime().isEmpty()) continue;
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(req.getCreatedDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -245,7 +245,7 @@ public class RequestPanel extends javax.swing.JPanel {
         }
         currentRequests = filtered;
         populateRequestTable(filtered);
- 
+
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
         String label = buildRangeLabel("Showing requests made", start, end, display);
         updateResultLabel(label, filtered.size());
@@ -253,7 +253,7 @@ public class RequestPanel extends javax.swing.JPanel {
  
     private void filterByResolvedDateRange(String start, String end) {
         List<Request> filtered = new ArrayList<>();
-        for (Request req : currentRequests) {
+        for (Request req : getBaseRequests()) {
             if (req.getResolvedDateTime() == null || req.getResolvedDateTime().isEmpty()) continue;
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(req.getResolvedDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -262,7 +262,7 @@ public class RequestPanel extends javax.swing.JPanel {
         }
         currentRequests = filtered;
         populateRequestTable(filtered);
- 
+
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
         String label = buildRangeLabel("Showing requests resolved", start, end, display);
         updateResultLabel(label, filtered.size());
@@ -442,48 +442,7 @@ public class RequestPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        if (currentRequests == null) return;
-        String selected = (String) sortField.getSelectedItem();
-        List<Request> sorted = new ArrayList<>(currentRequests);
- 
-        switch (selected) {
-            case "ID":
-                sorted.sort((a, b) -> a.getRequestId().compareToIgnoreCase(b.getRequestId()));
-                break;
- 
-            case "Requested Date Time":
-                sorted.sort(Comparator.comparing(r -> DateTime.toDateTimeObject(r.getCreatedDateTime())));
-                break;
- 
-            case "Resolved Date Time":
-                sorted.sort((a, b) -> {
-                    boolean aEmpty = a.getResolvedDateTime() == null || a.getResolvedDateTime().isEmpty();
-                    boolean bEmpty = b.getResolvedDateTime() == null || b.getResolvedDateTime().isEmpty();
-                    if (aEmpty && bEmpty) return 0;
-                    if (aEmpty) return 1;   // unresolved requests sink to the bottom
-                    if (bEmpty) return -1;
-                    return DateTime.toDateTimeObject(a.getResolvedDateTime())
-                        .compareTo(DateTime.toDateTimeObject(b.getResolvedDateTime()));
-                });
-                break;
- 
-            case "Resolver":
-                sorted.sort((a, b) -> {
-                    String aName = a.getResolver() != null ? a.getResolver().getName() : null;
-                    String bName = b.getResolver() != null ? b.getResolver().getName() : null;
-                    if (aName == null && bName == null) return 0;
-                    if (aName == null) return 1;   // unresolved requests sink to the bottom
-                    if (bName == null) return -1;
-                    return aName.compareToIgnoreCase(bName);
-                });
-                break;
- 
-            default: // "Default" -> fall back to request ID
-                sorted.sort((a, b) -> a.getRequestId().compareToIgnoreCase(b.getRequestId()));
-        }
- 
-        currentRequests = sorted;
-        populateRequestTable(sorted);
+        searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -527,12 +486,9 @@ public class RequestPanel extends javax.swing.JPanel {
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
- 
-        List<Request> base = (currentRequests != null) ? currentRequests : getBaseRequests();
- 
+
         switch (selected) {
             case "Requested Date Time": {
-                currentRequests = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByRequestedDateRange(range.get("startDate"), range.get("endDate"));
@@ -541,9 +497,8 @@ public class RequestPanel extends javax.swing.JPanel {
                 }
                 break;
             }
- 
+
             case "Resolved Date Time": {
-                currentRequests = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByResolvedDateRange(range.get("startDate"), range.get("endDate"));
@@ -552,9 +507,8 @@ public class RequestPanel extends javax.swing.JPanel {
                 }
                 break;
             }
- 
+
             case "Status": {
-                currentRequests = base;
                 RequestStatus status = selectStatus();
                 if (status != null) {
                     filterByStatus(status);
@@ -563,9 +517,8 @@ public class RequestPanel extends javax.swing.JPanel {
                 }
                 break;
             }
- 
+
             case "Resolver": {
-                currentRequests = base;
                 String keyword = selectResolverKeyword();
                 if (keyword != null) {
                     filterByResolver(keyword);
@@ -574,11 +527,13 @@ public class RequestPanel extends javax.swing.JPanel {
                 }
                 break;
             }
- 
-            default: // "Default" -> no filter
+
+            default: { // "Default" -> no filter
+                List<Request> base = getBaseRequests();
                 currentRequests = base;
                 populateRequestTable(base);
                 updateResultLabel("Showing " + base.size() + " request(s)", base.size());
+            }
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

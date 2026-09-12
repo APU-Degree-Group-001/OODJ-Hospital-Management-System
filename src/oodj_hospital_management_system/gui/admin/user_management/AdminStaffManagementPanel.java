@@ -134,7 +134,8 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
     }
     
     private void filterByDateRange(String start, String end) {
-        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, currentAdminStaffs);
+        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, UserManagement.getAllAdminStaffs());
+        currentAdminStaffs = filtered;
         populateTable(filtered);
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
         String label;
@@ -384,12 +385,14 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
             if (dateRange.get("startDate") != null || dateRange.get("endDate") != null) {
                 filterByDateRange(dateRange.get("startDate"), dateRange.get("endDate"));
             } else {
-                // user cancelled or picked invalid range -> reset dropdown
                 filterByField.setSelectedIndex(0);
             }
             return;
         } else {
-            populateTable(currentAdminStaffs);
+            List<User> all = UserManagement.getAllAdminStaffs();
+            currentAdminStaffs = all;
+            populateTable(all);
+            updateResultLabel("Showing " + all.size() + " admin staff(s)", all.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

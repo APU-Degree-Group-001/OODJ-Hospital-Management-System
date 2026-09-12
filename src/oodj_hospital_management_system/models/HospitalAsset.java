@@ -32,16 +32,17 @@ public class HospitalAsset {
             String assetName,
             String imagePath,
             String location,
-            String description
+            String description,
+            String status
     ) {
 //        assetId, assetType, assetName, imagePath, location, description, totalBeds
         this.assetId = assetId;
         this.assetType = assetType;
         this.assetName = assetName;
-        this.imagePath = imagePath;
+        this.imagePath = imagePath != null ? imagePath : "";
         this.location = location;
         this.description = description;
-        this.status = STATUS_AVAILABLE;
+        this.status = status;
     }
 
     public String getAssetId() {
@@ -85,7 +86,7 @@ public class HospitalAsset {
     }
 
     public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+        this.imagePath = imagePath != null ? imagePath : "";
     }
 
     public void setLocation(String location) {
@@ -114,6 +115,7 @@ public class HospitalAsset {
         map.put("location", location);
         map.put("description", description);
         map.put("totalBeds", "");
+        map.put("status", status);
         return map;
     }
 }

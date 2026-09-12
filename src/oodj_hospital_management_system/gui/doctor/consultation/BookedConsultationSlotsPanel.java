@@ -199,11 +199,14 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
     }
 
     private void filterByDateTimeRange(String startDate, String endDate, String startTime, String endTime) {
+        List<Consultation> baseConsultations = usrCtrl.getConsultationController()
+        .getBookedConsultationsForDoctor(currentDoctor.getId());
+
         List<Consultation> filtered = new ArrayList<>();
         LocalTime startT = startTime != null ? LocalTime.parse(startTime) : null;
         LocalTime endT = endTime != null ? LocalTime.parse(endTime) : null;
 
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : baseConsultations) {
             LocalDateTime dt = DateTime.toDateTimeObject(c.getConsultationSlot().getStartDateTime());
             LocalDate date = DateTime.getDate(dt);
             LocalTime time = DateTime.getTime(dt);
@@ -218,6 +221,7 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
             }
         }
 
+        currentConsultations = filtered;   // keep state in sync
         populateTable(filtered);
 
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
@@ -436,19 +440,24 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
         }
 
         switch (selected) {
-        case "Date Time": {
-            LinkedHashMap<String, String> range = selectDateTimeRange();
-            if (range.get("startDate") != null || range.get("endDate") != null
-                    || range.get("startTime") != null || range.get("endTime") != null) {
-                filterByDateTimeRange(range.get("startDate"), range.get("endDate"),
-                    range.get("startTime"), range.get("endTime"));
-            } else {
-                filterByField.setSelectedIndex(0);
+            case "Date Time": {
+                LinkedHashMap<String, String> range = selectDateTimeRange();
+                if (range.get("startDate") != null || range.get("endDate") != null
+                        || range.get("startTime") != null || range.get("endTime") != null) {
+                    filterByDateTimeRange(range.get("startDate"), range.get("endDate"),
+                        range.get("startTime"), range.get("endTime"));
+                } else {
+                    filterByField.setSelectedIndex(0);
+                }
+                break;
             }
-            break;
-        }
-        default:
-            populateTable(currentConsultations);
+            default: {
+                List<Consultation> allConsultations = usrCtrl.getConsultationController()
+                    .getBookedConsultationsForDoctor(currentDoctor.getId());
+                currentConsultations = allConsultations;
+                populateTable(allConsultations);
+                updateResultLabel("Showing " + allConsultations.size() + " booked consultation(s)", allConsultations.size());
+            }
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

@@ -136,7 +136,8 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
     }
     
     private void filterByDateRange(String start, String end) {
-        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, currentDoctors);
+        List<User> filtered = UserManagement.searchUsersByDateRange(start, end, UserManagement.getAllDoctors());
+        currentDoctors = filtered;
         DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
         model.setRowCount(0);
         for (User usr : filtered) {
@@ -402,9 +403,12 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
             }
             return;
         } else {
+            List<User> allDoctors = UserManagement.getAllDoctors(); // adjust to your actual service method name
+            currentDoctors = allDoctors;
+
             DefaultTableModel model = (DefaultTableModel) doctorTable.getModel();
             model.setRowCount(0);
-            for (User usr: currentDoctors) {
+            for (User usr : allDoctors) {
                 java.time.LocalDateTime dateTimeObj = DateTime.toDateTimeObject(usr.getJoinedDateTime());
                 LocalDate date = DateTime.getDate(dateTimeObj);
                 LocalTime time = DateTime.getTime(dateTimeObj);
@@ -414,6 +418,7 @@ public class DoctorManagementPanel extends javax.swing.JPanel {
                 String[] doctorData = {usr.getId(), usr.getName(), usr.getEmail(), joinedDateTime};
                 model.addRow(doctorData);
             }
+            updateResultLabel("Showing " + allDoctors.size() + " doctor(s)", allDoctors.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

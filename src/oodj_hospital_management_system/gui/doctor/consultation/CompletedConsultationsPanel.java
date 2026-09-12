@@ -87,19 +87,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     }
     
     public void loadCompletedConsultations() {
-        List<Consultation> all = usrCtrl.getConsultationController().getAllConsultations();
-        List<Consultation> completed = new ArrayList<>();
-
-        Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
-        String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
-
-        for (Consultation c : all) {
-            if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
-            Doctor doctor = resolveDoctor(c);
-            if (doctor != null && activeDoctorId != null && doctor.getId().equals(activeDoctorId)) {
-                completed.add(c);
-            }
-        }
+        List<Consultation> completed = getBaseCompletedConsultations();
         currentConsultations = completed;
         rebuildCards(completed);
     }
@@ -117,6 +105,23 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         String cardName = "consultationDetails-" + consultation.getConsultationId();
         cardContainer.add(detailsPanel, cardName);
         cardLayout.show(cardContainer, cardName);
+    }
+    
+    private List<Consultation> getBaseCompletedConsultations() {
+        List<Consultation> all = usrCtrl.getConsultationController().getAllConsultations();
+        List<Consultation> completed = new ArrayList<>();
+
+        Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
+        String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
+
+        for (Consultation c : all) {
+            if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
+            Doctor doctor = resolveDoctor(c);
+            if (doctor != null && activeDoctorId != null && doctor.getId().equals(activeDoctorId)) {
+                completed.add(c);
+            }
+        }
+        return completed;
     }
 
     private void updateResultLabel(String message, int count) {
@@ -270,11 +275,12 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     }
     
     private void filterByDateTimeRange(String startDate, String endDate, String startTime, String endTime) {
+        List<Consultation> baseConsultations = getBaseCompletedConsultations();
         List<Consultation> filtered = new ArrayList<>();
         java.time.LocalTime startT = startTime != null ? java.time.LocalTime.parse(startTime) : null;
         java.time.LocalTime endT = endTime != null ? java.time.LocalTime.parse(endTime) : null;
 
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : baseConsultations) {
             LocalDateTime dt = resolveConsultationDateTime(c);
             if (dt == null) continue;
             LocalDate date = dt.toLocalDate();
@@ -312,13 +318,12 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     
     private void filterByConsultationType(ConsultationType type) {
         List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : currentConsultations) {
+        for (Consultation c : getBaseCompletedConsultations()) {
             ConsultationType t = c.getConsultationType();
             if (t != null && t.getTypeName().equals(type.getTypeName())) {
                 filtered.add(c);
             }
         }
-
         currentConsultations = filtered;
         rebuildCards(filtered);
         updateResultLabel("Showing consultations of type \"" + type.getTypeName() + "\"", filtered.size());
@@ -507,37 +512,10 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
-        // Filter from whatever currentConsultations already is - so a filter applied
-        // after a sort keeps that order, and a filter applied after another
-        // filter narrows further, instead of both silently resetting to the
-        // full unsorted/unfiltered list.
-        List<Consultation> base;
-        if (currentConsultations != null) {
-            base = currentConsultations;
-        } else {
-            Doctor activeDoctor = (Doctor) usrCtrl.getActiveUser();
-            String activeDoctorId = activeDoctor != null ? activeDoctor.getId() : null;
-
-            base = new ArrayList<>();
-            for (Consultation c : usrCtrl.getConsultationController().getAllConsultations()) {
-                if (c.getConsultationStatus() != ConsultationStatus.COMPLETED) continue;
-                Doctor doctor = resolveDoctor(c);
-                if (doctor != null && activeDoctorId != null && doctor.getId().equals(activeDoctorId)) {
-                    base.add(c);
-                }
-            }
-        }
+        List<Consultation> base = getBaseCompletedConsultations();
 
         switch (selected) {
-            case "Default":
-                // No-op filter - leaves whatever's already in currentConsultations alone.
-                currentConsultations = base;
-                rebuildCards(base);
-                updateResultLabel("Showing " + base.size() + " consultation(s)", base.size());
-                break;
-
             case "Consultation Date Time": {
-                currentConsultations = base;
                 LinkedHashMap<String, String> range = selectDateTimeRange();
                 if (range.get("startDate") != null || range.get("endDate") != null
                         || range.get("startTime") != null || range.get("endTime") != null) {
@@ -548,10 +526,9 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
                 }
                 break;
             }
-            
+
             case "Consultation Type": {
-                currentConsultations = base;
-                ConsultationType selectedType = selectConsultationType(base);
+                ConsultationType selectedType = selectConsultationType(base); // dropdown always shows all types
                 if (selectedType != null) {
                     filterByConsultationType(selectedType);
                 } else {
@@ -560,7 +537,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
                 break;
             }
 
-            default:
+            default: // "Default" -> no filter
                 currentConsultations = base;
                 rebuildCards(base);
                 updateResultLabel("Showing " + base.size() + " consultation(s)", base.size());

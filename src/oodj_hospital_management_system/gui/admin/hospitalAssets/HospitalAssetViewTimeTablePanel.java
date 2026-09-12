@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -20,7 +21,9 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.utils.WrappingCellRenderer;
 import oodj_hospital_management_system.models.Bill;
@@ -278,6 +281,61 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             if (doctorId.equals(a.getDoctorId())) filtered.add(a);
         }
         return filtered;
+    }
+    
+    private LocalDateTime combineDateAndTime(JDateChooser dateChooser, JSpinner timeSpinner) {
+        Date datePart = dateChooser.getDate();
+        if (datePart == null) return null;
+
+        Date timePart = (Date) timeSpinner.getValue();
+
+        Calendar dateCal = Calendar.getInstance();
+        dateCal.setTime(datePart);
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTime(timePart);
+
+        dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+        dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        dateCal.set(Calendar.SECOND, 0);
+
+        return LocalDateTime.ofInstant(dateCal.toInstant(), java.time.ZoneId.systemDefault());
+    }
+    
+    private JComboBox<Doctor> buildDoctorComboBox(String preselectDoctorId) {
+        List<Doctor> doctors = UserManagement.getAllDoctors().stream()
+            .filter(d -> d instanceof Doctor)
+            .map(d -> (Doctor) d)
+            .toList();
+
+        if (doctors.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "No active doctors are available.", "Cannot Proceed", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        JComboBox<Doctor> doctorCombo = new JComboBox<>(doctors.toArray(new Doctor[0]));
+        doctorCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value,
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Doctor) {
+                    setText(((Doctor) value).getName());
+                }
+                return this;
+            }
+        });
+
+        if (preselectDoctorId != null) {
+            for (Doctor d : doctors) {
+                if (d.getId().equals(preselectDoctorId)) {
+                    doctorCombo.setSelectedItem(d);
+                    break;
+                }
+            }
+        }
+
+        return doctorCombo;
     }
     
     private void applyWrappingRenderers() {
@@ -548,60 +606,56 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void allocateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allocateButtonActionPerformed
-        JTextField doctorIdField = new JTextField(20);
-        JTextField startField = new JTextField(20);
-        JTextField endField = new JTextField(20);
- 
+        JComboBox<Doctor> doctorCombo = buildDoctorComboBox(null);
+        if (doctorCombo == null) return;
+
+        JDateChooser startDateChooser = new JDateChooser();
+        startDateChooser.setDateFormatString("yyyy-MM-dd");
+        JSpinner startTimeSpinner = new JSpinner(new SpinnerDateModel());
+        startTimeSpinner.setEditor(new JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
+
+        JDateChooser endDateChooser = new JDateChooser();
+        endDateChooser.setDateFormatString("yyyy-MM-dd");
+        JSpinner endTimeSpinner = new JSpinner(new SpinnerDateModel());
+        endTimeSpinner.setEditor(new JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
+
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("Doctor ID:"));
-        panel.add(doctorIdField);
-        panel.add(new JLabel("Scheduled Start (yyyy-MM-dd HH:mm):"));
-        panel.add(startField);
-        panel.add(new JLabel("Scheduled End (yyyy-MM-dd HH:mm):"));
-        panel.add(endField);
- 
+        panel.add(new JLabel("Doctor:"));
+        panel.add(doctorCombo);
+        panel.add(new JLabel("Scheduled Start Date:"));
+        panel.add(startDateChooser);
+        panel.add(new JLabel("Scheduled Start Time:"));
+        panel.add(startTimeSpinner);
+        panel.add(new JLabel("Scheduled End Date:"));
+        panel.add(endDateChooser);
+        panel.add(new JLabel("Scheduled End Time:"));
+        panel.add(endTimeSpinner);
+
         while (true) {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
                 "Allocate Asset", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
- 
-            String doctorId = doctorIdField.getText().trim();
-            String start = startField.getText().trim();
-            String end = endField.getText().trim();
- 
-            if (doctorId.isEmpty() || start.isEmpty() || end.isEmpty()) {
+
+            Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
+            LocalDateTime startDateTime = combineDateAndTime(startDateChooser, startTimeSpinner);
+            LocalDateTime endDateTime = combineDateAndTime(endDateChooser, endTimeSpinner);
+
+            if (selectedDoctor == null || startDateTime == null || endDateTime == null) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
-            if (usrCtrl.getDoctorById(doctorId) == null) {
-                JOptionPane.showMessageDialog(parentWindow,
-                    "No doctor found with that ID.", "Invalid Doctor", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
- 
-            LocalDateTime startDateTime;
-            LocalDateTime endDateTime;
-            try {
-                startDateTime = DateTime.toDateTimeObject(start);
-                endDateTime = DateTime.toDateTimeObject(end);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(parentWindow,
-                    "Dates must be in the format yyyy-MM-dd HH:mm.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
- 
+
             if (!endDateTime.isAfter(startDateTime)) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
+
             LinkedHashMap<String, String> msg =
             usrCtrl.getHospitalAssetController().createHospitalAssetAllocation(
                     asset.getAssetId(),
-                    doctorId,
+                    selectedDoctor.getId(),
                     DateTime.formattedLocalDateTime(startDateTime),
                     DateTime.formattedLocalDateTime(endDateTime),
                     DateTime.formattedLocalDateTime(LocalDateTime.now())
@@ -726,78 +780,74 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         HospitalAssetAllocation selected = getSelectedAllocation();
         if (selected == null) return;
- 
-        List<Doctor> doctors = UserManagement.getAllDoctors().stream().filter(d -> d instanceof Doctor).map(d -> (Doctor) d).toList();
-        if (doctors == null || doctors.isEmpty()) {
-            JOptionPane.showMessageDialog(parentWindow,
-                "No active doctors are available.", "Cannot Edit", JOptionPane.WARNING_MESSAGE);
-            return;
+
+        JComboBox<Doctor> doctorCombo = buildDoctorComboBox(selected.getDoctorId());
+        if (doctorCombo == null) return;
+
+        JDateChooser startDateChooser = new JDateChooser();
+        startDateChooser.setDateFormatString("yyyy-MM-dd");
+        JSpinner startTimeSpinner = new JSpinner(new SpinnerDateModel());
+        startTimeSpinner.setEditor(new JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
+
+        JDateChooser endDateChooser = new JDateChooser();
+        endDateChooser.setDateFormatString("yyyy-MM-dd");
+        JSpinner endTimeSpinner = new JSpinner(new SpinnerDateModel());
+        endTimeSpinner.setEditor(new JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
+
+        if (selected.getScheduledStartDateTime() != null && !selected.getScheduledStartDateTime().isEmpty()) {
+            LocalDateTime startDt = DateTime.toDateTimeObject(selected.getScheduledStartDateTime());
+            Date asDate = Date.from(startDt.atZone(java.time.ZoneId.systemDefault()).toInstant());
+            startDateChooser.setDate(asDate);
+            startTimeSpinner.setValue(asDate);
         }
- 
-        JComboBox<Doctor> doctorCombo = new JComboBox<>(doctors.toArray(new Doctor[0]));
-        doctorCombo.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value,
-                    int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Doctor) {
-                    setText(((Doctor) value).getName());
-                }
-                return this;
-            }
-        });
-        for (Doctor d : doctors) {
-            if (d.getId().equals(selected.getDoctorId())) {
-                doctorCombo.setSelectedItem(d);
-                break;
-            }
+        if (selected.getScheduledEndDateTime() != null && !selected.getScheduledEndDateTime().isEmpty()) {
+            LocalDateTime endDt = DateTime.toDateTimeObject(selected.getScheduledEndDateTime());
+            Date asDate = Date.from(endDt.atZone(java.time.ZoneId.systemDefault()).toInstant());
+            endDateChooser.setDate(asDate);
+            endTimeSpinner.setValue(asDate);
         }
- 
-        JTextField startField = new JTextField(selected.getScheduledStartDateTime(), 20);
-        JTextField endField = new JTextField(selected.getScheduledEndDateTime(), 20);
- 
+
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
         panel.add(new JLabel("Doctor:"));
         panel.add(doctorCombo);
-        panel.add(new JLabel("Scheduled Start (yyyy-MM-dd HH:mm):"));
-        panel.add(startField);
-        panel.add(new JLabel("Scheduled End (yyyy-MM-dd HH:mm):"));
-        panel.add(endField);
- 
+        panel.add(new JLabel("Scheduled Start Date:"));
+        panel.add(startDateChooser);
+        panel.add(new JLabel("Scheduled Start Time:"));
+        panel.add(startTimeSpinner);
+        panel.add(new JLabel("Scheduled End Date:"));
+        panel.add(endDateChooser);
+        panel.add(new JLabel("Scheduled End Time:"));
+        panel.add(endTimeSpinner);
+
         while (true) {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
                 "Edit Allocation", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
- 
+
             Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
-            String start = startField.getText().trim();
-            String end = endField.getText().trim();
- 
-            if (selectedDoctor == null || start.isEmpty() || end.isEmpty()) {
+            LocalDateTime startDt = combineDateAndTime(startDateChooser, startTimeSpinner);
+            LocalDateTime endDt = combineDateAndTime(endDateChooser, endTimeSpinner);
+
+            if (selectedDoctor == null || startDt == null || endDt == null) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
-            try {
-                LocalDateTime startDt = DateTime.toDateTimeObject(start);
-                LocalDateTime endDt = DateTime.toDateTimeObject(end);
-                if (!endDt.isAfter(startDt)) {
-                    JOptionPane.showMessageDialog(parentWindow,
-                        "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                    continue;
-                }
-            } catch (Exception e) {
+
+            if (!endDt.isAfter(startDt)) {
                 JOptionPane.showMessageDialog(parentWindow,
-                    "Dates must be in yyyy-MM-dd HH:mm format.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
+
             String allocationId = selected.getAllocationId();
-            LinkedHashMap<String, String> scheduleMsg = usrCtrl.getHospitalAssetController().setHospitalAssetAllocationSchedule(allocationId, start, end);
- 
+            LinkedHashMap<String, String> scheduleMsg = usrCtrl.getHospitalAssetController()
+                .setHospitalAssetAllocationSchedule(allocationId,
+                    DateTime.formattedLocalDateTime(startDt),
+                    DateTime.formattedLocalDateTime(endDt));
+
             boolean success = scheduleMsg.get("success") != null;
- 
+
             if (success) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Allocation updated.", "Success", JOptionPane.INFORMATION_MESSAGE);

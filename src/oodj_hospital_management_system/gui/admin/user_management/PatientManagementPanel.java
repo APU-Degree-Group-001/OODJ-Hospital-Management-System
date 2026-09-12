@@ -389,7 +389,10 @@ public class PatientManagementPanel extends javax.swing.JPanel {
             }
             return;
         } else {
-            populateTable(currentPatients);
+            List<User> allPatients = UserManagement.getAllPatients(); // adjust to your actual service method name
+            currentPatients = allPatients;
+            populateTable(allPatients);
+            updateResultLabel("Showing " + allPatients.size() + " patient(s)", allPatients.size());
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

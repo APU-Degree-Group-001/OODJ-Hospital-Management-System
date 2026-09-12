@@ -191,11 +191,14 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
     }
 
     private void filterByDateTimeRange(String startDate, String endDate, String startTime, String endTime) {
+        List<ConsultationSlot> baseSlots = usrCtrl.getConsultationController()
+        .getAvailableConsultationSlotsForDoctor(currentDoctor.getId());
+
         List<ConsultationSlot> filtered = new ArrayList<>();
         LocalTime startT = startTime != null ? LocalTime.parse(startTime) : null;
         LocalTime endT = endTime != null ? LocalTime.parse(endTime) : null;
 
-        for (ConsultationSlot slot : currentSlots) {
+        for (ConsultationSlot slot : baseSlots) {
             LocalDateTime dt = DateTime.toDateTimeObject(slot.getStartDateTime());
             LocalDate date = DateTime.getDate(dt);
             LocalTime time = DateTime.getTime(dt);
@@ -210,6 +213,7 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
             }
         }
 
+        currentSlots = filtered;
         populateTable(filtered);
 
         SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
@@ -417,8 +421,13 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
             }
             break;
         }
-        default:
-            populateTable(currentSlots);
+        default: {
+            List<ConsultationSlot> allSlots = usrCtrl.getConsultationController()
+                .getAvailableConsultationSlotsForDoctor(currentDoctor.getId());
+            currentSlots = allSlots;
+            populateTable(allSlots);
+            updateResultLabel("Showing " + allSlots.size() + " available slot(s)", allSlots.size());
+        }
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 

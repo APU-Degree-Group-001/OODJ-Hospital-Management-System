@@ -4190,3 +4190,14 @@ Bill Handling Error: Only Admin Staff can manage billing
 	ErrorMsg: Incorrect Login Credentials
 [2026-09-10 00:09:43] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ASSET_XRAY01' is not found
 [2026-09-10 00:09:43] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ASSET_XRAY01' is not found
+[2026-09-12 14:54:37] User with ID '#ADMd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-12 14:54:44] User with ID '#ADMd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-12 14:55:44] Error appending new hospital asset (System Error) -> Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because the return value of "java.util.List.get(int)" is null
+[2026-09-12 16:51:54] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM001} for Doctor {#DOCb8f50}
+	ErrorMsg: Hospital asset allocation is not created
+Scheduled start cannot be in the past
+[2026-09-12 16:52:24] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM001} for Doctor {#DOCd4e8f}
+	ErrorMsg: Hospital asset allocation is not created
+Asset '#ROOM001' already has an overlapping scheduled allocation

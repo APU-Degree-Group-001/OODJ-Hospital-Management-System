@@ -144,7 +144,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
 
     private void filterByStatus(DoctorShift.DoctorShiftStatus status) {
         List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
+        for (DoctorShift shift : getBaseShifts()) {
             if (status.equals(shift.getStatus())) {
                 filtered.add(shift);
             }
@@ -200,7 +200,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     
     private void filterByScheduledDateRange(String start, String end) {
         List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
+        for (DoctorShift shift : getBaseShifts()) {
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getStartDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
             boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
@@ -216,7 +216,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
 
     private void filterByActualDateRange(String start, String end) {
         List<DoctorShift> filtered = new ArrayList<>();
-        for (DoctorShift shift : currentDoctorShifts) {
+        for (DoctorShift shift : getBaseShifts()) {
             if (shift.getActualStartDateTime() == null || shift.getActualStartDateTime().isEmpty()) continue;
             LocalDate date = DateTime.getDate(DateTime.toDateTimeObject(shift.getActualStartDateTime()));
             boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
@@ -431,37 +431,7 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        if (currentDoctorShifts == null) return;
-        String selected = (String) sortField.getSelectedItem();
-        List<DoctorShift> sorted = new ArrayList<>(currentDoctorShifts);
-
-        switch (selected) {
-            case "ID":
-                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
-                break;
-
-            case "Scheduled Date Time":
-                sorted.sort(Comparator.comparing(s -> DateTime.toDateTimeObject(s.getStartDateTime())));
-                break;
-
-            case "Actual Date Time":
-                sorted.sort((a, b) -> {
-                    boolean aEmpty = a.getActualStartDateTime() == null || a.getActualStartDateTime().isEmpty();
-                    boolean bEmpty = b.getActualStartDateTime() == null || b.getActualStartDateTime().isEmpty();
-                    if (aEmpty && bEmpty) return 0;
-                    if (aEmpty) return 1;   // shifts not yet started sink to the bottom
-                    if (bEmpty) return -1;
-                    return DateTime.toDateTimeObject(a.getActualStartDateTime())
-                        .compareTo(DateTime.toDateTimeObject(b.getActualStartDateTime()));
-                });
-                break;
-
-            default: // "Default" -> fall back to shift ID
-                sorted.sort((a, b) -> a.getShiftId().compareToIgnoreCase(b.getShiftId()));
-        }
-
-        currentDoctorShifts = sorted;
-        populateShiftTable(sorted);
+        searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -505,11 +475,8 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
         String selected = (String) filterByField.getSelectedItem();
 
-        List<DoctorShift> base = (currentDoctorShifts != null) ? currentDoctorShifts : getBaseShifts();
-
         switch (selected) {
             case "Scheduled Date Time": {
-                currentDoctorShifts = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
@@ -520,7 +487,6 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
             }
 
             case "Actual Date Time": {
-                currentDoctorShifts = base;
                 LinkedHashMap<String, String> range = selectDateRange();
                 if (range.get("startDate") != null || range.get("endDate") != null) {
                     filterByActualDateRange(range.get("startDate"), range.get("endDate"));
@@ -531,7 +497,6 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
             }
 
             case "Status": {
-                currentDoctorShifts = base;
                 DoctorShift.DoctorShiftStatus status = selectStatus();
                 if (status != null) {
                     filterByStatus(status);
@@ -541,10 +506,12 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
                 break;
             }
 
-            default: // "Default" -> no filter
+            default: { // "Default" -> no filter
+                List<DoctorShift> base = getBaseShifts();
                 currentDoctorShifts = base;
                 populateShiftTable(base);
                 updateResultLabel("Showing " + base.size() + " shift(s)", base.size());
+            }
         }
     }//GEN-LAST:event_filterByFieldActionPerformed
 
