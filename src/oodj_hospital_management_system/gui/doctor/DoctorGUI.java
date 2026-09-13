@@ -12,10 +12,12 @@ import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
-import oodj_hospital_management_system.gui.doctor.consultation.DoctorConsultationsPanel;
-import oodj_hospital_management_system.gui.doctor.dashboard.DoctorDashboardPanel;
+import oodj_hospital_management_system.gui.doctor.consultation.PatientConsultationsPanel;
+import oodj_hospital_management_system.gui.doctor.dashboard.DashboardPanel;
 import oodj_hospital_management_system.gui.doctor.lab_services.DoctorLabServicesPanel;
+import oodj_hospital_management_system.gui.doctor.rating_feedback.RatingFeedbackPanel;
 import oodj_hospital_management_system.gui.doctor.shift_roster.DoctorShiftRosterPanel;
+import oodj_hospital_management_system.gui.doctor.ward_admission.DoctorWardAdmissionPanel;
 import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
@@ -37,10 +39,12 @@ public class DoctorGUI extends javax.swing.JFrame {
         this.usrCtrl = usrCtrl;
         initComponents();
         // Add cards to contentArea
-        contentArea.add(new DoctorDashboardPanel(), "doctorDashboard");
+        contentArea.add(new DashboardPanel(), "doctorDashboard");
         contentArea.add(new DoctorShiftRosterPanel(this.usrCtrl), "doctorShiftRoster");
-        contentArea.add(new DoctorConsultationsPanel(this.usrCtrl), "doctorConsultations");
+        contentArea.add(new PatientConsultationsPanel(this.usrCtrl), "doctorConsultations");
         contentArea.add(new DoctorLabServicesPanel(this.usrCtrl), "doctorLabServices");
+        contentArea.add(new DoctorWardAdmissionPanel(this.usrCtrl), "doctorWardAdmission");
+        contentArea.add(new RatingFeedbackPanel(this.usrCtrl), "doctorRatingFeedback");
 //        contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "doctorHospitalAssets");
 
         // Show default card

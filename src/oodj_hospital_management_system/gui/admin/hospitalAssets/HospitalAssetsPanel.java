@@ -53,8 +53,16 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         this.cardContainer = cardContainer;
         initComponents();
         loadAssets();
+        if (!isAdminView()) {
+            operationsPanel.setVisible(false);
+        }
         jPanel2.setPreferredSize(null);
         jPanel2.setMaximumSize(new java.awt.Dimension(900, Integer.MAX_VALUE));
+    }
+    
+    private boolean isAdminView() {
+        return usrCtrl.getActiveUser() != null
+            && "admin staff".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
     }
     
     public void loadAssets() {
@@ -94,16 +102,22 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
     }
     
     private void openAssetAllocation(HospitalAsset asset) {
+        String cardName = "assetAllocation-" + asset.getAssetId();
+
+        // Remove any stale panel previously registered under this same card name
+        for (java.awt.Component c : cardContainer.getComponents()) {
+            if (cardName.equals(cardContainer.getLayout() instanceof java.awt.CardLayout
+                    ? c.getName() : null)) {
+                cardContainer.remove(c);
+            }
+        }
+
         HospitalAssetViewTimeTablePanel detailsPanel = new HospitalAssetViewTimeTablePanel(
             usrCtrl,
             asset,
-            () -> {
-                // Back button: drop this card and return to the completed-consultations list
-                cardLayout.show(cardContainer, "hospitalAssets");
-            }
+            () -> cardLayout.show(cardContainer, "hospitalAssets")
         );
 
-        String cardName = "assetAllocation-" + asset.getAssetId();
         cardContainer.add(detailsPanel, cardName);
         cardLayout.show(cardContainer, cardName);
     }
@@ -244,7 +258,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         showResultsForPanel = new javax.swing.JPanel();
         showResultsForLabel = new javax.swing.JLabel();
         assetPanelWrapper = new javax.swing.JPanel();
-        operationsPanel1 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+        operationsPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
             15, new java.awt.Color(210,212,220), 10, 15, 10, 15
         );
         operationsLabel1 = new javax.swing.JLabel();
@@ -323,17 +337,17 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
 
         wrapperPane.add(jPanel2);
 
-        operationsPanel1.setBackground(new java.awt.Color(246, 251, 255));
-        operationsPanel1.setAlignmentY(0.0F);
-        operationsPanel1.setMaximumSize(new java.awt.Dimension(300, 250));
-        operationsPanel1.setPreferredSize(new java.awt.Dimension(300, 250));
-        operationsPanel1.setLayout(new javax.swing.BoxLayout(operationsPanel1, javax.swing.BoxLayout.Y_AXIS));
+        operationsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        operationsPanel.setAlignmentY(0.0F);
+        operationsPanel.setMaximumSize(new java.awt.Dimension(300, 250));
+        operationsPanel.setPreferredSize(new java.awt.Dimension(300, 250));
+        operationsPanel.setLayout(new javax.swing.BoxLayout(operationsPanel, javax.swing.BoxLayout.Y_AXIS));
 
         operationsLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         operationsLabel1.setForeground(new java.awt.Color(102, 102, 102));
         operationsLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         operationsLabel1.setText("Operations");
-        operationsPanel1.add(operationsLabel1);
+        operationsPanel.add(operationsLabel1);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -346,9 +360,9 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         addAssetButton.addActionListener(this::addAssetButtonActionPerformed);
         jPanel3.add(addAssetButton);
 
-        operationsPanel1.add(jPanel3);
+        operationsPanel.add(jPanel3);
 
-        wrapperPane.add(operationsPanel1);
+        wrapperPane.add(operationsPanel);
 
         add(wrapperPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -605,7 +619,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel operationsLabel1;
-    private javax.swing.JPanel operationsPanel1;
+    private javax.swing.JPanel operationsPanel;
     private javax.swing.JButton resetSearchButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;

@@ -84,17 +84,13 @@ public class LogoutButton extends RoundedButton {
 
                 switch (activeUser.getType().toLowerCase()) {
                     case "patient":
-                        oodj_hospital_management_system.gui.patient.PatientLoginGUI patientLoginGui =
-                            new oodj_hospital_management_system.gui.patient.PatientLoginGUI();
-                        patientLoginGui.setVisible(true);
-                        break;
                     case "admin staff":
                     case "medical manager":
                     case "doctor":
                     default:
-                        oodj_hospital_management_system.gui.StaffLoginGUI staffLoginGui =
-                            new oodj_hospital_management_system.gui.StaffLoginGUI();
-                        staffLoginGui.setVisible(true);
+                        oodj_hospital_management_system.gui.LoginGUI loginGui =
+                            new oodj_hospital_management_system.gui.LoginGUI();
+                        loginGui.setVisible(true);
                         break;
                 }
 

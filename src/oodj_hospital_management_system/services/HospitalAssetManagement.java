@@ -532,7 +532,9 @@ public class HospitalAssetManagement {
     /**
      * Creates a new allocation.
      * scheduledStartDateTime / scheduledEndDateTime are optional (pass "" or null if not planning ahead).
-     * allocatedDateTime (actual start) defaults to "now" if not supplied.
+     * allocatedDateTime (actual start) defaults to "now" only when there's no schedule (walk-in).
+     * If a future schedule is given and allocatedDateTime is left blank, the allocation is
+     * left un-started (Scheduled) until startHospitalAssetAllocation() is called later.
      */
     public LinkedHashMap<String, String> createHospitalAssetAllocation(
         String assetId,
@@ -606,15 +608,24 @@ public class HospitalAssetManagement {
 
         String newAllocationId = generateHospitalAssetAllocationId();
 
+        String finalAllocatedDateTime;
+        if (allocatedDateTime != null && !allocatedDateTime.isBlank()) {
+            finalAllocatedDateTime = allocatedDateTime;
+        } else if (!hasSchedule) {
+            // no schedule given → walk-in allocation, starts immediately
+            finalAllocatedDateTime = DateTime.formattedLocalDateTime(DateTime.currentDateTime());
+        } else {
+            // scheduled for later → hasn't actually started yet
+            finalAllocatedDateTime = "";
+        }
+
         HospitalAssetAllocation newAllocation = new HospitalAssetAllocation(
                 newAllocationId,
                 assetId,
                 doctorId,
                 scheduledStartDateTime != null ? scheduledStartDateTime : "",
                 scheduledEndDateTime != null ? scheduledEndDateTime : "",
-                (allocatedDateTime == null || allocatedDateTime.isBlank())
-                        ? DateTime.formattedLocalDateTime(DateTime.currentDateTime())
-                        : allocatedDateTime,
+                finalAllocatedDateTime,
                 ""
         );
 

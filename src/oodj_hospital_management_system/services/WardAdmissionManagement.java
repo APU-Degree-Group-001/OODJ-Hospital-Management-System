@@ -46,7 +46,8 @@ public class WardAdmissionManagement {
         List<LinkedHashMap<String, String>> rawData = admissionHandler.readFile();
 
         for (LinkedHashMap<String, String> row : rawData) {
-            // admissionId, patientId, wardId, admittingDoctorId, admittedDateTime, dischargedDateTime, status, reason
+            // admissionId, patientId, wardId, admittingDoctorId, admittedDateTime,
+            // dischargedDateTime, status, reason
             WardAdmission admission = new WardAdmission(
                     row.get("admissionId"),
                     row.get("patientId"),
@@ -148,6 +149,10 @@ public class WardAdmissionManagement {
                 comparator = Comparator.comparing(WardAdmission::getAdmittedDateTime);
                 break;
 
+            case "dischargeddatetime":
+                comparator = Comparator.comparing(WardAdmission::getDischargedDateTime);
+                break;
+
             case "status":
                 comparator = Comparator.comparing(a -> a.getStatus().toString());
                 break;
@@ -170,9 +175,18 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static int getActiveAdmissionCount(String wardId) {
-        return (int) getAllWardAdmissions().stream()
-                .filter(a -> a.getWardId().equals(wardId) && a.getStatus() == AdmissionStatus.ADMITTED)
-                .count();
+        loadWardAdmissions();
+
+        int count = 0;
+
+        for (WardAdmission admission : allWardAdmissions) {
+            if (admission.getWardId().equals(wardId)
+                    && admission.getStatus() == AdmissionStatus.ADMITTED) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     public static int getAvailableBedCount(String wardId) {
@@ -228,7 +242,7 @@ public class WardAdmissionManagement {
     }
 
     // =========================================================
-    // CREATE (ADMIT)
+    // CREATE (ADMIT DIRECTLY — no approval step)
     // =========================================================
 
     public LinkedHashMap<String, String> createWardAdmission(String patientId, String wardId, String admittingDoctorId, String admittedDateTime, String reason) {
@@ -281,7 +295,7 @@ public class WardAdmissionManagement {
         loadWardAdmissions();
 
         msgMap.put("success", "true");
-        msgMap.put("msg", String.format("Ward admission '%s' is created and stored!", newAdmissionId));
+        msgMap.put("msg", String.format("Ward admission '%s' is created and admitted!", newAdmissionId));
         msgMap.put("newAdmissionId", newAdmissionId);
 
         return msgMap;

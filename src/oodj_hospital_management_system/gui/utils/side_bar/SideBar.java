@@ -51,7 +51,7 @@ public class SideBar extends JPanel {
     
     private void addNavItemByRole(String role) {
         if (role.equals("admin staff")) {
-            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "adminStaffDashboard");
+            addNavItem("Dashboard", "", "adminStaffDashboard");
             addNavItem("User Management", "", "adminStaffUserManagement");
             addNavItem("Doctor Assignment", "", "adminStaffDoctorAssignment");
             addNavItem("Hospital Assets", "", "adminStaffHospitalAssets");
@@ -60,26 +60,31 @@ public class SideBar extends JPanel {
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("medical manager")) {
-            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "medicalManagerDashboard");
+            addNavItem("Dashboard", "", "medicalManagerDashboard");
             addNavItem("Clinical Departments", "", "medicalManagerClinicalDepartments");
             addNavItem("Doctor Shift Rosters", "", "medicalManagerDoctorShiftRosters");
             addNavItem("Billing Management", "", "medicalManagerBillingManagement");
             addNavItem("Reporting", "", "medicalManagerReporting");
+            addNavItem("Rating & Feedback", "", "assignedDoctorRatingFeedback");
             navItems.add(Box.createVerticalGlue());
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("doctor")) {
-            addNavItem("Dashboard", "oodj_hospital_management_system/assets/img/icons/house_1.png", "doctorDashboard");
+            addNavItem("Dashboard", "", "doctorDashboard");
             addNavItem("Shift Roster", "", "doctorShiftRoster");
             addNavItem("Consultations", "", "doctorConsultations");
             addNavItem("Lab Services", "", "doctorLabServices");
             addNavItem("Ward Admission", "", "doctorWardAdmission");
+            addNavItem("Rating & Feedback", "", "doctorRatingFeedback");
             navItems.add(Box.createVerticalGlue());
             addLogoutButton("Logout", "", "");
             // ...
         } else if (role.equals("patient")) {
-            addNavItem("", "", "");
-            // ...
+            addNavItem("Dashboard", "", "patientDashboard");
+            addNavItem("Consultations", "", "patientConsultations");
+            addNavItem("Rating & Feedback", "", "patientRatingFeedback");
+            navItems.add(Box.createVerticalGlue());
+            addLogoutButton("Logout", "", "");
         }
     }
     

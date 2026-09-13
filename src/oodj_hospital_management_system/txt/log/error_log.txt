@@ -4201,3 +4201,164 @@ Scheduled start cannot be in the past
 [2026-09-12 16:52:24] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM001} for Doctor {#DOCd4e8f}
 	ErrorMsg: Hospital asset allocation is not created
 Asset '#ROOM001' already has an overlapping scheduled allocation
+[2026-09-13 15:34:17] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 15:34:17] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:37:37] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 15:37:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 15:37:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:40:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 15:40:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:53:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 15:53:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:53:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 15:53:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:59:31] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 15:59:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 15:59:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 15:59:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 15:59:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:05:52] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:05:52] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:05:58] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:05:58] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:05:59] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:05:59] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:06:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:06:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:06:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:06:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:11:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:11:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:11:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:11:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:11:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:11:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:35:51] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 16:36:01] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:01] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:01] Error finding user -> User Handling Error: Invalid User ID: User ID '#PAT5e0f3' is not found
+[2026-09-13 16:36:02] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:22] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:22] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:23] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:23] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:23] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:23] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:36:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:38:50] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:38:50] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:38:50] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:38:50] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:38:51] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:38:51] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:38:51] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:38:51] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:38:53] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:38:53] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:38:53] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:38:53] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:38:55] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:38:55] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:38:58] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:38:58] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:39:02] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:39:03] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:39:03] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:39:03] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:39:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 16:39:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:39:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:39:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:39:12] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM002' is not found
+[2026-09-13 16:39:12] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 16:39:14] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 16:39:14] Error finding user -> User Handling Error: Invalid User ID: User ID '#ADM001' is not found
+[2026-09-13 18:52:41] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:52:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:52:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:52:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:52:49] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:00] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:00] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:00] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:00] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:07] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:09] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:09] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:13] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:13] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:16] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:16] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:27] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:30] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:30] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:32] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:32] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:53:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 18:53:34] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:54:12] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:54:21] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:55:10] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 18:55:10] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 18:55:32] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 18:55:32] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 18:55:55] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 18:58:49] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 18:58:49] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:05:15] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:05:15] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:08:17] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:08:17] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:08:58] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+	ErrorMsg: Hospital asset allocation is not created
+Asset '#ROOM002' already has an overlapping scheduled allocation
+[2026-09-13 19:10:26] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+	ErrorMsg: Hospital asset allocation is not created
+Scheduled start cannot be in the past
+[2026-09-13 19:10:41] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+	ErrorMsg: Hospital asset allocation is not created
+Scheduled start cannot be in the past
+[2026-09-13 19:11:32] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:11:32] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:11:59] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:13:06] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:14:26] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 19:14:26] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:14:26] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 19:14:26] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:14:48] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 19:14:48] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:14:48] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-13 19:14:48] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 19:18:27] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:18:27] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-13 19:27:43] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 21:26:42] User with ID '#APT3fad4' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 21:59:54] User with ID '#APT3fad4' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 22:00:01] User with ID '#PAT3fad4' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-13 23:56:41] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-13 23:58:17] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-14 00:03:15] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found

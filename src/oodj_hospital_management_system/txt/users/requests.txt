@@ -9,4 +9,4 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQ06d36, ASSET_REQUEST, #DOCd4e8c, doctor, , #ROOM002, Testing asset request, APPROVED, 2026-08-16 15:11:45, 2026-08-16 15:12:21, #ADMd4e8f
 #REQ95720, ASSET_REQUEST, #DOCd4e8c, doctor, , #LAB001, Testing asset request, REJECTED, 2026-08-16 15:11:48, 2026-08-16 15:12:21, #ADMd4e8f
 #REQ159f4, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFTeaae1, test hehe, PENDING, 2026-09-08 22:19:30, , 
-#REQ1a63c, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM002, consultation :D, PENDING, 2026-09-10 00:12:36, , 
+#REQ1a63c, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM002, consultation :D, APPROVED, 2026-09-10 00:12:36, 2026-09-13 18:55:28, #ADMd4e8f

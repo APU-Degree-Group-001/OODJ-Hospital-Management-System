@@ -13,6 +13,7 @@ import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAss
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
+import oodj_hospital_management_system.gui.medical_manager.doctor_rating_feedback.AssignedDoctorRatingFeedbackPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
 import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalManagerReportingPanel;
 
@@ -37,6 +38,7 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
         contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "medicalManagerDoctorShiftRosters");
         contentArea.add(new MedicalManagerBillingManagementPanel(this.usrCtrl), "medicalManagerBillingManagement");
         contentArea.add(new MedicalManagerReportingPanel(this.usrCtrl), "medicalManagerReporting");
+        contentArea.add(new AssignedDoctorRatingFeedbackPanel(this.usrCtrl), "assignedDoctorRatingFeedback");
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");

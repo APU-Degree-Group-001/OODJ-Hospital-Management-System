@@ -10,12 +10,12 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
  *
  * @author sheaw
  */
-public class DoctorDashboardPanel extends javax.swing.JPanel {
+public class DashboardPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form adminDashboardPanel
      */
-    public DoctorDashboardPanel() {
+    public DashboardPanel() {
         initComponents();
     }
 

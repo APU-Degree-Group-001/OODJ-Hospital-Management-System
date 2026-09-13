@@ -92,6 +92,20 @@ public class ConsultationController {
         }
         return msg;
     }
+    
+    public LinkedHashMap<String, String> cancelConsultation(String consultationId) {
+        LinkedHashMap<String, String> msg = consultationServices.cancelConsultation(consultationId);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} cancelled Consultation {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), consultationId));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to cancel Consultation {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(), consultationId, msg.get("msg")));
+        }
+        return msg;
+    }
  
     public LinkedHashMap<String, String> deleteConsultation(String consultationId) {
         LinkedHashMap<String, String> msg = consultationServices.deleteConsultation(consultationId);
@@ -153,6 +167,22 @@ public class ConsultationController {
         return result;
     }
     
+    public LinkedHashMap<String, String> createFeedback(String consultationId, Patient patient, int rating, String comment) {
+        LinkedHashMap<String, String> msg = consultationServices.createFeedback(consultationId, patient, rating, comment);
+        if (msg.get("success") != null) {
+            System.out.println(msg.get("msg"));
+            Logger.log(String.format("User {%s - %s - %s} submitted Feedback {%s} for Consultation {%s}",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    msg.get("newFeedbackId"), consultationId));
+        } else {
+            System.out.println(msg.get("msg"));
+            Logger.errorLog(String.format("User {%s - %s - %s} failed to submit feedback for Consultation {%s}\n\tErrorMsg: %s",
+                    activeUser.getType(), activeUser.getId(), activeUser.getName(),
+                    consultationId, msg.get("msg")));
+        }
+        return msg;
+    }
+    
     public List<ConsultationSlot> getAvailableConsultationSlots() {
         List<ConsultationSlot> all = ConsultationManagement.getAllConsultationSlots();
         List<ConsultationSlot> available = new ArrayList<>();
@@ -185,6 +215,19 @@ public class ConsultationController {
                     && c.getConsultationSlot().getDoctorShift() != null
                     && c.getConsultationSlot().getDoctorShift().getDoctor() != null
                     && doctorId.equals(c.getConsultationSlot().getDoctorShift().getDoctor().getId())
+                    && c.getConsultationStatus() == Consultation.ConsultationStatus.SCHEDULED) {
+                booked.add(c);
+            }
+        }
+        return booked;
+    }
+    
+    public List<Consultation> getBookedConsultationsForPatient(String patientId) {
+        List<Consultation> all = ConsultationManagement.getAllConsultations();
+        List<Consultation> booked = new ArrayList<>();
+        for (Consultation c : all) {
+            if (c.getPatient() != null
+                    && patientId.equals(c.getPatient().getId())
                     && c.getConsultationStatus() == Consultation.ConsultationStatus.SCHEDULED) {
                 booked.add(c);
             }

@@ -40,9 +40,12 @@ import oodj_hospital_management_system.models.Patient;
 import oodj_hospital_management_system.models.Prescription;
 import oodj_hospital_management_system.models.PrescriptionType;
 import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.models.Ward;
+import oodj_hospital_management_system.models.WardAdmission;
 import oodj_hospital_management_system.services.BillingManagement;
 import oodj_hospital_management_system.services.ConsultationManagement;
 import oodj_hospital_management_system.services.UserManagement;
+import oodj_hospital_management_system.services.WardAdmissionManagement;
 import oodj_hospital_management_system.utils.DateTime;
 
 /**
@@ -52,6 +55,7 @@ import oodj_hospital_management_system.utils.DateTime;
 public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private HospitalAsset asset;
+    private List<WardAdmission> currentWardAdmissions;
     private List<HospitalAssetAllocation> currentAllocations;
     private Runnable onBack;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
@@ -65,17 +69,17 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         this.onBack = onBack;
         initComponents();
         applyWrappingRenderers();
-
+ 
         if (!isAdminView()) {
             allocationCrudPanel.setVisible(false);
         }
-
+ 
         loadAssetDetails();
-
+ 
         backButton.addActionListener(e -> {
             if (this.onBack != null) this.onBack.run();
         });
-
+ 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
@@ -87,15 +91,86 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private void loadAssetDetails() {
         if (asset == null) return;
         String id = asset.getAssetId();
-
-        // Consultation info
+ 
         assetId.setText(id);
         assetType.setText(asset.getAssetType());
         assetName.setText(asset.getAssetName());
-
-        loadAssetAllocations(id);
+ 
+        loadWardInformation();
+ 
+        if (asset instanceof Ward) {
+            timetablePanel.setVisible(false);
+            wardTimetablePanel.setVisible(true);
+            loadWardAdmissionsTimetable(id);
+        } else {
+            timetablePanel.setVisible(true);
+            wardTimetablePanel.setVisible(false);
+            loadAssetAllocations(id);
+        }
     }
-
+    
+    private void loadWardInformation() {
+        if (asset instanceof Ward) {
+            Ward ward = (Ward) asset;
+            int total = ward.getTotalBeds();
+            int available = WardAdmissionManagement.getAvailableBedCount(asset.getAssetId());
+ 
+            totalBeds.setText(String.valueOf(total));
+            totalBedsAvailableNow.setText(String.valueOf(available));
+            wardInformationPanel.setVisible(true);
+        } else {
+            wardInformationPanel.setVisible(false);
+        }
+    }
+    
+ 
+    private void loadWardAdmissionsTimetable(String wardId) {
+        List<WardAdmission> admissions = new ArrayList<>();
+        for (WardAdmission a : WardAdmissionManagement.getAllWardAdmissions()) {
+            if (wardId.equals(a.getWardId())
+                    && (a.getStatus() == WardAdmission.AdmissionStatus.ADMITTED
+                        || a.getStatus() == WardAdmission.AdmissionStatus.DISCHARGED)) {
+                admissions.add(a);
+            }
+        }
+ 
+        this.currentWardAdmissions = admissions;
+        populateWardTimetable(admissions);
+ 
+        wardTimetablePanel.setMaximumSize(
+            new Dimension(Integer.MAX_VALUE, wardTimetablePanel.getPreferredSize().height));
+ 
+        wardTimetablePanel.revalidate();
+        wardTimetablePanel.repaint();
+        wrapperPane.revalidate();
+        wrapperPane.repaint();
+    }
+ 
+    private void populateWardTimetable(List<WardAdmission> admissions) {
+        javax.swing.table.DefaultTableModel model =
+            (javax.swing.table.DefaultTableModel) timeTable1.getModel();
+        model.setRowCount(0);
+ 
+        for (WardAdmission a : admissions) {
+            String admittedDt = (a.getAdmittedDateTime() != null && !a.getAdmittedDateTime().isEmpty())
+                ? a.getAdmittedDateTime() : "-";
+ 
+            model.addRow(new Object[]{
+                a.getAdmissionId(),
+                resolveUserName(a.getPatientId()),
+                resolveUserName(a.getAdmittingDoctorId()),
+                admittedDt,
+                a.getStatus() != null ? a.getStatus().toString() : "-"
+            });
+        }
+    }
+ 
+    private String resolveUserName(String userId) {
+        if (userId == null || userId.isEmpty()) return "-";
+        User u = UserManagement.getUserById(userId);
+        return u != null ? u.getName() : userId;
+    }
+ 
     private void loadAssetAllocations(String id) {
         List<HospitalAssetAllocation> allocation = usrCtrl.getHospitalAssetController()
             .getHospitalAssetAllocationsByAssetId(id);
@@ -121,7 +196,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         return usrCtrl.getActiveUser() != null
             && "admin staff".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
     }
-
+ 
     private void populateTimeTable(List<HospitalAssetAllocation> allocation) {
         javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) timeTable.getModel();
@@ -146,17 +221,17 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         if (alloc.getReleasedDateTime() != null && !alloc.getReleasedDateTime().isEmpty()) {
            return "Completed";
        }
-
+ 
        boolean pastScheduledEnd = false;
        if (alloc.getScheduledEndDateTime() != null && !alloc.getScheduledEndDateTime().isEmpty()) {
            LocalDateTime scheduledEnd = DateTime.toDateTimeObject(alloc.getScheduledEndDateTime());
            pastScheduledEnd = scheduledEnd.isBefore(DateTime.currentDateTime());
        }
-
+ 
        if (alloc.getAllocationDateTime() != null && !alloc.getAllocationDateTime().isEmpty()) {
            return pastScheduledEnd ? "Overrunning" : "In Progress";
        }
-
+ 
        return pastScheduledEnd ? "Overdue" : "Scheduled";
     }
     
@@ -179,6 +254,19 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         List<HospitalAssetAllocation> base = usrCtrl.getHospitalAssetController()
             .getHospitalAssetAllocationsByAssetId(asset.getAssetId());
         return base != null ? base : new ArrayList<>();
+    }
+    
+    private List<WardAdmission> getBaseWardAdmissions() {
+        String wardId = asset.getAssetId();
+        List<WardAdmission> base = new ArrayList<>();
+        for (WardAdmission a : WardAdmissionManagement.getAllWardAdmissions()) {
+            if (wardId.equals(a.getWardId())
+                    && (a.getStatus() == WardAdmission.AdmissionStatus.ADMITTED
+                        || a.getStatus() == WardAdmission.AdmissionStatus.DISCHARGED)) {
+                base.add(a);
+            }
+        }
+        return base;
     }
  
     private LinkedHashMap<String, String> selectDateRange() {
@@ -274,6 +362,21 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
  
         return choice != null ? labelToId.get(choice) : null;
     }
+    
+    private WardAdmission getSelectedWardAdmission() {
+        int viewRow = timeTable1.getSelectedRow();
+        if (viewRow == -1) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "Please select an admission first", "No Selection", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        int modelRow = timeTable1.convertRowIndexToModel(viewRow);
+        String admissionId = (String) timeTable1.getModel().getValueAt(modelRow, 0);
+        for (WardAdmission a : currentWardAdmissions) {
+            if (a.getAdmissionId().equals(admissionId)) return a;
+        }
+        return null;
+    }
  
     private List<HospitalAssetAllocation> filterByDoctor(List<HospitalAssetAllocation> base, String doctorId) {
         List<HospitalAssetAllocation> filtered = new ArrayList<>();
@@ -286,18 +389,18 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private LocalDateTime combineDateAndTime(JDateChooser dateChooser, JSpinner timeSpinner) {
         Date datePart = dateChooser.getDate();
         if (datePart == null) return null;
-
+ 
         Date timePart = (Date) timeSpinner.getValue();
-
+ 
         Calendar dateCal = Calendar.getInstance();
         dateCal.setTime(datePart);
         Calendar timeCal = Calendar.getInstance();
         timeCal.setTime(timePart);
-
+ 
         dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
         dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
         dateCal.set(Calendar.SECOND, 0);
-
+ 
         return LocalDateTime.ofInstant(dateCal.toInstant(), java.time.ZoneId.systemDefault());
     }
     
@@ -306,13 +409,13 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             .filter(d -> d instanceof Doctor)
             .map(d -> (Doctor) d)
             .toList();
-
+ 
         if (doctors.isEmpty()) {
             JOptionPane.showMessageDialog(parentWindow,
                 "No active doctors are available.", "Cannot Proceed", JOptionPane.WARNING_MESSAGE);
             return null;
         }
-
+ 
         JComboBox<Doctor> doctorCombo = new JComboBox<>(doctors.toArray(new Doctor[0]));
         doctorCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -325,7 +428,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
                 return this;
             }
         });
-
+ 
         if (preselectDoctorId != null) {
             for (Doctor d : doctors) {
                 if (d.getId().equals(preselectDoctorId)) {
@@ -334,8 +437,86 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
                 }
             }
         }
-
+ 
         return doctorCombo;
+    }
+    
+    private String selectWardAdmissionDoctor(List<WardAdmission> base) {
+        LinkedHashMap<String, String> labelToId = new LinkedHashMap<>();
+        for (WardAdmission a : base) {
+            String id = a.getAdmittingDoctorId();
+            if (id == null || id.isEmpty() || labelToId.containsValue(id)) continue;
+            labelToId.put(resolveUserName(id) + " (" + id + ")", id);
+        }
+        if (labelToId.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow, "No doctors found.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        String[] labels = labelToId.keySet().toArray(new String[0]);
+        String choice = (String) JOptionPane.showInputDialog(parentWindow, "Select doctor:",
+            "Filter by Admitting Doctor", JOptionPane.QUESTION_MESSAGE, null, labels, labels[0]);
+        return choice != null ? labelToId.get(choice) : null;
+    }
+ 
+    private String selectWardAdmissionPatient(List<WardAdmission> base) {
+        LinkedHashMap<String, String> labelToId = new LinkedHashMap<>();
+        for (WardAdmission a : base) {
+            String id = a.getPatientId();
+            if (id == null || id.isEmpty() || labelToId.containsValue(id)) continue;
+            labelToId.put(resolveUserName(id) + " (" + id + ")", id);
+        }
+        if (labelToId.isEmpty()) {
+            JOptionPane.showMessageDialog(parentWindow, "No patients found.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        String[] labels = labelToId.keySet().toArray(new String[0]);
+        String choice = (String) JOptionPane.showInputDialog(parentWindow, "Select patient:",
+            "Filter by Patient", JOptionPane.QUESTION_MESSAGE, null, labels, labels[0]);
+        return choice != null ? labelToId.get(choice) : null;
+    }
+ 
+    private WardAdmission.AdmissionStatus selectWardAdmissionStatus() {
+        WardAdmission.AdmissionStatus[] statuses = {
+            WardAdmission.AdmissionStatus.ADMITTED, WardAdmission.AdmissionStatus.DISCHARGED
+        };
+        javax.swing.JComboBox<WardAdmission.AdmissionStatus> statusCombo = new javax.swing.JComboBox<>(statuses);
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 5, 5));
+        panel.add(new JLabel("Status:"));
+        panel.add(statusCombo);
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel,
+            "Filter by Status", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return null;
+        return (WardAdmission.AdmissionStatus) statusCombo.getSelectedItem();
+    }
+ 
+    private List<WardAdmission> filterWardAdmissionsByDoctor(List<WardAdmission> base, String doctorId) {
+        List<WardAdmission> filtered = new ArrayList<>();
+        for (WardAdmission a : base) if (doctorId.equals(a.getAdmittingDoctorId())) filtered.add(a);
+        return filtered;
+    }
+ 
+    private List<WardAdmission> filterWardAdmissionsByPatient(List<WardAdmission> base, String patientId) {
+        List<WardAdmission> filtered = new ArrayList<>();
+        for (WardAdmission a : base) if (patientId.equals(a.getPatientId())) filtered.add(a);
+        return filtered;
+    }
+ 
+    private List<WardAdmission> filterWardAdmissionsByStatus(List<WardAdmission> base, WardAdmission.AdmissionStatus status) {
+        List<WardAdmission> filtered = new ArrayList<>();
+        for (WardAdmission a : base) if (status.equals(a.getStatus())) filtered.add(a);
+        return filtered;
+    }
+ 
+    private List<WardAdmission> filterWardAdmissionsByAdmittedDateRange(List<WardAdmission> base, String start, String end) {
+        List<WardAdmission> filtered = new ArrayList<>();
+        for (WardAdmission a : base) {
+            if (a.getAdmittedDateTime() == null || a.getAdmittedDateTime().isEmpty()) continue;
+            LocalDate date = DateTime.toDateTimeObject(a.getAdmittedDateTime()).toLocalDate();
+            if (start != null && date.isBefore(LocalDate.parse(start))) continue;
+            if (end != null && date.isAfter(LocalDate.parse(end))) continue;
+            filtered.add(a);
+        }
+        return filtered;
     }
     
     private void applyWrappingRenderers() {
@@ -369,6 +550,14 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        wardInformationPanel = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        totalBedsAvailableNow = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        totalBeds = new javax.swing.JLabel();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         timetablePanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -384,7 +573,18 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         sortField = new javax.swing.JComboBox<>();
         sortByLabel1 = new javax.swing.JLabel();
         filterByField = new javax.swing.JComboBox<>();
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        wardTimetablePanel = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        timeTable1 = new javax.swing.JTable();
+        sortByPane1 = new javax.swing.JPanel();
+        resetButton1 = new javax.swing.JButton();
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        sortByLabel2 = new javax.swing.JLabel();
+        sortField1 = new javax.swing.JComboBox<>();
+        sortByLabel3 = new javax.swing.JLabel();
+        filterByField1 = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1160, 2147483647));
@@ -486,6 +686,66 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         wrapperPane.add(filler1);
         wrapperPane.add(filler3);
 
+        wardInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
+        wardInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        wardInformationPanel.setAlignmentY(0.0F);
+        wardInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 110));
+        wardInformationPanel.setMinimumSize(new java.awt.Dimension(196, 110));
+        wardInformationPanel.setPreferredSize(new java.awt.Dimension(235, 110));
+        wardInformationPanel.setLayout(new java.awt.GridBagLayout());
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("BEDS AVAILABLE");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
+        wardInformationPanel.add(jLabel5, gridBagConstraints);
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel6.setText("WARD INFORMATION");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        wardInformationPanel.add(jLabel6, gridBagConstraints);
+
+        totalBedsAvailableNow.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        totalBedsAvailableNow.setText("TAN");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
+        wardInformationPanel.add(totalBedsAvailableNow, gridBagConstraints);
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setText("TOTAL BEDS");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
+        wardInformationPanel.add(jLabel7, gridBagConstraints);
+
+        totalBeds.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        totalBeds.setText("#PAT12345");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
+        wardInformationPanel.add(totalBeds, gridBagConstraints);
+
+        wrapperPane.add(wardInformationPanel);
+        wrapperPane.add(filler6);
+        wrapperPane.add(filler4);
+
         timetablePanel.setBackground(new java.awt.Color(246, 251, 255));
         timetablePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
         timetablePanel.setAlignmentY(0.0F);
@@ -522,6 +782,10 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(timeTable);
+        if (timeTable.getColumnModel().getColumnCount() > 0) {
+            timeTable.getColumnModel().getColumn(3).setHeaderValue("Resolver");
+            timeTable.getColumnModel().getColumn(4).setHeaderValue("Resolved ");
+        }
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -580,7 +844,82 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         timetablePanel.add(sortByPane, new java.awt.GridBagConstraints());
 
         wrapperPane.add(timetablePanel);
-        wrapperPane.add(filler4);
+        wrapperPane.add(filler7);
+
+        wardTimetablePanel.setBackground(new java.awt.Color(246, 251, 255));
+        wardTimetablePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        wardTimetablePanel.setAlignmentY(0.0F);
+        wardTimetablePanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
+        wardTimetablePanel.setLayout(new java.awt.GridBagLayout());
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel11.setText("TIMETABLE");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        wardTimetablePanel.add(jLabel11, gridBagConstraints);
+
+        timeTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Admission ID", "Patient", "Admitting Doctor", "Admitted Date Time", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(timeTable1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        wardTimetablePanel.add(jScrollPane2, gridBagConstraints);
+
+        sortByPane1.setBackground(new java.awt.Color(246, 251, 255));
+        sortByPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 10, 1));
+        sortByPane1.setPreferredSize(new java.awt.Dimension(520, 51));
+
+        resetButton1.setText("Reset Table");
+        resetButton1.addActionListener(this::resetButton1ActionPerformed);
+        sortByPane1.add(resetButton1);
+        sortByPane1.add(filler8);
+
+        sortByLabel2.setText("Sort By");
+        sortByPane1.add(sortByLabel2);
+
+        sortField1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Patient", "Admitted Doctor", "Scheduled Date Time" }));
+        sortField1.setPreferredSize(new java.awt.Dimension(150, 30));
+        sortField1.setRequestFocusEnabled(false);
+        sortField1.addActionListener(this::sortField1ActionPerformed);
+        sortByPane1.add(sortField1);
+
+        sortByLabel3.setText("Filter By");
+        sortByPane1.add(sortByLabel3);
+
+        filterByField1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Admitted Doctor", "Patient", "Status", "Admitted  Date Time", " ", " " }));
+        filterByField1.setPreferredSize(new java.awt.Dimension(150, 30));
+        filterByField1.setRequestFocusEnabled(false);
+        filterByField1.addActionListener(this::filterByField1ActionPerformed);
+        sortByPane1.add(filterByField1);
+
+        wardTimetablePanel.add(sortByPane1, new java.awt.GridBagConstraints());
+
+        wrapperPane.add(wardTimetablePanel);
 
         add(wrapperPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -608,17 +947,17 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private void allocateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allocateButtonActionPerformed
         JComboBox<Doctor> doctorCombo = buildDoctorComboBox(null);
         if (doctorCombo == null) return;
-
+ 
         JDateChooser startDateChooser = new JDateChooser();
         startDateChooser.setDateFormatString("yyyy-MM-dd");
         JSpinner startTimeSpinner = new JSpinner(new SpinnerDateModel());
         startTimeSpinner.setEditor(new JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
-
+ 
         JDateChooser endDateChooser = new JDateChooser();
         endDateChooser.setDateFormatString("yyyy-MM-dd");
         JSpinner endTimeSpinner = new JSpinner(new SpinnerDateModel());
         endTimeSpinner.setEditor(new JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
-
+ 
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
         panel.add(new JLabel("Doctor:"));
         panel.add(doctorCombo);
@@ -630,37 +969,37 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         panel.add(endDateChooser);
         panel.add(new JLabel("Scheduled End Time:"));
         panel.add(endTimeSpinner);
-
+ 
         while (true) {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
                 "Allocate Asset", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
-
+ 
             Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
             LocalDateTime startDateTime = combineDateAndTime(startDateChooser, startTimeSpinner);
             LocalDateTime endDateTime = combineDateAndTime(endDateChooser, endTimeSpinner);
-
+ 
             if (selectedDoctor == null || startDateTime == null || endDateTime == null) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-
+ 
             if (!endDateTime.isAfter(startDateTime)) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-
+ 
             LinkedHashMap<String, String> msg =
             usrCtrl.getHospitalAssetController().createHospitalAssetAllocation(
                     asset.getAssetId(),
                     selectedDoctor.getId(),
                     DateTime.formattedLocalDateTime(startDateTime),
                     DateTime.formattedLocalDateTime(endDateTime),
-                    DateTime.formattedLocalDateTime(LocalDateTime.now())
+                    null  // let the service decide: blank until scheduled start actually arrives
             );
-
+ 
             if (msg.get("success") != null) {
                 JOptionPane.showMessageDialog(parentWindow,
                         "Allocation added.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -780,20 +1119,20 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         HospitalAssetAllocation selected = getSelectedAllocation();
         if (selected == null) return;
-
+ 
         JComboBox<Doctor> doctorCombo = buildDoctorComboBox(selected.getDoctorId());
         if (doctorCombo == null) return;
-
+ 
         JDateChooser startDateChooser = new JDateChooser();
         startDateChooser.setDateFormatString("yyyy-MM-dd");
         JSpinner startTimeSpinner = new JSpinner(new SpinnerDateModel());
         startTimeSpinner.setEditor(new JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
-
+ 
         JDateChooser endDateChooser = new JDateChooser();
         endDateChooser.setDateFormatString("yyyy-MM-dd");
         JSpinner endTimeSpinner = new JSpinner(new SpinnerDateModel());
         endTimeSpinner.setEditor(new JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
-
+ 
         if (selected.getScheduledStartDateTime() != null && !selected.getScheduledStartDateTime().isEmpty()) {
             LocalDateTime startDt = DateTime.toDateTimeObject(selected.getScheduledStartDateTime());
             Date asDate = Date.from(startDt.atZone(java.time.ZoneId.systemDefault()).toInstant());
@@ -806,7 +1145,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             endDateChooser.setDate(asDate);
             endTimeSpinner.setValue(asDate);
         }
-
+ 
         javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
         panel.add(new JLabel("Doctor:"));
         panel.add(doctorCombo);
@@ -818,36 +1157,36 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         panel.add(endDateChooser);
         panel.add(new JLabel("Scheduled End Time:"));
         panel.add(endTimeSpinner);
-
+ 
         while (true) {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
                 "Edit Allocation", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
-
+ 
             Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
             LocalDateTime startDt = combineDateAndTime(startDateChooser, startTimeSpinner);
             LocalDateTime endDt = combineDateAndTime(endDateChooser, endTimeSpinner);
-
+ 
             if (selectedDoctor == null || startDt == null || endDt == null) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-
+ 
             if (!endDt.isAfter(startDt)) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-
+ 
             String allocationId = selected.getAllocationId();
             LinkedHashMap<String, String> scheduleMsg = usrCtrl.getHospitalAssetController()
                 .setHospitalAssetAllocationSchedule(allocationId,
                     DateTime.formattedLocalDateTime(startDt),
                     DateTime.formattedLocalDateTime(endDt));
-
+ 
             boolean success = scheduleMsg.get("success") != null;
-
+ 
             if (success) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Allocation updated.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -865,6 +1204,99 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         loadAssetAllocations(asset.getAssetId());
     }//GEN-LAST:event_resetButtonActionPerformed
 
+    private void filterByField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByField1ActionPerformed
+        String selected = (String) filterByField1.getSelectedItem();
+        List<WardAdmission> base = getBaseWardAdmissions();
+ 
+        switch (selected) {
+            case "Admitting Doctor": {
+                String doctorId = selectWardAdmissionDoctor(base);
+                if (doctorId != null) {
+                    currentWardAdmissions = filterWardAdmissionsByDoctor(base, doctorId);
+                    populateWardTimetable(currentWardAdmissions);
+                } else {
+                    filterByField1.setSelectedIndex(0);
+                }
+                break;
+            }
+            case "Patient": {
+                String patientId = selectWardAdmissionPatient(base);
+                if (patientId != null) {
+                    currentWardAdmissions = filterWardAdmissionsByPatient(base, patientId);
+                    populateWardTimetable(currentWardAdmissions);
+                } else {
+                    filterByField1.setSelectedIndex(0);
+                }
+                break;
+            }
+            case "Status": {
+                WardAdmission.AdmissionStatus status = selectWardAdmissionStatus();
+                if (status != null) {
+                    currentWardAdmissions = filterWardAdmissionsByStatus(base, status);
+                    populateWardTimetable(currentWardAdmissions);
+                } else {
+                    filterByField1.setSelectedIndex(0);
+                }
+                break;
+            }
+            case "Admitted Date Time": {
+                LinkedHashMap<String, String> range = selectDateRange();
+                if (range.get("startDate") != null || range.get("endDate") != null) {
+                    currentWardAdmissions = filterWardAdmissionsByAdmittedDateRange(base, range.get("startDate"), range.get("endDate"));
+                    populateWardTimetable(currentWardAdmissions);
+                } else {
+                    filterByField1.setSelectedIndex(0);
+                }
+                break;
+            }
+            default:
+            currentWardAdmissions = base;
+            populateWardTimetable(base);
+        }
+    }//GEN-LAST:event_filterByField1ActionPerformed
+
+    private void sortField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortField1ActionPerformed
+        if (currentWardAdmissions == null) return;
+        String selected = (String) sortField1.getSelectedItem();
+        List<WardAdmission> sorted = new ArrayList<>(currentWardAdmissions);
+ 
+        switch (selected) {
+            case "ID":
+            sorted.sort((a, b) -> a.getAdmissionId().compareToIgnoreCase(b.getAdmissionId()));
+            break;
+ 
+            case "Patient":
+            sorted.sort((a, b) -> resolveUserName(a.getPatientId()).compareToIgnoreCase(resolveUserName(b.getPatientId())));
+            break;
+ 
+            case "Admitting Doctor":
+            sorted.sort((a, b) -> resolveUserName(a.getAdmittingDoctorId()).compareToIgnoreCase(resolveUserName(b.getAdmittingDoctorId())));
+            break;
+ 
+            case "Admitted Date Time":
+            sorted.sort((a, b) -> {
+                boolean aEmpty = a.getAdmittedDateTime() == null || a.getAdmittedDateTime().isEmpty();
+                boolean bEmpty = b.getAdmittedDateTime() == null || b.getAdmittedDateTime().isEmpty();
+                if (aEmpty && bEmpty) return 0;
+                if (aEmpty) return 1;
+                if (bEmpty) return -1;
+                return DateTime.toDateTimeObject(a.getAdmittedDateTime())
+                .compareTo(DateTime.toDateTimeObject(b.getAdmittedDateTime()));
+            });
+            break;
+ 
+            default:
+            sorted.sort((a, b) -> a.getAdmissionId().compareToIgnoreCase(b.getAdmissionId()));
+        }
+ 
+        currentWardAdmissions = sorted;
+        populateWardTimetable(sorted);
+    }//GEN-LAST:event_sortField1ActionPerformed
+
+    private void resetButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButton1ActionPerformed
+        loadWardAdmissionsTimetable(asset.getAssetId());
+    }//GEN-LAST:event_resetButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton allocateButton;
@@ -879,24 +1311,43 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
     private javax.swing.JComboBox<String> filterByField;
+    private javax.swing.JComboBox<String> filterByField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JOptionPane jOptionPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel patientInformationPanel;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton resetButton;
+    private javax.swing.JButton resetButton1;
     private javax.swing.JLabel sortByLabel;
     private javax.swing.JLabel sortByLabel1;
+    private javax.swing.JLabel sortByLabel2;
+    private javax.swing.JLabel sortByLabel3;
     private javax.swing.JPanel sortByPane;
+    private javax.swing.JPanel sortByPane1;
     private javax.swing.JComboBox<String> sortField;
+    private javax.swing.JComboBox<String> sortField1;
     private javax.swing.JTable timeTable;
+    private javax.swing.JTable timeTable1;
     private javax.swing.JPanel timetablePanel;
+    private javax.swing.JLabel totalBeds;
+    private javax.swing.JLabel totalBedsAvailableNow;
+    private javax.swing.JPanel wardInformationPanel;
+    private javax.swing.JPanel wardTimetablePanel;
     private javax.swing.JPanel wrapperPane;
     // End of variables declaration//GEN-END:variables
 }

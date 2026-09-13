@@ -467,3 +467,72 @@
 [2026-09-12 16:53:41] User {admin staff - #ADMd4e8f - uehehe} logged out
 [2026-09-12 16:53:50] User {doctor - #DOCd4e8f - bug1} logged in
 [2026-09-12 17:19:20] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 12:39:51] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 15:34:13] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 15:37:45] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 15:40:44] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 15:53:20] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 15:59:38] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 16:05:50] User {doctor - #DOCd4e8f - bug1} created Ward Admission {#WAce351} for Patient {#PAT3fad4} in Ward {#WARD001}
+[2026-09-13 16:06:04] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-13 16:06:14] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 16:11:03] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 16:11:23] User {doctor - #DOCd4e8f - bug1} created Ward Admission {#WAfbabd} for Patient {#PAT3fad4} in Ward {#WARD001}
+[2026-09-13 16:35:57] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 18:52:35] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 18:54:10] User {doctor - #DOCd4e8f - bug1} created Ward Admission {#WA843fe} for Patient {#PATa6a72} in Ward {#WARD001}
+[2026-09-13 18:54:19] User {doctor - #DOCd4e8f - bug1} discharged Ward Admission {#WA012}
+[2026-09-13 18:54:57] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-13 18:55:08] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 18:55:28] User {admin staff - #ADMd4e8f - uehehe} approved Request {#REQ1a63c}
+[2026-09-13 18:55:42] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-13 18:55:51] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 18:58:35] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-13 18:58:48] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 18:59:40] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOCfcdd3} for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+[2026-09-13 19:05:13] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 19:05:51] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOC5c20c} for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+[2026-09-13 19:08:15] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 19:09:14] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOCc0659} for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+[2026-09-13 19:09:20] User {admin staff - #ADMd4e8f - uehehe} deleted Hospital Asset Allocation {#ALLOC5c20c}
+[2026-09-13 19:10:57] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOCd59ac} for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+[2026-09-13 19:11:20] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-13 19:11:31] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 19:11:46] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-13 19:11:55] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 19:12:28] User {doctor - #DOCd4e8f - bug1} started Hospital Asset Allocation {#ALLOCd59ac}
+[2026-09-13 19:12:53] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-13 19:13:03] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 19:17:15] User {doctor - #DOCd4e8f - bug1} released Hospital Asset Allocation {#ALLOCd59ac}
+[2026-09-13 19:18:26] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-13 19:27:38] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 20:59:00] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:17:34] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:23:02] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:24:54] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-13 21:25:56] User {medical manager - #MNG58321 - Chee} created Doctor Shift {#SHIFT31f80} for Doctor {#DOCb8f50 - cheeeeee}
+[2026-09-13 21:26:34] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-13 21:26:54] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:32:38] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:33:18] User {patient - #PAT3fad4 - Pau} created Consultation {#CONb0645} for Patient {#PAT3fad4 - Pau}
+[2026-09-13 21:41:15] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 21:41:32] User {patient - #PAT3fad4 - Pau} cancelled Consultation {#CONb0645}
+[2026-09-13 21:50:52] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-13 21:51:01] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-13 21:51:56] User {medical manager - #MNG58321 - Chee} created Doctor Shift {#SHIFTac53f} for Doctor {#DOCd4e8c - Waka Waka}
+[2026-09-13 21:52:03] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-13 21:52:24] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 22:00:10] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 22:01:14] User {patient - #PAT3fad4 - Pau} created Consultation {#CONe3ece} for Patient {#PAT3fad4 - Pau}
+[2026-09-13 23:14:38] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 23:19:20] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 23:19:56] User {patient - #PAT3fad4 - Pau} submitted Feedback {#FB2190a} for Consultation {#CONd3224}
+[2026-09-13 23:25:54] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-13 23:26:17] User {patient - #PAT3fad4 - Pau} submitted Feedback {#FB2bf5f} for Consultation {#CONd3224}
+[2026-09-13 23:56:35] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-13 23:58:11] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 00:03:08] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 00:03:26] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-14 00:03:34] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-14 00:08:51] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-14 00:18:15] User {medical manager - #MNG58321 - Chee} logged in

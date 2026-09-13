@@ -6,3 +6,5 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CONd3224, #SLOT98432, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
 #CON167e9, #SLOTb7795, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
 #CON8a21f, #SLOTc512e, #PAT79a39, #CTYPE001, Patient attended a scheduled routine health consultation, , COMPLETED
+#CONb0645, #SLOT31317, #PAT3fad4, #CTYPEedccb, testinggg, , CANCELLED
+#CONe3ece, #SLOTb8c80, #PAT3fad4, #CTYPEedccb, testttt, , SCHEDULED

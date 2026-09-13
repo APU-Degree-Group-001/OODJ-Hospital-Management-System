@@ -18,43 +18,43 @@ import oodj_hospital_management_system.utils.Logger;
 public class WardAdmissionController {
     private WardAdmissionManagement wardAdmissionServices;
     private User activeUser;
-
+ 
     public WardAdmissionController(User activeUser) {
         this.activeUser = activeUser;
         this.wardAdmissionServices = new WardAdmissionManagement(activeUser);
     }
-
+ 
     // Get Admissions
     public List<WardAdmission> getAllWardAdmissions() {
         return WardAdmissionManagement.getAllWardAdmissions();
     }
-
+ 
     // Lookup by ID
     public WardAdmission getWardAdmissionById(String admissionId) {
         return WardAdmissionManagement.getWardAdmissionById(admissionId);
     }
-
+ 
     // Search and Sort
     public List<WardAdmission> searchWardAdmissions(String keyword) {
         return WardAdmissionManagement.searchWardAdmissions(keyword);
     }
-
+ 
     public List<WardAdmission> sortWardAdmissions(String sortBy, boolean ascending) {
         return WardAdmissionManagement.sortWardAdmissions(sortBy, ascending);
     }
-
+ 
     // Bed Availability
     public int getActiveAdmissionCount(String wardId) {
         return WardAdmissionManagement.getActiveAdmissionCount(wardId);
     }
-
+ 
     public int getAvailableBedCount(String wardId) {
         return WardAdmissionManagement.getAvailableBedCount(wardId);
     }
-
+ 
     // CRUD
-    public LinkedHashMap<String, String> createWardAdmission(String patientId, String wardId, String admittingDoctorId, String admittedDateTime, String reason) {
-        LinkedHashMap<String, String> msg = wardAdmissionServices.createWardAdmission(patientId, wardId, admittingDoctorId, admittedDateTime, reason);
+    public LinkedHashMap<String, String> createWardAdmission(String patientId, String wardId, String admittingDoctorId, String requestedDateTime, String reason) {
+        LinkedHashMap<String, String> msg = wardAdmissionServices.createWardAdmission(patientId, wardId, admittingDoctorId, requestedDateTime, reason);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
             Logger.log(String.format("User {%s - %s - %s} created Ward Admission {%s} for Patient {%s} in Ward {%s}",
@@ -68,7 +68,37 @@ public class WardAdmissionController {
         }
         return msg;
     }
-
+ 
+//    // For Admin Staff only
+//    public LinkedHashMap<String, String> approveWardAdmission(String admissionId) {
+//        LinkedHashMap<String, String> msg = wardAdmissionServices.approveWardAdmission(admissionId);
+//        if (msg.get("success") != null) {
+//            System.out.println(msg.get("msg"));
+//            Logger.log(String.format("User {%s - %s - %s} approved Ward Admission {%s}",
+//                    activeUser.getType(), activeUser.getId(), activeUser.getName(), admissionId));
+//        } else {
+//            System.out.println(msg.get("msg"));
+//            Logger.errorLog(String.format("User {%s - %s - %s} failed to approve Ward Admission {%s}\n\tErrorMsg: %s",
+//                    activeUser.getType(), activeUser.getId(), activeUser.getName(), admissionId, msg.get("msg")));
+//        }
+//        return msg;
+//    }
+// 
+//    // For Admin Staff only
+//    public LinkedHashMap<String, String> rejectWardAdmission(String admissionId, String rejectionReason) {
+//        LinkedHashMap<String, String> msg = wardAdmissionServices.rejectWardAdmission(admissionId, rejectionReason);
+//        if (msg.get("success") != null) {
+//            System.out.println(msg.get("msg"));
+//            Logger.log(String.format("User {%s - %s - %s} rejected Ward Admission {%s}",
+//                    activeUser.getType(), activeUser.getId(), activeUser.getName(), admissionId));
+//        } else {
+//            System.out.println(msg.get("msg"));
+//            Logger.errorLog(String.format("User {%s - %s - %s} failed to reject Ward Admission {%s}\n\tErrorMsg: %s",
+//                    activeUser.getType(), activeUser.getId(), activeUser.getName(), admissionId, msg.get("msg")));
+//        }
+//        return msg;
+//    }
+ 
     public LinkedHashMap<String, String> dischargeWardAdmission(String admissionId, String dischargedDateTime) {
         LinkedHashMap<String, String> msg = wardAdmissionServices.dischargeWardAdmission(admissionId, dischargedDateTime);
         if (msg.get("success") != null) {
@@ -82,7 +112,7 @@ public class WardAdmissionController {
         }
         return msg;
     }
-
+ 
     public LinkedHashMap<String, String> modifyWardAdmissionReason(String admissionId, String reason) {
         LinkedHashMap<String, String> msg = wardAdmissionServices.modifyWardAdmissionReason(admissionId, reason);
         if (msg.get("success") != null) {
@@ -96,7 +126,7 @@ public class WardAdmissionController {
         }
         return msg;
     }
-
+ 
     // For Admin Staff only
     public LinkedHashMap<String, String> deleteWardAdmission(String admissionId) {
         LinkedHashMap<String, String> msg = wardAdmissionServices.deleteWardAdmission(admissionId);
@@ -112,3 +142,4 @@ public class WardAdmissionController {
         return msg;
     }
 }
+ 

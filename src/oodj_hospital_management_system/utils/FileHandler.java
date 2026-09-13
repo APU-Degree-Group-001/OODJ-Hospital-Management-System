@@ -91,6 +91,34 @@ public class FileHandler {
         return filePath;
     }
 
+    /**
+     * Escapes characters that would otherwise corrupt the row-based txt
+     * format: commas (column separator) and newlines (line separator).
+     * Must be reversed exactly by the corresponding unescape step in
+     * readFile().
+     */
+    private String escapeValue(String value) {
+        if (value == null) return "";
+        return value
+                .replace("\r\n", "\\n")
+                .replace("\n", "\\n")
+                .replace("\r", "\\n")
+                .replace(", ", txtDelimiter)
+                .replace(",", txtDelimiter)
+                .replace(",  ", txtDelimiter);
+    }
+
+    /**
+     * Reverses escapeValue(): restores real commas and real newlines from
+     * their escaped placeholders.
+     */
+    private String unescapeValue(String value) {
+        if (value == null) return "";
+        return value
+                .replace(txtDelimiter, ", ")
+                .replace("\\n", "\n");
+    }
+
     public ArrayList<LinkedHashMap<String, String>> readFile() {
         ArrayList<LinkedHashMap<String, String>> maps = new ArrayList<>();
         if (file.exists()) {
@@ -113,10 +141,14 @@ public class FileHandler {
                             for (int index = 0;
                                  index < rowArray.length;
                                  index++) {
-                                map.put(header.get(index), rowArray[index].trim().replace(txtDelimiter, ", ")
-                                );
+                                map.put(header.get(index),
+                                        unescapeValue(rowArray[index].trim()));
                             }
                             maps.add(map);
+                        } else {
+                            System.out.println(String.format(
+                                "Skipped malformed row in '%s' (expected %d columns, got %d): %s",
+                                filePath, header.size(), rowArray.length, line));
                         }
                     }
                 }
@@ -140,8 +172,8 @@ public class FileHandler {
             writer.flush();
             for (LinkedHashMap<String, String> map : maps) {
                 List<String> row = new ArrayList<>(map.values());
-                for(int i = 0; i < row.size(); i++) {
-                    row.set(i, row.get(i).replace(", ", txtDelimiter).replace(",", txtDelimiter).replace(",  ", txtDelimiter));
+                for (int i = 0; i < row.size(); i++) {
+                    row.set(i, escapeValue(row.get(i)));
                 }
                 writer.write(String.join(", ", row) + "\n");
                 writer.flush();
@@ -160,8 +192,8 @@ public class FileHandler {
             }
             for (LinkedHashMap<String, String> map : maps) {
                 List<String> row = new ArrayList<>(map.values());
-                for(int i = 0; i < row.size(); i++) {
-                    row.set(i, row.get(i).replace(", ", txtDelimiter).replace(",", txtDelimiter).replace(",  ", txtDelimiter));
+                for (int i = 0; i < row.size(); i++) {
+                    row.set(i, escapeValue(row.get(i)));
                 }
                 writer.write(String.join(", ", row) + "\n");
                 writer.flush();

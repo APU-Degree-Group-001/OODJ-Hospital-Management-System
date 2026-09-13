@@ -333,6 +333,40 @@ public class ConsultationManagement {
             return false;
         }
     }
+    
+    private static boolean writeAllFeedback() {
+        ArrayList<LinkedHashMap<String, String>> feedbackData = new ArrayList<>();
+
+        for (Feedback feedback : allFeedback) {
+            feedbackData.add(feedback.getFeedbackMap());
+        }
+
+        feedbackHandler.writeFile(feedbackData);
+        return true;
+    }
+
+    private static boolean appendFeedback(Feedback feedback) {
+        try {
+            ArrayList<LinkedHashMap<String, String>> feedbackData = new ArrayList<>();
+            feedbackData.add(feedback.getFeedbackMap());
+
+            if (!feedbackHandler.checkFileExistence() && !feedbackHandler.createFile()) {
+                System.out.printf("File 'feedback.txt' failed to be created, feedback '%s' cannot be appended%n", feedback.getFeedbackId());
+                return false;
+            }
+
+            feedbackHandler.appendFile(feedbackData);
+
+            System.out.printf("Feedback '%s' is appended to feedback.txt!%n", feedback.getFeedbackId());
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("Error appending new feedback: " + e.getMessage());
+            Logger.errorLog("Error appending new feedback (System Error) -> " + e.getMessage());
+            return false;
+        }
+    }
 
     public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, ConsultationType consultationType, String description) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
@@ -450,6 +484,45 @@ public class ConsultationManagement {
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation '%s' is updated!", targetConsultation.getConsultationId()));
  
+        return msgMap;
+    }
+    
+    public LinkedHashMap<String, String> cancelConsultation(String consultationId) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        Consultation targetConsultation = findConsultationById(consultationId);
+
+        if (targetConsultation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Consultation '%s' not found", consultationId));
+            return msgMap;
+        }
+
+        if (targetConsultation.getConsultationStatus() != ConsultationStatus.SCHEDULED) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Consultation is not cancelled\nConsultation '%s' cannot be cancelled (current status: %s)",
+                    consultationId, targetConsultation.getConsultationStatus()));
+            return msgMap;
+        }
+
+        targetConsultation.setConsultationStatus(ConsultationStatus.CANCELLED);
+        writeConsultations();
+
+        // Free the slot back up, same as deleteConsultation does
+        if (targetConsultation.getConsultationSlot() != null) {
+            ConsultationSlot targetSlot = findConsultationSlotById(targetConsultation.getConsultationSlot().getConsultationSlotId());
+            if (targetSlot != null) {
+                targetSlot.setStatus(ConsultationSlot.STATUS_AVAILABLE);
+                writeConsultationSlots();
+                loadConsultationSlots();
+            }
+        }
+
+        loadConsultations();
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Consultation '%s' is cancelled!", consultationId));
+
         return msgMap;
     }
 
@@ -672,6 +745,87 @@ public class ConsultationManagement {
         }
     }
     
+    public LinkedHashMap<String, String> createFeedback(String consultationId, Patient patient, int rating, String comment) {
+        LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        loadConsultations(); // keep in-memory list synced with disk before validating
+
+        Consultation targetConsultation = findConsultationById(consultationId);
+        if (targetConsultation == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Feedback is not created\nConsultation '%s' is not found", consultationId));
+            return msgMap;
+        }
+
+        if (targetConsultation.getConsultationStatus() != ConsultationStatus.COMPLETED) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format(
+                    "Feedback is not created\nConsultation '%s' is not completed (current status: %s)",
+                    consultationId, targetConsultation.getConsultationStatus()));
+            return msgMap;
+        }
+
+        if (patient == null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Feedback is not created\nPatient is required");
+            return msgMap;
+        }
+
+        if (targetConsultation.getPatient() == null
+                || !patient.getId().equals(targetConsultation.getPatient().getId())) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Feedback is not created\nThis consultation does not belong to the given patient");
+            return msgMap;
+        }
+
+        loadAllFeedback(); // re-sync feedback list before checking for duplicates
+        if (findFeedbackByConsultationId(consultationId) != null) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Feedback is not created\nConsultation '%s' has already been rated", consultationId));
+            return msgMap;
+        }
+
+        if (rating < 1 || rating > 5) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Feedback is not created\nRating must be between 1 and 5");
+            return msgMap;
+        }
+
+        if (comment == null || comment.isBlank()) {
+            msgMap.put("success", null);
+            msgMap.put("msg", "Feedback is not created\nComment is required");
+            return msgMap;
+        }
+
+        String newFeedbackId = generateFeedbackId();
+
+        Feedback newFeedback = new Feedback(
+                newFeedbackId,
+                consultationId,
+                patient,
+                rating,
+                comment,
+                DateTime.formattedLocalDateTime(DateTime.currentDateTime())
+        );
+
+        allFeedback.add(newFeedback);
+
+        if (feedbackHandler.checkFileExistence()) {
+            appendFeedback(newFeedback);
+        } else {
+            writeAllFeedback();
+        }
+
+        loadAllFeedback();
+        loadConsultations(); // refresh so this consultation's Feedback reference picks up the new record
+
+        msgMap.put("success", "true");
+        msgMap.put("msg", String.format("Feedback '%s' is submitted for Consultation '%s'!", newFeedbackId, consultationId));
+        msgMap.put("newFeedbackId", newFeedbackId);
+
+        return msgMap;
+    }
+    
     public static boolean isConsultationSlotTaken(String consultationSlotId) {
         for (Consultation consultation : consultations) {
             if (consultation.getConsultationSlot() != null
@@ -734,5 +888,13 @@ public class ConsultationManagement {
     public static String generateConsultationSlotId() {
         List<String> existingIds = consultationSlots.stream().map(ConsultationSlot::getConsultationSlotId).toList();
         return SystemConfiguration.generateId("#SLOT", existingIds);
+    }
+    
+    public static String generateFeedbackId() {
+        List<String> existingIds = allFeedback.stream()
+                .map(Feedback::getFeedbackId)
+                .toList();
+
+        return SystemConfiguration.generateId("#FB", existingIds);
     }
 }

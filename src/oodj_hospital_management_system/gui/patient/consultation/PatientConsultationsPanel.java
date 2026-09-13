@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package oodj_hospital_management_system.gui.doctor.consultation;
+package oodj_hospital_management_system.gui.patient.consultation;
 
 import oodj_hospital_management_system.gui.medical_manager.billing_management.*;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.*;
@@ -16,7 +16,7 @@ import oodj_hospital_management_system.gui.admin.dashboard.*;
  *
  * @author sheaw
  */
-public class DoctorConsultationsPanel extends javax.swing.JPanel {
+public class PatientConsultationsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
         
@@ -27,7 +27,7 @@ public class DoctorConsultationsPanel extends javax.swing.JPanel {
     /**
      * Creates new form adminDashboardPanel
      */
-    public DoctorConsultationsPanel(UserController usrCtrl) {
+    public PatientConsultationsPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
 

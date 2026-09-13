@@ -4,13 +4,13 @@
  */
 package oodj_hospital_management_system.gui;
 
-import oodj_hospital_management_system.gui.patient.*;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.admin.AdminStaffGUI;
 import oodj_hospital_management_system.gui.doctor.DoctorGUI;
 import oodj_hospital_management_system.gui.medical_manager.MedicalManagerGUI;
+import oodj_hospital_management_system.gui.patient.PatientGUI;
 
 // BG Relative Path: oodj_hospital_management_system/assets/img/login/patient_login_bg.png
 
@@ -18,14 +18,14 @@ import oodj_hospital_management_system.gui.medical_manager.MedicalManagerGUI;
  *
  * @author sheaw
  */
-public class StaffLoginGUI extends javax.swing.JFrame {
+public class LoginGUI extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StaffLoginGUI.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginGUI.class.getName());
 
     /**
      * Creates new form PatientSignIn
      */
-    public StaffLoginGUI() {
+    public LoginGUI() {
         initComponents();
     }
 
@@ -39,15 +39,16 @@ public class StaffLoginGUI extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        pnlBackground = new oodj_hospital_management_system.gui.utils.BackgroundPanel("oodj_hospital_management_system/assets/img/login/staff_login_bg_01.png");
+        pnlBackground = new oodj_hospital_management_system.gui.utils.BackgroundPanel("oodj_hospital_management_system/assets/img/login/main_login_bg.png");
         pnlSignInCard = new oodj_hospital_management_system.gui.utils.RoundedPanel(15);
         labelLogo = new javax.swing.JLabel();
         userIdLabel = new javax.swing.JLabel();
         userIdTextField = new oodj_hospital_management_system.gui.utils.RoundedTextField(15);
         passwordLabel = new javax.swing.JLabel();
         userPasswordField = new oodj_hospital_management_system.gui.utils.RoundedPasswordField(15);
-        forgottenPasswordLink = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         signInButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Sign In", 15);
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(80, 0), new java.awt.Dimension(80, 0), new java.awt.Dimension(80, 32767));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 800));
@@ -58,7 +59,7 @@ public class StaffLoginGUI extends javax.swing.JFrame {
 
         pnlSignInCard.setBackground(new java.awt.Color(255, 255, 255));
         pnlSignInCard.setName("pnlSignInCard"); // NOI18N
-        pnlSignInCard.setPreferredSize(new java.awt.Dimension(400, 520));
+        pnlSignInCard.setPreferredSize(new java.awt.Dimension(360, 520));
         pnlSignInCard.setLayout(new java.awt.GridBagLayout());
 
         labelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/oodj_hospital_management_system/assets/img/login/hms_full_logo_150px.png"))); // NOI18N
@@ -105,28 +106,10 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 30);
         pnlSignInCard.add(userPasswordField, gridBagConstraints);
-
-        forgottenPasswordLink.setForeground(new java.awt.Color(78, 149, 217));
-        forgottenPasswordLink.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        forgottenPasswordLink.setText("Forgotten Password?");
-        forgottenPasswordLink.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        forgottenPasswordLink.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                forgottenPasswordLinkMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                forgottenPasswordLinkMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                forgottenPasswordLinkMouseExited(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 30);
-        pnlSignInCard.add(forgottenPasswordLink, gridBagConstraints);
+        gridBagConstraints.gridy = 6;
+        pnlSignInCard.add(filler2, gridBagConstraints);
 
         signInButton.setBackground(new java.awt.Color(166, 202, 236));
         signInButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -136,7 +119,7 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         signInButton.addActionListener(this::signInButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(20, 30, 10, 30);
         pnlSignInCard.add(signInButton, gridBagConstraints);
@@ -144,33 +127,24 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         pnlBackground.add(pnlSignInCard, gridBagConstraints);
+        pnlBackground.add(filler1, new java.awt.GridBagConstraints());
 
         getContentPane().add(pnlBackground, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void forgottenPasswordLinkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgottenPasswordLinkMouseClicked
-        // TODO
-    }//GEN-LAST:event_forgottenPasswordLinkMouseClicked
-
-    private void forgottenPasswordLinkMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgottenPasswordLinkMouseEntered
-        forgottenPasswordLink.setText("<html><u>Forgotten Password?</u></html>");
-    }//GEN-LAST:event_forgottenPasswordLinkMouseEntered
-
-    private void forgottenPasswordLinkMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgottenPasswordLinkMouseExited
-        forgottenPasswordLink.setText("Forgotten Password?");
-    }//GEN-LAST:event_forgottenPasswordLinkMouseExited
-
     private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
         /// Create User Controller Object
         UserController usrCtrl = new UserController();
         String userId, userPwd;
         userId = userIdTextField.getText();
-        userPwd = userPasswordField.getText();
+        char[] userPwdChars = userPasswordField.getPassword();
+        userPwd = new String(userPwdChars);
         if (usrCtrl.userLogin(userId, userPwd)) {
             JOptionPane.showMessageDialog(this, "Login Success");
             dispose();
@@ -185,6 +159,10 @@ public class StaffLoginGUI extends javax.swing.JFrame {
             if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("doctor")) {
                 DoctorGUI doctorGui = new DoctorGUI(usrCtrl);
                 doctorGui.setVisible(true);
+            }
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("patient")) {
+                PatientGUI patientGui = new PatientGUI(usrCtrl);
+                patientGui.setVisible(true);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Login failed");
@@ -217,11 +195,12 @@ public class StaffLoginGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new StaffLoginGUI().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel forgottenPasswordLink;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel pnlBackground;
