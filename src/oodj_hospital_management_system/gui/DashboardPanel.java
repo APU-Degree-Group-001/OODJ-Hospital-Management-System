@@ -40,10 +40,10 @@ public class DashboardPanel extends javax.swing.JPanel {
              case "doctor":
                  fileName = "doctor_dashboard.png";
                  break;
-             case "medical_manager":
+             case "medical manager":
                  fileName = "medical_manager_dashboard.png";
                  break;
-             case "admin_staff":
+             case "admin staff":
                  fileName = "admin_staff_dashboard.png";
                  break;
              default:

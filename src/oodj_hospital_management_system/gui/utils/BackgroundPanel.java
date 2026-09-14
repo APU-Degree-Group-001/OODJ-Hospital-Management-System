@@ -17,9 +17,19 @@ public class BackgroundPanel extends JPanel {
     private Image backgroundImage;
 
     public BackgroundPanel(String imagePath) {
-        backgroundImage = new ImageIcon(getClass().getClassLoader().getResource(imagePath)).getImage();
+        setImage(imagePath);
     }
 
+    public void setImage(String imagePath) {
+        java.net.URL url = getClass().getClassLoader().getResource(imagePath);
+        if (url == null) {
+            System.err.println("BackgroundPanel: resource not found on classpath: " + imagePath);
+            backgroundImage = null;
+        } else {
+            backgroundImage = new ImageIcon(url).getImage();
+        }
+        repaint();
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

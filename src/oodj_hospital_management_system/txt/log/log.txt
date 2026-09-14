@@ -560,3 +560,19 @@
 [2026-09-14 14:54:43] User {patient - #PAT3fad4 - Pau} logged out
 [2026-09-14 14:55:04] User {patient - #PAT3fad4 - Pau} logged in
 [2026-09-14 14:56:33] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-14 16:51:12] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 16:52:42] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 16:55:23] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-14 16:56:09] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-14 16:58:31] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 17:02:10] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 17:03:56] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 17:04:29] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-14 17:04:38] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-14 17:05:45] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-14 17:05:55] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-14 17:07:13] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-14 17:07:25] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-14 17:07:53] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-14 17:08:16] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-14 17:12:33] User {medical manager - #MNG58321 - Chee} logged out
