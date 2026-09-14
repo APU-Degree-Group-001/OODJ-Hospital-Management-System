@@ -24,8 +24,9 @@ public class PatientGUI extends javax.swing.JFrame {
     public PatientGUI(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         // Add cards to contentArea
-        contentArea.add(new DashboardPanel(), "patientDashboard");
+        contentArea.add(new DashboardPanel(this.usrCtrl), "patientDashboard");
         contentArea.add(new PatientConsultationsPanel(this.usrCtrl), "patientConsultations");
         contentArea.add(new PatientRatingFeedbackPanel(this.usrCtrl), "patientRatingFeedback");;
 

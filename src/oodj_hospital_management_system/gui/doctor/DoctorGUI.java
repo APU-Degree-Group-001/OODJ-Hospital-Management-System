@@ -4,24 +4,13 @@
  */
 package oodj_hospital_management_system.gui.doctor;
 
-import oodj_hospital_management_system.gui.medical_manager.*;
-import oodj_hospital_management_system.gui.admin.*;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.billing_settings.AdminBillingSettingsPanel;
-import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
-import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
-import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
-import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
+import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.doctor.consultation.PatientConsultationsPanel;
-import oodj_hospital_management_system.gui.doctor.dashboard.DashboardPanel;
 import oodj_hospital_management_system.gui.doctor.lab_services.DoctorLabServicesPanel;
 import oodj_hospital_management_system.gui.doctor.rating_feedback.RatingFeedbackPanel;
 import oodj_hospital_management_system.gui.doctor.shift_roster.DoctorShiftRosterPanel;
 import oodj_hospital_management_system.gui.doctor.ward_admission.DoctorWardAdmissionPanel;
-import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
-import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
-import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
-import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalManagerReportingPanel;
 
 /**
  *
@@ -38,8 +27,9 @@ public class DoctorGUI extends javax.swing.JFrame {
     public DoctorGUI(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         // Add cards to contentArea
-        contentArea.add(new DashboardPanel(), "doctorDashboard");
+        contentArea.add(new DashboardPanel(this.usrCtrl), "doctorDashboard");
         contentArea.add(new DoctorShiftRosterPanel(this.usrCtrl), "doctorShiftRoster");
         contentArea.add(new PatientConsultationsPanel(this.usrCtrl), "doctorConsultations");
         contentArea.add(new DoctorLabServicesPanel(this.usrCtrl), "doctorLabServices");

@@ -21,6 +21,7 @@ public class SideBar extends JPanel {
     private String role;
     private JPanel contentArea;   // the CardLayout container it controls
     private List<NavItem> items;
+    private java.util.Map<NavItem, String> itemCardNames = new java.util.HashMap<>();
     private LogoutButton logoutButton;
     private RoundedButton selectedItem;
     private final Color selectedColor = new Color(230, 240, 250);
@@ -37,6 +38,14 @@ public class SideBar extends JPanel {
         this.items = new ArrayList<>();
         initComponents();
         addNavItemByRole(role);
+
+        if (!items.isEmpty()) {
+            NavItem defaultItem = items.get(0);
+            String defaultCardName = itemCardNames.get(defaultItem);
+            SwingUtilities.invokeLater(() -> selectNavItem(defaultItem, defaultCardName));
+        }
+
+        usrCtrl.addUserUpdateListener(this::refreshUserInfo);
         navItems.addComponentListener(new java.awt.event.ComponentAdapter() {
         @Override
         public void componentResized(java.awt.event.ComponentEvent e) {
@@ -94,6 +103,7 @@ public class SideBar extends JPanel {
         item.addActionListener(e -> selectNavItem(item, cardName));
         navItems.add(Box.createVerticalStrut(8));
         items.add(item);
+        itemCardNames.put(item, cardName);
         navItems.add(item);
     }
     
@@ -115,6 +125,11 @@ public class SideBar extends JPanel {
             CardLayout cl = (CardLayout) contentArea.getLayout();
             cl.show(contentArea, cardName);
         }
+    }
+    
+    public void refreshUserInfo() {
+        ((oodj_hospital_management_system.gui.utils.side_bar.WelcomePane) welcomePane)
+            .setUserName(usrCtrl.getActiveUser().getName());
     }
 
     private void selectLogoutButton(LogoutButton clicked) {

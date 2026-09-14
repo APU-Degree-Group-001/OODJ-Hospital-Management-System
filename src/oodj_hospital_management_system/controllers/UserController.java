@@ -4,6 +4,7 @@
  */
 package oodj_hospital_management_system.controllers;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.models.AdminStaff;
@@ -199,6 +200,7 @@ public class UserController {
     
     // update active user upon modifications
     public boolean updateActiveUser(User updatedActiveUser) {
+        this.activeUser = updatedActiveUser;
         this.userServices = new UserManagement(this.activeUser);
         this.billingController = new BillingController(this.activeUser);
         this.consultationController = new ConsultationController(this.activeUser);
@@ -211,6 +213,7 @@ public class UserController {
         this.consultationTypeController = new ConsultationTypeController(this.activeUser);
         this.labResultTypeController = new LabResultTypeController(this.activeUser);
         this.prescriptionTypeController = new PrescriptionTypeController(this.activeUser);
+        notifyUserUpdateListeners();
         return true;
     }
 
@@ -330,5 +333,18 @@ public class UserController {
     public static boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email.matches(emailRegex);
+    }
+    
+    //GUI Side
+    private List<Runnable> userUpdateListeners = new ArrayList<>();
+
+    public void addUserUpdateListener(Runnable listener) {
+        userUpdateListeners.add(listener);
+    }
+
+    private void notifyUserUpdateListeners() {
+        for (Runnable listener : userUpdateListeners) {
+            listener.run();
+        }
     }
 }

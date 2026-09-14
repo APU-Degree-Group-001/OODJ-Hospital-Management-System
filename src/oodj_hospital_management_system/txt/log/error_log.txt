@@ -4362,3 +4362,12 @@ Scheduled start cannot be in the past
 [2026-09-13 23:56:41] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
 [2026-09-13 23:58:17] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
 [2026-09-14 00:03:15] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATb01d9' is not found
+[2026-09-14 14:53:27] User {patient - #PAT3fad4 - Pau} failed to modify password for User {patient - #PAT3fad4 - Pau}
+	ErrorMsg: User '#PAT3fad4''s password is not modified
+User Handling Error: Password must be at least 8 characters long
+[2026-09-14 14:53:46] User {patient - #PAT3fad4 - Pau} failed to modify password for User {patient - #PAT3fad4 - Pau}
+	ErrorMsg: User '#PAT3fad4''s password is not modified
+User Handling Error: Password must be a mix of uppercase and lowercase letters, digits, and special characters
+[2026-09-14 14:54:05] User {patient - #PAT3fad4 - Pau} failed to modify password for User {patient - #PAT3fad4 - Pau}
+	ErrorMsg: User '#PAT3fad4''s password is not modified
+User Handling Error: Password must be a mix of uppercase and lowercase letters, digits, and special characters

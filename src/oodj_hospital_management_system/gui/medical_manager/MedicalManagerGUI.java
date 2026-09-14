@@ -6,6 +6,7 @@ package oodj_hospital_management_system.gui.medical_manager;
 
 import oodj_hospital_management_system.gui.admin.*;
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.admin.billing_settings.AdminBillingSettingsPanel;
 import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
@@ -32,8 +33,9 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
     public MedicalManagerGUI(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         // Add cards to contentArea
-        contentArea.add(new AdminDashboardPanel(), "medicalManagerDashboard");
+        contentArea.add(new DashboardPanel(this.usrCtrl), "medicalManagerDashboard");
         contentArea.add(new MedicalManagerClinicalDepartmentsPanel(this.usrCtrl), "medicalManagerClinicalDepartments");
         contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "medicalManagerDoctorShiftRosters");
         contentArea.add(new MedicalManagerBillingManagementPanel(this.usrCtrl), "medicalManagerBillingManagement");

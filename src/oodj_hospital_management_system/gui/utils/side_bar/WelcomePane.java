@@ -54,6 +54,12 @@ public class WelcomePane extends javax.swing.JPanel {
         welcomeIcon.setPreferredSize(new Dimension(70, 70));
         welcomeIcon.setMaximumSize(new Dimension(70, 70));
     }
+    
+    public void setUserName(String name) {
+        userNameLabel.setText(name);
+        revalidate();
+        repaint();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

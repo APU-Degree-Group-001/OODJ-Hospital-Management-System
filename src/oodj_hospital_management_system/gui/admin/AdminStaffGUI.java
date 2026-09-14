@@ -5,8 +5,8 @@
 package oodj_hospital_management_system.gui.admin;
 
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.admin.billing_settings.AdminBillingSettingsPanel;
-import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
 import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
 import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
@@ -17,7 +17,7 @@ import oodj_hospital_management_system.gui.admin.user_management.AdminUserManage
  */
 public class AdminStaffGUI extends javax.swing.JFrame {
     private UserController usrCtrl;
-    private AdminDashboardPanel adminDashboard;
+    private DashboardPanel adminDashboard;
     private AdminDoctorAssignmentPanel adminDoctorAssignment;
     private AdminUserManagementPanel adminUserManagement;
     private AdminHospitalAssetsPanel adminHospitalAssets;
@@ -31,8 +31,9 @@ public class AdminStaffGUI extends javax.swing.JFrame {
     public AdminStaffGUI(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         
-        adminDashboard= new AdminDashboardPanel();
+        adminDashboard= new DashboardPanel(this.usrCtrl);
         adminDoctorAssignment = new AdminDoctorAssignmentPanel(this.usrCtrl);
         adminUserManagement = new AdminUserManagementPanel(this.usrCtrl, adminDoctorAssignment::loadDoctors);
         adminHospitalAssets = new AdminHospitalAssetsPanel(this.usrCtrl);

@@ -27,6 +27,7 @@ public class LoginGUI extends javax.swing.JFrame {
      */
     public LoginGUI() {
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -70,7 +71,7 @@ public class LoginGUI extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(20, 30, 10, 30);
         pnlSignInCard.add(labelLogo, gridBagConstraints);
 
-        userIdLabel.setText("Staff ID");
+        userIdLabel.setText("User ID");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
