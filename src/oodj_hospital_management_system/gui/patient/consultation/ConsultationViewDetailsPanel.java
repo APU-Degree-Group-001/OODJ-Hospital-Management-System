@@ -336,21 +336,27 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         wrapperPane = new javax.swing.JPanel();
-        patientInformationPanel = new javax.swing.JPanel();
+        patientInformationPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         patientName = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         patientID = new javax.swing.JLabel();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        patientInformationPanel1 = new javax.swing.JPanel();
+        patientInformationPanel1 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         doctorName = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         doctorID = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        consultationInformationPanel = new javax.swing.JPanel();
+        consultationInformationPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         consultationType = new javax.swing.JLabel();
@@ -363,7 +369,9 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         jLabel18 = new javax.swing.JLabel();
         consultationDescription = new javax.swing.JLabel();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        medicalRecordsPanel = new javax.swing.JPanel();
+        medicalRecordsPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel10 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -387,7 +395,9 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         editResultButton = new javax.swing.JButton();
         deleteResultButton = new javax.swing.JButton();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        billPanel = new javax.swing.JPanel();
+        billPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel20 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
@@ -411,8 +421,8 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
-        patientInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
-        patientInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        patientInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        patientInformationPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         patientInformationPanel.setAlignmentY(0.0F);
         patientInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         patientInformationPanel.setPreferredSize(new java.awt.Dimension(235, 130));
@@ -469,8 +479,8 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         wrapperPane.add(patientInformationPanel);
         wrapperPane.add(filler2);
 
-        patientInformationPanel1.setBackground(new java.awt.Color(246, 251, 255));
-        patientInformationPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        patientInformationPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        patientInformationPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         patientInformationPanel1.setAlignmentY(0.0F);
         patientInformationPanel1.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         patientInformationPanel1.setPreferredSize(new java.awt.Dimension(240, 130));
@@ -527,8 +537,8 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         wrapperPane.add(patientInformationPanel1);
         wrapperPane.add(filler1);
 
-        consultationInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
-        consultationInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        consultationInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        consultationInformationPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         consultationInformationPanel.setAlignmentY(0.0F);
         consultationInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         consultationInformationPanel.setLayout(new java.awt.GridBagLayout());
@@ -641,8 +651,8 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         wrapperPane.add(consultationInformationPanel);
         wrapperPane.add(filler3);
 
-        medicalRecordsPanel.setBackground(new java.awt.Color(246, 251, 255));
-        medicalRecordsPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        medicalRecordsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        medicalRecordsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         medicalRecordsPanel.setAlignmentY(0.0F);
         medicalRecordsPanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         medicalRecordsPanel.setLayout(new java.awt.GridBagLayout());
@@ -834,8 +844,8 @@ public class ConsultationViewDetailsPanel extends javax.swing.JPanel {
         wrapperPane.add(medicalRecordsPanel);
         wrapperPane.add(filler4);
 
-        billPanel.setBackground(new java.awt.Color(246, 251, 255));
-        billPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        billPanel.setBackground(new java.awt.Color(255, 255, 255));
+        billPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         billPanel.setAlignmentY(0.0F);
         billPanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         billPanel.setPreferredSize(new java.awt.Dimension(73, 120));

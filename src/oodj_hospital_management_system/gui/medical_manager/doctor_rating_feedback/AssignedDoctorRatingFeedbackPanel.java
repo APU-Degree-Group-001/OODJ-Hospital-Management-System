@@ -374,19 +374,20 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
+        jLabel2.setBackground(new java.awt.Color(246, 251, 255));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Rating and Feedback");
@@ -397,7 +398,7 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel1.add(jLabel2, gridBagConstraints);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setBackground(new java.awt.Color(246, 251, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -418,19 +419,19 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        usrMngContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        usrMngContentArea.setBackground(new java.awt.Color(246, 251, 255));
         usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         usrMngContentArea.setLayout(new java.awt.BorderLayout());
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBackground(new java.awt.Color(246, 251, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(246, 251, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(1160, 50));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        searchPane.setBackground(new java.awt.Color(255, 255, 255));
+        searchPane.setBackground(new java.awt.Color(246, 251, 255));
 
         searchField.setMinimumSize(new java.awt.Dimension(250, 22));
         searchField.setPreferredSize(new java.awt.Dimension(250, 40));
@@ -448,7 +449,7 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
         jPanel2.add(searchPane, java.awt.BorderLayout.WEST);
         jPanel2.add(filler1, java.awt.BorderLayout.LINE_END);
 
-        sortByPane.setBackground(new java.awt.Color(255, 255, 255));
+        sortByPane.setBackground(new java.awt.Color(246, 251, 255));
 
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
@@ -472,11 +473,11 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
 
         jPanel7.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        wrapperPane.setBackground(new java.awt.Color(255, 255, 255));
+        wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(246, 251, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
         jPanel3.setAlignmentY(0.0F);
         jPanel3.setLayout(new java.awt.BorderLayout());
@@ -511,7 +512,7 @@ public class AssignedDoctorRatingFeedbackPanel extends javax.swing.JPanel {
 
         jPanel3.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);

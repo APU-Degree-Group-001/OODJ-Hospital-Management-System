@@ -181,19 +181,20 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 180));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
+        jLabel2.setBackground(new java.awt.Color(246, 251, 255));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Doctor Assignment");
@@ -204,7 +205,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel1.add(jLabel2, gridBagConstraints);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setBackground(new java.awt.Color(246, 251, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -219,18 +220,19 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        filterPanel.setBackground(new java.awt.Color(255, 255, 255));
+        filterPanel.setBackground(new java.awt.Color(246, 251, 255));
         filterPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
         filterPanel.setPreferredSize(new java.awt.Dimension(16897, 200));
         filterPanel.setLayout(new java.awt.GridBagLayout());
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(246, 251, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel2.setAlignmentX(0.0F);
         jPanel2.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanel2.setPreferredSize(new java.awt.Dimension(250, 50));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
+        jLabel3.setBackground(new java.awt.Color(246, 251, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Medical Manager");
         jLabel3.setAlignmentY(0.0F);
@@ -247,13 +249,14 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         filterPanel.add(jPanel2, gridBagConstraints);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(246, 251, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel3.setAlignmentX(0.0F);
         jPanel3.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanel3.setPreferredSize(new java.awt.Dimension(250, 50));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
+        jLabel4.setBackground(new java.awt.Color(246, 251, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Department");
         jLabel4.setAlignmentY(0.0F);
@@ -296,15 +299,15 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        usrMngContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        usrMngContentArea.setBackground(new java.awt.Color(246, 251, 255));
         usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         usrMngContentArea.setLayout(new java.awt.BorderLayout());
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(246, 251, 255));
         jPanel6.setPreferredSize(new java.awt.Dimension(1160, 50));
         jPanel6.setLayout(new java.awt.BorderLayout());
 
-        searchPane.setBackground(new java.awt.Color(255, 255, 255));
+        searchPane.setBackground(new java.awt.Color(246, 251, 255));
 
         searchField.setMinimumSize(new java.awt.Dimension(250, 22));
         searchField.setPreferredSize(new java.awt.Dimension(250, 40));
@@ -322,7 +325,7 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
         jPanel6.add(searchPane, java.awt.BorderLayout.WEST);
         jPanel6.add(filler1, java.awt.BorderLayout.LINE_END);
 
-        sortByPane1.setBackground(new java.awt.Color(255, 255, 255));
+        sortByPane1.setBackground(new java.awt.Color(246, 251, 255));
 
         assignDepartmentButton.setText("Assign Department");
         assignDepartmentButton.addActionListener(this::assignDepartmentButtonActionPerformed);
@@ -345,11 +348,11 @@ public class AdminDoctorAssignmentPanel extends javax.swing.JPanel {
 
         usrMngContentArea.add(jPanel6, java.awt.BorderLayout.NORTH);
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBackground(new java.awt.Color(246, 251, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);

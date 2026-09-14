@@ -248,11 +248,11 @@ public class InsuranceNetworkPanel extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(1160, 2147483647));
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1160, 50));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        searchPane.setBackground(new java.awt.Color(255, 255, 255));
+        searchPane.setBackground(new java.awt.Color(246, 251, 255));
 
         searchField.setMinimumSize(new java.awt.Dimension(250, 22));
         searchField.setPreferredSize(new java.awt.Dimension(250, 40));
@@ -270,7 +270,7 @@ public class InsuranceNetworkPanel extends javax.swing.JPanel {
         jPanel1.add(searchPane, java.awt.BorderLayout.WEST);
         jPanel1.add(filler1, java.awt.BorderLayout.LINE_END);
 
-        sortByPane.setBackground(new java.awt.Color(255, 255, 255));
+        sortByPane.setBackground(new java.awt.Color(246, 251, 255));
 
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
@@ -294,11 +294,11 @@ public class InsuranceNetworkPanel extends javax.swing.JPanel {
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        wrapperPane.setBackground(new java.awt.Color(255, 255, 255));
+        wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(246, 251, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
         jPanel2.setAlignmentY(0.0F);
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -333,7 +333,7 @@ public class InsuranceNetworkPanel extends javax.swing.JPanel {
 
         jPanel2.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);

@@ -4,10 +4,6 @@
  */
 package oodj_hospital_management_system.gui.patient.rating_feedback;
 
-import oodj_hospital_management_system.gui.patient.consultation.*;
-import oodj_hospital_management_system.gui.medical_manager.billing_management.*;
-import oodj_hospital_management_system.gui.admin.hospitalAssets.*;
-import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.time.LocalDateTime;
@@ -15,7 +11,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.ConsultationSlot;
 import oodj_hospital_management_system.models.Doctor;
@@ -190,11 +185,15 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         consultationContentArea = new javax.swing.JPanel();
         wrapperPane = new javax.swing.JPanel();
-        chooseConsultation = new javax.swing.JPanel();
+        chooseConsultation = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel6 = new javax.swing.JLabel();
         consultationCombo = new javax.swing.JComboBox<>();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        consultationInformationPanel = new javax.swing.JPanel();
+        consultationInformationPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         consultationType = new javax.swing.JLabel();
@@ -207,18 +206,24 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         jLabel18 = new javax.swing.JLabel();
         consultationDescription = new javax.swing.JLabel();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        patientInformationPanel1 = new javax.swing.JPanel();
+        patientInformationPanel1 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel14 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         doctorName = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         doctorID = new javax.swing.JLabel();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        patientInformationPanel2 = new javax.swing.JPanel();
+        patientInformationPanel2 = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel7 = new javax.swing.JLabel();
         rating = new javax.swing.JSpinner();
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        feedbackPanel = new javax.swing.JPanel();
+        feedbackPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         feedback = new javax.swing.JTextArea();
@@ -285,8 +290,8 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
-        chooseConsultation.setBackground(new java.awt.Color(246, 251, 255));
-        chooseConsultation.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        chooseConsultation.setBackground(new java.awt.Color(255, 255, 255));
+        chooseConsultation.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         chooseConsultation.setAlignmentY(0.0F);
         chooseConsultation.setMaximumSize(new java.awt.Dimension(2147483647, 90));
         chooseConsultation.setMinimumSize(new java.awt.Dimension(196, 90));
@@ -305,8 +310,8 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         wrapperPane.add(chooseConsultation);
         wrapperPane.add(filler2);
 
-        consultationInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
-        consultationInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        consultationInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        consultationInformationPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         consultationInformationPanel.setAlignmentY(0.0F);
         consultationInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         consultationInformationPanel.setLayout(new java.awt.GridBagLayout());
@@ -419,8 +424,8 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         wrapperPane.add(consultationInformationPanel);
         wrapperPane.add(filler3);
 
-        patientInformationPanel1.setBackground(new java.awt.Color(246, 251, 255));
-        patientInformationPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        patientInformationPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        patientInformationPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         patientInformationPanel1.setAlignmentY(0.0F);
         patientInformationPanel1.setMaximumSize(new java.awt.Dimension(2147483647, 130));
         patientInformationPanel1.setMinimumSize(new java.awt.Dimension(240, 130));
@@ -478,8 +483,8 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         wrapperPane.add(patientInformationPanel1);
         wrapperPane.add(filler4);
 
-        patientInformationPanel2.setBackground(new java.awt.Color(246, 251, 255));
-        patientInformationPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        patientInformationPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        patientInformationPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         patientInformationPanel2.setAlignmentY(0.0F);
         patientInformationPanel2.setMaximumSize(new java.awt.Dimension(2147483647, 90));
         patientInformationPanel2.setMinimumSize(new java.awt.Dimension(196, 90));
@@ -496,8 +501,8 @@ public class PatientRatingFeedbackPanel extends javax.swing.JPanel {
         wrapperPane.add(patientInformationPanel2);
         wrapperPane.add(filler5);
 
-        feedbackPanel.setBackground(new java.awt.Color(246, 251, 255));
-        feedbackPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        feedbackPanel.setBackground(new java.awt.Color(255, 255, 255));
+        feedbackPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         feedbackPanel.setAlignmentY(0.0F);
         feedbackPanel.setMaximumSize(new java.awt.Dimension(2147483647, 250));
         feedbackPanel.setMinimumSize(new java.awt.Dimension(196, 250));

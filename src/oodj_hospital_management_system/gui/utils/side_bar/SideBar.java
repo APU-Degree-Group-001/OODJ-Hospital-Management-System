@@ -147,13 +147,12 @@ public class SideBar extends JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         welcomePane = new oodj_hospital_management_system.gui.utils.side_bar.WelcomePane(role, this.usrCtrl.getActiveUser().getName());
-        jSeparator3 = new javax.swing.JSeparator();
         navItems = new javax.swing.JPanel();
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 0, 40, 0));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 40, 0));
         setLayout(new java.awt.GridBagLayout());
 
-        welcomePane.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 20, 20, 20));
+        welcomePane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 20, 10));
         welcomePane.setLayout(new javax.swing.BoxLayout(welcomePane, javax.swing.BoxLayout.LINE_AXIS));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -161,18 +160,13 @@ public class SideBar extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(welcomePane, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(jSeparator3, gridBagConstraints);
 
         navItems.setBackground(new java.awt.Color(255, 255, 255));
-        navItems.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 0, 10));
+        navItems.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         navItems.setLayout(new javax.swing.BoxLayout(navItems, javax.swing.BoxLayout.Y_AXIS));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 1.0;
@@ -181,7 +175,6 @@ public class SideBar extends JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPanel navItems;
     private javax.swing.JPanel welcomePane;
     // End of variables declaration//GEN-END:variables

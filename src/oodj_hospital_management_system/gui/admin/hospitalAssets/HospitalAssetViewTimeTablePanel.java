@@ -539,7 +539,9 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         wrapperPane = new javax.swing.JPanel();
-        patientInformationPanel = new javax.swing.JPanel();
+        patientInformationPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         assetType = new javax.swing.JLabel();
@@ -550,7 +552,9 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        wardInformationPanel = new javax.swing.JPanel();
+        wardInformationPanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         totalBedsAvailableNow = new javax.swing.JLabel();
@@ -558,7 +562,9 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         totalBeds = new javax.swing.JLabel();
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        timetablePanel = new javax.swing.JPanel();
+        timetablePanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         timeTable = new javax.swing.JTable();
@@ -574,7 +580,9 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         sortByLabel1 = new javax.swing.JLabel();
         filterByField = new javax.swing.JComboBox<>();
         filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        wardTimetablePanel = new javax.swing.JPanel();
+        wardTimetablePanel = new oodj_hospital_management_system.gui.utils.RoundedPanel(
+            15, new java.awt.Color(210,212,220), 10, 15, 10, 15
+        );
         jLabel11 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         timeTable1 = new javax.swing.JTable();
@@ -606,8 +614,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
-        patientInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
-        patientInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        patientInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        patientInformationPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         patientInformationPanel.setAlignmentY(0.0F);
         patientInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 140));
         patientInformationPanel.setMinimumSize(new java.awt.Dimension(196, 140));
@@ -686,8 +694,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         wrapperPane.add(filler1);
         wrapperPane.add(filler3);
 
-        wardInformationPanel.setBackground(new java.awt.Color(246, 251, 255));
-        wardInformationPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        wardInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        wardInformationPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         wardInformationPanel.setAlignmentY(0.0F);
         wardInformationPanel.setMaximumSize(new java.awt.Dimension(2147483647, 110));
         wardInformationPanel.setMinimumSize(new java.awt.Dimension(196, 110));
@@ -746,8 +754,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         wrapperPane.add(filler6);
         wrapperPane.add(filler4);
 
-        timetablePanel.setBackground(new java.awt.Color(246, 251, 255));
-        timetablePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        timetablePanel.setBackground(new java.awt.Color(255, 255, 255));
+        timetablePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         timetablePanel.setAlignmentY(0.0F);
         timetablePanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         timetablePanel.setLayout(new java.awt.GridBagLayout());
@@ -815,7 +823,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         timetablePanel.add(allocationCrudPanel, gridBagConstraints);
 
-        sortByPane.setBackground(new java.awt.Color(246, 251, 255));
+        sortByPane.setBackground(new java.awt.Color(255, 255, 255));
         sortByPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 10, 1));
 
         resetButton.setText("Reset Table");
@@ -846,8 +854,8 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         wrapperPane.add(timetablePanel);
         wrapperPane.add(filler7);
 
-        wardTimetablePanel.setBackground(new java.awt.Color(246, 251, 255));
-        wardTimetablePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        wardTimetablePanel.setBackground(new java.awt.Color(255, 255, 255));
+        wardTimetablePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         wardTimetablePanel.setAlignmentY(0.0F);
         wardTimetablePanel.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         wardTimetablePanel.setLayout(new java.awt.GridBagLayout());
@@ -890,7 +898,7 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         wardTimetablePanel.add(jScrollPane2, gridBagConstraints);
 
-        sortByPane1.setBackground(new java.awt.Color(246, 251, 255));
+        sortByPane1.setBackground(new java.awt.Color(255, 255, 255));
         sortByPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 10, 1));
         sortByPane1.setPreferredSize(new java.awt.Dimension(520, 51));
 

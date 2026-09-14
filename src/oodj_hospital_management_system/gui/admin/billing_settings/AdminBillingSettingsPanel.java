@@ -4,10 +4,8 @@
  */
 package oodj_hospital_management_system.gui.admin.billing_settings;
 
-import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 
 /**
  *
@@ -90,17 +88,17 @@ public class AdminBillingSettingsPanel extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 180));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -128,7 +126,7 @@ public class AdminBillingSettingsPanel extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        navigationPane.setBackground(new java.awt.Color(255, 255, 255));
+        navigationPane.setBackground(new java.awt.Color(246, 251, 255));
         navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
         navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
         navigationPane.setLayout(new java.awt.GridBagLayout());
@@ -191,7 +189,7 @@ public class AdminBillingSettingsPanel extends javax.swing.JPanel {
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        billingSettingsContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        billingSettingsContentArea.setBackground(new java.awt.Color(246, 251, 255));
         billingSettingsContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         billingSettingsContentArea.setLayout(new java.awt.CardLayout());
         dashboardPanel.add(billingSettingsContentArea, java.awt.BorderLayout.CENTER);

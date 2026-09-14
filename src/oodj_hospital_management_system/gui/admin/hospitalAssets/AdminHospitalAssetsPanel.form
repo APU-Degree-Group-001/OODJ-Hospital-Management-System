@@ -112,7 +112,7 @@
                           <Color blue="66" green="66" red="66" type="rgb"/>
                         </Property>
                         <Property name="horizontalAlignment" type="int" value="0"/>
-                        <Property name="text" type="java.lang.String" value="Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users."/>
+                        <Property name="text" type="java.lang.String" value="Manages hospital assets and their general information, including creating, updating, viewing, and deleting assets."/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[946, 45]"/>
                         </Property>

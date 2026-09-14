@@ -34,25 +34,25 @@ public class WelcomePane extends javax.swing.JPanel {
     private String getIconPathForRole(String role) {
         switch (role) {
             case "admin staff":
-                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
+                return "oodj_hospital_management_system/assets/img/icons/admin_staff_welcome.png";
             case "medical manager":
-                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
+                return "oodj_hospital_management_system/assets/img/icons/medical_manager_welcome.png";
             case "doctor":
-                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
+                return "oodj_hospital_management_system/assets/img/icons/doctor_welcome.png";
             case "patient":
-                return "oodj_hospital_management_system/assets/img/icons/admin_welcome.png";
+                return "oodj_hospital_management_system/assets/img/icons/patient_welcome.png";
             default:
-                return "oodj_hospital_management_system/assets/img/icons/testing_welcome.png";
+                return "oodj_hospital_management_system/assets/img/icons/default_welcome.png";
         }
     }
 
     private void setupWelcomeIcon(String iconPath) {
         ImageIcon rawIcon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
-        Image scaledImage = rawIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+        Image scaledImage = rawIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         welcomeIcon.setIcon(new ImageIcon(scaledImage));
         welcomeIcon.setText("");
-        welcomeIcon.setPreferredSize(new Dimension(70, 70));
-        welcomeIcon.setMaximumSize(new Dimension(70, 70));
+        welcomeIcon.setPreferredSize(new Dimension(100, 100));
+        welcomeIcon.setMaximumSize(new Dimension(100, 100));
     }
     
     public void setUserName(String name) {
@@ -69,38 +69,51 @@ public class WelcomePane extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         welcomeIcon = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         welcomeMsgPane = new javax.swing.JPanel();
         welcomeLabel = new javax.swing.JLabel();
         userNameLabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 20, 1, 1));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         welcomeIcon.setText("jLabel1");
+        welcomeIcon.setPreferredSize(new java.awt.Dimension(100, 100));
         add(welcomeIcon);
+        add(filler1);
+        add(filler2);
 
         welcomeMsgPane.setBackground(new java.awt.Color(255, 255, 255));
-        welcomeMsgPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 30, 1, 20));
-        welcomeMsgPane.setLayout(new javax.swing.BoxLayout(welcomeMsgPane, javax.swing.BoxLayout.Y_AXIS));
+        welcomeMsgPane.setLayout(new java.awt.GridBagLayout());
 
-        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         welcomeLabel.setForeground(new java.awt.Color(0, 0, 0));
         welcomeLabel.setText("Welcome,");
-        welcomeMsgPane.add(welcomeLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        welcomeMsgPane.add(welcomeLabel, gridBagConstraints);
 
         userNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         userNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         userNameLabel.setText("jLabel2");
-        welcomeMsgPane.add(userNameLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        welcomeMsgPane.add(userNameLabel, gridBagConstraints);
 
         add(welcomeMsgPane);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JLabel userNameLabel;
     private javax.swing.JLabel welcomeIcon;
     private javax.swing.JLabel welcomeLabel;

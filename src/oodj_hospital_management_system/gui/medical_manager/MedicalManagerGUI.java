@@ -4,14 +4,8 @@
  */
 package oodj_hospital_management_system.gui.medical_manager;
 
-import oodj_hospital_management_system.gui.admin.*;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.DashboardPanel;
-import oodj_hospital_management_system.gui.admin.billing_settings.AdminBillingSettingsPanel;
-import oodj_hospital_management_system.gui.admin.dashboard.AdminDashboardPanel;
-import oodj_hospital_management_system.gui.admin.doctorAssignment.AdminDoctorAssignmentPanel;
-import oodj_hospital_management_system.gui.admin.hospitalAssets.AdminHospitalAssetsPanel;
-import oodj_hospital_management_system.gui.admin.user_management.AdminUserManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_rating_feedback.AssignedDoctorRatingFeedbackPanel;

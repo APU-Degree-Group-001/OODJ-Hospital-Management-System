@@ -84,7 +84,7 @@ public class BillReceipt extends RoundedPanel {
         // NOTE: confirm the exact param order your RoundedPanel constructor expects -
         // this mirrors the pattern already used elsewhere in your codebase:
         // (cornerRadius, backgroundColor, padTop, padLeft, padBottom, padRight)
-        super(15, CARD_BG, 15, 20, 15, 20);
+        super(15, new Color(248, 249, 250), new Color(230, 233, 237), 15, 20, 15, 20);
         this.bill = bill;
         this.consultation = ConsultationManagement.getConsultationById(bill.getConsultationId());
         this.onUpdateStatus = onUpdateStatus;

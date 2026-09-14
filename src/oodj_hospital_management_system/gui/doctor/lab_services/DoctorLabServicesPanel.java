@@ -4,11 +4,9 @@
  */
 package oodj_hospital_management_system.gui.doctor.lab_services;
 
-import oodj_hospital_management_system.gui.doctor.shift_roster.*;
-import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 import oodj_hospital_management_system.gui.admin.hospitalAssets.HospitalAssetsPanel;
 
 /**
@@ -29,14 +27,38 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
     public DoctorLabServicesPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
+
+        shiftRosterButton.setPreferredSize(null);
+
+        // Cap dashboardPanel's WIDTH only; height stays dynamic so vertical
+        // scrolling keeps working as content grows/shrinks.
+        javax.swing.JPanel cappedDashboard = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10)) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(Math.min(d.width, 1020), d.height);
+            }
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+        };
+        cappedDashboard.setBackground(dashboardPanel.getBackground());
+        cappedDashboard.setBorder(dashboardPanel.getBorder());
+        cappedDashboard.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+        cappedDashboard.add(labServicesContentArea, java.awt.BorderLayout.CENTER);
+
+        dashboardPanel = cappedDashboard;
+        jScrollPane2.setViewportView(dashboardPanel);
+
         labServicesContentArea.add(new HospitalAssetsPanel(usrCtrl, labServicesContentArea), "hospitalAssets");
         labServicesContentArea.add(new ScheduledPanel(usrCtrl), "scheduled");
         labServicesContentArea.add(new RequestPanel(usrCtrl), "request");
-        
+
         setNavButtonActive(assetsButton, true);
         setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, false);
-        
+
         this.cl = (CardLayout) labServicesContentArea.getLayout();
         cl.show(labServicesContentArea, "hospitalAssets");
     }
@@ -89,17 +111,17 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 180));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -116,7 +138,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users.");
+        jLabel1.setText("Books consultation rooms and lab services for patient consultations, including submitting booking requests and awaiting admin approval.");
         jLabel1.setMaximumSize(new java.awt.Dimension(946, 45));
         jLabel1.setPreferredSize(new java.awt.Dimension(946, 45));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -127,7 +149,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        shiftRosterButton.setBackground(new java.awt.Color(255, 255, 255));
+        shiftRosterButton.setBackground(new java.awt.Color(246, 251, 255));
         shiftRosterButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
         shiftRosterButton.setPreferredSize(new java.awt.Dimension(16897, 200));
         shiftRosterButton.setLayout(new java.awt.GridBagLayout());
@@ -178,7 +200,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        labServicesContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        labServicesContentArea.setBackground(new java.awt.Color(246, 251, 255));
         labServicesContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         labServicesContentArea.setLayout(new java.awt.CardLayout());
         dashboardPanel.add(labServicesContentArea, java.awt.BorderLayout.CENTER);

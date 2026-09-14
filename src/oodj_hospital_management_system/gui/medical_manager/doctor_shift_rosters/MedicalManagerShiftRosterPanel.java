@@ -114,7 +114,6 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         updateResultLabel(currentDoctors.size());
     }
 
-
     /** Search (Doctor ID / Name) -> Filter (All / Assigned this week) -> Sort (ID / Name). */
     private List<Doctor> getFilteredSortedDoctors(List<DoctorShift> allShifts) {
         String keyword = searchField.getText().trim().toLowerCase();
@@ -169,10 +168,34 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     }
     
     private void handleShiftCardClick(DoctorShift shift) {
+        MedicalManager currentManager = (MedicalManager) usrCtrl.getActiveUser();
+        MedicalManager assignedManager = shift.getDoctor().getMedicalManager();
+
+        boolean isOwnDoctor = assignedManager != null
+                && assignedManager.getId() != null
+                && !assignedManager.getId().isEmpty()
+                && assignedManager.getId().equals(currentManager.getId());
+
+        if (!isOwnDoctor) {
+            JOptionPane.showMessageDialog(parentWindow,
+                String.format("Dr. %s is not assigned to you, so you can't manage this shift.", shift.getDoctor().getName()),
+                "Access Denied", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if (shift.getStatus() == DoctorShiftStatus.CANCELLED || shift.getStatus() == DoctorShiftStatus.COMPLETED) {
             JOptionPane.showMessageDialog(parentWindow,
                 String.format("Shift '%s' is already %s and cannot be modified.", shift.getShiftId(), shift.getStatus().name().toLowerCase()),
                 "Shift Locked", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        java.time.LocalDateTime shiftStart = DateTime.toDateTimeObject(shift.getStartDateTime());
+        if (shiftStart.isBefore(java.time.LocalDateTime.now())) {
+            JOptionPane.showMessageDialog(parentWindow,
+                String.format("Shift '%s' already started at %s and is overdue, so it can no longer be cancelled.",
+                    shift.getShiftId(), shiftStart.format(java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a"))),
+                "Shift Overdue", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -246,22 +269,23 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        dashboardPanel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
         dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBackground(new java.awt.Color(246, 251, 255));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(700, 77));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
+        jLabel2.setBackground(new java.awt.Color(246, 251, 255));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Shift Roster");
@@ -276,7 +300,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Manage clinical departments and maintain their information to support efficient hospital operations.");
+        jLabel1.setText("Generates shift rosters for assigned doctors to support efficient scheduling.");
         jLabel1.setMaximumSize(new java.awt.Dimension(946, 45));
         jLabel1.setPreferredSize(new java.awt.Dimension(946, 45));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -307,19 +331,19 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        usrMngContentArea.setBackground(new java.awt.Color(255, 255, 255));
+        usrMngContentArea.setBackground(new java.awt.Color(246, 251, 255));
         usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         usrMngContentArea.setLayout(new java.awt.BorderLayout());
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBackground(new java.awt.Color(246, 251, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(246, 251, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(1160, 50));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        searchPane.setBackground(new java.awt.Color(255, 255, 255));
+        searchPane.setBackground(new java.awt.Color(246, 251, 255));
 
         searchField.setMinimumSize(new java.awt.Dimension(250, 22));
         searchField.setPreferredSize(new java.awt.Dimension(250, 40));
@@ -337,7 +361,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jPanel2.add(searchPane, java.awt.BorderLayout.WEST);
         jPanel2.add(filler1, java.awt.BorderLayout.LINE_END);
 
-        sortByPane.setBackground(new java.awt.Color(255, 255, 255));
+        sortByPane.setBackground(new java.awt.Color(246, 251, 255));
 
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
@@ -361,11 +385,11 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         jPanel7.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        wrapperPane.setBackground(new java.awt.Color(255, 255, 255));
+        wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(246, 251, 255));
 
         previousWeekButton.setText("<");
         previousWeekButton.addActionListener(this::previousWeekButtonActionPerformed);
@@ -386,19 +410,19 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         wrapperPane.add(jPanel6);
 
-        showResultsForPanel.setBackground(new java.awt.Color(255, 255, 255));
+        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);
 
         wrapperPane.add(showResultsForPanel);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(246, 251, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
         jPanel3.setAlignmentY(0.0F);
         jPanel3.setLayout(new java.awt.BorderLayout());
 
-        rosterGridContainer.setBackground(new java.awt.Color(255, 255, 255));
+        rosterGridContainer.setBackground(new java.awt.Color(246, 251, 255));
         rosterGridContainer.setPreferredSize(new java.awt.Dimension(1160, 500));
         jPanel3.add(rosterGridContainer, java.awt.BorderLayout.NORTH);
 
@@ -426,7 +450,6 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
         searchField.setText("");
         sortField.setSelectedIndex(0);
-        sortField1.setSelectedIndex(0);
         refreshRoster();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
@@ -516,10 +539,6 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         currentWeekStart = currentWeekStart.plusWeeks(1);
         refreshRoster();
     }//GEN-LAST:event_nextWeekButtonActionPerformed
-
-    private void sortField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortField1ActionPerformed
-        refreshRoster();
-    }//GEN-LAST:event_sortField1ActionPerformed
 
     private String selectFolderDir() {
         JFileChooser fileChooser = new JFileChooser();
@@ -642,6 +661,10 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
             System.getLogger(MedicalManagerShiftRosterPanel.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }//GEN-LAST:event_generateReportButtonActionPerformed
+
+    private void sortField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortField1ActionPerformed
+        refreshRoster();
+    }//GEN-LAST:event_sortField1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -8,7 +8,6 @@ import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 
 /**
  *
@@ -137,7 +136,7 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users.");
+        jLabel1.setText("Manages hospital assets and their general information, including creating, updating, viewing, and deleting assets.");
         jLabel1.setMaximumSize(new java.awt.Dimension(946, 45));
         jLabel1.setPreferredSize(new java.awt.Dimension(946, 45));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -197,16 +196,24 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         add(jScrollPane2);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+        });
+    }
+    
     private void hospitalAssetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hospitalAssetsButtonActionPerformed
         setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(requestsButton, false);
         cl.show(hospitalAssetContentArea, "hospitalAssets");
+        resetScrollToTop();
     }//GEN-LAST:event_hospitalAssetsButtonActionPerformed
 
     private void requestsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsButtonActionPerformed
         setNavButtonActive(hospitalAssetsButton, false);
         setNavButtonActive(requestsButton, true);
         cl.show(hospitalAssetContentArea, "hospitalAssetRequests");
+        resetScrollToTop();
     }//GEN-LAST:event_requestsButtonActionPerformed
 
 

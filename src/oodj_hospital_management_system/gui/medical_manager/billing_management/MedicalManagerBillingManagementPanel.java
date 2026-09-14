@@ -4,12 +4,9 @@
  */
 package oodj_hospital_management_system.gui.medical_manager.billing_management;
 
-import oodj_hospital_management_system.gui.admin.hospitalAssets.*;
-import oodj_hospital_management_system.gui.admin.user_management.*;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import oodj_hospital_management_system.controllers.UserController;
-import oodj_hospital_management_system.gui.admin.dashboard.*;
 
 /**
  *
@@ -140,7 +137,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users.");
+        jLabel1.setText("Generates bills for completed consultations and updates bill statuses to maintain accurate billing records.");
         jLabel1.setMaximumSize(new java.awt.Dimension(946, 45));
         jLabel1.setPreferredSize(new java.awt.Dimension(946, 45));
         gridBagConstraints = new java.awt.GridBagConstraints();

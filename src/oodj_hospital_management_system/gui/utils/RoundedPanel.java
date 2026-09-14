@@ -33,6 +33,16 @@ public class RoundedPanel extends JPanel {
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right)); // padding only, safe on rounded shapes
     }
+    
+    public RoundedPanel(int radius, Color backgroundColor, Color borderColor,
+        int top, int left, int bottom, int right) {
+        this.radius = radius;
+        this.borderColor = borderColor;
+        setBackground(backgroundColor);
+        setOpaque(false);
+        setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+    }
+    
 
     @Override
     protected void paintComponent(Graphics g) {

@@ -389,18 +389,19 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
 
         add(wrapperPane, java.awt.BorderLayout.CENTER);
 
-        filterPanel.setBackground(new java.awt.Color(255, 255, 255));
+        filterPanel.setBackground(new java.awt.Color(246, 251, 255));
         filterPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
         filterPanel.setPreferredSize(new java.awt.Dimension(16897, 100));
         filterPanel.setLayout(new java.awt.GridBagLayout());
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(246, 251, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel3.setAlignmentX(0.0F);
         jPanel3.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanel3.setPreferredSize(new java.awt.Dimension(250, 50));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
+        jLabel3.setBackground(new java.awt.Color(246, 251, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Medical Manager");
         jLabel3.setAlignmentY(0.0F);
@@ -417,13 +418,14 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         filterPanel.add(jPanel3, gridBagConstraints);
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBackground(new java.awt.Color(246, 251, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel4.setAlignmentX(0.0F);
         jPanel4.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanel4.setPreferredSize(new java.awt.Dimension(250, 50));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
+        jLabel4.setBackground(new java.awt.Color(246, 251, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Department");
         jLabel4.setAlignmentY(0.0F);
@@ -440,7 +442,7 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         filterPanel.add(jPanel4, gridBagConstraints);
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 20));
         jPanel5.setAlignmentX(0.0F);
         jPanel5.setMaximumSize(new java.awt.Dimension(250, 50));

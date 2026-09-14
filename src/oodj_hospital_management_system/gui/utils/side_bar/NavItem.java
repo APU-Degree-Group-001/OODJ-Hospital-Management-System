@@ -19,18 +19,18 @@ public class NavItem extends RoundedButton {
         super(text, radius); // handles the rounded background + button text
 
         // Load and attach the icon — JButton renders icon+text together automatically
-        if (iconPath != null) {
-            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
-            setIcon(icon);
-        } 
+//        if (iconPath != null) {
+//            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
+//            setIcon(icon);
+//        } 
 //        else {
 //            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("oodj_hospital_management_system/assets/img/icons/house.png"));
 //            setIcon(icon);
 //        }
 
-        // Positioning/spacing
-        setHorizontalAlignment(SwingConstants.LEFT); // icon+text block sits on the left, not centered
-        setIconTextGap(15);                          // space between icon and text
+        // Positioning/spacing 
+        setHorizontalAlignment(SwingConstants.CENTER); // icon+text block sits on the left, not centered // i removed icon le :(
+//        setIconTextGap(15);                          // space between icon and text
         setHorizontalTextPosition(SwingConstants.RIGHT); // text sits to the RIGHT of the icon
         setVerticalTextPosition(SwingConstants.CENTER);  // text vertically centered with icon
 
@@ -39,15 +39,15 @@ public class NavItem extends RoundedButton {
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // allow horizontal stretch :D
         setFont(new Font("Segoe UI", Font.PLAIN, 16));
         setForeground(new Color(80, 80, 80));
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 245, 245));
 
         setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // padding ~
         
         // Initialize inactive state
         setButtonColors(
-            Color.WHITE,
-            new Color(220, 237, 250),
-            new Color(220, 237, 250)
+            new Color(245, 245, 245),          // normal (was Color.WHITE)
+            new Color(220, 237, 250),          // hover
+            new Color(220, 237, 250)           // pressed
         );
     }
     
@@ -69,7 +69,7 @@ public class NavItem extends RoundedButton {
             setFont(getFont().deriveFont(Font.BOLD));
         } else {
             setButtonColors(
-                Color.WHITE,  // normal
+                new Color(245, 245, 245),  // normal
                 activeColor,  // hover
                 activeColor   // pressed
             );

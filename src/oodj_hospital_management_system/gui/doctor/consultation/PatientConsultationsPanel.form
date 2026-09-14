@@ -112,12 +112,12 @@
                           <Color blue="66" green="66" red="66" type="rgb"/>
                         </Property>
                         <Property name="horizontalAlignment" type="int" value="0"/>
-                        <Property name="text" type="java.lang.String" value="Manages hospital user accounts and their general information, including creating, updating, viewing, and deleting users."/>
+                        <Property name="text" type="java.lang.String" value="Manages doctor consultations, including viewing available, booked, and completed consultations. Doctors can also view consultation reports and add medical records for completed consultations."/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[946, 45]"/>
                         </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[946, 45]"/>
+                          <Dimension value="[1250, 45]"/>
                         </Property>
                       </Properties>
                       <Constraints>

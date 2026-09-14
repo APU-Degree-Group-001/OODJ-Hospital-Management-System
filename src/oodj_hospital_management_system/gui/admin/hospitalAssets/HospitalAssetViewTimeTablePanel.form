@@ -87,18 +87,11 @@
         <Container class="javax.swing.JPanel" name="patientInformationPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="fb" red="f6" type="rgb"/>
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">
-                <CompoundBorder>
-                  <Border PropertyName="outside" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                  <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
-                  </Border>
-                </CompoundBorder>
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="20" left="20" right="20" top="20"/>
               </Border>
             </Property>
             <Property name="alignmentY" type="float" value="0.0"/>
@@ -112,6 +105,9 @@
               <Dimension value="[235, 140]"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.RoundedPanel(&#xa;    15, new java.awt.Color(210,212,220), 10, 15, 10, 15&#xa;)"/>
+          </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
@@ -259,18 +255,11 @@
         <Container class="javax.swing.JPanel" name="wardInformationPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="fb" red="f6" type="rgb"/>
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">
-                <CompoundBorder>
-                  <Border PropertyName="outside" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                  <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
-                  </Border>
-                </CompoundBorder>
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="20" left="20" right="20" top="20"/>
               </Border>
             </Property>
             <Property name="alignmentY" type="float" value="0.0"/>
@@ -284,6 +273,9 @@
               <Dimension value="[235, 110]"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.RoundedPanel(&#xa;    15, new java.awt.Color(210,212,220), 10, 15, 10, 15&#xa;)"/>
+          </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
@@ -389,18 +381,11 @@
         <Container class="javax.swing.JPanel" name="timetablePanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="fb" red="f6" type="rgb"/>
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">
-                <CompoundBorder>
-                  <Border PropertyName="outside" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                  <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
-                  </Border>
-                </CompoundBorder>
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="20" left="20" right="20" top="20"/>
               </Border>
             </Property>
             <Property name="alignmentY" type="float" value="0.0"/>
@@ -408,6 +393,9 @@
               <Dimension value="[2147483647, 200]"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.RoundedPanel(&#xa;    15, new java.awt.Color(210,212,220), 10, 15, 10, 15&#xa;)"/>
+          </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
@@ -531,7 +519,7 @@
             <Container class="javax.swing.JPanel" name="sortByPane">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="fb" red="f6" type="rgb"/>
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -648,18 +636,11 @@
         <Container class="javax.swing.JPanel" name="wardTimetablePanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="fb" red="f6" type="rgb"/>
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">
-                <CompoundBorder>
-                  <Border PropertyName="outside" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                  <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
-                  </Border>
-                </CompoundBorder>
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="20" left="20" right="20" top="20"/>
               </Border>
             </Property>
             <Property name="alignmentY" type="float" value="0.0"/>
@@ -667,6 +648,9 @@
               <Dimension value="[2147483647, 200]"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new oodj_hospital_management_system.gui.utils.RoundedPanel(&#xa;    15, new java.awt.Color(210,212,220), 10, 15, 10, 15&#xa;)"/>
+          </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
           <SubComponents>
@@ -745,7 +729,7 @@
             <Container class="javax.swing.JPanel" name="sortByPane1">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="fb" red="f6" type="rgb"/>
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">

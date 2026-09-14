@@ -55,11 +55,13 @@ public class ConsultationCard extends RoundedPanel {
      */
     public ConsultationCard(Consultation consultation, Runnable onViewDetails) {
         // (cornerRadius, backgroundColor, padTop, padLeft, padBottom, padRight)
-        super(12, CARD_BG, 14, 20, 14, 20);
+        super(12, Color.WHITE, new Color(230, 233, 237), 14, 20, 14, 20);
+
+        setBackground(Color.WHITE);
+
         this.consultation = consultation;
         this.onViewDetails = onViewDetails;
 
-        // Width flexible, height fixed.
         setPreferredSize(new Dimension(900, CARD_HEIGHT));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, CARD_HEIGHT));
         setMinimumSize(new Dimension(400, CARD_HEIGHT));
