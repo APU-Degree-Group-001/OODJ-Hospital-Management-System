@@ -21,7 +21,7 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
     private final java.awt.Color selectedTextColor = new java.awt.Color(41, 98, 255);
     private final java.awt.Color defaultTextColor = new java.awt.Color(60, 60, 60);
-    String imageFileName = "oodj_hospital_management_system/assets/img/layout/lab_services.png";
+    String imageFileName = "oodj_hospital_management_system/assets/img/layout/hospital_assets.png";
     /**
      * Creates new form adminDashboardPanel
      */
