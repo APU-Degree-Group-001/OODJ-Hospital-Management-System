@@ -162,7 +162,7 @@ public class SideBar extends JPanel {
         add(welcomePane, gridBagConstraints);
 
         navItems.setBackground(new java.awt.Color(255, 255, 255));
-        navItems.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        navItems.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         navItems.setLayout(new javax.swing.BoxLayout(navItems, javax.swing.BoxLayout.Y_AXIS));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

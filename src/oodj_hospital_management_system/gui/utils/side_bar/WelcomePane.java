@@ -48,11 +48,11 @@ public class WelcomePane extends javax.swing.JPanel {
 
     private void setupWelcomeIcon(String iconPath) {
         ImageIcon rawIcon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
-        Image scaledImage = rawIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaledImage = rawIcon.getImage().getScaledInstance(115, 110, Image.SCALE_SMOOTH);
         welcomeIcon.setIcon(new ImageIcon(scaledImage));
         welcomeIcon.setText("");
-        welcomeIcon.setPreferredSize(new Dimension(100, 100));
-        welcomeIcon.setMaximumSize(new Dimension(100, 100));
+        welcomeIcon.setPreferredSize(new Dimension(115, 110));
+        welcomeIcon.setMaximumSize(new Dimension(115, 110));
     }
     
     public void setUserName(String name) {

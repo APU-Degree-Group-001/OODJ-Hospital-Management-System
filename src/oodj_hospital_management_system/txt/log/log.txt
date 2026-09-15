@@ -615,3 +615,10 @@
 [2026-09-15 00:27:11] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-15 00:28:02] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-15 00:28:59] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-15 10:39:53] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-15 10:44:12] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-15 10:45:22] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-15 10:46:18] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-15 10:48:32] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-15 10:48:46] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-15 10:48:59] User {doctor - #DOCd4e8f - bug1} logged in

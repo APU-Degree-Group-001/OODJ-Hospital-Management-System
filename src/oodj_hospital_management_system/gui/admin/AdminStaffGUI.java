@@ -63,14 +63,13 @@ public class AdminStaffGUI extends javax.swing.JFrame {
         sideBar = new oodj_hospital_management_system.gui.utils.side_bar.SideBar(this.usrCtrl, "admin staff", contentArea);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1280, 800));
         setSize(new java.awt.Dimension(1280, 800));
 
         contentArea.setLayout(new java.awt.CardLayout());
         getContentPane().add(contentArea, java.awt.BorderLayout.CENTER);
 
         sideBar.setBackground(new java.awt.Color(255, 255, 255));
-        sideBar.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 217, 217)), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        sideBar.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 217, 217)), javax.swing.BorderFactory.createEmptyBorder(20, 10, 10, 20)));
         sideBar.setPreferredSize(new java.awt.Dimension(260, 0));
         getContentPane().add(sideBar, java.awt.BorderLayout.WEST);
 
