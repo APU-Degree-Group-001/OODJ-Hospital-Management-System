@@ -4444,3 +4444,17 @@ User Handling Error: Password must be a mix of uppercase and lowercase letters, 
 [2026-09-16 02:29:36] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-16 02:32:16] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-16 02:32:16] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:36:01] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:36:01] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:37:32] User with ID '#ADMd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-16 02:37:36] User with ID '#ADMd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-16 02:37:58] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:37:58] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:39:00] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:39:00] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 02:39:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 02:39:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 02:39:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 02:39:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found

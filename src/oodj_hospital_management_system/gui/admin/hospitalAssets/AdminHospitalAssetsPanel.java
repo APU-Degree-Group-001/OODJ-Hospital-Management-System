@@ -64,6 +64,7 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
 
         this.cl = (CardLayout) hospitalAssetContentArea.getLayout();
         cl.show(hospitalAssetContentArea, "hospitalAssets");
+        resetScrollToTop();
     }
     
     private void setNavButtonActive(javax.swing.JButton button, boolean active) {
@@ -202,7 +203,9 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
 
     private void resetScrollToTop() {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            });
         });
     }
     
