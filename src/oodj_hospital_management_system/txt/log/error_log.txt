@@ -4397,3 +4397,9 @@ User Handling Error: Password must be a mix of uppercase and lowercase letters, 
 [2026-09-15 00:28:04] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-15 00:29:01] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-15 00:29:01] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-15 22:25:15] User with ID '#DOCd4e8f' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-15 22:49:39] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-15 22:49:39] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-15 22:52:02] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-15 22:52:02] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found

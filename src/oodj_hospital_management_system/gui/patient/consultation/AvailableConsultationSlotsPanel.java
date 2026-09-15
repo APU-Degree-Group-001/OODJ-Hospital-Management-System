@@ -298,14 +298,18 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         filterPanel = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         medicalManagerFilter = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         medicalDepartmentFilter = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         medicalDepartmentFilter1 = new javax.swing.JComboBox<>();
         searchFilterButton = new javax.swing.JButton();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         resetFilterButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -402,14 +406,18 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
         jLabel3.setBackground(new java.awt.Color(246, 251, 255));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Medical Manager");
+        jLabel3.setAlignmentX(1.0F);
         jLabel3.setAlignmentY(0.0F);
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jLabel3.setIconTextGap(0);
-        jLabel3.setMaximumSize(new java.awt.Dimension(250, 16));
-        jLabel3.setPreferredSize(new java.awt.Dimension(250, 16));
+        jLabel3.setMaximumSize(new java.awt.Dimension(280, 16));
+        jLabel3.setMinimumSize(new java.awt.Dimension(300, 16));
+        jLabel3.setPreferredSize(new java.awt.Dimension(300, 16));
         jPanel3.add(jLabel3);
+        jPanel3.add(filler1);
 
         medicalManagerFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(medicalManagerFilter);
@@ -426,14 +434,17 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
         jLabel4.setBackground(new java.awt.Color(246, 251, 255));
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Department");
+        jLabel4.setAlignmentX(1.0F);
         jLabel4.setAlignmentY(0.0F);
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jLabel4.setIconTextGap(0);
         jLabel4.setMaximumSize(new java.awt.Dimension(250, 16));
         jLabel4.setPreferredSize(new java.awt.Dimension(250, 16));
         jPanel4.add(jLabel4);
+        jPanel4.add(filler2);
 
         medicalDepartmentFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel4.add(medicalDepartmentFilter);
@@ -449,14 +460,17 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         jPanel5.setPreferredSize(new java.awt.Dimension(250, 50));
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel5.setText("Date");
+        jLabel5.setAlignmentX(1.0F);
         jLabel5.setAlignmentY(0.0F);
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jLabel5.setIconTextGap(0);
         jLabel5.setMaximumSize(new java.awt.Dimension(250, 16));
         jLabel5.setPreferredSize(new java.awt.Dimension(250, 16));
         jPanel5.add(jLabel5);
+        jPanel5.add(filler3);
 
         medicalDepartmentFilter1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel5.add(medicalDepartmentFilter1);
@@ -468,6 +482,7 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
         searchFilterButton.setText("Search");
         searchFilterButton.addActionListener(this::searchFilterButtonActionPerformed);
         filterPanel.add(searchFilterButton, new java.awt.GridBagConstraints());
+        filterPanel.add(filler4, new java.awt.GridBagConstraints());
 
         resetFilterButton.setText("Reset");
         resetFilterButton.addActionListener(this::resetFilterButtonActionPerformed);
@@ -531,6 +546,10 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable availableSlotsTable;
     private javax.swing.JButton bookButton;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
     private javax.swing.JPanel filterPanel;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

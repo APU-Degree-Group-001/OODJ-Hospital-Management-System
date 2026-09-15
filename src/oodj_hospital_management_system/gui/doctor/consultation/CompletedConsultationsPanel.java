@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import oodj_hospital_management_system.controllers.UserController;
+import oodj_hospital_management_system.gui.patient.consultation.ConsultationCard;
 import oodj_hospital_management_system.models.Bill;
 import oodj_hospital_management_system.models.Consultation;
 import oodj_hospital_management_system.models.Consultation.ConsultationStatus;

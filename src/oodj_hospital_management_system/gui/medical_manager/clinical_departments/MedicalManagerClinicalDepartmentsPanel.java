@@ -37,6 +37,7 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
     private static final int MAX_NAME_LENGTH = 50;
     private static final int MAX_DESCRIPTION_LENGTH = 200;
+    String imageFileName = "oodj_hospital_management_system/assets/img/layout/clinical_departments.png";
 
     /**
      * Creates new form adminDashboardPanel
@@ -49,6 +50,9 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
         departmentTable.setPreferredScrollableViewportSize(
             new java.awt.Dimension(1160, departmentTable.getRowHeight() * departmentTable.getRowCount())
         );
+        
+        // Top Banner ~
+        jPanel1.setOpaque(false);
     }
     
     private void customStyleHeader() {
@@ -119,11 +123,10 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         dashboardPanel = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        jPanel5 = new oodj_hospital_management_system.gui.utils.BackgroundPanel(this.imageFileName);
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         usrMngContentArea = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -157,20 +160,21 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
-        dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 40, 0));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel5.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 100));
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 0, 60));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 120));
         jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
 
         jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setBackground(new java.awt.Color(246, 251, 255));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Clinical Departments");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -195,10 +199,6 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        jSeparator1.setBackground(new java.awt.Color(210, 212, 220));
-        jSeparator1.setForeground(new java.awt.Color(210, 212, 220));
-        jPanel5.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
-
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
         usrMngContentArea.setBackground(new java.awt.Color(246, 251, 255));
@@ -206,7 +206,7 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
         usrMngContentArea.setLayout(new java.awt.BorderLayout());
 
         jPanel7.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 0, 60));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBackground(new java.awt.Color(246, 251, 255));
@@ -643,7 +643,6 @@ public class MedicalManagerClinicalDepartmentsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton modifyDepartmentButton;
     private javax.swing.JLabel operationsLabel1;
     private javax.swing.JPanel operationsPanel1;

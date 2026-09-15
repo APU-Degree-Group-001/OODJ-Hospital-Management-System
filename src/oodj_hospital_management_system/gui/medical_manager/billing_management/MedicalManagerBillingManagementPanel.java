@@ -20,6 +20,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
     private final java.awt.Color selectedTextColor = new java.awt.Color(41, 98, 255);
     private final java.awt.Color defaultTextColor = new java.awt.Color(60, 60, 60);
+    String imageFileName = "oodj_hospital_management_system/assets/img/layout/bill.png";
     /**
      * Creates new form adminDashboardPanel
      */
@@ -57,6 +58,10 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
 
         setNavButtonActive(billReceiptsButton, true);
         setNavButtonActive(completedConsultationsButton, false);
+        
+        // Top Banner ~
+        jPanel1.setOpaque(false);
+        navigationPane.setOpaque(false);
 
         this.cl = (CardLayout) billingManagementContentArea.getLayout();
         cl.show(billingManagementContentArea, "hospitalAssets");
@@ -96,12 +101,11 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         dashboardPanel = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        jPanel5 = new oodj_hospital_management_system.gui.utils.BackgroundPanel(this.imageFileName);
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         navigationPane = new javax.swing.JPanel();
-        jSeparator1 = new javax.swing.JSeparator();
         billingManagementContentArea = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
@@ -111,19 +115,20 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         dashboardPanel.setBackground(new java.awt.Color(246, 251, 255));
-        dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        dashboardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 40, 0));
         dashboardPanel.setPreferredSize(new java.awt.Dimension(1020, 1200));
         dashboardPanel.setRequestFocusEnabled(false);
         dashboardPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel5.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 180));
-        jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 20, 60));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 220));
+        jPanel5.setLayout(new java.awt.BorderLayout(0, 10));
 
         jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Billing Managament");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -144,6 +149,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 0);
         jPanel1.add(jLabel1, gridBagConstraints);
 
         jPanel5.add(jPanel1, java.awt.BorderLayout.NORTH);
@@ -153,6 +159,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
         navigationPane.setLayout(new java.awt.GridBagLayout());
 
+        billReceiptsButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         billReceiptsButton.setText("Bill Receipts");
         billReceiptsButton.setMaximumSize(new java.awt.Dimension(250, 50));
         billReceiptsButton.setMinimumSize(new java.awt.Dimension(250, 50));
@@ -167,6 +174,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
         navigationPane.add(billReceiptsButton, gridBagConstraints);
 
+        completedConsultationsButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         completedConsultationsButton.setText("Completed Consultations");
         completedConsultationsButton.setMaximumSize(new java.awt.Dimension(250, 50));
         completedConsultationsButton.setMinimumSize(new java.awt.Dimension(250, 50));
@@ -181,14 +189,10 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
 
         jPanel5.add(navigationPane, java.awt.BorderLayout.CENTER);
 
-        jSeparator1.setBackground(new java.awt.Color(246, 251, 255));
-        jSeparator1.setForeground(new java.awt.Color(210, 212, 220));
-        jPanel5.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
-
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
         billingManagementContentArea.setBackground(new java.awt.Color(246, 251, 255));
-        billingManagementContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        billingManagementContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 0, 60));
         billingManagementContentArea.setLayout(new java.awt.CardLayout());
         dashboardPanel.add(billingManagementContentArea, java.awt.BorderLayout.CENTER);
 
@@ -220,7 +224,6 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel navigationPane;
     // End of variables declaration//GEN-END:variables
 }
