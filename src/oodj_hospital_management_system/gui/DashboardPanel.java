@@ -286,12 +286,12 @@ public class DashboardPanel extends javax.swing.JPanel {
         jPanel2.setPreferredSize(new java.awt.Dimension(1454, 75));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
         jLabel1.setText("Welcome back!");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jPanel2.add(jLabel1);
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel2.setText("Here's your account information");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jPanel2.add(jLabel2);
@@ -320,11 +320,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new javax.swing.BoxLayout(jPanel7, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         jLabel5.setText("My Profile");
         jPanel7.add(jLabel5);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel6.setText("View and manage your account details");
         jPanel7.add(jLabel6);
 
@@ -344,8 +344,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel5.add(jSeparator1, gridBagConstraints);
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel8.setText("ID");
+        jLabel8.setMaximumSize(new java.awt.Dimension(18, 80));
+        jLabel8.setMinimumSize(new java.awt.Dimension(18, 80));
+        jLabel8.setPreferredSize(new java.awt.Dimension(18, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -354,8 +357,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(20, 15, 10, 15);
         jPanel5.add(jLabel8, gridBagConstraints);
 
-        userId.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        userId.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         userId.setText("#PAT12345");
+        userId.setMaximumSize(new java.awt.Dimension(92, 80));
+        userId.setMinimumSize(new java.awt.Dimension(92, 80));
+        userId.setPreferredSize(new java.awt.Dimension(92, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -365,8 +371,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(20, 15, 10, 15);
         jPanel5.add(userId, gridBagConstraints);
 
-        userName.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        userName.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         userName.setText("Paureen");
+        userName.setMaximumSize(new java.awt.Dimension(63, 80));
+        userName.setMinimumSize(new java.awt.Dimension(63, 80));
+        userName.setPreferredSize(new java.awt.Dimension(63, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -376,8 +385,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 15, 10, 15);
         jPanel5.add(userName, gridBagConstraints);
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel9.setText("NAME");
+        jLabel9.setMaximumSize(new java.awt.Dimension(48, 80));
+        jLabel9.setMinimumSize(new java.awt.Dimension(48, 80));
+        jLabel9.setPreferredSize(new java.awt.Dimension(48, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -386,19 +398,26 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 15, 10, 15);
         jPanel5.add(jLabel9, gridBagConstraints);
 
-        userEmail.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        userEmail.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         userEmail.setText("pau@gmail.com");
+        userEmail.setMaximumSize(new java.awt.Dimension(130, 80));
+        userEmail.setMinimumSize(new java.awt.Dimension(130, 80));
+        userEmail.setPreferredSize(new java.awt.Dimension(130, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.5;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 15, 10, 15);
         jPanel5.add(userEmail, gridBagConstraints);
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel10.setText("EMAIL");
+        jLabel10.setMaximumSize(new java.awt.Dimension(50, 80));
+        jLabel10.setMinimumSize(new java.awt.Dimension(50, 80));
+        jLabel10.setPreferredSize(new java.awt.Dimension(50, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
