@@ -14,6 +14,10 @@ import oodj_hospital_management_system.controllers.UserController;
 public class AdminBillingSettingsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public ConsultationBaseRatePanel consultationBaseRatePanel;
+    public LabServicesBaseRatePanel labServicesBaseRatePanel;
+    public PrescriptionsBaseRatePanel prescriptionsBaseRatePanel;
+    public InsuranceNetworkPanel insuranceNetworkPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -26,21 +30,26 @@ public class AdminBillingSettingsPanel extends javax.swing.JPanel {
     public AdminBillingSettingsPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        
-        billingSettingsContentArea.add(new ConsultationBaseRatePanel(usrCtrl), "consultationBaseRate");
-        billingSettingsContentArea.add(new LabServicesBaseRatePanel(usrCtrl), "labServicesBaseRate");
-        billingSettingsContentArea.add(new PrescriptionsBaseRatePanel(usrCtrl), "prescriptionsBaseRate");
-        billingSettingsContentArea.add(new InsuranceNetworkPanel(usrCtrl), "insuranceNetworkPanel");
-        
+
+        this.consultationBaseRatePanel = new ConsultationBaseRatePanel(usrCtrl);
+        this.labServicesBaseRatePanel = new LabServicesBaseRatePanel(usrCtrl);
+        this.prescriptionsBaseRatePanel = new PrescriptionsBaseRatePanel(usrCtrl);
+        this.insuranceNetworkPanel = new InsuranceNetworkPanel(usrCtrl);
+
+        billingSettingsContentArea.add(consultationBaseRatePanel, "consultationBaseRate");
+        billingSettingsContentArea.add(labServicesBaseRatePanel, "labServicesBaseRate");
+        billingSettingsContentArea.add(prescriptionsBaseRatePanel, "prescriptionsBaseRate");
+        billingSettingsContentArea.add(insuranceNetworkPanel, "insuranceNetworkPanel");
+
         setNavButtonActive(consultationBaseRateButton, true);
         setNavButtonActive(labServicesBaseRate, false);
         setNavButtonActive(prescriptionsBaseRateButton, false);
         setNavButtonActive(insuranceNetworkButton, false);
-        
+
         // Top Banner ~
         jPanel1.setOpaque(false);
         navigationPane.setOpaque(false);
-        
+
         this.cl = (CardLayout) billingSettingsContentArea.getLayout();
         cl.show(billingSettingsContentArea, "consultationBaseRate");
     }

@@ -16,6 +16,8 @@ import oodj_hospital_management_system.controllers.UserController;
 public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public HospitalAssetsPanel hospitalAssetsPanel;
+    public RequestPanel requestPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -52,12 +54,15 @@ public class AdminHospitalAssetsPanel extends javax.swing.JPanel {
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
 
-        hospitalAssetContentArea.add(new HospitalAssetsPanel(usrCtrl, hospitalAssetContentArea), "hospitalAssets");
-        hospitalAssetContentArea.add(new RequestPanel(usrCtrl), "hospitalAssetRequests");
+        this.hospitalAssetsPanel = new HospitalAssetsPanel(usrCtrl, hospitalAssetContentArea);
+        this.requestPanel = new RequestPanel(usrCtrl);
+
+        hospitalAssetContentArea.add(hospitalAssetsPanel, "hospitalAssets");
+        hospitalAssetContentArea.add(requestPanel, "hospitalAssetRequests");
 
         setNavButtonActive(hospitalAssetsButton, true);
         setNavButtonActive(requestsButton, false);
-        
+
         // Top Banner ~
         jPanel1.setOpaque(false);
         navigationPane.setOpaque(false);

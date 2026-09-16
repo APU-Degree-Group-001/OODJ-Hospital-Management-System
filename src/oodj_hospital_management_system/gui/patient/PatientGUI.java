@@ -4,10 +4,13 @@
  */
 package oodj_hospital_management_system.gui.patient;
 
+import java.io.IOException;
+import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.patient.consultation.PatientConsultationsPanel;
 import oodj_hospital_management_system.gui.patient.rating_feedback.PatientRatingFeedbackPanel;
+import oodj_hospital_management_system.gui.utils.file_listener.FileWatcher;
 
 /**
  *
@@ -15,8 +18,8 @@ import oodj_hospital_management_system.gui.patient.rating_feedback.PatientRating
  */
 public class PatientGUI extends javax.swing.JFrame {
     private UserController usrCtrl;
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PatientGUI.class.getName());
+    private FileWatcher fileWatcher;
 
     /**
      * Creates new form AdminStaffDashboard
@@ -25,13 +28,33 @@ public class PatientGUI extends javax.swing.JFrame {
         this.usrCtrl = usrCtrl;
         initComponents();
         setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        // Add cards to contentArea
+        // Add cards to contentArea\
+        PatientConsultationsPanel patientConsultationsPanel = new PatientConsultationsPanel(this.usrCtrl);
         contentArea.add(new DashboardPanel(this.usrCtrl), "patientDashboard");
-        contentArea.add(new PatientConsultationsPanel(this.usrCtrl), "patientConsultations");
+        contentArea.add(patientConsultationsPanel, "patientConsultations");
         contentArea.add(new PatientRatingFeedbackPanel(this.usrCtrl), "patientRatingFeedback");;
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");
+        
+        try {
+
+            fileWatcher = new FileWatcher(SystemConfiguration.consultationFilePath);
+
+            fileWatcher.addListener(
+                SystemConfiguration.consultationFilePath,
+                () -> {
+                    patientConsultationsPanel.availablePanel.loadAvailableSlots();
+                    patientConsultationsPanel.bookedPanel.loadBookedConsultations();
+                    patientConsultationsPanel.completedPanel.loadCompletedConsultations();
+                }
+            );
+
+            fileWatcher.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

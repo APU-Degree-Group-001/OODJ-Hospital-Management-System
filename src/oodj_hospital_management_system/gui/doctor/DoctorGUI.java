@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.gui.doctor;
 
+import java.io.IOException;
+import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.doctor.consultation.PatientConsultationsPanel;
@@ -11,6 +13,7 @@ import oodj_hospital_management_system.gui.doctor.lab_services.DoctorLabServices
 import oodj_hospital_management_system.gui.doctor.rating_feedback.RatingFeedbackPanel;
 import oodj_hospital_management_system.gui.doctor.shift_roster.DoctorShiftRosterPanel;
 import oodj_hospital_management_system.gui.doctor.ward_admission.DoctorWardAdmissionPanel;
+import oodj_hospital_management_system.gui.utils.file_listener.FileWatcher;
 
 /**
  *
@@ -28,17 +31,80 @@ public class DoctorGUI extends javax.swing.JFrame {
         this.usrCtrl = usrCtrl;
         initComponents();
         setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+
         // Add cards to contentArea
-        contentArea.add(new DashboardPanel(this.usrCtrl), "doctorDashboard");
-        contentArea.add(new DoctorShiftRosterPanel(this.usrCtrl), "doctorShiftRoster");
-        contentArea.add(new PatientConsultationsPanel(this.usrCtrl), "doctorConsultations");
-        contentArea.add(new DoctorLabServicesPanel(this.usrCtrl), "doctorLabServices");
-        contentArea.add(new DoctorWardAdmissionPanel(this.usrCtrl), "doctorWardAdmission");
-        contentArea.add(new RatingFeedbackPanel(this.usrCtrl), "doctorRatingFeedback");
-//        contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "doctorHospitalAssets");
+        DashboardPanel doctorDashboardPanel = new DashboardPanel(this.usrCtrl);
+        DoctorShiftRosterPanel doctorShiftRosterPanel = new DoctorShiftRosterPanel(this.usrCtrl);
+        PatientConsultationsPanel patientConsultationsPanel = new PatientConsultationsPanel(this.usrCtrl);
+        DoctorLabServicesPanel doctorLabServicesPanel = new DoctorLabServicesPanel(this.usrCtrl);
+        DoctorWardAdmissionPanel doctorWardAdmissionPanel = new DoctorWardAdmissionPanel(this.usrCtrl);
+        RatingFeedbackPanel doctorRatingFeedbackPanel = new RatingFeedbackPanel(this.usrCtrl);
+
+        contentArea.add(doctorDashboardPanel, "doctorDashboard");
+        contentArea.add(doctorShiftRosterPanel, "doctorShiftRoster");
+        contentArea.add(patientConsultationsPanel, "doctorConsultations");
+        contentArea.add(doctorLabServicesPanel, "doctorLabServices");
+        contentArea.add(doctorWardAdmissionPanel, "doctorWardAdmission");
+        contentArea.add(doctorRatingFeedbackPanel, "doctorRatingFeedback");
+    //        contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "doctorHospitalAssets");
 
         // Show default card
-        ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");
+        ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "doctorDashboard");
+
+        try {
+
+            // Watches txt/consultations/ — confirmed reload methods
+            FileWatcher consultationsWatcher = new FileWatcher(SystemConfiguration.consultationFilePath);
+
+            consultationsWatcher.addListener(
+                SystemConfiguration.consultationFilePath,
+                () -> {
+                    patientConsultationsPanel.availablePanel.loadAvailableSlots();
+                    patientConsultationsPanel.bookedPanel.loadBookedConsultations();
+                    patientConsultationsPanel.completedPanel.loadCompletedConsultations();
+                }
+            );
+
+            consultationsWatcher.start();
+
+            // Watches txt/users/ — doctor shifts + cancel-shift requests
+            FileWatcher usersWatcher = new FileWatcher(SystemConfiguration.doctorShiftFilePath);
+
+            usersWatcher.addListener(
+                SystemConfiguration.doctorShiftFilePath,
+                () -> { /* TODO: doctorShiftRosterPanel.shiftRosterPanel.<reload method> */ }
+            );
+
+            usersWatcher.addListener(
+                SystemConfiguration.requestFilePath,
+                () -> { /* TODO: doctorShiftRosterPanel.requestPanel.<reload method> */ }
+            );
+
+            usersWatcher.start();
+
+            // Watches txt/hospital_assets/ — assets, allocations, ward admissions
+            FileWatcher hospitalAssetsWatcher = new FileWatcher(SystemConfiguration.hospitalAssetFilePath);
+
+            hospitalAssetsWatcher.addListener(
+                SystemConfiguration.hospitalAssetFilePath,
+                () -> { /* TODO: doctorLabServicesPanel.hospitalAssetsPanel.<reload method> */ }
+            );
+
+            hospitalAssetsWatcher.addListener(
+                SystemConfiguration.hospitalAssetAllocationFilePath,
+                () -> { /* TODO: doctorLabServicesPanel.scheduledPanel.<reload method> */ }
+            );
+
+            hospitalAssetsWatcher.addListener(
+                SystemConfiguration.wardAdmissionFilePath,
+                () -> { /* TODO: doctorWardAdmissionPanel.wardsPanel/.wardAdmissionsPanel.<reload method> */ }
+            );
+
+            hospitalAssetsWatcher.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

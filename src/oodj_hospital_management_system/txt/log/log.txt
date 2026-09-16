@@ -724,3 +724,13 @@
 [2026-09-16 02:35:59] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-16 02:37:57] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-16 02:38:58] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-16 15:21:12] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-16 15:21:51] User {patient - #PAT3fad4 - Pau} created Consultation {#CON20fba} for Patient {#PAT3fad4 - Pau}
+[2026-09-16 15:23:49] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-16 15:24:38] User {patient - #PAT3fad4 - Pau} created Consultation {#CON2a21b} for Patient {#PAT3fad4 - Pau}
+[2026-09-16 15:38:12] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-16 15:42:37] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-16 15:43:32] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-16 15:44:00] User {patient - #PAT3fad4 - Pau} created Consultation {#CONf64cd} for Patient {#PAT3fad4 - Pau}
+[2026-09-16 16:03:39] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-16 16:07:10] User {medical manager - #MNG58321 - Chee} logged in

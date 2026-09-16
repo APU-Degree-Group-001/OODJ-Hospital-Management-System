@@ -98,7 +98,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
             .toList();
     }
     
-    private void refreshRoster() {
+    public void refreshRoster() {
         updateWeekLabels();
 
         List<DoctorShift> allShifts =

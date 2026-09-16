@@ -15,6 +15,10 @@ public class AdminUserManagementPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
     private Runnable refreshDoctorTable;
+    public PatientManagementPanel patientManagementPanel;
+    public DoctorManagementPanel doctorManagementPanel;
+    public MedicalManagerManagementPanel medicalManagerManagementPanel;
+    public AdminStaffManagementPanel adminStaffManagementPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -28,16 +32,22 @@ public class AdminUserManagementPanel extends javax.swing.JPanel {
         this.usrCtrl = usrCtrl;
         initComponents();
         this.refreshDoctorTable = refreshDoctorTable;
-        usrMngContentArea.add(new PatientManagementPanel(usrCtrl), "patientManagement");
-        usrMngContentArea.add(new DoctorManagementPanel(usrCtrl, this.refreshDoctorTable), "doctorManagement");
-        usrMngContentArea.add(new MedicalManagerManagementPanel(usrCtrl), "medicalManagerManagement");
-        usrMngContentArea.add(new AdminStaffManagementPanel(usrCtrl), "adminStaffManagement");
-        
+
+        this.patientManagementPanel = new PatientManagementPanel(usrCtrl);
+        this.doctorManagementPanel = new DoctorManagementPanel(usrCtrl, this.refreshDoctorTable);
+        this.medicalManagerManagementPanel = new MedicalManagerManagementPanel(usrCtrl);
+        this.adminStaffManagementPanel = new AdminStaffManagementPanel(usrCtrl);
+
+        usrMngContentArea.add(patientManagementPanel, "patientManagement");
+        usrMngContentArea.add(doctorManagementPanel, "doctorManagement");
+        usrMngContentArea.add(medicalManagerManagementPanel, "medicalManagerManagement");
+        usrMngContentArea.add(adminStaffManagementPanel, "adminStaffManagement");
+
         setNavButtonActive(patientButton, true);
         setNavButtonActive(doctorButton, false);
         setNavButtonActive(medicalManagerButton, false);
         setNavButtonActive(adminStaffButton, false);
-        
+
         this.cl = (CardLayout) usrMngContentArea.getLayout();
         cl.show(usrMngContentArea, "patientManagement");
     }

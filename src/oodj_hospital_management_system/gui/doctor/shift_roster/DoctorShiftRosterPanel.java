@@ -14,6 +14,8 @@ import oodj_hospital_management_system.controllers.UserController;
 public class DoctorShiftRosterPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public ShiftRosterPanel shiftRosterPanel;
+    public RequestPanel requestPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -26,12 +28,16 @@ public class DoctorShiftRosterPanel extends javax.swing.JPanel {
     public DoctorShiftRosterPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
-        shiftRosterContentArea.add(new ShiftRosterPanel(usrCtrl), "shiftRoster");
-        shiftRosterContentArea.add(new RequestPanel(usrCtrl), "cancelShiftRequest");
-        
+
+        this.shiftRosterPanel = new ShiftRosterPanel(usrCtrl);
+        this.requestPanel = new RequestPanel(usrCtrl);
+
+        shiftRosterContentArea.add(shiftRosterPanel, "shiftRoster");
+        shiftRosterContentArea.add(requestPanel, "cancelShiftRequest");
+
         setNavButtonActive(shiftButton, true);
         setNavButtonActive(requestButton, false);
-        
+
         this.cl = (CardLayout) shiftRosterContentArea.getLayout();
         cl.show(shiftRosterContentArea, "shiftRoster");
     }

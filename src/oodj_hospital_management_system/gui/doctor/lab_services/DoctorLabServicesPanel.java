@@ -16,6 +16,9 @@ import oodj_hospital_management_system.gui.admin.hospitalAssets.HospitalAssetsPa
 public class DoctorLabServicesPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public HospitalAssetsPanel hospitalAssetsPanel;
+    public ScheduledPanel scheduledPanel;
+    public RequestPanel requestPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -52,14 +55,18 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
 
-        labServicesContentArea.add(new HospitalAssetsPanel(usrCtrl, labServicesContentArea), "hospitalAssets");
-        labServicesContentArea.add(new ScheduledPanel(usrCtrl), "scheduled");
-        labServicesContentArea.add(new RequestPanel(usrCtrl), "request");
+        this.hospitalAssetsPanel = new HospitalAssetsPanel(usrCtrl, labServicesContentArea);
+        this.scheduledPanel = new ScheduledPanel(usrCtrl);
+        this.requestPanel = new RequestPanel(usrCtrl);
+
+        labServicesContentArea.add(hospitalAssetsPanel, "hospitalAssets");
+        labServicesContentArea.add(scheduledPanel, "scheduled");
+        labServicesContentArea.add(requestPanel, "request");
 
         setNavButtonActive(assetsButton, true);
         setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, false);
-        
+
         // Top Banner ~
         jPanel1.setOpaque(false);
         navigationPane.setOpaque(false);

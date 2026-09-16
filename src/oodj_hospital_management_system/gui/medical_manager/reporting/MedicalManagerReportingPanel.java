@@ -15,6 +15,9 @@ import oodj_hospital_management_system.controllers.UserController;
 public class MedicalManagerReportingPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public BillingRevenuePanel billingPanel;
+    public InsurancePanel insurancePanel;
+    public ConsultationsPanel consultationsPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -52,10 +55,14 @@ public class MedicalManagerReportingPanel extends javax.swing.JPanel {
 
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
+        
+        this.billingPanel = new BillingRevenuePanel(usrCtrl);
+        this.insurancePanel = new InsurancePanel(usrCtrl);
+        this.consultationsPanel = new ConsultationsPanel(usrCtrl);
 
-        reportingContentArea.add(new BillingRevenuePanel(usrCtrl), "billingRevenue");
-        reportingContentArea.add(new InsurancePanel(usrCtrl), "insuranceProviders");
-        reportingContentArea.add(new ConsultationsPanel(usrCtrl), "consultations");
+        reportingContentArea.add(billingPanel, "billingRevenue");
+        reportingContentArea.add(insurancePanel, "insuranceProviders");
+        reportingContentArea.add(consultationsPanel, "consultations");
 
         setNavButtonActive(revenueButton, true);
         setNavButtonActive(insuranceButton, false);

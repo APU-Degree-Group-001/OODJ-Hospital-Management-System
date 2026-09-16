@@ -4,6 +4,8 @@
  */
 package oodj_hospital_management_system.gui.medical_manager;
 
+import java.io.IOException;
+import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.DashboardPanel;
 import oodj_hospital_management_system.gui.medical_manager.billing_management.MedicalManagerBillingManagementPanel;
@@ -11,6 +13,7 @@ import oodj_hospital_management_system.gui.medical_manager.clinical_departments.
 import oodj_hospital_management_system.gui.medical_manager.doctor_rating_feedback.AssignedDoctorRatingFeedbackPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
 import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalManagerReportingPanel;
+import oodj_hospital_management_system.gui.utils.file_listener.FileWatcher;
 
 /**
  *
@@ -18,8 +21,8 @@ import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalMana
  */
 public class MedicalManagerGUI extends javax.swing.JFrame {
     private UserController usrCtrl;
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MedicalManagerGUI.class.getName());
+    private FileWatcher fileWatcher;
 
     /**
      * Creates new form AdminStaffDashboard
@@ -29,15 +32,60 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
         initComponents();
         setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         // Add cards to contentArea
-        contentArea.add(new DashboardPanel(this.usrCtrl), "medicalManagerDashboard");
-        contentArea.add(new MedicalManagerClinicalDepartmentsPanel(this.usrCtrl), "medicalManagerClinicalDepartments");
-        contentArea.add(new MedicalManagerShiftRosterPanel(this.usrCtrl), "medicalManagerDoctorShiftRosters");
-        contentArea.add(new MedicalManagerBillingManagementPanel(this.usrCtrl), "medicalManagerBillingManagement");
-        contentArea.add(new MedicalManagerReportingPanel(this.usrCtrl), "medicalManagerReporting");
-        contentArea.add(new AssignedDoctorRatingFeedbackPanel(this.usrCtrl), "assignedDoctorRatingFeedback");
+        DashboardPanel medicalManagerDashboardPanel = new DashboardPanel(this.usrCtrl);
+        MedicalManagerClinicalDepartmentsPanel medicalManagerClinicalDepartmentsPanel = new MedicalManagerClinicalDepartmentsPanel(this.usrCtrl);
+        MedicalManagerShiftRosterPanel medicalManagerShiftRosterPanel = new MedicalManagerShiftRosterPanel(this.usrCtrl);
+        MedicalManagerBillingManagementPanel medicalManagerBillingManagementPanel = new MedicalManagerBillingManagementPanel(this.usrCtrl);
+        MedicalManagerReportingPanel medicalManagerReportingPanel = new MedicalManagerReportingPanel(this.usrCtrl);
+        AssignedDoctorRatingFeedbackPanel assignedDoctorRatingFeedbackPanel = new AssignedDoctorRatingFeedbackPanel(this.usrCtrl);
+
+        contentArea.add(medicalManagerDashboardPanel, "medicalManagerDashboard");
+        contentArea.add(medicalManagerClinicalDepartmentsPanel, "medicalManagerClinicalDepartments");
+        contentArea.add(medicalManagerShiftRosterPanel, "medicalManagerDoctorShiftRosters");
+        contentArea.add(medicalManagerBillingManagementPanel, "medicalManagerBillingManagement");
+        contentArea.add(medicalManagerReportingPanel, "medicalManagerReporting");
+        contentArea.add(assignedDoctorRatingFeedbackPanel, "assignedDoctorRatingFeedback");
 
         // Show default card
         ((java.awt.CardLayout) contentArea.getLayout()).show(contentArea, "adminStaffDashboard");
+        
+        try {
+            // Watches txt/users/ — covers doctor shifts + medical departments
+            FileWatcher usersWatcher = new FileWatcher(SystemConfiguration.doctorShiftFilePath);
+
+            usersWatcher.addListener(
+                SystemConfiguration.doctorShiftFilePath,
+                () -> medicalManagerShiftRosterPanel.refreshRoster()
+            );
+
+            usersWatcher.addListener(
+                SystemConfiguration.medicalDepartmentFilePath,
+                () -> medicalManagerClinicalDepartmentsPanel.loadDepartments()
+            );
+
+            usersWatcher.start();
+
+            // Watches txt/consultations/ — covers bills + feedback
+            FileWatcher consultationsWatcher = new FileWatcher(SystemConfiguration.billFilePath);
+
+            consultationsWatcher.addListener(
+                SystemConfiguration.billFilePath,
+                () -> {
+                    medicalManagerBillingManagementPanel.billPanel.loadBills();
+                    medicalManagerBillingManagementPanel.completedConsultationsPanel.loadConsultations();
+                }
+            );
+
+            consultationsWatcher.addListener(
+                SystemConfiguration.feedbackFilePath,
+                () -> assignedDoctorRatingFeedbackPanel.loadFeedback()
+            );
+
+            consultationsWatcher.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

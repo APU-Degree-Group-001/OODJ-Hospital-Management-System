@@ -15,6 +15,9 @@ import oodj_hospital_management_system.controllers.UserController;
 public class PatientConsultationsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public AvailableConsultationSlotsPanel availablePanel;
+    public BookedConsultationSlotsPanel bookedPanel;
+    public CompletedConsultationsPanel completedPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -53,9 +56,12 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
 
-        consultationContentArea.add(new AvailableConsultationSlotsPanel(usrCtrl), "availableConsultationSlots");
-        consultationContentArea.add(new BookedConsultationSlotsPanel(usrCtrl), "bookedConsultationSlots");
-        consultationContentArea.add(new CompletedConsultationsPanel(usrCtrl, consultationContentArea), "completedConsultationSlots");
+        this.availablePanel = new AvailableConsultationSlotsPanel(usrCtrl);
+        this.bookedPanel = new BookedConsultationSlotsPanel(usrCtrl);
+        this.completedPanel = new CompletedConsultationsPanel(usrCtrl, consultationContentArea);
+        consultationContentArea.add(availablePanel, "availableConsultationSlots");
+        consultationContentArea.add(bookedPanel, "bookedConsultationSlots");
+        consultationContentArea.add(completedPanel, "completedConsultationSlots");
 
         setNavButtonActive(availableConsultationsButton, true);
         setNavButtonActive(bookedConsultationsButton, false);

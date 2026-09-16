@@ -15,6 +15,8 @@ import oodj_hospital_management_system.controllers.UserController;
 public class DoctorWardAdmissionPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
+    public WardsPanel wardsPanel;
+    public WardAdmissionsPanel wardAdmissionsPanel;
         
     private final java.awt.Color selectedColor = new java.awt.Color(230, 240, 250);
     private final java.awt.Color defaultColor = java.awt.Color.WHITE;
@@ -51,18 +53,21 @@ public class DoctorWardAdmissionPanel extends javax.swing.JPanel {
         dashboardPanel = cappedDashboard;
         jScrollPane2.setViewportView(dashboardPanel);
 
-        wardContentArea.add(new WardsPanel(usrCtrl, wardContentArea), "wards");
-        wardContentArea.add(new WardAdmissionsPanel(usrCtrl), "wardAdmissions");
+        this.wardsPanel = new WardsPanel(usrCtrl, wardContentArea);
+        this.wardAdmissionsPanel = new WardAdmissionsPanel(usrCtrl);
+
+        wardContentArea.add(wardsPanel, "wards");
+        wardContentArea.add(wardAdmissionsPanel, "wardAdmissions");
 
         setNavButtonActive(wardsButton, true);
         setNavButtonActive(admissionsButton, false);
-        
+
         // Top Banner ~
         jPanel1.setOpaque(false);
         navigationPane.setOpaque(false);
 
         this.cl = (CardLayout) wardContentArea.getLayout();
-        cl.show(wardContentArea, "hospitalAssets");
+        cl.show(wardContentArea, "wards");
     }
     
     private void setNavButtonActive(javax.swing.JButton button, boolean active) {
