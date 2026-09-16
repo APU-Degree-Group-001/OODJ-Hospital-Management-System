@@ -4458,3 +4458,15 @@ User Handling Error: Password must be a mix of uppercase and lowercase letters, 
 [2026-09-16 02:39:05] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
 [2026-09-16 02:39:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
 [2026-09-16 02:39:19] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 20:05:06] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 20:05:06] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 20:05:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 20:05:42] Error finding user -> User Handling Error: Invalid User ID: User ID '#PATf74a0' is not found
+[2026-09-16 20:07:03] User {admin staff - #ADMd4e8f - uehehe} failed to create Hospital Asset Allocation for Asset {#LAB001} for Doctor {#DOCd4e8f}
+	ErrorMsg: Hospital asset allocation is not created
+Asset '#LAB001' already has an overlapping scheduled allocation
+[2026-09-16 20:08:16] User {admin staff - #ADMd4e8f - uehehe} failed to update schedule for Hospital Asset Allocation {#ALLOC42ae4}
+	ErrorMsg: Hospital asset allocation is not updated
+Asset '#LAB001' already has an overlapping scheduled allocation
+[2026-09-16 20:40:09] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-16 20:40:09] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found

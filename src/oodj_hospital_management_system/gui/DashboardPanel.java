@@ -53,7 +53,32 @@ public class DashboardPanel extends javax.swing.JPanel {
 
          initComponents();
          loadUserDetails();
+         if (!isDoctorView()) {
+             departmentField.setVisible(false);
+             department.setVisible(false);
+         } else {
+             loadDoctorDepartment();
+         }
          loadIcon();
+    }
+    
+    private boolean isDoctorView() {
+        return usrCtrl.getActiveUser() != null
+            && "doctor".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
+    }
+    
+    private void loadDoctorDepartment() {
+        User activeUser = usrCtrl.getActiveUser();
+        if (activeUser == null || !(activeUser instanceof oodj_hospital_management_system.models.Doctor)) return;
+
+        oodj_hospital_management_system.models.Doctor doctor =
+            (oodj_hospital_management_system.models.Doctor) activeUser;
+
+        String deptName = (doctor.getMedicalDepartment() != null)
+            ? doctor.getMedicalDepartment().getDepartmentName()
+            : null;
+
+        department.setText((deptName == null || deptName.isBlank()) ? "Not Assigned" : deptName);
     }
 
     /**
@@ -262,6 +287,8 @@ public class DashboardPanel extends javax.swing.JPanel {
         userEmail = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         updateProfileButton = new javax.swing.JToggleButton();
+        departmentField = new javax.swing.JLabel();
+        department = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -305,7 +332,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         jPanel5.setMaximumSize(new java.awt.Dimension(2147483647, 500));
-        jPanel5.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagLayout jPanel5Layout = new java.awt.GridBagLayout();
+        jPanel5Layout.columnWidths = new int[] {150};
+        jPanel5.setLayout(jPanel5Layout);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 0, 10, 1));
@@ -333,14 +362,14 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         jPanel5.add(jPanel6, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel5.add(jSeparator1, gridBagConstraints);
 
@@ -352,6 +381,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(20, 15, 5, 15);
@@ -363,8 +393,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         userId.setMinimumSize(new java.awt.Dimension(92, 80));
         userId.setPreferredSize(new java.awt.Dimension(92, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weighty = 1.0;
@@ -377,8 +408,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         userName.setMinimumSize(new java.awt.Dimension(63, 80));
         userName.setPreferredSize(new java.awt.Dimension(63, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weighty = 1.0;
@@ -393,6 +425,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 15);
@@ -404,8 +437,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         userEmail.setMinimumSize(new java.awt.Dimension(130, 80));
         userEmail.setPreferredSize(new java.awt.Dimension(130, 80));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.5;
@@ -421,6 +455,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 15);
@@ -430,11 +465,42 @@ public class DashboardPanel extends javax.swing.JPanel {
         updateProfileButton.setPreferredSize(new java.awt.Dimension(200, 40));
         updateProfileButton.addActionListener(this::updateProfileButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 1;
         jPanel5.add(updateProfileButton, gridBagConstraints);
+
+        departmentField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        departmentField.setText("DEPARTMENT");
+        departmentField.setMaximumSize(new java.awt.Dimension(50, 80));
+        departmentField.setMinimumSize(new java.awt.Dimension(50, 80));
+        departmentField.setPreferredSize(new java.awt.Dimension(100, 80));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 15);
+        jPanel5.add(departmentField, gridBagConstraints);
+
+        department.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        department.setText("Wiiii");
+        department.setMaximumSize(new java.awt.Dimension(130, 80));
+        department.setMinimumSize(new java.awt.Dimension(130, 80));
+        department.setPreferredSize(new java.awt.Dimension(130, 80));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 15);
+        jPanel5.add(department, gridBagConstraints);
 
         jPanel4.add(jPanel5, java.awt.BorderLayout.CENTER);
 
@@ -453,6 +519,8 @@ public class DashboardPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel dashboardPanel;
+    private javax.swing.JLabel department;
+    private javax.swing.JLabel departmentField;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

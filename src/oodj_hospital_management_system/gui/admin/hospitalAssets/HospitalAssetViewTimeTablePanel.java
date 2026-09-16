@@ -1170,41 +1170,42 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(parentWindow, panel,
                 "Edit Allocation", JOptionPane.OK_CANCEL_OPTION);
             if (result != JOptionPane.OK_OPTION) return;
- 
+
             Doctor selectedDoctor = (Doctor) doctorCombo.getSelectedItem();
             LocalDateTime startDt = combineDateAndTime(startDateChooser, startTimeSpinner);
             LocalDateTime endDt = combineDateAndTime(endDateChooser, endTimeSpinner);
- 
+
             if (selectedDoctor == null || startDt == null || endDt == null) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "All fields are required.", "Missing Information", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
+
             if (!endDt.isAfter(startDt)) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Scheduled end must be after scheduled start.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
- 
+
             String allocationId = selected.getAllocationId();
             LinkedHashMap<String, String> scheduleMsg = usrCtrl.getHospitalAssetController()
                 .setHospitalAssetAllocationSchedule(allocationId,
                     DateTime.formattedLocalDateTime(startDt),
                     DateTime.formattedLocalDateTime(endDt));
- 
+
             boolean success = scheduleMsg.get("success") != null;
- 
+
             if (success) {
                 JOptionPane.showMessageDialog(parentWindow,
                     "Allocation updated.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 loadAssetAllocations(asset.getAssetId());
+                return;
             } else {
                 JOptionPane.showMessageDialog(parentWindow,
-                    "Some fields failed to update. Check the log for details.",
-                    "Partial Failure", JOptionPane.ERROR_MESSAGE);
+                    scheduleMsg.get("msg") != null ? scheduleMsg.get("msg") : "Failed to update allocation.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
             }
-            return;
         }
     }//GEN-LAST:event_editButtonActionPerformed
 

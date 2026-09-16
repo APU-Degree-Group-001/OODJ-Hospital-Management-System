@@ -653,12 +653,56 @@ public class HospitalAssetManagement {
     public LinkedHashMap<String, String> setHospitalAssetAllocationSchedule(String allocationId, String scheduledStartDateTime, String scheduledEndDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
+        loadHospitalAssetAllocations();
+
         HospitalAssetAllocation allocation = getHospitalAssetAllocationById(allocationId);
 
         if (allocation == null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("Hospital asset allocation '%s' is not found", allocationId));
             return msgMap;
+        }
+
+        boolean hasSchedule = scheduledStartDateTime != null && !scheduledStartDateTime.isBlank()
+                && scheduledEndDateTime != null && !scheduledEndDateTime.isBlank();
+
+        if (hasSchedule) {
+            java.time.LocalDateTime newStart;
+            java.time.LocalDateTime newEnd;
+            try {
+                newStart = DateTime.toDateTimeObject(scheduledStartDateTime);
+                newEnd = DateTime.toDateTimeObject(scheduledEndDateTime);
+            } catch (Exception e) {
+                msgMap.put("success", null);
+                msgMap.put("msg", "Hospital asset allocation is not updated\nInvalid scheduled date/time format");
+                return msgMap;
+            }
+
+            if (!newEnd.isAfter(newStart)) {
+                msgMap.put("success", null);
+                msgMap.put("msg", "Hospital asset allocation is not updated\nScheduled end must be after scheduled start");
+                return msgMap;
+            }
+
+            // Overlap check: same asset, overlapping scheduled window, excluding this allocation itself
+            boolean hasOverlap = allHospitalAssetAllocations.stream()
+                    .filter(a -> !a.getAllocationId().equals(allocationId))
+                    .filter(a -> a.getAssetId().equals(allocation.getAssetId()))
+                    .filter(a -> a.getScheduledStartDateTime() != null && !a.getScheduledStartDateTime().isEmpty()
+                            && a.getScheduledEndDateTime() != null && !a.getScheduledEndDateTime().isEmpty())
+                    .anyMatch(a -> {
+                        java.time.LocalDateTime existingStart = DateTime.toDateTimeObject(a.getScheduledStartDateTime());
+                        java.time.LocalDateTime existingEnd = DateTime.toDateTimeObject(a.getScheduledEndDateTime());
+                        return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+                    });
+
+            if (hasOverlap) {
+                msgMap.put("success", null);
+                msgMap.put("msg", String.format(
+                        "Hospital asset allocation is not updated\nAsset '%s' already has an overlapping scheduled allocation",
+                        allocation.getAssetId()));
+                return msgMap;
+            }
         }
 
         allocation.setScheduledStartDateTime(scheduledStartDateTime != null ? scheduledStartDateTime : "");

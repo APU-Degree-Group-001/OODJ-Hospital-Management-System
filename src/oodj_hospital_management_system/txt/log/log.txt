@@ -734,3 +734,20 @@
 [2026-09-16 15:44:00] User {patient - #PAT3fad4 - Pau} created Consultation {#CONf64cd} for Patient {#PAT3fad4 - Pau}
 [2026-09-16 16:03:39] User {medical manager - #MNG58321 - Chee} logged in
 [2026-09-16 16:07:10] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-16 20:05:04] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-16 20:06:26] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOC87fe9} for Asset {#LAB001} for Doctor {#DOCd4e8f}
+[2026-09-16 20:07:51] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOC42ae4} for Asset {#LAB001} for Doctor {#DOCd4e8f}
+[2026-09-16 20:15:12] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:17:40] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:19:06] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:19:56] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:27:56] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:28:47] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:35:47] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:38:44] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:39:55] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-16 20:40:08] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-16 20:40:21] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT001}
+[2026-09-16 20:40:26] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-16 20:40:43] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-16 20:41:56] User {doctor - #DOCd4e8f - bug1} logged in
