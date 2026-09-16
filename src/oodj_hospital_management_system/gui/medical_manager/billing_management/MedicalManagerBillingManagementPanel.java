@@ -135,7 +135,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Billing Managament");
+        jLabel2.setText("Billing Management");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -183,7 +183,7 @@ public class MedicalManagerBillingManagementPanel extends javax.swing.JPanel {
         completedConsultationsButton.setText("Completed Consultations");
         completedConsultationsButton.setMaximumSize(new java.awt.Dimension(250, 50));
         completedConsultationsButton.setMinimumSize(new java.awt.Dimension(250, 50));
-        completedConsultationsButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        completedConsultationsButton.setPreferredSize(new java.awt.Dimension(200, 45));
         completedConsultationsButton.addActionListener(this::completedConsultationsButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
