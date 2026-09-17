@@ -104,7 +104,6 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
     private void openAssetAllocation(HospitalAsset asset) {
         String cardName = "assetAllocation-" + asset.getAssetId();
 
-        // Remove any stale panel previously registered under this same card name
         for (java.awt.Component c : cardContainer.getComponents()) {
             if (cardName.equals(cardContainer.getLayout() instanceof java.awt.CardLayout
                     ? c.getName() : null)) {
@@ -115,11 +114,15 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         HospitalAssetViewTimeTablePanel detailsPanel = new HospitalAssetViewTimeTablePanel(
             usrCtrl,
             asset,
-            () -> cardLayout.show(cardContainer, "hospitalAssets")
+            () -> {
+                cardLayout.show(cardContainer, "hospitalAssets");
+                resetScrollToTop();
+            }
         );
 
         cardContainer.add(detailsPanel, cardName);
         cardLayout.show(cardContainer, cardName);
+        resetScrollToTop();
     }
     
     private void updateResultLabel(String message, int count) {
@@ -231,6 +234,16 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         updateResultLabel("Showing assets with status \"" + status + "\"", filtered.size());
     }
 
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.JScrollPane sp = (javax.swing.JScrollPane)
+                javax.swing.SwingUtilities.getAncestorOfClass(javax.swing.JScrollPane.class, cardContainer);
+            if (sp != null) {
+                javax.swing.SwingUtilities.invokeLater(() ->
+                    sp.getViewport().setViewPosition(new java.awt.Point(0, 0)));
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

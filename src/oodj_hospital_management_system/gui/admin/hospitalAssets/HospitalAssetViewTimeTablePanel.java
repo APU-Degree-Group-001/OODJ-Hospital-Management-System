@@ -790,10 +790,6 @@ public class HospitalAssetViewTimeTablePanel extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(timeTable);
-        if (timeTable.getColumnModel().getColumnCount() > 0) {
-            timeTable.getColumnModel().getColumn(3).setHeaderValue("Resolver");
-            timeTable.getColumnModel().getColumn(4).setHeaderValue("Resolved ");
-        }
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

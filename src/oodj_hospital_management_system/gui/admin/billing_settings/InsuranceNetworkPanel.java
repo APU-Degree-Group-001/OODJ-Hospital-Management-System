@@ -371,7 +371,7 @@ public class InsuranceNetworkPanel extends javax.swing.JPanel {
         modifyInsuranceButton.addActionListener(this::modifyInsuranceButtonActionPerformed);
         jPanel3.add(modifyInsuranceButton);
 
-        activeButton.setText("Active / Inactive");
+        activeButton.setText("Acceptance");
         activeButton.setMaximumSize(new java.awt.Dimension(150, 40));
         activeButton.setMinimumSize(new java.awt.Dimension(150, 40));
         activeButton.setPreferredSize(new java.awt.Dimension(150, 40));

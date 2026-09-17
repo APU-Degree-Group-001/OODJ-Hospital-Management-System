@@ -73,6 +73,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
 
         this.cl = (CardLayout) labServicesContentArea.getLayout();
         cl.show(labServicesContentArea, "hospitalAssets");
+        resetScrollToTop();
     }
     
     private void setNavButtonActive(javax.swing.JButton button, boolean active) {
@@ -95,6 +96,14 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
             rb.setForeground(new java.awt.Color(60, 60, 60));
             rb.setFont(rb.getFont().deriveFont(java.awt.Font.PLAIN));
         }
+    }
+    
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            });
+        });
     }
 
     /**
@@ -227,6 +236,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, false);
         cl.show(labServicesContentArea, "hospitalAssets");
+        resetScrollToTop();
     }//GEN-LAST:event_assetsButtonActionPerformed
 
     private void requestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestButtonActionPerformed
@@ -234,6 +244,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         setNavButtonActive(scheduledButton, false);
         setNavButtonActive(requestButton, true);
         cl.show(labServicesContentArea, "request");
+        resetScrollToTop();
     }//GEN-LAST:event_requestButtonActionPerformed
 
     private void scheduledButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduledButtonActionPerformed
@@ -241,6 +252,7 @@ public class DoctorLabServicesPanel extends javax.swing.JPanel {
         setNavButtonActive(scheduledButton, true);
         setNavButtonActive(requestButton, false);
         cl.show(labServicesContentArea, "scheduled");
+        resetScrollToTop();
     }//GEN-LAST:event_scheduledButtonActionPerformed
 
 

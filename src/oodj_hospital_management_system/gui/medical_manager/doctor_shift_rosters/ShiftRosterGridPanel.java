@@ -49,25 +49,9 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
         this.shiftClickListener = listener;
     }
 
-    private java.awt.Dimension computeGridSize() {
-        int width = DOCTOR_COL_WIDTH + (DAY_COL_WIDTH * 7);
-        int height = HEADER_ROW_HEIGHT + (DAY_ROW_HEIGHT * doctorRowCount);
-        return new java.awt.Dimension(width, height);
-    }
-
-    @Override
-    public java.awt.Dimension getPreferredSize() {
-        return computeGridSize();
-    }
-
-    @Override
-    public java.awt.Dimension getMaximumSize() {
-        return computeGridSize();
-    }
-
     @Override
     public java.awt.Dimension getPreferredScrollableViewportSize() {
-        return computeGridSize();
+        return getPreferredSize();
     }
 
     @Override
@@ -99,26 +83,57 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
     public void updateData(List<Doctor> doctors, List<DoctorShift> shifts, LocalDate weekStart) {
         removeAll();
         doctorRowCount = doctors.size();
-        setLayout(new java.awt.GridLayout(doctors.size() + 1, 8, 0, 0));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(makeHeaderCell("Doctor"));
-        for (int i = 0; i < 7; i++) {
-            LocalDate day = weekStart.plusDays(i);
-            String dayName = day.getDayOfWeek().toString().substring(0, 1)
-                    + day.getDayOfWeek().toString().substring(1, 3).toLowerCase();
-            add(makeHeaderCell(dayName + "\n" + day.format(DAY_HEADER_FMT)));
-        }
-
+        add(makeRow(buildHeaderCells(weekStart)));
         for (Doctor doctor : doctors) {
-            add(makeDoctorInfoCell(doctor));
-            for (int i = 0; i < 7; i++) {
-                LocalDate day = weekStart.plusDays(i);
-                add(makeDayCell(doctor, day, shifts));
-            }
+            add(makeRow(buildDoctorRowCells(doctor, shifts, weekStart)));
         }
 
         revalidate();
         repaint();
+    }
+    
+    private List<JPanel> buildHeaderCells(LocalDate weekStart) {
+        List<JPanel> cells = new java.util.ArrayList<>();
+        cells.add(makeHeaderCell("Doctor"));
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = weekStart.plusDays(i);
+            String dayName = day.getDayOfWeek().toString().substring(0, 1)
+                    + day.getDayOfWeek().toString().substring(1, 3).toLowerCase();
+            cells.add(makeHeaderCell(dayName + "\n" + day.format(DAY_HEADER_FMT)));
+        }
+        return cells;
+    }
+    
+    private List<JPanel> buildDoctorRowCells(Doctor doctor, List<DoctorShift> shifts, LocalDate weekStart) {
+        List<JPanel> cells = new java.util.ArrayList<>();
+        cells.add(makeDoctorInfoCell(doctor));
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = weekStart.plusDays(i);
+            cells.add(makeDayCell(doctor, day, shifts));
+        }
+        return cells;
+    }
+    
+    private JPanel makeRow(List<JPanel> cells) {
+        JPanel row = new JPanel();
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.setBackground(java.awt.Color.WHITE);
+        row.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        for (int i = 0; i < cells.size(); i++) {
+            JPanel cell = cells.get(i);
+            int colWidth = (i == 0) ? DOCTOR_COL_WIDTH : DAY_COL_WIDTH;
+
+            // Fix the column width; let height grow to whatever the row needs.
+            cell.setMinimumSize(new java.awt.Dimension(colWidth, cell.getMinimumSize().height));
+            cell.setPreferredSize(new java.awt.Dimension(colWidth, cell.getPreferredSize().height));
+            cell.setMaximumSize(new java.awt.Dimension(colWidth, Integer.MAX_VALUE));
+
+            row.add(cell);
+        }
+        return row;
     }
 
     private JPanel makeHeaderCell(String text) {
