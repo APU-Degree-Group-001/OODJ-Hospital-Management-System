@@ -68,17 +68,38 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
     
     public void loadBills() {
         List<Bill> allBills = BillingManagement.getAllBills();
-        currentBills = allBills;
-        rebuildCards(allBills);
+        List<Bill> assignedBills = new ArrayList<>();
+        for (Bill bill : allBills) {
+            if (isAssignedDoctorBill(bill)) {
+                assignedBills.add(bill);
+            }
+        }
+        currentBills = assignedBills;
+        rebuildCards(assignedBills);
+    }
+    
+    private boolean isAssignedDoctorBill(Bill bill) {
+        Doctor doctor = resolveDoctor(bill);
+        User activeUser = usrCtrl.getActiveUser();
+        return doctor != null
+                && doctor.getMedicalManager() != null
+                && doctor.getMedicalManager().getId().equals(activeUser.getId());
     }
     
     private void markBillAsPaid(Bill bill) {
+        if (!isAssignedDoctorBill(bill)) {
+            JOptionPane.showMessageDialog(parentWindow,
+                "This bill belongs to a doctor who is not assigned to you, so you cannot mark it as paid.",
+                "Access Denied", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         LinkedHashMap<String, String> result = billingMgmt.markBillAsPaid(bill);
         if (!"true".equals(result.get("success"))) {
             JOptionPane.showMessageDialog(parentWindow, result.get("msg"), "Update Failed", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        loadBills(); // refresh so the card re-renders with the new status
+        loadBills();
     }
  
     private void updateResultLabel(String message, int count) {
@@ -105,6 +126,13 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
         if (c == null || c.getConsultationSlot() == null) return null;
         if (c.getConsultationSlot().getDoctorShift() == null) return null;
         return c.getConsultationSlot().getDoctorShift().getDoctor();
+    }
+    
+    // Bill -> Consultation -> ConsultationType -> name
+    private String resolveConsultationTypeName(Bill bill) {
+        Consultation c = ConsultationManagement.getConsultationById(bill.getConsultationId());
+        if (c == null || c.getConsultationType() == null) return null;
+        return c.getConsultationType().getTypeName();
     }
  
     // Bill -> Consultation -> ConsultationSlot -> startDateTime (parsed)
@@ -263,7 +291,7 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
         sortByLabel1.setText("Filter By");
         sortByPane.add(sortByLabel1);
 
-        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "All Doctors", "Assigned Doctors", "Payment Status", "Consultation Date", "Total Charges" }));
+        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Payment Status", "Consultation Type", "Consultation Date", "Total Charges" }));
         filterByField.setPreferredSize(new java.awt.Dimension(150, 30));
         filterByField.setRequestFocusEnabled(false);
         filterByField.addActionListener(this::filterByFieldActionPerformed);
@@ -304,7 +332,13 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchField.getText();
-        List<Bill> searchResults = billingMgmt.searchBills(keyword);
+        List<Bill> assignedBills = new ArrayList<>();
+        for (Bill bill : BillingManagement.getAllBills()) {
+            if (isAssignedDoctorBill(bill)) {
+                assignedBills.add(bill);
+            }
+        }
+        List<Bill> searchResults = billingMgmt.searchBills(keyword, assignedBills);
         currentBills = searchResults;
         billReceiptsPanelWrapper.removeAll();
         for (Bill bill : searchResults) {
@@ -313,8 +347,8 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
             billReceiptsPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         }
         updateResultLabel("Showing results for \"" + keyword + "\"", searchResults.size());
-        jPanel2.revalidate();      // let jPanel2 recompute its BorderLayout size
-        wrapperPane.revalidate();  // let the outer BoxLayout row recompute too
+        jPanel2.revalidate();
+        wrapperPane.revalidate();
         billReceiptsPanelWrapper.revalidate();
         billReceiptsPanelWrapper.repaint();
     }//GEN-LAST:event_searchButtonActionPerformed
@@ -376,30 +410,11 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
         List<Bill> filtered;
  
         switch (selected) {
-            case "All Doctors":
             case "Default":
                 // No-op filter - leaves whatever's already in currentBills alone.
                 filtered = base;
                 updateResultLabel("Showing " + filtered.size() + " bill(s)", filtered.size());
                 break;
- 
-            case "Assigned Doctors": {
-                // Only bills whose consultation doctor reports to the logged-in
-                // medical manager. Confirm getMedicalManager()/getId() below
-                // actually match your User/MedicalManager classes.
-                User activeUser = usrCtrl.getActiveUser();
-                filtered = new ArrayList<>();
-                for (Bill bill : base) {
-                    Doctor doctor = resolveDoctor(bill);
-                    if (doctor != null
-                            && doctor.getMedicalManager() != null
-                            && doctor.getMedicalManager().getId().equals(activeUser.getId())) {
-                        filtered.add(bill);
-                    }
-                }
-                updateResultLabel("Showing bills for your assigned doctors", filtered.size());
-                break;
-            }
  
             case "Payment Status": {
                 String[] statusOptions = { "UNPAID", "PAID", "VOID" };
@@ -416,6 +431,39 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
                     if (bill.getStatus() == targetStatus) filtered.add(bill);
                 }
                 updateResultLabel("Showing " + statusChoice + " bills", filtered.size());
+                break;
+            }
+            
+            case "Consultation Type": {
+                // Collect distinct type names actually present, so the picker only
+                // shows types that exist rather than a hardcoded list that can drift.
+                List<String> typeOptions = base.stream()
+                        .map(this::resolveConsultationTypeName)
+                        .filter(name -> name != null)
+                        .distinct()
+                        .sorted()
+                        .toList();
+
+                if (typeOptions.isEmpty()) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "No consultation types found among current bills.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+                    filterByField.setSelectedIndex(0);
+                    return;
+                }
+
+                String typeChoice = (String) JOptionPane.showInputDialog(
+                        parentWindow, "Filter by consultation type:", "Consultation Type",
+                        JOptionPane.PLAIN_MESSAGE, null, typeOptions.toArray(), typeOptions.get(0));
+                if (typeChoice == null) {
+                    filterByField.setSelectedIndex(0);
+                    return;
+                }
+
+                filtered = new ArrayList<>();
+                for (Bill bill : base) {
+                    if (typeChoice.equals(resolveConsultationTypeName(bill))) filtered.add(bill);
+                }
+                updateResultLabel("Showing " + typeChoice + " bills", filtered.size());
                 break;
             }
  

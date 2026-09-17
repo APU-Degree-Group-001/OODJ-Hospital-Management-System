@@ -102,6 +102,7 @@ public class Bill {
         map.put("totalAmount", Double.toString(totalAmount));
         map.put("payableAmount", Double.toString(payableAmount));
         map.put("status", status.toString());
+        map.put("generatedDateTime", generatedDateTime);
         return map;
     }
 }

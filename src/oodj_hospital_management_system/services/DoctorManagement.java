@@ -297,7 +297,20 @@ public class DoctorManagement {
             return msgMap;
         }
 
-        liveShift.setStatus(DoctorShiftStatus.CANCELLED);
+        boolean found = false;
+        for (DoctorShift s : doctorShifts) {
+            if (s.getShiftId().equals(liveShift.getShiftId())) {
+                s.setStatus(DoctorShiftStatus.CANCELLED);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            msgMap.put("success", null);
+            msgMap.put("msg", String.format("Doctor shift '%s' not found in current list.", liveShift.getShiftId()));
+            return msgMap;
+        }
+
         writeDoctorShifts();
         loadDoctorShift();
 

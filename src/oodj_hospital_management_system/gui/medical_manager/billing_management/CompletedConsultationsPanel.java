@@ -72,11 +72,18 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     
     private List<Consultation> getCompletedConsultations() {
         List<Consultation> all = usrCtrl.getConsultationController().getAllConsultations();
+        User activeUser = usrCtrl.getActiveUser();
         List<Consultation> completed = new ArrayList<>();
         for (Consultation c : all) {
-            // Only completed consultations that don't already have a bill.
-            if (c.getConsultationStatus() == Consultation.ConsultationStatus.COMPLETED
-                    && c.getBill() == null) {
+            if (c.getConsultationStatus() != Consultation.ConsultationStatus.COMPLETED
+                    || c.getBill() != null) {
+                continue;
+            }
+            Doctor doctor = getDoctorForConsultation(c);
+            boolean isAssignedDoctor = doctor != null
+                    && doctor.getMedicalManager() != null
+                    && doctor.getMedicalManager().getId().equals(activeUser.getId());
+            if (isAssignedDoctor) {
                 completed.add(c);
             }
         }
@@ -140,145 +147,102 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         showResultsForLabel.setText(message + " (" + count + " found)");
     }
     
-    private LinkedHashMap<String, String> selectDateRange() {
-        LinkedHashMap<String, String> dateRange = new LinkedHashMap<>();
+    private LinkedHashMap<String, String> selectDateTimeRange() {
+        LinkedHashMap<String, String> range = new LinkedHashMap<>();
         JDateChooser startDateChooser = new JDateChooser();
         JDateChooser endDateChooser = new JDateChooser();
         Date currentDate = new Date();
         startDateChooser.setMaxSelectableDate(currentDate);
         endDateChooser.setMaxSelectableDate(currentDate);
- 
-        javax.swing.JPanel panel = new javax.swing.JPanel();
-        panel.add(new javax.swing.JLabel("From:"));
+
+        javax.swing.SpinnerDateModel startTimeModel = new javax.swing.SpinnerDateModel();
+        javax.swing.JSpinner startTimeSpinner = new javax.swing.JSpinner(startTimeModel);
+        startTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
+
+        javax.swing.SpinnerDateModel endTimeModel = new javax.swing.SpinnerDateModel();
+        javax.swing.JSpinner endTimeSpinner = new javax.swing.JSpinner(endTimeModel);
+        endTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
+
+        // Track whether the user actually changed each spinner from its
+        // untouched default - if not, treat that side's time as unspecified.
+        boolean[] startTimeTouched = { false };
+        boolean[] endTimeTouched = { false };
+        startTimeSpinner.addChangeListener(e -> startTimeTouched[0] = true);
+        endTimeSpinner.addChangeListener(e -> endTimeTouched[0] = true);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(4, 2, 10, 8));
+        panel.add(new javax.swing.JLabel("From Date:"));
         panel.add(startDateChooser);
-        panel.add(new javax.swing.JLabel("To:"));
-        panel.add(endDateChooser);
- 
-        int result = javax.swing.JOptionPane.showConfirmDialog(parentWindow, panel, "Select Date Range", javax.swing.JOptionPane.OK_CANCEL_OPTION);
- 
-        if (result == javax.swing.JOptionPane.OK_OPTION) {
-            Date startDateRaw = startDateChooser.getDate();
-            Date endDateRaw = endDateChooser.getDate();
- 
-            if (startDateRaw == null && endDateRaw == null) {
-                javax.swing.JOptionPane.showMessageDialog(parentWindow,
-                    "Please select at least one date", "Missing Date",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                return dateRange;
-            }
- 
-            if (startDateRaw != null && endDateRaw != null && endDateRaw.compareTo(startDateRaw) < 0) {
-                javax.swing.JOptionPane.showMessageDialog(parentWindow,
-                    "Invalid date range", "WARNING", javax.swing.JOptionPane.ERROR_MESSAGE);
-                return dateRange;
-            }
- 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            dateRange.put("startDate", startDateRaw != null ? sdf.format(startDateRaw) : null);
-            dateRange.put("endDate", endDateRaw != null ? sdf.format(endDateRaw) : null);
-        }
-        return dateRange;
-    }
- 
-    private void filterByDateRange(String start, String end) {
-        List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : getCompletedConsultations()) {
-            LocalDateTime dt = DateTime.toDateTimeObject(c.getConsultationSlot().getStartDateTime());
-            LocalDate date = DateTime.getDate(dt);
-            boolean afterStart = start == null || !date.isBefore(LocalDate.parse(start));
-            boolean beforeEnd = end == null || !date.isAfter(LocalDate.parse(end));
-            if (afterStart && beforeEnd) {
-                filtered.add(c);
-            }
-        }
-        currentConsultations = filtered;   // keep state in sync
-        populateTable(filtered);
-        SimpleDateFormat display = new SimpleDateFormat("dd MMM yyyy");
-        String label;
-        if (start != null && end != null) {
-            label = "Showing consultations between " + display.format(java.sql.Date.valueOf(start)) + " and " + display.format(java.sql.Date.valueOf(end));
-        } else if (start != null) {
-            label = "Showing consultations after " + display.format(java.sql.Date.valueOf(start));
-        } else {
-            label = "Showing consultations before " + display.format(java.sql.Date.valueOf(end));
-        }
-        updateResultLabel(label, filtered.size());
-    }
- 
-    private void filterByPatient(String keyword) {
-        String kw = keyword.toLowerCase();
-        List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : currentConsultations) {
-            Patient p = c.getPatient();
-            if (p != null && (p.getId().toLowerCase().contains(kw) || p.getName().toLowerCase().contains(kw))) {
-                filtered.add(c);
-            }
-        }
-        populateTable(filtered);
-        updateResultLabel("Showing consultations for patient \"" + keyword + "\"", filtered.size());
-    }
- 
-    private void filterByDoctor(String keyword) {
-        String kw = keyword.toLowerCase();
-        List<Consultation> filtered = new ArrayList<>();
-        for (Consultation c : getCompletedConsultations()) {
-            Doctor d = getDoctorForConsultation(c);
-            if (d != null && (d.getId().toLowerCase().contains(kw) || d.getName().toLowerCase().contains(kw))) {
-                filtered.add(c);
-            }
-        }
-        currentConsultations = filtered;
-        populateTable(filtered);
-        updateResultLabel("Showing consultations for doctor \"" + keyword + "\"", filtered.size());
-    }
-    
-    private LinkedHashMap<String, String> selectTimeRange() {
-        LinkedHashMap<String, String> timeRange = new LinkedHashMap<>();
-
-        javax.swing.SpinnerDateModel startModel = new javax.swing.SpinnerDateModel();
-        javax.swing.JSpinner startTimeSpinner = new javax.swing.JSpinner(startModel);
-        startTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(startTimeSpinner, "hh:mm a"));
-
-        javax.swing.SpinnerDateModel endModel = new javax.swing.SpinnerDateModel();
-        javax.swing.JSpinner endTimeSpinner = new javax.swing.JSpinner(endModel);
-        endTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(endTimeSpinner, "hh:mm a"));
-
-        javax.swing.JPanel panel = new javax.swing.JPanel();
-        panel.add(new javax.swing.JLabel("From:"));
+        panel.add(new javax.swing.JLabel("From Time:"));
         panel.add(startTimeSpinner);
-        panel.add(new javax.swing.JLabel("To:"));
+        panel.add(new javax.swing.JLabel("To Date:"));
+        panel.add(endDateChooser);
+        panel.add(new javax.swing.JLabel("To Time:"));
         panel.add(endTimeSpinner);
 
-        int result = JOptionPane.showConfirmDialog(parentWindow, panel, "Select Time Range", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(parentWindow, panel, "Select Date & Time Range", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            String startStr = sdf.format((Date) startTimeSpinner.getValue());
-            String endStr = sdf.format((Date) endTimeSpinner.getValue());
-
-            if (LocalTime.parse(endStr).isBefore(LocalTime.parse(startStr))) {
+            try {
+                startTimeSpinner.commitEdit();
+                endTimeSpinner.commitEdit();
+            } catch (java.text.ParseException e) {
                 JOptionPane.showMessageDialog(parentWindow,
-                    "Invalid time range", "WARNING", JOptionPane.ERROR_MESSAGE);
-                return timeRange;
+                    "Invalid time entered.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                return range;
             }
 
-            timeRange.put("startTime", startStr);
-            timeRange.put("endTime", endStr);
+            Date startDateRaw = startDateChooser.getDate();
+            Date endDateRaw = endDateChooser.getDate();
+
+            if (startDateRaw == null && endDateRaw == null) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Please select at least one date", "Missing Date", JOptionPane.INFORMATION_MESSAGE);
+                return range;
+            }
+
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+
+            LocalDateTime startBound = null;
+            if (startDateRaw != null) {
+                LocalDate startDate = LocalDate.parse(sdfDate.format(startDateRaw));
+                LocalTime startTime = startTimeTouched[0]
+                    ? LocalTime.parse(sdfTime.format((Date) startTimeSpinner.getValue()))
+                    : LocalTime.MIN;
+                startBound = LocalDateTime.of(startDate, startTime);
+            }
+
+            LocalDateTime endBound = null;
+            if (endDateRaw != null) {
+                LocalDate endDate = LocalDate.parse(sdfDate.format(endDateRaw));
+                LocalTime endTime = endTimeTouched[0]
+                    ? LocalTime.parse(sdfTime.format((Date) endTimeSpinner.getValue()))
+                    : LocalTime.MAX;
+                endBound = LocalDateTime.of(endDate, endTime);
+            }
+
+            if (startBound != null && endBound != null && endBound.isBefore(startBound)) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Invalid date/time range", "WARNING", JOptionPane.ERROR_MESSAGE);
+                return range;
+            }
+
+            range.put("start", startBound != null ? startBound.toString() : null);
+            range.put("end", endBound != null ? endBound.toString() : null);
         }
-        return timeRange;
+        return range;
     }
 
-    private void filterByTimeRange(String start, String end) {
-        List<Consultation> filtered = new ArrayList<>();
-        LocalTime startTime = start != null ? LocalTime.parse(start) : null;
-        LocalTime endTime = end != null ? LocalTime.parse(end) : null;
+    private void filterByDateTimeRange(String startStr, String endStr) {
+        LocalDateTime start = startStr != null ? LocalDateTime.parse(startStr) : null;
+        LocalDateTime end = endStr != null ? LocalDateTime.parse(endStr) : null;
 
+        List<Consultation> filtered = new ArrayList<>();
         for (Consultation c : getCompletedConsultations()) {
             LocalDateTime dt = DateTime.toDateTimeObject(c.getConsultationSlot().getStartDateTime());
-            LocalTime slotTime = DateTime.getTime(dt);
-
-            boolean afterStart = startTime == null || !slotTime.isBefore(startTime);
-            boolean beforeEnd = endTime == null || !slotTime.isAfter(endTime);
+            boolean afterStart = start == null || !dt.isBefore(start);
+            boolean beforeEnd = end == null || !dt.isAfter(end);
             if (afterStart && beforeEnd) {
                 filtered.add(c);
             }
@@ -287,18 +251,13 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         currentConsultations = filtered;
         populateTable(filtered);
 
-        String startLabel = startTime != null ? DateTime.toTimeString(startTime) : "any time";
-        String endLabel = endTime != null ? DateTime.toTimeString(endTime) : "any time";
-        String label = String.format("Showing consultations between %s and %s", startLabel, endLabel);
+        java.time.format.DateTimeFormatter displayFmt =
+            java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy, hh:mm a");
+
+        String label = String.format("Showing consultations between %s and %s",
+            start != null ? start.format(displayFmt) : "any time",
+            end != null ? end.format(displayFmt) : "any time");
         updateResultLabel(label, filtered.size());
-    }
- 
-    private void resetFieldBorder(JTextField field) {
-        field.setBorder(javax.swing.UIManager.getBorder("TextField.border"));
-    }
- 
-    private void setFieldError(JTextField field) {
-        field.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED));
     }
     
     /**
@@ -375,7 +334,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         sortByLabel1.setText("Filter By");
         sortByPane.add(sortByLabel1);
 
-        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Assigned Doctor", "Date", "Time", " " }));
+        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Date Time" }));
         filterByField.setPreferredSize(new java.awt.Dimension(150, 30));
         filterByField.setRequestFocusEnabled(false);
         filterByField.addActionListener(this::filterByFieldActionPerformed);
@@ -522,28 +481,10 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         }
 
         switch (selected) {
-            case "Assigned Doctor": {
-                String keyword = JOptionPane.showInputDialog(parentWindow, "Enter Doctor ID or Name:", "Filter by Doctor", JOptionPane.PLAIN_MESSAGE);
-                if (keyword != null && !keyword.trim().isEmpty()) {
-                    filterByDoctor(keyword.trim());
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
-            }
-            case "Date": {
-                LinkedHashMap<String, String> dateRange = selectDateRange();
-                if (dateRange.get("startDate") != null || dateRange.get("endDate") != null) {
-                    filterByDateRange(dateRange.get("startDate"), dateRange.get("endDate"));
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
-            }
-            case "Time": {
-                LinkedHashMap<String, String> timeRange = selectTimeRange();
-                if (timeRange.get("startTime") != null || timeRange.get("endTime") != null) {
-                    filterByTimeRange(timeRange.get("startTime"), timeRange.get("endTime"));
+            case "Date Time": {
+                LinkedHashMap<String, String> range = selectDateTimeRange();
+                if (range.get("start") != null || range.get("end") != null) {
+                    filterByDateTimeRange(range.get("start"), range.get("end"));
                 } else {
                     filterByField.setSelectedIndex(0);
                 }

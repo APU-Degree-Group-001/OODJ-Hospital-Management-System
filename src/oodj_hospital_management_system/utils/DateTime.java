@@ -64,7 +64,7 @@ public class DateTime {
     }
     
     public static String toDateTimeString(LocalDateTime datetime) {
-        return toDateString(getDate(datetime)) + " " + toTimeString(getTime(datetime));
+        return datetime.format(dateTimeFormat);
     }
     
     public static LocalDate currentDate() {

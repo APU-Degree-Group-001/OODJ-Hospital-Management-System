@@ -615,14 +615,25 @@ public class RequestPanel extends javax.swing.JPanel {
                 return this;
             }
         });
+        assetCombo.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, assetCombo.getPreferredSize().height));
 
         javax.swing.JTextArea reasonArea = new javax.swing.JTextArea(4, 20);
         javax.swing.JScrollPane reasonScroll = new javax.swing.JScrollPane(reasonArea);
+        reasonScroll.setPreferredSize(new java.awt.Dimension(280, 90));
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("Asset:"));
+        javax.swing.JLabel assetLabel = new JLabel("Asset:");
+        javax.swing.JLabel reasonLabel = new JLabel("Reason:");
+        assetLabel.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        assetCombo.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        reasonLabel.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        reasonScroll.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel();
+        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+        panel.add(assetLabel);
         panel.add(assetCombo);
-        panel.add(new JLabel("Reason:"));
+        panel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+        panel.add(reasonLabel);
         panel.add(reasonScroll);
 
         int result = JOptionPane.showConfirmDialog(parentWindow, panel,

@@ -751,3 +751,25 @@
 [2026-09-16 20:40:26] User {admin staff - #ADMd4e8f - uehehe} logged out
 [2026-09-16 20:40:43] User {doctor - #DOCd4e8f - bug1} logged in
 [2026-09-16 20:41:56] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-17 11:33:16] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 11:34:15] User {medical manager - #MNG58321 - Chee} generated Bill {#BILLd0337} from Consultation {#CONe3ece}
+[2026-09-17 11:40:08] User {medical manager - #MNG58321 - Chee} generated Bill {#BILL58129} from Consultation {#CONe3ece}
+[2026-09-17 11:42:54] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 11:43:43] User {medical manager - #MNG58321 - Chee} generated Bill {#BILL6c1d9} from Consultation {#CONe3ece}
+[2026-09-17 11:46:46] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 11:47:39] User {medical manager - #MNG58321 - Chee} generated Bill {#BILL1f60d} from Consultation {#CONe3ece}
+[2026-09-17 11:50:05] User {medical manager - #MNG58321 - Chee} created Doctor Shift {#SHIFT2d8a1} for Doctor {#DOCd4e8c - Waka Waka}
+[2026-09-17 11:50:18] User {medical manager - #MNG58321 - Chee} cancelled Doctor Shift {#SHIFT2d8a1}
+[2026-09-17 11:51:33] User {medical manager - #MNG58321 - Chee} cancelled Doctor Shift {#SHIFT2d8a1}
+[2026-09-17 12:07:56] User {medical manager - #MNG58321 - Chee} cancelled Doctor Shift {#SHIFT2d8a1}
+[2026-09-17 12:15:10] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:16:02] User {medical manager - #MNG58321 - Chee} cancelled Doctor Shift {#SHIFT2d8a1}
+[2026-09-17 12:33:32] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:34:29] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:41:43] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:44:39] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:48:23] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-17 12:52:04] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-17 12:52:22] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-17 12:57:54] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-17 12:58:38] User {doctor - #DOCd4e8f - bug1} logged out
