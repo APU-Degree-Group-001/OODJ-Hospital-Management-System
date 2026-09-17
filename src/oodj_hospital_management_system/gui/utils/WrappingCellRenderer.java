@@ -4,13 +4,18 @@
  */
 package oodj_hospital_management_system.gui.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
-/**
- *
- * @author sheaw
- */
 public class WrappingCellRenderer extends javax.swing.JTextArea implements javax.swing.table.TableCellRenderer {
+
+    // Tracks the tallest preferred height seen so far for each row, across all
+    // columns, per table instance. Cleared each time the table's model/structure
+    // changes so stale heights don't linger after data reloads.
+    private final Map<JTable, Map<Integer, Integer>> rowHeightsByTable = new HashMap<>();
+
     public WrappingCellRenderer() {
         setLineWrap(true);
         setWrapStyleWord(true);
@@ -23,11 +28,23 @@ public class WrappingCellRenderer extends javax.swing.JTextArea implements javax
     public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
         setText(value != null ? value.toString() : "");
-        setSize(table.getColumnModel().getColumn(column).getWidth(), Short.MAX_VALUE);
+        int columnWidth = table.getColumnModel().getColumn(column).getWidth();
+        setSize(columnWidth, Short.MAX_VALUE);
 
-        int preferredHeight = getPreferredSize().height;
-        if (table.getRowHeight(row) != preferredHeight) {
-            table.setRowHeight(row, Math.max(preferredHeight, 40));
+        int preferredHeight = Math.max(getPreferredSize().height, 40);
+
+        Map<Integer, Integer> rowHeights = rowHeightsByTable.computeIfAbsent(table, t -> new HashMap<>());
+        int tallestSoFar = rowHeights.getOrDefault(row, 0);
+
+        if (preferredHeight > tallestSoFar) {
+            rowHeights.put(row, preferredHeight);
+            // Defer: don't resize the row while we're still in the middle of
+            // painting this pass, or the layout can get out of sync / flicker.
+            SwingUtilities.invokeLater(() -> {
+                if (row < table.getRowCount() && table.getRowHeight(row) != preferredHeight) {
+                    table.setRowHeight(row, preferredHeight);
+                }
+            });
         }
 
         if (isSelected) {

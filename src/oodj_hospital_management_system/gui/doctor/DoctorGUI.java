@@ -72,12 +72,12 @@ public class DoctorGUI extends javax.swing.JFrame {
 
             usersWatcher.addListener(
                 SystemConfiguration.doctorShiftFilePath,
-                () -> { /* TODO: doctorShiftRosterPanel.shiftRosterPanel.<reload method> */ }
+                () -> doctorShiftRosterPanel.shiftRosterPanel.loadDoctorShifts()
             );
-
+            
             usersWatcher.addListener(
                 SystemConfiguration.requestFilePath,
-                () -> { /* TODO: doctorShiftRosterPanel.requestPanel.<reload method> */ }
+                () -> doctorShiftRosterPanel.requestPanel.loadDoctorRequests()
             );
 
             usersWatcher.start();
