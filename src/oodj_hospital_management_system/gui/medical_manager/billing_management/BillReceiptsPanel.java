@@ -205,9 +205,21 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
                     "Please enter at least one amount", "Missing Amount", JOptionPane.INFORMATION_MESSAGE);
                 return amountRange;
             }
+            if (minStr.isEmpty() && maxStr.isEmpty()) {
+                JOptionPane.showMessageDialog(parentWindow,
+                    "Do not enter negative values", "Negative Value", JOptionPane.INFORMATION_MESSAGE);
+                return amountRange;
+            }
             try {
-                if (!minStr.isEmpty() && !maxStr.isEmpty()
-                        && Double.parseDouble(maxStr) < Double.parseDouble(minStr)) {
+                double minVal = minStr.isEmpty() ? Double.NEGATIVE_INFINITY : Double.parseDouble(minStr);
+                double maxVal = maxStr.isEmpty() ? Double.POSITIVE_INFINITY : Double.parseDouble(maxStr);
+
+                if (minVal < 0 || maxVal < 0) {
+                    JOptionPane.showMessageDialog(parentWindow,
+                        "Amount cannot be negative", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return amountRange;
+                }
+                if (!minStr.isEmpty() && !maxStr.isEmpty() && maxVal < minVal) {
                     JOptionPane.showMessageDialog(parentWindow,
                         "Invalid amount range", "WARNING", JOptionPane.ERROR_MESSAGE);
                     return amountRange;

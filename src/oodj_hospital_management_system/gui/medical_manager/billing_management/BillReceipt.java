@@ -132,7 +132,7 @@ public class BillReceipt extends RoundedPanel {
 
         col.add(sectionTag("BILL ID"));
         col.add(Box.createVerticalStrut(2));
-        col.add(boldLabel("#" + bill.getBillId(), 14));
+        col.add(boldLabel(bill.getBillId(), 14));
         col.add(Box.createVerticalStrut(14));
 
         if (consultation != null && consultation.getConsultationSlot() != null) {
