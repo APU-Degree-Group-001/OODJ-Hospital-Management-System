@@ -282,9 +282,7 @@ public class BillReceipt extends RoundedPanel {
         col.add(statusRow());
         col.add(Box.createVerticalStrut(10));
 
-        // Only an UNPAID bill can move to PAID (matches BillingManagement's
-        // markBillAsPaid, which rejects already-PAID or VOID bills).
-        if (bill.getStatus() == Bill.BillStatus.UNPAID) {
+        if (bill.getStatus() == Bill.BillStatus.UNPAID && isMedicalManager()) {
             JButton updateStatusBtn = new JButton("Mark as Paid");
             updateStatusBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
             updateStatusBtn.setFocusPainted(false);
