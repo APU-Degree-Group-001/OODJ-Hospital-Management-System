@@ -1,2 +1,10 @@
 prescriptionId, consultationId, medicineName, dosage, frequencyPerDay, durationInDays, instructions
 #PRE001, #CON001, Ibuprofen, 400mg, 3, 5, Take after meals to reduce stomach irritation
+#PRE002, #CON5b2e8, Atorvastatin, 20mg, 1, 30, Take at night before bed
+#PRE003, #CON9a17d, Lisinopril, 10mg, 1, 28, Take in the morning with water
+#PRE004, #CON3d60f, Paracetamol, 500mg, 3, 7, Take at onset of headache#| do not exceed 6 tablets a day
+#PRE005, #CONe84b1, Omeprazole, 20mg, 1, 14, Take 30 minutes before breakfast
+#PRE006, #CON7e4a6, Amoxicillin, 250mg, 3, 7, Complete the full course even if symptoms improve
+#PRE007, #CON6c3f9, Cetirizine, 10mg, 1, 10, Take at night#| may cause drowsiness
+#PRE008, #CON0e785, Ibuprofen, 400mg, 2, 10, Take after meals to reduce stomach irritation
+#PRE009, #COND4a2b, Paracetamol, 1000mg, 4, 3, For pain relief while awaiting surgical review

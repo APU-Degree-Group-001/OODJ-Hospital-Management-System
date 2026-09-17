@@ -4470,3 +4470,7 @@ Asset '#LAB001' already has an overlapping scheduled allocation
 Asset '#LAB001' already has an overlapping scheduled allocation
 [2026-09-16 20:40:09] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-16 20:40:09] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 01:30:58] Error finding insurance -> Insurance Handling Error: Invalid Insurance ID: Insurance ID '#INS004' is not found
+[2026-09-18 01:31:03] Error finding insurance -> Insurance Handling Error: Invalid Insurance ID: Insurance ID '#INS004' is not found
+[2026-09-18 01:31:03] Error finding insurance -> Insurance Handling Error: Invalid Insurance ID: Insurance ID '#INS004' is not found
+[2026-09-18 01:31:43] Error finding insurance -> Insurance Handling Error: Invalid Insurance ID: Insurance ID '#INS004' is not found

@@ -4,3 +4,9 @@ prescriptionTypeId, typeName, baseRate, status
 #PTYPE003, Paracetamol, 0.2, ACTIVE
 #PTYPE19f24, Amoxicillin, 0.8, INACTIVE
 #PTYPEf3f51, Lisinopril, 1.0, ACTIVE
+#PTYPE004, Metformin, 0.5, ACTIVE
+#PTYPE005, Atorvastatin, 1.2, ACTIVE
+#PTYPE8c4d1, Omeprazole, 0.7, ACTIVE
+#PTYPE3e90f, Cetirizine, 0.4, ACTIVE
+#PTYPEb27a5, Salbutamol Inhaler, 15.0, ACTIVE
+#PTYPE5d81c, Codeine, 1.5, INACTIVE

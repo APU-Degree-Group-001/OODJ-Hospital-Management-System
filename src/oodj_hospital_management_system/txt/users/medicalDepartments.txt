@@ -6,3 +6,9 @@ departmentId, departmentName, description
 #DEPT005, Orthopedics, Provides diagnosis#|treatment#|and rehabilitation for bones#|joints#|muscles#|and the musculoskeletal system.
 #DEPTe8318, Dermatology, Provides diagnosis and treatment for skin#|hair#|and nail conditions.
 #DEPT1cde9, test file watcher, bibilabu
+#DEPT006, Radiology, Provides medical imaging services including X-ray#|CT#|MRI#|and ultrasound.
+#DEPT007, Oncology, Provides diagnosis and treatment for cancer and tumour related conditions.
+#DEPT008, Emergency Medicine, Provides immediate assessment and treatment for acute and life threatening conditions.
+#DEPT4b7a2, Obstetrics and Gynaecology, Provides care for pregnancy#|childbirth#|and the female reproductive system.
+#DEPT9c3f1, Psychiatry, Provides diagnosis and treatment for mental health and behavioural conditions.
+#DEPT2ae65, Ophthalmology, Provides diagnosis and treatment for eye and vision conditions.

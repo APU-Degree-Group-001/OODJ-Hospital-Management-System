@@ -5,3 +5,8 @@ consultationTypeId, typeName, baseRate, status
 #CTYPE9a6c4, Follow-up Consultation, 35.0, INACTIVE
 #CTYPEedccb, Chua Pau Chee hehe :3, 250.0, ACTIVE
 #CTYPE33119, :D, 100.0, ACTIVE
+#CTYPE004, Telemedicine Consultation, 45.0, ACTIVE
+#CTYPE005, Pre-operative Assessment, 150.0, ACTIVE
+#CTYPE7b1e2, Paediatric Consultation, 80.0, ACTIVE
+#CTYPE0d4c9, Dermatology Consultation, 110.0, ACTIVE
+#CTYPE6f3a8, Second Opinion Review, 180.0, INACTIVE

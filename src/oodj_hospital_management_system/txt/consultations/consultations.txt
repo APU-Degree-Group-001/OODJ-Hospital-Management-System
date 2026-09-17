@@ -11,3 +11,14 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON20fba, #SLOT60dd4, #PAT3fad4, #CTYPE001, test file watcher, , COMPLETED
 #CON2a21b, #SLOTa1923, #PAT3fad4, #CTYPE001, test file watcher attempt 2 :D, , COMPLETED
 #CONf64cd, #SLOT7e203, #PAT3fad4, #CTYPE001, test file watcher attempt 3 :DDD, , COMPLETED
+#CON5b2e8, #SLOT2c8f1, #PAT4e7b1, #CTYPE002, Patient presented with irregular heartbeat and fatigue, , COMPLETED
+#CON9a17d, #SLOT9b4e7, #PAT8c2d9, #CTYPE001, Routine blood pressure review, , COMPLETED
+#CON3d60f, #SLOT7f019, #PAT1f5a3, #CTYPE002, Recurring migraine with visual disturbance, , COMPLETED
+#CONe84b1, #SLOT1a8d6, #PATb92e7, #CTYPE004, Follow-up via video call for medication review, , COMPLETED
+#CON2f9c3, #SLOTb37c5, #PAT6d3c8, #CTYPE001, Persistent cough for two weeks, , CANCELLED
+#CON7e4a6, #SLOT0d9a8, #PAT0a4f2, #CTYPE7b1e2, Child with recurring ear infection, , COMPLETED
+#CONb1d52, #SLOTcc21b, #PATf74a0, #CTYPE005, Pre-operative assessment for knee arthroscopy, , COMPLETED
+#CON6c3f9, #SLOTa7b64, #PAT72528, #CTYPE0d4c9, Itchy rash on forearms after new detergent, , COMPLETED
+#CON0e785, #SLOTf1e27, #PATaa85d, #CTYPE002, Numbness in left hand#| suspected nerve compression, , COMPLETED
+#COND4a2b, #SLOT8ba03, #PAT31c63, #CTYPE003, Severe abdominal pain#| walk-in emergency, , COMPLETED
+#CON8f16e, #SLOT91c46, #PATe55bd, #CTYPE001, General health screening, , IN_PROGRESS

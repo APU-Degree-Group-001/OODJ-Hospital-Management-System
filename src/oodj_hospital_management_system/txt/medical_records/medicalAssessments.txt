@@ -2,3 +2,12 @@ assessmentId, consultationId, assessmentType, findings, diagnosis
 #MED001, #CON001, Follow-up Examination, Swelling reduced significantly, Recovering well :3
 #MED002, #CON002, Cardiac Assessment, Patient reports mild chest discomfort, No immediate cardiac abnormality
 #MED003, #CON003, Routine Check-up, Patient is generally healthy, No abnormal findings
+#MED004, #CON5b2e8, Cardiac Assessment, ECG shows occasional premature beats, Benign ectopic beats#| monitor for three months
+#MED005, #CON9a17d, Routine Check-up, Blood pressure 138 over 88, Borderline hypertension
+#MED006, #CON3d60f, Neurological Examination, Aura reported before onset#| reflexes normal, Migraine with aura
+#MED007, #CONe84b1, Follow-up Examination, Symptoms stable on current dosage, Continue existing treatment plan
+#MED008, #CON7e4a6, Paediatric Examination, Right ear drum red and inflamed, Acute otitis media
+#MED009, #CONb1d52, Pre-operative Assessment, Vitals within normal range#| no anaesthetic risk flagged, Fit for surgery
+#MED00a, #CON6c3f9, Dermatological Examination, Localised erythema with dry scaling, Contact dermatitis
+#MED00b, #CON0e785, Neurological Examination, Reduced grip strength on left side, Suspected carpal tunnel syndrome
+#MED00c, #COND4a2b, Emergency Assessment, Tenderness at right lower quadrant, Suspected appendicitis - referred to surgery

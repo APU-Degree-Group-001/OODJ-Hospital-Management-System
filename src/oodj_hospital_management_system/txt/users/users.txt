@@ -17,3 +17,18 @@ userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medica
 #DOC30c95, test, %w@Qn8JS, doctor, 2026-08-30 18:54:12, test@mail.com, , 
 #DOC56ea5, test2, 9O%diT9y, doctor, 2026-08-30 18:54:27, test2@mail.com, , 
 #DOCbff0e, testtttt, 4eR$aksh, doctor, 2026-08-30 19:42:01, test3@mail.com, , 
+#PATf74a0, Ahmad, Ahm@d123, patient, 2026-09-01 08:15:00, ahmad.f@gmail.com, , 
+#DOCa1b2c, Lim Wei, L!mWei88, doctor, 2026-09-01 09:00:00, limwei@gmail.com, #DEPT001, #MNG74295
+#DOC7f3ad, Nur Aisyah, A1syah#22, doctor, 2026-09-01 09:05:00, aisyah@gmail.com, #DEPT002, #MNG58321
+#DOC5c91e, Raj Kumar, R@jK9876, doctor, 2026-09-01 09:10:00, rajkumar@gmail.com, #DEPT003, #MNG74295
+#DOC2e84b, Tan Mei Ling, M31Ling!, doctor, 2026-09-02 10:30:00, meiling@gmail.com, #DEPT005, #MNG58321
+#DOC0f6d3, Hana Suraya, H@na4567, doctor, 2026-09-02 10:45:00, hana.s@gmail.com, #DEPTe8318, #MNG3c7d1
+#MNG3c7d1, Farah, F@rah777, medical manager, 2026-08-28 11:00:00, farah@gmail.com, , 
+#ADM6b2f4, Kavitha, K@vitha8, admin staff, 2026-08-28 11:20:00, kavitha@gmail.com, , 
+#ADM9d51c, Hafiz, H4fiz#33, admin staff, 2026-09-03 14:05:00, hafiz@gmail.com, , 
+#PAT4e7b1, Siti Rohana, S!ti2468, patient, 2026-09-03 15:12:00, siti.r@gmail.com, , 
+#PAT8c2d9, Gopal, G0pal$12, patient, 2026-09-04 09:40:00, gopal@gmail.com, , 
+#PAT1f5a3, Lee Chong, Ch0ng@55, patient, 2026-09-05 16:22:00, leechong@gmail.com, , 
+#PATb92e7, Nurul Izzati, Nur#9012, patient, 2026-09-08 12:01:00, nurul@gmail.com, , 
+#PAT6d3c8, Zhang Wei, Zh@ngW33, patient, 2026-09-10 18:33:00, zhangwei@gmail.com, , 
+#PAT0a4f2, Arif Danial, Ar!f3344, patient, 2026-09-14 08:47:00, arif.d@gmail.com, ,

@@ -4,3 +4,9 @@ labResultTypeId, typeName, baseRate, status
 #LRTYPE003, Cardiac Enzyme Test, 120.00, ACTIVE
 #LRTYPE39583, Liver Function Test, 60.0, ACTIVE
 #LRTYPEca8e0, Physical Scans, 100.0, ACTIVE
+#LRTYPE004, Full Blood Count, 55.00, ACTIVE
+#LRTYPE005, Lipid Profile, 75.00, ACTIVE
+#LRTYPE6b3d2, Thyroid Function Test, 90.00, ACTIVE
+#LRTYPEa14f7, Kidney Function Test, 65.00, ACTIVE
+#LRTYPE0c592, COVID-19 PCR Test, 130.00, INACTIVE
+#LRTYPEd7e83, Allergy Panel, 180.00, ACTIVE

@@ -3,3 +3,8 @@ insuranceId, insuranceName, accepted, coveragePercentage
 #INS002, AIA, true, 0.8
 #INS003, Prudential, false, 0.5
 #INSf85e9, Allianz, false, 0.7
+#INS004, Great Eastern, true, 0.75
+#INS005, Etiqa, true, 0.65
+#INS3a7c1, Zurich Malaysia, true, 0.55
+#INS8d2f4, Tokio Marine, false, 0.45
+#INSb61e0, Hong Leong Assurance, true, 0.9

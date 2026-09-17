@@ -2,3 +2,9 @@ admissionId, patientId, wardId, admittingDoctorId, admittedDateTime, dischargedD
 #WA011, #PATf74a0, #WARD001, #DOCd4e8c, 2026-09-04 07:30:00, 2026-09-07 09:00:00, DISCHARGED, Pneumonia requiring IV antibiotics and monitoring
 #WA012, #PAT79a39, #WARD001, #DOCd4e8f, 2026-09-07 04:00:00, 2026-09-13 18:54:19, DISCHARGED, Stroke symptoms#| under neurological observation
 #WA843fe, #PATa6a72, #WARD001, #DOCd4e8f, 2026-09-13 18:54:10, , ADMITTED, bufday
+#WA013, #PAT4e7b1, #WARD001, #DOCa1b2c, 2026-09-01 12:30:00, 2026-09-04 10:15:00, DISCHARGED, Chest pain requiring cardiac monitoring
+#WA014, #PAT1f5a3, #WARD003, #DOC7f3ad, 2026-09-02 16:45:00, 2026-09-06 11:00:00, DISCHARGED, Severe dehydration following gastroenteritis
+#WA2c74e, #PAT8c2d9, #WARD002, #DOC2e84b, 2026-09-05 08:20:00, 2026-09-09 14:30:00, DISCHARGED, Post-operative recovery after knee arthroscopy
+#WA9f031, #PATb92e7, #WARD001, #DOC0f6d3, 2026-09-12 19:10:00, , ADMITTED, Cellulitis of the left leg requiring IV antibiotics
+#WA5d8b6, #PAT6d3c8, #WARD003, #DOC7f3ad, 2026-09-16 09:40:00, , ADMITTED, Asthma exacerbation#| under observation
+#WAe103c, #PAT0a4f2, #WARD001, #DOC5c91e, 2026-09-17 22:05:00, , ADMITTED, Suspected appendicitis awaiting surgical review

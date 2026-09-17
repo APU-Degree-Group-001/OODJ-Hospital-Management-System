@@ -5,3 +5,11 @@ assetId, assetType, assetName, imagePath, location, description, totalBeds, stat
 #LAB001, Laboratory, Main Laboratory, images/assets/lab001.jpg, Block C Level 1, Laboratory for medical testing, , Available
 #XRAY001, XRay Room, X-Ray Room 1, images/assets/xray001.jpg, Block C Level 2, Room equipped for X-ray imaging, , Occupied
 #IMG001, Imaging Room, Imaging Room 1, images/assets/imaging001.jpg, Block C Level 2, Room for medical imaging procedures, , Available
+#ROOM003, Consultation Room, Consultation Room 3, , Block A Level 2, Consultation room with paediatric setup, , Available
+#ROOM004, Consultation Room, Consultation Room 4, , Block B Level 1, Consultation room with minor procedure trolley, , Occupied
+#WARD002, Ward, Maternity Ward B, , Block B Level 3, Ward for maternity and postnatal care, 20, Available
+#WARD003, Ward, Paediatric Ward C, , Block B Level 4, Ward for children under 12#| with play area, 12, Available
+#LAB002, Laboratory, Microbiology Laboratory, , Block C Level 1, Laboratory for culture and sensitivity testing, , Available
+#XRAY002, XRay Room, X-Ray Room 2, , Block C Level 3, Digital radiography room, , Available
+#IMG002, Imaging Room, MRI Suite, , Block D Level 1, Room housing the 1.5T MRI scanner, , Occupied
+#THTR001, Operating Theatre, Operating Theatre 1, , Block D Level 2, General surgical theatre, , Available

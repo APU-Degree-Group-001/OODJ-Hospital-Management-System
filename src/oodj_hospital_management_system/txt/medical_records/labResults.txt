@@ -1,2 +1,9 @@
 resultId, consultationId, resultType, result, remarks, resultDateTime
 #LAB2dbd0, #CON001, Cardiac Enzyme Test, nani, ke, 2026-09-05 15:12:15
+#LAB7f3a1, #CON5b2e8, Lipid Profile, LDL 4.2 mmol/L, Above target range#| statin started, 2026-09-01 11:20:00
+#LAB0c94e, #CON9a17d, Blood Glucose Test, 6.8 mmol/L fasting, Borderline#| repeat in three months, 2026-09-01 12:05:00
+#LAB2b68d, #CON3d60f, Physical Scans, No abnormality detected on MRI brain, Reassuring result, 2026-09-02 15:40:00
+#LABe510c, #CON7e4a6, Urine Test, Normal, No signs of infection, 2026-09-05 09:15:00
+#LAB48af2, #CONb1d52, Full Blood Count, Haemoglobin 13.9 g/dL, Within normal range, 2026-09-05 10:30:00
+#LAB9d271, #CON0e785, Liver Function Test, ALT 62 U/L, Mildly elevated#| recheck in one month, 2026-09-16 13:00:00
+#LABc3f80, #COND4a2b, Full Blood Count, White cell count 15.2 x10^9/L, Raised#| consistent with acute infection, 2026-09-16 10:45:00
