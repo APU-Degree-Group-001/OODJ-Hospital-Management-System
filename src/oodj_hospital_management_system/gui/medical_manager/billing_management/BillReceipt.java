@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
+import oodj_hospital_management_system.controllers.UserController;
 
 import oodj_hospital_management_system.gui.utils.RoundedPanel;
 import oodj_hospital_management_system.models.Bill;
@@ -69,9 +70,10 @@ public class BillReceipt extends RoundedPanel {
     private final Bill bill;
     private final Consultation consultation;
     private final Runnable onUpdateStatus;
+    private UserController usrCtrl;
 
     public BillReceipt(Bill bill) {
-        this(bill, null);
+        this(bill, null, null);
     }
 
     /**
@@ -80,15 +82,19 @@ public class BillReceipt extends RoundedPanel {
      *                       billingMgmt.markBillAsPaid(bill) followed by a
      *                       reload of the list.
      */
-    public BillReceipt(Bill bill, Runnable onUpdateStatus) {
-        // NOTE: confirm the exact param order your RoundedPanel constructor expects -
-        // this mirrors the pattern already used elsewhere in your codebase:
-        // (cornerRadius, backgroundColor, padTop, padLeft, padBottom, padRight)
+    public BillReceipt(Bill bill, Runnable onUpdateStatus, UserController usrCtrl) {
         super(15, new Color(248, 249, 250), new Color(230, 233, 237), 15, 20, 15, 20);
         this.bill = bill;
         this.consultation = ConsultationManagement.getConsultationById(bill.getConsultationId());
         this.onUpdateStatus = onUpdateStatus;
+        this.usrCtrl = usrCtrl; // NEW
         buildUI();
+    }
+    
+    private boolean isMedicalManager() {
+        return usrCtrl != null
+            && usrCtrl.getActiveUser() != null
+            && "medical manager".equalsIgnoreCase(usrCtrl.getActiveUser().getType());
     }
 
     private void buildUI() {

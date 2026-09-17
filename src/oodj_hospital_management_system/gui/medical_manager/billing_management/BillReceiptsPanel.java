@@ -110,7 +110,7 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
     private void rebuildCards(List<Bill> bills) {
         billReceiptsPanelWrapper.removeAll();
         for (Bill bill : bills) {
-            BillReceipt billPanel = new BillReceipt(bill, () -> markBillAsPaid(bill));
+            BillReceipt billPanel = new BillReceipt(bill, () -> markBillAsPaid(bill), this.usrCtrl);
             billReceiptsPanelWrapper.add(billPanel);
             billReceiptsPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         }
@@ -354,7 +354,7 @@ public class BillReceiptsPanel extends javax.swing.JPanel {
         currentBills = searchResults;
         billReceiptsPanelWrapper.removeAll();
         for (Bill bill : searchResults) {
-            BillReceipt billPanel = new BillReceipt(bill, () -> markBillAsPaid(bill));
+            BillReceipt billPanel = new BillReceipt(bill, () -> markBillAsPaid(bill), this.usrCtrl);
             billReceiptsPanelWrapper.add(billPanel);
             billReceiptsPanelWrapper.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
         }
