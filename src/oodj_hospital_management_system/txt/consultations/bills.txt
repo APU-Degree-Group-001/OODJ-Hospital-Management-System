@@ -17,3 +17,4 @@ billId, consultationId, patientId, insuranceId, consultationFee, totalAmount, pa
 #BILL3f0b9, #CON6c3f9, #PAT72528, , 110.0, 114.0, 114.0, UNPAID, 2026-09-12 21:30:00
 #BILLc85d2, #CON0e785, #PATaa85d, #INS3a7c1, 120.0, 188.0, 84.6, UNPAID, 2026-09-16 14:10:00
 #BILL1b46e, #COND4a2b, #PAT31c63, #INS002, 200.0, 267.0, 53.4, PAID, 2026-09-16 15:00:00
+#BILLf17b6, #CON8a21f, #PAT79a39, #INSb61e0, 60.0, 60.0, 6.0, UNPAID, 2026-09-18 23:17:27
