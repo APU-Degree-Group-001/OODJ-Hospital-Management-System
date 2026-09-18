@@ -439,7 +439,7 @@ public class PatientManagementPanel extends javax.swing.JPanel {
     private void modifyUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyUserButtonActionPerformed
         int selectedRow = patientTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a row first");
+            JOptionPane.showMessageDialog(parentWindow, "Please select a row first");
             return;
         }
 
