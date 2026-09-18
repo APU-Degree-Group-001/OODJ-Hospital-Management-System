@@ -8,3 +8,10 @@ prescriptionId, consultationId, medicineName, dosage, frequencyPerDay, durationI
 #PRE007, #CON6c3f9, Cetirizine, 10mg, 1, 10, Take at night#| may cause drowsiness
 #PRE008, #CON0e785, Ibuprofen, 400mg, 2, 10, Take after meals to reduce stomach irritation
 #PRE009, #COND4a2b, Paracetamol, 1000mg, 4, 3, For pain relief while awaiting surgical review
+#PRE010, #CON4a1e9, Paracetamol, 500mg, 3, 5, Take after meals
+#PRE011, #CONb72d3, Aspirin, 75mg, 1, 30, Take once daily in the morning
+#PRE012, #CON0c58f, Ibuprofen, 400mg, 2, 3, Take with food
+#PRE013, #CON35f70, Paracetamol, 500mg, 4, 3, For fever and throat pain
+#PRE014, #CON8d24a, Ibuprofen, 400mg, 3, 14, Take after meals to reduce stomach irritation
+#PRE015, #CON1f803, Lisinopril, 10mg, 1, 28, Take in the morning
+#PRE016, #CONa05d7, Aspirin, 75mg, 1, 60, Long term cardiac protection

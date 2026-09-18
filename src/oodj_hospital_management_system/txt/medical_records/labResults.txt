@@ -7,3 +7,10 @@ resultId, consultationId, resultType, result, remarks, resultDateTime
 #LAB48af2, #CONb1d52, Full Blood Count, Haemoglobin 13.9 g/dL, Within normal range, 2026-09-05 10:30:00
 #LAB9d271, #CON0e785, Liver Function Test, ALT 62 U/L, Mildly elevated#| recheck in one month, 2026-09-16 13:00:00
 #LABc3f80, #COND4a2b, Full Blood Count, White cell count 15.2 x10^9/L, Raised#| consistent with acute infection, 2026-09-16 10:45:00
+#LAB3c8e1, #CONb72d3, Cardiac Enzyme Test, Troponin 0.02 ng/mL, Within normal limits, 2026-09-11 10:15:00
+#LAB0b45f, #CON0c58f, Blood Glucose Test, 5.4 mmol/L, Normal, 2026-09-11 10:40:00
+#LAB7e92c, #CONe96b4, Liver Function Test, ALT 34 U/L, Normal, 2026-09-11 11:30:00
+#LABd1370, #CONe96b4, Urine Test, No protein or blood detected, Clear, 2026-09-11 11:35:00
+#LAB6f2a8, #CON8d24a, Physical Scans, Mild disc bulge at L4 to L5, Conservative management advised, 2026-09-11 12:10:00
+#LAB95cd4, #CON1f803, Physical Scans, Nerve conduction study pending, Report to follow, 2026-09-12 11:00:00
+#LABe803b, #CONa05d7, Cardiac Enzyme Test, Troponin 0.01 ng/mL, Stable, 2026-09-12 11:20:00

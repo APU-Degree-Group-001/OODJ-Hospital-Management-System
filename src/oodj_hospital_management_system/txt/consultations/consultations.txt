@@ -22,3 +22,13 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON0e785, #SLOTf1e27, #PATaa85d, #CTYPE002, Numbness in left hand#| suspected nerve compression, , COMPLETED
 #COND4a2b, #SLOT8ba03, #PAT31c63, #CTYPE003, Severe abdominal pain#| walk-in emergency, , COMPLETED
 #CON8f16e, #SLOT91c46, #PATe55bd, #CTYPE001, General health screening, , IN_PROGRESS
+#CON4a1e9, #SLOTe1a47, #PAT3fad4, #CTYPE001, Follow-up for recurring headaches, , COMPLETED
+#CONb72d3, #SLOT93c2b, #PAT79a39, #CTYPE002, Chest tightness on exertion, , COMPLETED
+#CON0c58f, #SLOT0f5d8, #PATa6a72, #CTYPE003, Sudden severe dizziness and vomiting, , COMPLETED
+#CONe96b4, #SLOTa76e3, #PATe55bd, #CTYPE33119, Annual health screening, , COMPLETED
+#CON35f70, #SLOT4d819, #PAT31c63, #CTYPE001, Sore throat and low grade fever, , COMPLETED
+#CON8d24a, #SLOTc28f6, #PAT72528, #CTYPEedccb, Extended review of chronic back pain, , COMPLETED
+#CON1f803, #SLOT5b704, #PATaa85d, #CTYPE002, Numbness in fingers after long typing hours, , COMPLETED
+#CON6e4c1, #SLOTd90a5, #PATb3d5f, #CTYPE001, Skin rash on neck after sun exposure, , COMPLETED
+#CONa05d7, #SLOT2e63c, #PAT3fad4, #CTYPE002, Review of cardiac enzyme results, , COMPLETED
+#CON7b39e, #SLOT8c471, #PAT79a39, #CTYPE33119, General wellness consultation, , COMPLETED

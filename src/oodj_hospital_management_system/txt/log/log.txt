@@ -778,3 +778,4 @@
 [2026-09-18 11:36:15] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-18 11:42:52] User {admin staff - #ADMd4e8f - uehehe} logged out
 [2026-09-18 14:49:51] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-18 15:02:32] User {medical manager - #MNG74295 - Reen} logged in

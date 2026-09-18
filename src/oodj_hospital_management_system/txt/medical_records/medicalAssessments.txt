@@ -11,3 +11,13 @@ assessmentId, consultationId, assessmentType, findings, diagnosis
 #MED00a, #CON6c3f9, Dermatological Examination, Localised erythema with dry scaling, Contact dermatitis
 #MED00b, #CON0e785, Neurological Examination, Reduced grip strength on left side, Suspected carpal tunnel syndrome
 #MED00c, #COND4a2b, Emergency Assessment, Tenderness at right lower quadrant, Suspected appendicitis - referred to surgery
+#MED010, #CON4a1e9, Follow-up Examination, Headache frequency reduced, Improving
+#MED011, #CONb72d3, Cardiac Assessment, ECG normal sinus rhythm, No acute cardiac event
+#MED012, #CON0c58f, Emergency Assessment, BP stable#| hydration given, Vestibular disturbance
+#MED013, #CONe96b4, Routine Check-up, All parameters normal, Healthy
+#MED014, #CON35f70, Routine Check-up, Throat mildly inflamed, Viral pharyngitis
+#MED015, #CON8d24a, Follow-up Examination, Limited lumbar flexion, Mechanical lower back pain
+#MED016, #CON1f803, Follow-up Examination, Reduced sensation in median nerve distribution, Suspected carpal tunnel syndrome
+#MED017, #CON6e4c1, Routine Check-up, Localised redness#| no blistering, Mild sun irritation
+#MED018, #CONa05d7, Cardiac Assessment, Symptoms resolved, Stable
+#MED019, #CON7b39e, Routine Check-up, No complaints reported, Healthy
