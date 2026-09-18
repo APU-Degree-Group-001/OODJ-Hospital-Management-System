@@ -584,7 +584,7 @@ public class ConsultationBaseRatePanel extends javax.swing.JPanel {
     private void modifyServiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyServiceButtonActionPerformed
         int selectedRow = consultationTypeTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a row first");
+            JOptionPane.showMessageDialog(parentWindow, "Please select a row first");
             return;
         }
 

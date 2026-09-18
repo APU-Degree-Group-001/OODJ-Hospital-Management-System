@@ -4480,3 +4480,17 @@ Asset '#LAB001' already has an overlapping scheduled allocation
 	ErrorMsg: Incorrect Login Credentials
 [2026-09-18 14:49:58] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-18 14:49:59] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 15:08:28] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 15:08:28] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:07:26] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
+[2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found

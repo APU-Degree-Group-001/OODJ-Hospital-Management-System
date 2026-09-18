@@ -14,7 +14,7 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQ009, CANCEL_SHIFT, #DOC5c91e, doctor, #MNG74295, #SHIFTc18e3, Attending mandatory training session, APPROVED, 2026-09-02 13:40:00, 2026-09-02 17:10:00, #MNG74295
 #REQ7d4b2, ASSET_REQUEST, #DOC7f3ad, doctor, , #IMG002, MRI suite needed for neurological imaging, APPROVED, 2026-09-14 10:22:00, 2026-09-15 09:05:00, #ADM6b2f4
 #REQ0a93f, ASSET_REQUEST, #DOC2e84b, doctor, , #LAB002, Microbiology lab access for culture samples, APPROVED, 2026-09-04 16:00:00, 2026-09-04 18:20:00, #ADM9d51c
-#REQc16e8, ASSET_REQUEST, #DOCa1b2c, doctor, , #XRAY002, Chest imaging for suspected pneumonia, PENDING, 2026-09-17 19:45:00, , 
+#REQc16e8, ASSET_REQUEST, #DOCa1b2c, doctor, , #XRAY002, Chest imaging for suspected pneumonia, APPROVED, 2026-09-17 19:45:00, 2026-09-18 16:07:26, #ADMd4e8f
 #REQ4f280, ASSET_REQUEST, #DOC5c91e, doctor, , #THTR001, Theatre booking for elective appendicectomy, PENDING, 2026-09-18 06:30:00, , 
 #REQ9b5d1, CANCEL_SHIFT, #DOC0f6d3, doctor, #MNG3c7d1, #SHIFT83ef6, Clashing with clinic duty#| submitted in error, WITHDRAWN, 2026-09-11 08:00:00, 2026-09-11 09:15:00, #DOC0f6d3
 #REQe72c4, ASSET_REQUEST, #DOC0f6d3, doctor, , #ROOM004, Room needed for minor skin procedure, REJECTED, 2026-09-13 11:30:00, 2026-09-13 15:00:00, #ADM6b2f4

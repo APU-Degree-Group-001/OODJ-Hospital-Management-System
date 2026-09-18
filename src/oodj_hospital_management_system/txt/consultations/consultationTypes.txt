@@ -10,3 +10,4 @@ consultationTypeId, typeName, baseRate, status
 #CTYPE7b1e2, Paediatric Consultation, 80.0, ACTIVE
 #CTYPE0d4c9, Dermatology Consultation, 110.0, ACTIVE
 #CTYPE6f3a8, Second Opinion Review, 180.0, INACTIVE
+#CTYPE06ccb, Just for SS Ur Body, 10.0, ACTIVE

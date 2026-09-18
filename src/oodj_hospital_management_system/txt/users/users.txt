@@ -1,5 +1,5 @@
 userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medicalManagerId
-#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, , #MNG74295
+#DOCd4e8f, bug1, Daidai12!, doctor, 2026-07-30 14:22:07, bug1@gmail.com, #DEPT003, #MNG74295
 #DOCd4e8c, Waka Waka, wakawaka123, doctor, 2026-07-30 14:22:07, waka@gmail.com, , #MNG58321
 #ADMd4e8f, uehehe, hehe456, admin staff, 2026-07-30 14:22:07, uehehe@gmail.com, , 
 #PAT3fad4, Pau, Paureen#123, patient, 2026-08-04 17:04:24, paureen@gmail.com, , 
@@ -7,14 +7,13 @@ userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medica
 #MNG74295, Reen, pau123, medical manager, 2026-08-04 21:20:53, reen@gmail.com, , 
 #MNG58321, Chee, chee123, medical manager, 2026-08-05 10:15:32, chee@gmail.com, , 
 #MNG79e32, Reen, 7iKjB@3K, medical manager, 2026-08-09 22:01:34, reen1_1@gmail.com, , 
-#PATa6a72, Chuaaa, Testpwd@123, patient, 2026-08-16 17:02:19, chua1@xx.com, , 
 #PATe55bd, paureen, ECQlA$4A, patient, 2026-08-26 20:38:23, hrmm@gmail.com, , 
 #PAT31c63, paureen, C!YsBH3w, patient, 2026-08-26 20:45:19, kaboomAic@gmail.com, , 
 #DOCb8f50, cheeeeee, @b$5RfbD, doctor, 2026-08-26 22:01:55, cheee@gmail.com, #DEPT004, #MNG58321
 #PAT72528, Phang, ziX$BV$7, patient, 2026-08-27 10:58:54, phang@gmail.com, , 
 #PATaa85d, chee, g2rxS%3e, patient, 2026-08-27 10:59:26, xuanxuanxuan@gmail.com, , 
 #PATb3d5f, paureen, 6k$#@TGh, patient, 2026-08-27 15:29:35, kaboomSna@apu.com, , 
-#DOC30c95, test, %w@Qn8JS, doctor, 2026-08-30 18:54:12, test@mail.com, , 
+#DOC30c95, test, %w@Qn8JS, doctor, 2026-08-30 18:54:12, test@mail.com, , #MNG74295
 #DOC56ea5, test2, 9O%diT9y, doctor, 2026-08-30 18:54:27, test2@mail.com, , 
 #DOCbff0e, testtttt, 4eR$aksh, doctor, 2026-08-30 19:42:01, test3@mail.com, , 
 #PATf74a0, Ahmad, Ahm@d123, patient, 2026-09-01 08:15:00, ahmad.f@gmail.com, , 
@@ -31,4 +30,4 @@ userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medica
 #PAT1f5a3, Lee Chong, Ch0ng@55, patient, 2026-09-05 16:22:00, leechong@gmail.com, , 
 #PATb92e7, Nurul Izzati, Nur#9012, patient, 2026-09-08 12:01:00, nurul@gmail.com, , 
 #PAT6d3c8, Zhang Wei, Zh@ngW33, patient, 2026-09-10 18:33:00, zhangwei@gmail.com, , 
-#PAT0a4f2, Arif Danial, Ar!f3344, patient, 2026-09-14 08:47:00, arif.d@gmail.com, ,
+#PAT0a4f2, Arif Danial, Ar!f3344, patient, 2026-09-14 08:47:00, arif.d@gmail.com, , 

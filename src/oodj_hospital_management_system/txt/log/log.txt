@@ -779,3 +779,13 @@
 [2026-09-18 11:42:52] User {admin staff - #ADMd4e8f - uehehe} logged out
 [2026-09-18 14:49:51] User {admin staff - #ADMd4e8f - uehehe} logged in
 [2026-09-18 15:02:32] User {medical manager - #MNG74295 - Reen} logged in
+[2026-09-18 15:08:25] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-18 15:18:22] User {admin staff - #ADMd4e8f - uehehe} modified password for User {patient - #PATa6a72 - Chuaaa}
+[2026-09-18 15:24:04] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PATa6a72 - Chuaaa}
+[2026-09-18 15:40:40] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOCd4e8f}'s Medical Department to {#DEPT003}
+[2026-09-18 15:46:47] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOC30c95} to Medical Manager {#MNG74295}
+[2026-09-18 15:52:38] User {admin staff - #ADMd4e8f - uehehe} modified Hospital Asset {#ROOM001 - Consultation Room 1}
+[2026-09-18 15:54:41] User {admin staff - #ADMd4e8f - uehehe} deleted Hospital Asset {#ROOM001}
+[2026-09-18 15:59:39] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#ASTc030c - Consultation Room 1}
+[2026-09-18 16:07:26] User {admin staff - #ADMd4e8f - uehehe} approved Request {#REQc16e8}
+[2026-09-18 16:17:01] User {admin staff - #ADMd4e8f - uehehe} created Consultation Type {#CTYPE06ccb}
