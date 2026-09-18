@@ -789,3 +789,14 @@
 [2026-09-18 15:59:39] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#ASTc030c - Consultation Room 1}
 [2026-09-18 16:07:26] User {admin staff - #ADMd4e8f - uehehe} approved Request {#REQc16e8}
 [2026-09-18 16:17:01] User {admin staff - #ADMd4e8f - uehehe} created Consultation Type {#CTYPE06ccb}
+[2026-09-18 23:40:12] User {medical manager - #MNG74295 - Reen} generated Bill {#BILL05893} from Consultation {#CON4a1e9}
+[2026-09-19 01:41:15] User {patient - #PAT0a4f2 - Arif Danial} logged in
+[2026-09-19 01:43:03] User {doctor - #DOC2e84b - Tan Mei Ling} logged in
+[2026-09-19 01:44:56] User {doctor - #DOC2e84b - Tan Mei Ling} logged out
+[2026-09-19 01:45:14] User {medical manager - #MNG74295 - Reen} logged in
+[2026-09-19 01:49:33] User {medical manager - #MNG74295 - Reen} created Doctor Shift {#SHIFT531f8} for Doctor {#DOCd4e8f - bug1}
+[2026-09-19 01:49:55] User {medical manager - #MNG74295 - Reen} created Doctor Shift {#SHIFT9515c} for Doctor {#DOCd4e8f - bug1}
+[2026-09-19 01:50:20] User {medical manager - #MNG74295 - Reen} created Doctor Shift {#SHIFT90e69} for Doctor {#DOCa1b2c - Lim Wei}
+[2026-09-19 01:51:23] User {medical manager - #MNG74295 - Reen} created Doctor Shift {#SHIFTc4e24} for Doctor {#DOC5c91e - Raj Kumar}
+[2026-09-19 01:51:31] User {medical manager - #MNG74295 - Reen} logged out
+[2026-09-19 01:51:54] User {patient - #PAT79a39 - Chua} logged in
