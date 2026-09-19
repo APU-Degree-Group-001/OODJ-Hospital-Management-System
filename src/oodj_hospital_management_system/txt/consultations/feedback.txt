@@ -1,11 +1,20 @@
 feedbackId, consultationId, patientId, rating, comment, submittedDateTime
 #FB001, #CON001, #PAT3fad4, 5, Doctor was very helpful and explained the treatment clearly, 2026-08-05 12:30:00
-#FB002, #CON002, #PAT79a39, 4, Consultation was good and the doctor was professional, 2026-08-05 14:20:00
-#FB2bf5f, #CONd3224, #PAT3fad4, 4, not\ntest file watcher :3, 2026-09-13 23:26:17
+#FB002, #CON002, #PAT3fad4, 4, Consultation was good and the doctor was professional, 2026-08-05 14:20:00
+#FB005, #CON51d0a, #PAT3fad4, 5, Very short wait and the doctor listened properly, 2026-08-16 20:10:00
+#FB006, #CON9f318, #PATa6a72, 4, Explained my results clearly#| would come back, 2026-08-17 09:30:00
+#FB1c7e4, #CON7a04f, #PATaa85d, 3, Consultation was fine but the room was quite cold, 2026-08-18 14:05:00
+#FB6a83d, #CON8d7b3, #PATe55bd, 5, Best screening experience I have had here\nstaff were lovely, 2026-08-19 11:45:00
+#FB0b592, #CONb83c4, #PAT4e7b1, 4, Doctor was patient with all my questions, 2026-09-06 19:20:00
+#FBe47c1, #CONf90a2, #PAT1f5a3, 5, Worth the price#| very detailed session, 2026-09-07 08:50:00
+#FB39d06, #COND1f65, #PAT6d3c8, 1, Waited over an hour and the consultation lasted five minutes, 2026-09-07 21:15:00
 #FB003, #CON5b2e8, #PAT4e7b1, 5, Very thorough explanation of my ECG results, 2026-09-01 18:00:00
 #FB004, #CON9a17d, #PAT8c2d9, 3, Waiting time was long but the doctor was polite, 2026-09-02 09:15:00
 #FB7c3a9, #CON3d60f, #PAT1f5a3, 5, Finally got a proper diagnosis after months\nvery grateful, 2026-09-03 20:40:00
 #FB0e52d, #CONe84b1, #PATb92e7, 4, Video call was convenient#| audio cut off once, 2026-09-03 08:05:00
 #FBa94f1, #CON7e4a6, #PAT0a4f2, 5, Doctor was great with my son and made him feel at ease, 2026-09-06 13:25:00
+#FB2bf5f, #CONd3224, #PAT3fad4, 4, not\ntest file watcher :3, 2026-09-13 23:26:17
 #FB18cb6, #CON6c3f9, #PAT72528, 2, Felt rushed and my questions were not fully answered, 2026-09-13 09:50:00
+#FBc2810, #CON5c309, #PATf74a0, 4, Emergency team acted fast#| thank you, 2026-09-16 10:05:00
+#FB84f3b, #CONa4b60, #PAT79a39, 5, Friendly doctor and clear follow-up plan, 2026-09-16 18:30:00
 #FBd2607, #CON0e785, #PATaa85d, 4, Clear advice on next steps, 2026-09-17 10:10:00

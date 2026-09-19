@@ -1,7 +1,7 @@
 consultationId, consultationSlotId, patientId, consultationTypeId, description, hospitalAssetAllocationId, status
 #CON001, #SLOT001, #PAT3fad4, #CTYPE002, Patient complained of persistent headache, #ALLOC001, COMPLETED
 #CON002, #SLOT002, #PAT3fad4, #CTYPE002, Patient reported chest discomfort and shortness of breath, #ALLOC002, COMPLETED
-#CON003, #SLOT003, #PAT79a39, #CTYPE001, Patient attended routine health consultation, #ALLOC003, COMPLETED
+#CON003, #SLOT003, #PAT79a39, #CTYPE001, Patient attended routine health consultation, #ALLOC006, COMPLETED
 #CON004, #SLOT004, #PAT79a39, #CTYPE001, Patient complained of fever and sore throat, #ALLOC003, IN_PROGRESS
 #CONd3224, #SLOT98432, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
 #CON167e9, #SLOTb7795, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
@@ -32,3 +32,31 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON6e4c1, #SLOTd90a5, #PATb3d5f, #CTYPE001, Skin rash on neck after sun exposure, , COMPLETED
 #CONa05d7, #SLOT2e63c, #PAT3fad4, #CTYPE002, Review of cardiac enzyme results, , COMPLETED
 #CON7b39e, #SLOT8c471, #PAT79a39, #CTYPE33119, General wellness consultation, , COMPLETED
+#CON51d0a, #SLOT1c0f6, #PAT3fad4, #CTYPE001, Persistent dry cough for one week, , COMPLETED
+#CONc4e72, #SLOT17519, #PAT79a39, #CTYPE002, Shortness of breath when climbing stairs, , COMPLETED
+#CON9f318, #SLOT2a1da, #PATa6a72, #CTYPE001, Follow-up on blood pressure medication, , COMPLETED
+#CON2b6d5, #SLOTf84e0, #PAT72528, #CTYPE003, Deep cut on right hand from kitchen accident, , COMPLETED
+#CON7a04f, #SLOT4fb47, #PATaa85d, #CTYPE001, Lower back stiffness in the mornings, , COMPLETED
+#CONe2c91, #SLOT91d5b, #PATb3d5f, #CTYPE002, Recurring sinus pressure and headaches, , COMPLETED
+#CON8d7b3, #SLOTc7d86, #PATe55bd, #CTYPE33119, Full annual health screening package, , COMPLETED
+#CON0a5e6, #SLOT21efc, #PAT31c63, #CTYPE001, Mild food poisoning symptoms overnight, , COMPLETED
+#CONb83c4, #SLOTe4c9e, #PAT4e7b1, #CTYPE002, Review of irregular heartbeat episodes, , COMPLETED
+#CON46f1d, #SLOTecc82, #PAT8c2d9, #CTYPE001, Routine diabetes follow-up, , COMPLETED
+#CONf90a2, #SLOT50eb9, #PAT1f5a3, #CTYPEedccb, Extended consultation for chronic fatigue, , COMPLETED
+#CON3e847, #SLOT446e0, #PATb92e7, #CTYPE001, Ear pain and reduced hearing on left side, , COMPLETED
+#COND1f65, #SLOT35962, #PAT6d3c8, #CTYPE002, Joint pain in both knees#| worse at night, , COMPLETED
+#CON62ba8, #SLOT9908f, #PAT0a4f2, #CTYPE001, Seasonal allergy symptoms, , COMPLETED
+#CON5c309, #SLOT26457, #PATf74a0, #CTYPE003, Fainting episode at work, , COMPLETED
+#CON1e7d4, #SLOT1d982, #PAT3fad4, #CTYPE001, Follow-up on headache medication dosage, , COMPLETED
+#CONa4b60, #SLOT96a51, #PAT79a39, #CTYPE33119, General wellness and lifestyle review, , COMPLETED
+#CON7f2c8, #SLOTf5d97, #PATa6a72, #CTYPE002, Stomach pain after meals for two weeks, , COMPLETED
+#CONb05e3, #SLOTf4126, #PAT72528, #CTYPE001, Sore throat and mild fever, , COMPLETED
+#CON8c41f, #SLOTc3e74, #PATaa85d, #CTYPE002, Tingling in both feet#| suspected nerve issue, , COMPLETED
+#CON3a71c, #SLOT6d1a9, #PAT3fad4, #CTYPE001, Mild fever and body aches for two days, , COMPLETED
+#CONd68e4, #SLOTb4e70, #PAT79a39, #CTYPE002, Palpitations after caffeine intake, , COMPLETED
+#CON9c052, #SLOT18c3f, #PATa6a72, #CTYPE001, Ongoing lower back pain from desk work, , COMPLETED
+#CONf3d17, #SLOTe95a2, #PATe55bd, #CTYPE003, Allergic reaction with facial swelling, , COMPLETED
+#CON5b8a6, #SLOT7c04d, #PAT31c63, #CTYPE33119, Routine wellness check before travel, , COMPLETED
+#CONe1c93, #SLOTa38f1, #PATb3d5f, #CTYPE001, Persistent dry eyes and blurred vision, , COMPLETED
+#CON72fd0, #SLOT5e962, #PAT4e7b1, #CTYPE002, Follow-up on thyroid medication dosage, , COMPLETED
+#CONa8e56, #SLOTd06b8, #PAT8c2d9, #CTYPEedccb, Extended review of recurring migraines, , COMPLETED

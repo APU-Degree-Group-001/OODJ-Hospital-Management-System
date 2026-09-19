@@ -13,4 +13,4 @@ assetId, assetType, assetName, imagePath, location, description, totalBeds, stat
 #XRAY002, XRay Room, X-Ray Room 2, , Block C Level 3, Digital radiography room, , Available
 #IMG002, Imaging Room, MRI Suite, , Block D Level 1, Room housing the 1.5T MRI scanner, , Occupied
 #THTR001, Operating Theatre, Operating Theatre 1, , Block D Level 2, General surgical theatre, , Available
-#ASTc030c, Consultation Room, Consultation Room 1, , Block A Level 1, General consultation room, , Available
+#ASTc030c, Consultation Room, Consultation Room 5, , Block A Level 1, General consultation room, , Available
