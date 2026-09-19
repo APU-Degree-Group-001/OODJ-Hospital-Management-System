@@ -1,4 +1,5 @@
 assetId, assetType, assetName, imagePath, location, description, totalBeds, status
+#ROOM001, Consultation Room, Consultation Room 1, oodj_hospital_management_system/assets/img/hospital_assets/#ROOM001_1789191772550.jpeg, Block C Level 2, Testing, , Occupied
 #ROOM002, Consultation Room, Consultation Room 2, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block A Level 1, General consultation room, , Available
 #WARD001, Ward, General Ward A, , Block B Level 2, Updated via controller test, 15, Available
 #LAB001, Laboratory, Main Laboratory, images/assets/lab001.jpg, Block C Level 1, Laboratory for medical testing, , Available

@@ -68,6 +68,7 @@ public class DoctorWardAdmissionPanel extends javax.swing.JPanel {
 
         this.cl = (CardLayout) wardContentArea.getLayout();
         cl.show(wardContentArea, "wards");
+        resetScrollToTop();
     }
     
     private void setNavButtonActive(javax.swing.JButton button, boolean active) {
@@ -208,14 +209,23 @@ public class DoctorWardAdmissionPanel extends javax.swing.JPanel {
         setNavButtonActive(wardsButton, true);
         setNavButtonActive(admissionsButton, false);
         cl.show(wardContentArea, "wards");
+        resetScrollToTop();
     }//GEN-LAST:event_wardsButtonActionPerformed
 
     private void admissionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_admissionsButtonActionPerformed
         setNavButtonActive(wardsButton, false);
         setNavButtonActive(admissionsButton, true);
         cl.show(wardContentArea, "wardAdmissions");
+        resetScrollToTop();
     }//GEN-LAST:event_admissionsButtonActionPerformed
 
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            });
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private final javax.swing.JButton admissionsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
