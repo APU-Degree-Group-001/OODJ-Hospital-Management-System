@@ -100,12 +100,25 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
             () -> {
                 // Back button: drop this card and return to the completed-consultations list
                 cardLayout.show(cardContainer, "completedConsultationSlots");
+                resetScrollToTop();
             }
         );
 
         String cardName = "consultationDetails-" + consultation.getConsultationId();
         cardContainer.add(detailsPanel, cardName);
         cardLayout.show(cardContainer, cardName);
+        resetScrollToTop();
+    }
+    
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.JScrollPane sp = (javax.swing.JScrollPane)
+                javax.swing.SwingUtilities.getAncestorOfClass(javax.swing.JScrollPane.class, cardContainer);
+            if (sp != null) {
+                javax.swing.SwingUtilities.invokeLater(() ->
+                    sp.getViewport().setViewPosition(new java.awt.Point(0, 0)));
+            }
+        });
     }
     
     private List<Consultation> getBaseCompletedConsultations() {

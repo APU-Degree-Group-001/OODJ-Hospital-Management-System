@@ -231,6 +231,7 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
         setNavButtonActive(bookedConsultationsButton, false);
         setNavButtonActive(completedConsultationsButton, true);
         cl.show(consultationContentArea, "completedConsultationSlots");
+        resetScrollToTop();
     }//GEN-LAST:event_completedConsultationsButtonActionPerformed
 
     private void bookedConsultationsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookedConsultationsButtonActionPerformed
@@ -238,6 +239,7 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
         setNavButtonActive(bookedConsultationsButton, true);
         setNavButtonActive(completedConsultationsButton, false);
         cl.show(consultationContentArea, "bookedConsultationSlots");
+        resetScrollToTop();
     }//GEN-LAST:event_bookedConsultationsButtonActionPerformed
 
     private void availableConsultationsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_availableConsultationsButtonActionPerformed
@@ -245,9 +247,18 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
         setNavButtonActive(bookedConsultationsButton, false);
         setNavButtonActive(completedConsultationsButton, false);
         cl.show(consultationContentArea, "availableConsultationSlots");
+        resetScrollToTop();
     }//GEN-LAST:event_availableConsultationsButtonActionPerformed
 
 
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            });
+        });
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton availableConsultationsButton;
     private javax.swing.JButton bookedConsultationsButton;
