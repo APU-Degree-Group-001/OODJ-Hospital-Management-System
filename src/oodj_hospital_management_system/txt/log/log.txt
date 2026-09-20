@@ -816,3 +816,29 @@
 [2026-09-20 22:08:13] User {medical manager - #MNG58321 - Chee} logged in
 [2026-09-20 22:14:41] User {medical manager - #MNG58321 - Chee} logged in
 [2026-09-20 22:15:26] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 00:25:14] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 00:27:33] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 00:30:34] User {medical manager - #MNG58321 - Chee} created Doctor Shift {#SHIFTa6082} for Doctor {#DOCd4e8c - Waka Waka}
+[2026-09-21 00:46:58] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-21 00:47:06] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-21 00:48:32] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-21 00:48:45] User {doctor - #DOCd4e8c - Waka Waka} logged in
+[2026-09-21 00:49:02] User {doctor - #DOCd4e8c - Waka Waka} submitted Request {#REQa6a40} of type {CANCEL_SHIFT}
+[2026-09-21 00:49:11] User {doctor - #DOCd4e8c - Waka Waka} logged out
+[2026-09-21 00:49:20] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 00:49:55] User {medical manager - #MNG58321 - Chee} rejected Request {#REQa6a40}
+[2026-09-21 00:50:00] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-21 00:50:06] User {doctor - #DOCd4e8c - Waka Waka} logged in
+[2026-09-21 00:59:14] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 01:06:41] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 01:07:23] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-21 01:14:26] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-21 01:27:33] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-21 01:29:22] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-21 01:33:37] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-21 01:33:45] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-21 01:35:06] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-21 01:35:14] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-21 01:35:51] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-21 01:36:00] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-21 01:38:05] User {medical manager - #MNG58321 - Chee} logged in

@@ -58,12 +58,14 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
     private HospitalAssetController assetCtrl;
     private List<WardAdmission> currentAdmissions;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+    private javax.swing.JPanel cardContainer;
 
     /**
      * Creates new form Admin StaffManagement
      */
-    public WardAdmissionsPanel(UserController usrCtrl) {
+    public WardAdmissionsPanel(UserController usrCtrl, javax.swing.JPanel cardContainer) {
         this.usrCtrl = usrCtrl;
+        this.cardContainer = cardContainer;
         this.admissionCtrl = new WardAdmissionController(usrCtrl.getActiveUser());
         this.assetCtrl = new HospitalAssetController(usrCtrl.getActiveUser());
         initComponents();
@@ -423,6 +425,17 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
             return prefix + " before " + display.format(java.sql.Date.valueOf(end));
         }
     }
+    
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.JScrollPane sp = (javax.swing.JScrollPane)
+                javax.swing.SwingUtilities.getAncestorOfClass(javax.swing.JScrollPane.class, cardContainer);
+            if (sp != null) {
+                javax.swing.SwingUtilities.invokeLater(() ->
+                    sp.getViewport().setViewPosition(new java.awt.Point(0, 0)));
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -617,6 +630,7 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
         currentAdmissions = results;
         populateRequestTable(results);
         updateResultLabel("Showing results for \"" + rawKeyword + "\"", results.size());
+        resetScrollToTop();
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
@@ -638,6 +652,7 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
             default: columnToSortIndex = 3;
         }
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
+        resetScrollToTop();
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
@@ -701,12 +716,17 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
                 updateResultLabel("Showing " + base.size() + " admission(s)", base.size());
             }
         }
+        resetScrollToTop();
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadAdmissions();
         searchField.setText("");
+        filterByField.setSelectedIndex(0);
+        sortField.setSelectedIndex(0);
+        requestTable.setRowSorter(null);
         showResultsForLabel.setText("");
+        loadAdmissions();
+        resetScrollToTop();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
     private void admitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_admitButtonActionPerformed

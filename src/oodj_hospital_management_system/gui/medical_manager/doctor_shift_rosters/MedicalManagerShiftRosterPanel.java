@@ -5,7 +5,9 @@
 package oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +42,8 @@ import oodj_hospital_management_system.models.DoctorShift;
 import oodj_hospital_management_system.models.DoctorShift.DoctorShiftStatus;
 import oodj_hospital_management_system.models.MedicalDepartment;
 import oodj_hospital_management_system.models.MedicalManager;
+import oodj_hospital_management_system.models.User;
+import oodj_hospital_management_system.services.DoctorManagement;
 import oodj_hospital_management_system.services.UserManagement;
 import oodj_hospital_management_system.utils.DateTime;
 import oodj_hospital_management_system.utils.ReportPDFExporter;
@@ -50,6 +54,9 @@ import oodj_hospital_management_system.utils.ReportPDFExporter;
  */
 public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
+    private CardLayout cl;
+    public ShiftRosterPanel rosterGrid;
+    public RequestPanel requestPanel;
     private java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
 
     private LocalDate currentWeekStart;
@@ -60,50 +67,89 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
     private static final DateTimeFormatter DAY_HEADER_FMT = DateTimeFormatter.ofPattern("d MMMM yyyy");
     String imageFileName = "oodj_hospital_management_system/assets/img/layout/doctor_shift.png";
 
-    private ShiftRosterGridPanel rosterGrid;
-
     /**
      * Creates new form adminDashboardPanel
      */
     public MedicalManagerShiftRosterPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
-        currentWeekStart = LocalDate.now().with(DayOfWeek.MONDAY);
+
         initComponents();
 
-        rosterGrid = new ShiftRosterGridPanel();
-        rosterGrid.setBackground(new Color(246,251,255));
-        rosterGrid.setShiftClickListener(this::handleShiftCardClick);
-        javax.swing.JScrollPane rosterScrollPane = new javax.swing.JScrollPane(rosterGrid);
-        rosterScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        rosterScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        rosterScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        rosterScrollPane.getViewport().setBackground(java.awt.Color.WHITE);
-        rosterScrollPane.getViewport().addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
-                rosterGrid.handleViewportResized();
-            }
-        });
-        rosterGridContainer.setLayout(new java.awt.BorderLayout());
-        rosterGridContainer.add(rosterGrid, java.awt.BorderLayout.NORTH);
-        rosterGridContainer.setPreferredSize(null); // let it size to rosterGrid's content instead of the fixed 1160x500 from Design view
+        navigationPane.setPreferredSize(null);
 
-        allDoctors = loadAllDoctors();
-        refreshRoster();
-
-        addComponentListener(new java.awt.event.ComponentAdapter() {
+        // Cap dashboardPanel's WIDTH only; height stays dynamic so vertical
+        // scrolling keeps working as content grows/shrinks.
+        javax.swing.JPanel cappedDashboard = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10)) {
             @Override
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                allDoctors = loadAllDoctors();
-                refreshRoster();
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(Math.min(d.width, 1020), d.height);
             }
-        });
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+        };
+        cappedDashboard.setBackground(dashboardPanel.getBackground());
+        cappedDashboard.setBorder(dashboardPanel.getBorder());
+        cappedDashboard.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+        cappedDashboard.add(shiftRosterContentArea, java.awt.BorderLayout.CENTER);
+
+        dashboardPanel = cappedDashboard;
+        jScrollPane2.setViewportView(dashboardPanel);
+
+        this.allDoctors = loadAllDoctors();
+        this.assignedDoctors = loadAssignedDoctors();
         
+        this.rosterGrid = new ShiftRosterPanel(usrCtrl);
+        this.requestPanel = new RequestPanel(usrCtrl);
+
+        shiftRosterContentArea.add(rosterGrid, "shiftRoster");
+        shiftRosterContentArea.add(requestPanel, "cancellationRequests");
+
+        setNavButtonActive(rosterButton, true);
+        setNavButtonActive(requestsButton, false);
+
         // Top Banner ~
         jPanel1.setOpaque(false);
         jPanel8.setOpaque(false);
+        navigationPane.setOpaque(false);
+
+        this.cl = (CardLayout) shiftRosterContentArea.getLayout();
+        cl.show(shiftRosterContentArea, "shiftRoster");
+        resetScrollToTop();
     }
     
+    private void setNavButtonActive(javax.swing.JButton button, boolean active) {
+        oodj_hospital_management_system.gui.utils.RoundedButton rb = (oodj_hospital_management_system.gui.utils.RoundedButton) button;
+
+        java.awt.Color lightGrey = new java.awt.Color(230, 230, 230);
+        java.awt.Color hoverGrey = new java.awt.Color(200, 200, 200);
+        java.awt.Color pressedGrey = new java.awt.Color(180, 180, 180);
+
+        java.awt.Color blue = new java.awt.Color(41, 121, 255);
+        java.awt.Color hoverBlue = new java.awt.Color(25, 100, 230);
+        java.awt.Color pressedBlue = new java.awt.Color(15, 85, 210);
+
+        if (active) {
+            rb.setButtonColors(blue, hoverBlue, pressedBlue);
+            rb.setForeground(java.awt.Color.WHITE);
+            rb.setFont(rb.getFont().deriveFont(java.awt.Font.BOLD));
+        } else {
+            rb.setButtonColors(lightGrey, hoverGrey, pressedGrey);
+            rb.setForeground(new java.awt.Color(60, 60, 60));
+            rb.setFont(rb.getFont().deriveFont(java.awt.Font.PLAIN));
+        }
+    }
+
+    private void resetScrollToTop() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                jScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 0));
+            });
+        });
+    }
+
     private List<Doctor> loadAllDoctors() {
         return UserManagement.getAllDoctors().stream()
             .filter(usr -> usr instanceof Doctor)
@@ -111,131 +157,28 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
             .toList();
     }
     
-    public void refreshRoster() {
-        updateWeekLabels();
+    private List<Doctor> loadAssignedDoctors() {
+        User activeUser = usrCtrl.getActiveUser();
+        if (!(activeUser instanceof MedicalManager)) {
+            return new ArrayList<>();
+        }
+        MedicalManager activeManager = (MedicalManager) activeUser;
 
-        List<DoctorShift> allShifts =
-            usrCtrl.getDoctorController().getAllDoctorShifts();
+        List<Doctor> assigned = new ArrayList<>();
+        for (DoctorShift shift : DoctorManagement.getAllDoctorShifts()) {
+            MedicalManager shiftManager = shift.getMedicalManager();
+            Doctor doctor = shift.getDoctor();
+            if (shiftManager == null || doctor == null) continue;
+            if (!shiftManager.getId().equals(activeManager.getId())) continue;
 
-        MedicalManager currentManager =
-            (MedicalManager) usrCtrl.getActiveUser();
-
-        // Get doctors assigned to the current Medical Manager
-        assignedDoctors = allDoctors.stream()
-            .filter(doctor -> doctor.getMedicalManager().equals(currentManager))
-            .toList();
-
-        currentDoctors = getFilteredSortedDoctors(allShifts);
-
-        rosterGrid.updateData(currentDoctors, allShifts, currentWeekStart);
-
-        updateResultLabel(currentDoctors.size());
-    }
-
-    /** Search (Doctor ID / Name) -> Filter (All / Assigned this week) -> Sort (ID / Name). */
-    private List<Doctor> getFilteredSortedDoctors(List<DoctorShift> allShifts) {
-        String keyword = searchField.getText().trim().toLowerCase();
-        String filterSelected = (String) sortField1.getSelectedItem();
-        String sortSelected = (String) sortField.getSelectedItem();
-        LocalDate weekEnd = currentWeekStart.plusDays(6);
-
-        List<Doctor> result = new ArrayList<>();
-        for (Doctor d : allDoctors) {
-            if (!keyword.isEmpty()) {
-                boolean matchesDoctor = d.getId().toLowerCase().contains(keyword)
-                        || d.getName().toLowerCase().contains(keyword);
-                boolean matchesShift = allShifts.stream()
-                        .anyMatch(s -> s.getDoctor().equals(d)
-                                && s.getShiftId().toLowerCase().contains(keyword));
-                if (!matchesDoctor && !matchesShift) continue;
+            boolean alreadyAdded = assigned.stream().anyMatch(d -> d.getId().equals(doctor.getId()));
+            if (!alreadyAdded) {
+                assigned.add(doctor);
             }
-            if ("Assigned Doctors".equals(filterSelected)) {
-                boolean hasShiftThisWeek = allShifts.stream()
-                    .filter(s -> s.getDoctor().equals(d))
-                    .anyMatch(s -> {
-                        LocalDate shiftDate = DateTime.toDateTimeObject(s.getStartDateTime()).toLocalDate();
-                        return !shiftDate.isBefore(currentWeekStart) && !shiftDate.isAfter(weekEnd);
-                    });
-                if (!hasShiftThisWeek) continue;
-            }
-            result.add(d);
         }
-
-        if ("ID".equals(sortSelected)) {
-            result.sort(Comparator.comparing(Doctor::getId));
-        } else {
-            result.sort(Comparator.comparing(Doctor::getName));
-        }
-
-        return result;
-    }
-
-    private void updateResultLabel(int count) {
-        String keyword = searchField.getText().trim();
-        if (keyword.isEmpty()) {
-            showResultsForPanel.setVisible(false);
-        } else {
-            showResultsForPanel.setVisible(true);
-            showResultsForLabel.setText("Showing results for \"" + keyword + "\" (" + count + " found)");
-        }
+        return assigned;
     }
     
-    private void updateWeekLabels() {
-        mondayLabel.setText(currentWeekStart.format(DAY_HEADER_FMT));
-        sundayLabel.setText(currentWeekStart.plusDays(6).format(DAY_HEADER_FMT));
-    }
-    
-    private void handleShiftCardClick(DoctorShift shift) {
-        MedicalManager currentManager = (MedicalManager) usrCtrl.getActiveUser();
-        MedicalManager assignedManager = shift.getDoctor().getMedicalManager();
-
-        boolean isOwnDoctor = assignedManager != null
-                && assignedManager.getId() != null
-                && !assignedManager.getId().isEmpty()
-                && assignedManager.getId().equals(currentManager.getId());
-
-        if (!isOwnDoctor) {
-            JOptionPane.showMessageDialog(parentWindow,
-                String.format("Dr. %s is not assigned to you, so you can't manage this shift.", shift.getDoctor().getName()),
-                "Access Denied", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (shift.getStatus() == DoctorShiftStatus.CANCELLED || shift.getStatus() == DoctorShiftStatus.COMPLETED) {
-            JOptionPane.showMessageDialog(parentWindow,
-                String.format("Shift '%s' is already %s and cannot be modified.", shift.getShiftId(), shift.getStatus().name().toLowerCase()),
-                "Shift Locked", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        java.time.LocalDateTime shiftStart = DateTime.toDateTimeObject(shift.getStartDateTime());
-        if (shiftStart.isBefore(java.time.LocalDateTime.now())) {
-            JOptionPane.showMessageDialog(parentWindow,
-                String.format("Shift '%s' already started at %s and is overdue, so it can no longer be cancelled.",
-                    shift.getShiftId(), shiftStart.format(java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a"))),
-                "Shift Overdue", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        int choice = JOptionPane.showConfirmDialog(
-            parentWindow,
-            String.format("Cancel shift '%s' for Dr. %s?\nThis action cannot be undone.", shift.getShiftId(), shift.getDoctor().getName()),
-            "Confirm Cancel Shift",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
-            LinkedHashMap<String, String> msg = usrCtrl.getDoctorController().cancelShift(shift);
-            if (msg.get("success") != null) {
-                JOptionPane.showMessageDialog(parentWindow, msg.get("msg"));
-                refreshRoster();
-            } else {
-                JOptionPane.showMessageDialog(parentWindow, "Failed to cancel shift:\n" + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -253,32 +196,12 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        createShiftButton = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 32767));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 32767));
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 0), new java.awt.Dimension(40, 32767));
         generateReportButton = new javax.swing.JButton();
-        usrMngContentArea = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        searchPane = new javax.swing.JPanel();
-        searchField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
-        resetSearchButton = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        sortByPane = new javax.swing.JPanel();
-        sortByLabel = new javax.swing.JLabel();
-        sortField = new javax.swing.JComboBox<>();
-        sortByLabel1 = new javax.swing.JLabel();
-        sortField1 = new javax.swing.JComboBox<>();
-        wrapperPane = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
-        previousWeekButton = new javax.swing.JToggleButton();
-        mondayLabel = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        sundayLabel = new javax.swing.JLabel();
-        nextWeekButton = new javax.swing.JToggleButton();
-        showResultsForPanel = new javax.swing.JPanel();
-        showResultsForLabel = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        rosterGridContainer = new javax.swing.JPanel();
+        navigationPane = new javax.swing.JPanel();
+        shiftRosterContentArea = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
@@ -294,10 +217,11 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         jPanel5.setBackground(new java.awt.Color(246, 251, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 20, 60));
-        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 120));
-        jPanel5.setLayout(new java.awt.BorderLayout(0, 20));
+        jPanel5.setPreferredSize(new java.awt.Dimension(1020, 200));
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel8.setBackground(new java.awt.Color(246, 251, 255));
+        jPanel8.setPreferredSize(new java.awt.Dimension(1020, 140));
 
         jPanel1.setBackground(new java.awt.Color(246, 251, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(700, 77));
@@ -328,13 +252,9 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jPanel1.add(jLabel1, gridBagConstraints);
 
         jPanel8.add(jPanel1);
-
-        createShiftButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        createShiftButton.setText("Create Shift");
-        createShiftButton.setMaximumSize(new java.awt.Dimension(115, 23));
-        createShiftButton.setPreferredSize(new java.awt.Dimension(150, 40));
-        createShiftButton.addActionListener(this::createShiftButtonActionPerformed);
-        jPanel8.add(createShiftButton);
+        jPanel8.add(filler1);
+        jPanel8.add(filler2);
+        jPanel8.add(filler3);
 
         generateReportButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         generateReportButton.setText("Generate Report");
@@ -343,218 +263,54 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         generateReportButton.addActionListener(this::generateReportButtonActionPerformed);
         jPanel8.add(generateReportButton);
 
-        jPanel5.add(jPanel8, java.awt.BorderLayout.CENTER);
+        jPanel5.add(jPanel8);
+
+        navigationPane.setBackground(new java.awt.Color(246, 251, 255));
+        navigationPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 50, 0, 50));
+        navigationPane.setPreferredSize(new java.awt.Dimension(16897, 200));
+        navigationPane.setLayout(new java.awt.GridBagLayout());
+
+        rosterButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        rosterButton.setText("Doctor Shift Roster");
+        rosterButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        rosterButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        rosterButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        rosterButton.setSelected(true);
+        rosterButton.addActionListener(this::rosterButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
+        navigationPane.add(rosterButton, gridBagConstraints);
+
+        requestsButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        requestsButton.setText("Cancellation Requests");
+        requestsButton.setMaximumSize(new java.awt.Dimension(250, 50));
+        requestsButton.setMinimumSize(new java.awt.Dimension(250, 50));
+        requestsButton.setPreferredSize(new java.awt.Dimension(200, 45));
+        requestsButton.addActionListener(this::requestsButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
+        navigationPane.add(requestsButton, gridBagConstraints);
+
+        jPanel5.add(navigationPane);
 
         dashboardPanel.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        usrMngContentArea.setBackground(new java.awt.Color(246, 251, 255));
-        usrMngContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
-        usrMngContentArea.setLayout(new java.awt.BorderLayout());
-
-        jPanel7.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 60, 0, 60));
-        jPanel7.setLayout(new java.awt.BorderLayout());
-
-        jPanel2.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel2.setPreferredSize(new java.awt.Dimension(1160, 50));
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        searchPane.setBackground(new java.awt.Color(246, 251, 255));
-
-        searchField.setMinimumSize(new java.awt.Dimension(250, 22));
-        searchField.setPreferredSize(new java.awt.Dimension(250, 40));
-        searchField.addActionListener(this::searchFieldActionPerformed);
-        searchPane.add(searchField);
-
-        searchButton.setText("Search");
-        searchButton.addActionListener(this::searchButtonActionPerformed);
-        searchPane.add(searchButton);
-
-        resetSearchButton.setText("Reset");
-        resetSearchButton.addActionListener(this::resetSearchButtonActionPerformed);
-        searchPane.add(resetSearchButton);
-
-        jPanel2.add(searchPane, java.awt.BorderLayout.WEST);
-        jPanel2.add(filler1, java.awt.BorderLayout.LINE_END);
-
-        sortByPane.setBackground(new java.awt.Color(246, 251, 255));
-
-        sortByLabel.setText("Sort By");
-        sortByPane.add(sortByLabel);
-
-        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Name" }));
-        sortField.setPreferredSize(new java.awt.Dimension(150, 30));
-        sortField.setRequestFocusEnabled(false);
-        sortField.addActionListener(this::sortFieldActionPerformed);
-        sortByPane.add(sortField);
-
-        sortByLabel1.setText("Filter By");
-        sortByPane.add(sortByLabel1);
-
-        sortField1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Doctors", "Assigned Doctors" }));
-        sortField1.setPreferredSize(new java.awt.Dimension(150, 30));
-        sortField1.setRequestFocusEnabled(false);
-        sortField1.addActionListener(this::sortField1ActionPerformed);
-        sortByPane.add(sortField1);
-
-        jPanel2.add(sortByPane, java.awt.BorderLayout.LINE_END);
-
-        jPanel7.add(jPanel2, java.awt.BorderLayout.NORTH);
-
-        wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
-        wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
-        wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
-
-        jPanel6.setBackground(new java.awt.Color(246, 251, 255));
-
-        previousWeekButton.setText("<");
-        previousWeekButton.addActionListener(this::previousWeekButtonActionPerformed);
-        jPanel6.add(previousWeekButton);
-
-        mondayLabel.setText("24 August 2026");
-        jPanel6.add(mondayLabel);
-
-        jLabel4.setText("-");
-        jPanel6.add(jLabel4);
-
-        sundayLabel.setText("30 August 2026");
-        jPanel6.add(sundayLabel);
-
-        nextWeekButton.setText(">");
-        nextWeekButton.addActionListener(this::nextWeekButtonActionPerformed);
-        jPanel6.add(nextWeekButton);
-
-        wrapperPane.add(jPanel6);
-
-        showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
-        showResultsForPanel.setAlignmentY(0.0F);
-        showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        showResultsForPanel.add(showResultsForLabel);
-
-        wrapperPane.add(showResultsForPanel);
-
-        jPanel3.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 40, 0));
-        jPanel3.setAlignmentY(0.0F);
-        jPanel3.setLayout(new java.awt.BorderLayout());
-
-        rosterGridContainer.setBackground(new java.awt.Color(246, 251, 255));
-        rosterGridContainer.setPreferredSize(new java.awt.Dimension(1160, 500));
-        jPanel3.add(rosterGridContainer, java.awt.BorderLayout.NORTH);
-
-        wrapperPane.add(jPanel3);
-
-        jPanel7.add(wrapperPane, java.awt.BorderLayout.CENTER);
-
-        usrMngContentArea.add(jPanel7, java.awt.BorderLayout.CENTER);
-
-        dashboardPanel.add(usrMngContentArea, java.awt.BorderLayout.CENTER);
+        shiftRosterContentArea.setBackground(new java.awt.Color(246, 251, 255));
+        shiftRosterContentArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        shiftRosterContentArea.setLayout(new java.awt.CardLayout());
+        dashboardPanel.add(shiftRosterContentArea, java.awt.BorderLayout.CENTER);
 
         jScrollPane2.setViewportView(dashboardPanel);
 
         add(jScrollPane2);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        refreshRoster();
-    }//GEN-LAST:event_searchFieldActionPerformed
-
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        refreshRoster();
-    }//GEN-LAST:event_searchButtonActionPerformed
-
-    private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        searchField.setText("");
-        sortField.setSelectedIndex(0);
-        refreshRoster();
-    }//GEN-LAST:event_resetSearchButtonActionPerformed
-
-    private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
-        searchField.setText("");
-        refreshRoster();
-    }//GEN-LAST:event_sortFieldActionPerformed
-
-    private void createShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createShiftButtonActionPerformed
-        if (assignedDoctors.isEmpty()) {
-            JOptionPane.showMessageDialog(parentWindow, "No doctors available to assign a shift to.", "Cannot Create Shift", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        String[] doctorItems = assignedDoctors.stream()
-            .map(d -> d.getId() + " - " + d.getName())
-            .toArray(String[]::new);
-        javax.swing.JComboBox<String> doctorCombo = new javax.swing.JComboBox<>(doctorItems);
-
-        com.toedter.calendar.JDateChooser dateChooser = new com.toedter.calendar.JDateChooser();
-        dateChooser.setDate(new java.util.Date());
-
-        javax.swing.JSpinner startTimeSpinner = new javax.swing.JSpinner(new javax.swing.SpinnerDateModel());
-        startTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(startTimeSpinner, "HH:mm"));
-
-        javax.swing.JSpinner endTimeSpinner = new javax.swing.JSpinner(new javax.swing.SpinnerDateModel());
-        endTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(endTimeSpinner, "HH:mm"));
-
-        javax.swing.JPanel panel = new javax.swing.JPanel();
-        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
-        panel.add(new javax.swing.JLabel("Doctor:"));
-        panel.add(doctorCombo);
-        panel.add(new javax.swing.JLabel("Shift Date:"));
-        panel.add(dateChooser);
-        panel.add(new javax.swing.JLabel("Start Time:"));
-        panel.add(startTimeSpinner);
-        panel.add(new javax.swing.JLabel("End Time:"));
-        panel.add(endTimeSpinner);
-
-        while (true) {
-            int result = JOptionPane.showConfirmDialog(parentWindow, panel, "Create Shift", JOptionPane.OK_CANCEL_OPTION);
-            if (result != JOptionPane.OK_OPTION) {
-                return;
-            }
-
-            java.util.Date shiftDate = dateChooser.getDate();
-            if (shiftDate == null) {
-                JOptionPane.showMessageDialog(parentWindow, "Please select a shift date", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
-
-            LocalDate date = shiftDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-            java.time.LocalTime startTime = ((java.util.Date) startTimeSpinner.getValue()).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalTime();
-            java.time.LocalTime endTime = ((java.util.Date) endTimeSpinner.getValue()).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalTime();
-
-            java.time.LocalDateTime startDateTime = java.time.LocalDateTime.of(date, startTime);
-            java.time.LocalDateTime endDateTime = java.time.LocalDateTime.of(date, endTime);
-
-            if (!endDateTime.isAfter(startDateTime)) {
-                JOptionPane.showMessageDialog(parentWindow, "End time must be after start time", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
-
-            Doctor selectedDoctor = assignedDoctors.get(doctorCombo.getSelectedIndex());
-            String startStr = startDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            String endStr = endDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-            LinkedHashMap<String, String> msg = usrCtrl.getDoctorController().createShift(selectedDoctor, startStr, endStr);
-            if (msg.get("success") != null) {
-                JOptionPane.showMessageDialog(parentWindow, msg.get("msg"));
-                refreshRoster();
-            } else {
-                JOptionPane.showMessageDialog(parentWindow, "Failed to create shift:\n" + msg.get("msg"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            return;
-        }
-    }//GEN-LAST:event_createShiftButtonActionPerformed
-
-    private void previousWeekButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousWeekButtonActionPerformed
-        previousWeekButton.setSelected(false); // JToggleButton — don't let it stay pressed
-        currentWeekStart = currentWeekStart.minusWeeks(1);
-        refreshRoster();
-    }//GEN-LAST:event_previousWeekButtonActionPerformed
-
-    private void nextWeekButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextWeekButtonActionPerformed
-        nextWeekButton.setSelected(false); // JToggleButton — don't let it stay pressed
-        currentWeekStart = currentWeekStart.plusWeeks(1);
-        refreshRoster();
-    }//GEN-LAST:event_nextWeekButtonActionPerformed
 
     private String selectFolderDir() {
         JFileChooser fileChooser = new JFileChooser();
@@ -678,44 +434,34 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_generateReportButtonActionPerformed
 
-    private void sortField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortField1ActionPerformed
-        refreshRoster();
-    }//GEN-LAST:event_sortField1ActionPerformed
+    private void rosterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rosterButtonActionPerformed
+        setNavButtonActive(rosterButton, true);
+        setNavButtonActive(requestsButton, false);
+        cl.show(shiftRosterContentArea, "shiftRoster");
+    }//GEN-LAST:event_rosterButtonActionPerformed
+
+    private void requestsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsButtonActionPerformed
+        setNavButtonActive(rosterButton, false);
+        setNavButtonActive(requestsButton, true);
+        cl.show(shiftRosterContentArea, "cancellationRequests");
+    }//GEN-LAST:event_requestsButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton createShiftButton;
     private javax.swing.JPanel dashboardPanel;
     private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
     private javax.swing.JButton generateReportButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel mondayLabel;
-    private javax.swing.JToggleButton nextWeekButton;
-    private javax.swing.JToggleButton previousWeekButton;
-    private javax.swing.JButton resetSearchButton;
-    private javax.swing.JPanel rosterGridContainer;
-    private javax.swing.JButton searchButton;
-    private javax.swing.JTextField searchField;
-    private javax.swing.JPanel searchPane;
-    private javax.swing.JLabel showResultsForLabel;
-    private javax.swing.JPanel showResultsForPanel;
-    private javax.swing.JLabel sortByLabel;
-    private javax.swing.JLabel sortByLabel1;
-    private javax.swing.JPanel sortByPane;
-    private javax.swing.JComboBox<String> sortField;
-    private javax.swing.JComboBox<String> sortField1;
-    private javax.swing.JLabel sundayLabel;
-    private javax.swing.JPanel usrMngContentArea;
-    private javax.swing.JPanel wrapperPane;
+    private javax.swing.JPanel navigationPane;
+    private final javax.swing.JButton requestsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
+    private final javax.swing.JButton rosterButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
+    private javax.swing.JPanel shiftRosterContentArea;
     // End of variables declaration//GEN-END:variables
 }

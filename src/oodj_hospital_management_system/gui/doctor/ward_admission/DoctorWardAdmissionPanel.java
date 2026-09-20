@@ -54,7 +54,7 @@ public class DoctorWardAdmissionPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(dashboardPanel);
 
         this.wardsPanel = new WardsPanel(usrCtrl, wardContentArea);
-        this.wardAdmissionsPanel = new WardAdmissionsPanel(usrCtrl);
+        this.wardAdmissionsPanel = new WardAdmissionsPanel(usrCtrl, this);
 
         wardContentArea.add(wardsPanel, "wards");
         wardContentArea.add(wardAdmissionsPanel, "wardAdmissions");

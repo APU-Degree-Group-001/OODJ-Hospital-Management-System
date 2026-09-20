@@ -422,14 +422,14 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
 
         wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
         wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
-        wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
+        wrapperPane.setLayout(new java.awt.BorderLayout());
 
         showResultsForPanel.setBackground(new java.awt.Color(246, 251, 255));
         showResultsForPanel.setAlignmentY(0.0F);
         showResultsForPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         showResultsForPanel.add(showResultsForLabel);
 
-        wrapperPane.add(showResultsForPanel);
+        wrapperPane.add(showResultsForPanel, java.awt.BorderLayout.NORTH);
 
         jPanel2.setBackground(new java.awt.Color(246, 251, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
@@ -440,7 +440,7 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
         consultationCardsPanelWrapper.setLayout(new javax.swing.BoxLayout(consultationCardsPanelWrapper, javax.swing.BoxLayout.Y_AXIS));
         jPanel2.add(consultationCardsPanelWrapper, java.awt.BorderLayout.NORTH);
 
-        wrapperPane.add(jPanel2);
+        wrapperPane.add(jPanel2, java.awt.BorderLayout.CENTER);
 
         add(wrapperPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -559,8 +559,12 @@ public class CompletedConsultationsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadCompletedConsultations();
         searchField.setText("");
+        filterByField.setSelectedIndex(0);
+        sortField.setSelectedIndex(0);
+        showResultsForLabel.setText("");
+        loadCompletedConsultations();
+        resetScrollToTop();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
 

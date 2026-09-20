@@ -12,6 +12,7 @@ import oodj_hospital_management_system.gui.medical_manager.billing_management.Me
 import oodj_hospital_management_system.gui.medical_manager.clinical_departments.MedicalManagerClinicalDepartmentsPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_rating_feedback.AssignedDoctorRatingFeedbackPanel;
 import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.MedicalManagerShiftRosterPanel;
+import oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters.ShiftRosterPanel;
 import oodj_hospital_management_system.gui.medical_manager.reporting.MedicalManagerReportingPanel;
 import oodj_hospital_management_system.gui.utils.file_listener.FileWatcher;
 
@@ -55,7 +56,10 @@ public class MedicalManagerGUI extends javax.swing.JFrame {
 
             usersWatcher.addListener(
                 SystemConfiguration.doctorShiftFilePath,
-                () -> medicalManagerShiftRosterPanel.refreshRoster()
+                () -> { 
+                    medicalManagerShiftRosterPanel.rosterGrid.refreshRoster();
+                    medicalManagerShiftRosterPanel.requestPanel.loadDoctorRequests();
+                }
             );
 
             usersWatcher.addListener(

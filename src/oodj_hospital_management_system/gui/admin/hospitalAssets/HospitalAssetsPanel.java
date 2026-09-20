@@ -399,6 +399,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
         wrapperPane.revalidate();  // let the outer BoxLayout row recompute too
         assetPanelWrapper.revalidate();
         assetPanelWrapper.repaint();
+        resetScrollToTop();
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
@@ -419,6 +420,7 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
 
         currentAssets = sorted;
         populateAssetPanels(sorted);
+        resetScrollToTop();
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
@@ -452,12 +454,14 @@ public class HospitalAssetsPanel extends javax.swing.JPanel {
                 updateResultLabel("Showing " + base.size() + " asset(s)", base.size());
             }
         }
+        resetScrollToTop();
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
         loadAssets();
         searchField.setText("");
         showResultsForLabel.setText("");
+        resetScrollToTop();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
     private void addAssetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAssetButtonActionPerformed

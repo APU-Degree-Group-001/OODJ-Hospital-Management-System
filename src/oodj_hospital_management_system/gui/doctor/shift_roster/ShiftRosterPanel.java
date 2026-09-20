@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -473,52 +474,66 @@ public class ShiftRosterPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_sortFieldActionPerformed
 
     private void filterByFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterByFieldActionPerformed
-        String selected = (String) filterByField.getSelectedItem();
+        searchField.setText("");
+        showResultsForLabel.setText("");
 
-        switch (selected) {
-            case "Scheduled Date Time": {
-                LinkedHashMap<String, String> range = selectDateRange();
-                if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByScheduledDateRange(range.get("startDate"), range.get("endDate"));
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
-            }
+        DefaultTableModel model = (DefaultTableModel) shiftTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
 
-            case "Actual Date Time": {
-                LinkedHashMap<String, String> range = selectDateRange();
-                if (range.get("startDate") != null || range.get("endDate") != null) {
-                    filterByActualDateRange(range.get("startDate"), range.get("endDate"));
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
+        Comparator<String> dateStringComparator = (a, b) -> {
+            if (a.equals("-") && b.equals("-")) return 0;
+            if (a.equals("-")) return 1;
+            if (b.equals("-")) return -1;
+            try {
+                DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("d MMMM yyyy");
+                LocalDate dateA = LocalDate.parse(a, dateFmt);
+                LocalDate dateB = LocalDate.parse(b, dateFmt);
+                return dateA.compareTo(dateB);
+            } catch (java.time.format.DateTimeParseException e) {
+                return a.compareTo(b);
             }
+        };
+        Comparator<String> timeStringComparator = (a, b) -> {
+            if (a.equals("-") && b.equals("-")) return 0;
+            if (a.equals("-")) return 1;
+            if (b.equals("-")) return -1;
+            try {
+                DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("hh:mm a"); // adjust to match DateTime.toTimeString()'s actual pattern
+                LocalTime timeA = LocalTime.parse(a, timeFmt);
+                LocalTime timeB = LocalTime.parse(b, timeFmt);
+                return timeA.compareTo(timeB);
+            } catch (java.time.format.DateTimeParseException e) {
+                return a.compareTo(b);
+            }
+        };
 
-            case "Status": {
-                DoctorShift.DoctorShiftStatus status = selectStatus();
-                if (status != null) {
-                    filterByStatus(status);
-                } else {
-                    filterByField.setSelectedIndex(0);
-                }
-                break;
-            }
+        sorter.setComparator(1, dateStringComparator);  // Date
+        sorter.setComparator(2, timeStringComparator);  // Scheduled Start Time
+        sorter.setComparator(3, timeStringComparator);  // Scheduled End Time
+        sorter.setComparator(4, timeStringComparator);  // Actual Start Time
+        sorter.setComparator(5, timeStringComparator);  // Actual End Time
 
-            default: { // "Default" -> no filter
-                List<DoctorShift> base = getBaseShifts();
-                currentDoctorShifts = base;
-                populateShiftTable(base);
-                updateResultLabel("Showing " + base.size() + " shift(s)", base.size());
-            }
+        shiftTable.setRowSorter(sorter);
+
+        int selectedIndex = sortField.getSelectedIndex();
+        int columnToSortIndex;
+        switch (selectedIndex) {
+            case 0: columnToSortIndex = 1; break; // "Default" -> Date
+            case 1: columnToSortIndex = 0; break; // "ID"
+            case 2: columnToSortIndex = 1; break; // "Scheduled Date Time" -> Date column
+            case 3: columnToSortIndex = 4; break; // "Actual Date Time" -> Actual Start Time (was wrongly col 2)
+            default: columnToSortIndex = 1;
         }
+        sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadDoctorShifts();
         searchField.setText("");
+        filterByField.setSelectedIndex(0);
+        sortField.setSelectedIndex(0);
+        shiftTable.setRowSorter(null);
         showResultsForLabel.setText("");
+        loadDoctorShifts();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
     private void requestShiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestShiftButtonActionPerformed

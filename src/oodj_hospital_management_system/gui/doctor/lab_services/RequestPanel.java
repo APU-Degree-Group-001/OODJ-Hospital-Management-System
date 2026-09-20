@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -491,9 +492,26 @@ public class RequestPanel extends javax.swing.JPanel {
     private void sortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortFieldActionPerformed
         searchField.setText("");
         showResultsForLabel.setText("");
- 
+
         DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+
+        Comparator<String> dateStringComparator = (a, b) -> {
+            if (a.equals("-") && b.equals("-")) return 0;
+            if (a.equals("-")) return 1;  // "-" always sorts last
+            if (b.equals("-")) return -1;
+            try {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy");
+                LocalDate dateA = LocalDate.parse(a, fmt);
+                LocalDate dateB = LocalDate.parse(b, fmt);
+                return dateA.compareTo(dateB);
+            } catch (java.time.format.DateTimeParseException e) {
+                return a.compareTo(b); // fallback, shouldn't normally happen
+            }
+        };
+        sorter.setComparator(2, dateStringComparator); // Request Date Time column
+        sorter.setComparator(3, dateStringComparator); // Resolved Date Time column
+
         requestTable.setRowSorter(sorter);
         int selectedIndex = sortField.getSelectedIndex();
         int columnToSortIndex;

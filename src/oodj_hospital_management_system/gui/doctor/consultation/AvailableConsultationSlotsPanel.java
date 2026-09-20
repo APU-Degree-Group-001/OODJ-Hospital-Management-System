@@ -11,8 +11,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -389,12 +391,28 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
 
         DefaultTableModel model = (DefaultTableModel) availableSlotsTable.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+
+        Comparator<String> dateStringComparator = (a, b) -> {
+            if (a.equals("-") && b.equals("-")) return 0;
+            if (a.equals("-")) return 1;
+            if (b.equals("-")) return -1;
+            try {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy");
+                LocalDate dateA = LocalDate.parse(a, fmt);
+                LocalDate dateB = LocalDate.parse(b, fmt);
+                return dateA.compareTo(dateB);
+            } catch (java.time.format.DateTimeParseException e) {
+                return a.compareTo(b);
+            }
+        };
+        sorter.setComparator(1, dateStringComparator); // "Date" column
+
         availableSlotsTable.setRowSorter(sorter);
         int selectedIndex = sortField.getSelectedIndex();
         int columnToSortIndex;
         switch (selectedIndex) {
             case 1: columnToSortIndex = 0; break; // Slot ID
-            case 2: columnToSortIndex = 1; break; // Date Time
+            case 2: columnToSortIndex = 1; break; // Date
             default: columnToSortIndex = 0; // Default
         }
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(columnToSortIndex, SortOrder.ASCENDING)));
@@ -432,8 +450,11 @@ public class AvailableConsultationSlotsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadAvailableSlots();
         searchField.setText("");
+        filterByField.setSelectedIndex(0);
+        sortField.setSelectedIndex(0);
+        showResultsForLabel.setText("");
+        loadAvailableSlots();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
 

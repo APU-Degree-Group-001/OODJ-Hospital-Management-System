@@ -18,3 +18,4 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQ4f280, ASSET_REQUEST, #DOC5c91e, doctor, , #THTR001, Theatre booking for elective appendicectomy, PENDING, 2026-09-18 06:30:00, , 
 #REQ9b5d1, CANCEL_SHIFT, #DOC0f6d3, doctor, #MNG3c7d1, #SHIFT83ef6, Clashing with clinic duty#| submitted in error, WITHDRAWN, 2026-09-11 08:00:00, 2026-09-11 09:15:00, #DOC0f6d3
 #REQe72c4, ASSET_REQUEST, #DOC0f6d3, doctor, , #ROOM004, Room needed for minor skin procedure, REJECTED, 2026-09-13 11:30:00, 2026-09-13 15:00:00, #ADM6b2f4
+#REQa6a40, CANCEL_SHIFT, #DOCd4e8c, doctor, #MNG58321, #SHIFTa6082, sick, REJECTED, 2026-09-21 00:49:02, 2026-09-21 00:49:55, #MNG58321

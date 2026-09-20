@@ -11,8 +11,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -405,6 +407,22 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
 
         DefaultTableModel model = (DefaultTableModel) bookedSlotsTable.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+
+        Comparator<String> dateStringComparator = (a, b) -> {
+            if (a.equals("-") && b.equals("-")) return 0;
+            if (a.equals("-")) return 1;
+            if (b.equals("-")) return -1;
+            try {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy");
+                LocalDate dateA = LocalDate.parse(a, fmt);
+                LocalDate dateB = LocalDate.parse(b, fmt);
+                return dateA.compareTo(dateB);
+            } catch (java.time.format.DateTimeParseException e) {
+                return a.compareTo(b);
+            }
+        };
+        sorter.setComparator(3, dateStringComparator); // "Date" column
+
         bookedSlotsTable.setRowSorter(sorter);
 
         String selected = (String) sortField.getSelectedItem();
@@ -417,7 +435,8 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
                 sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
                 break;
             case "Date Time":
-                // Date column first, then Time column, so same-day rows stay ordered.
+                // Date column first (now chronologically correct via the comparator above),
+                // then Time column, so same-day rows stay ordered.
                 sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
                 sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
                 break;
@@ -462,8 +481,11 @@ public class BookedConsultationSlotsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_filterByFieldActionPerformed
 
     private void resetSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSearchButtonActionPerformed
-        loadBookedConsultations();
         searchField.setText("");
+        filterByField.setSelectedIndex(0);
+        sortField.setSelectedIndex(0);
+        showResultsForLabel.setText("");
+        loadBookedConsultations();
     }//GEN-LAST:event_resetSearchButtonActionPerformed
 
 
