@@ -60,3 +60,5 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CONe1c93, #SLOTa38f1, #PATb3d5f, #CTYPE001, Persistent dry eyes and blurred vision, , COMPLETED
 #CON72fd0, #SLOT5e962, #PAT4e7b1, #CTYPE002, Follow-up on thyroid medication dosage, , COMPLETED
 #CONa8e56, #SLOTd06b8, #PAT8c2d9, #CTYPEedccb, Extended review of recurring migraines, , COMPLETED
+#CONb4be8, #SLOTadf48, #PAT79a39, #CTYPE001, Mental sick, , SCHEDULED
+#CON25790, #SLOT9ed8a, #PAT72528, #CTYPE9a6c4, Headache, , SCHEDULED
