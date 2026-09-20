@@ -71,6 +71,17 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
 
         rosterGrid = new ShiftRosterGridPanel();
         rosterGrid.setShiftClickListener(this::handleShiftCardClick);
+        javax.swing.JScrollPane rosterScrollPane = new javax.swing.JScrollPane(rosterGrid);
+        rosterScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        rosterScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        rosterScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        rosterScrollPane.getViewport().setBackground(java.awt.Color.WHITE);
+        rosterScrollPane.getViewport().addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                rosterGrid.handleViewportResized();
+            }
+        });
         rosterGridContainer.setLayout(new java.awt.BorderLayout());
         rosterGridContainer.add(rosterGrid, java.awt.BorderLayout.NORTH);
         rosterGridContainer.setPreferredSize(null); // let it size to rosterGrid's content instead of the fixed 1160x500 from Design view

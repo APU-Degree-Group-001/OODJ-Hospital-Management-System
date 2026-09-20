@@ -37,6 +37,13 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
     private static final int DAY_COL_WIDTH = 130;
     private static final int HEADER_ROW_HEIGHT = 50;
     private static final int DAY_ROW_HEIGHT = 90;
+    private static final int MIN_DOCTOR_COL_WIDTH = 160;
+    private static final int MIN_DAY_COL_WIDTH = 130;
+    
+    private List<Doctor> lastDoctors;
+    private List<DoctorShift> lastShifts;
+    private LocalDate lastWeekStart;
+    private javax.swing.Timer resizeDebounceTimer;
 
     private ShiftClickListener shiftClickListener;
     private int doctorRowCount = 0;
@@ -80,19 +87,6 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
      * @param shifts    all shifts (this panel filters per-doctor/per-day itself)
      * @param weekStart Monday of the week being displayed
      */
-    public void updateData(List<Doctor> doctors, List<DoctorShift> shifts, LocalDate weekStart) {
-        removeAll();
-        doctorRowCount = doctors.size();
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        add(makeRow(buildHeaderCells(weekStart)));
-        for (Doctor doctor : doctors) {
-            add(makeRow(buildDoctorRowCells(doctor, shifts, weekStart)));
-        }
-
-        revalidate();
-        repaint();
-    }
     
     private List<JPanel> buildHeaderCells(LocalDate weekStart) {
         List<JPanel> cells = new java.util.ArrayList<>();
@@ -116,7 +110,54 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
         return cells;
     }
     
-    private JPanel makeRow(List<JPanel> cells) {
+    public void handleViewportResized() {
+        if (lastDoctors == null) return; // nothing loaded yet
+        if (resizeDebounceTimer != null && resizeDebounceTimer.isRunning()) {
+            resizeDebounceTimer.restart();
+            return;
+        }
+        resizeDebounceTimer = new javax.swing.Timer(120, e -> updateData(lastDoctors, lastShifts, lastWeekStart));
+        resizeDebounceTimer.setRepeats(false);
+        resizeDebounceTimer.start();
+    }
+
+    public void updateData(List<Doctor> doctors, List<DoctorShift> shifts, LocalDate weekStart) {
+        lastDoctors = doctors;
+        lastShifts = shifts;
+        lastWeekStart = weekStart;
+
+        removeAll();
+        doctorRowCount = doctors.size();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        int[] colWidths = computeColumnWidths();
+
+        add(makeRow(buildHeaderCells(weekStart), colWidths));
+        for (Doctor doctor : doctors) {
+            add(makeRow(buildDoctorRowCells(doctor, shifts, weekStart), colWidths));
+        }
+
+        revalidate();
+        repaint();
+    }
+
+    /** [0]=doctor col, [1..7]=day cols. Grows past the minimum to fill the viewport's width. */
+    private int[] computeColumnWidths() {
+        int minTotal = MIN_DOCTOR_COL_WIDTH + MIN_DAY_COL_WIDTH * 7;
+        int available = (getParent() instanceof javax.swing.JViewport) ? getParent().getWidth() : 0;
+
+        int[] widths = new int[8];
+        widths[0] = MIN_DOCTOR_COL_WIDTH;
+        for (int i = 1; i <= 7; i++) widths[i] = MIN_DAY_COL_WIDTH;
+
+        if (available > minTotal) {
+            int extraPerDay = (available - minTotal) / 7;
+            for (int i = 1; i <= 7; i++) widths[i] += extraPerDay;
+        }
+        return widths;
+    }
+
+    private JPanel makeRow(List<JPanel> cells, int[] colWidths) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setBackground(java.awt.Color.WHITE);
@@ -124,13 +165,10 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
 
         for (int i = 0; i < cells.size(); i++) {
             JPanel cell = cells.get(i);
-            int colWidth = (i == 0) ? DOCTOR_COL_WIDTH : DAY_COL_WIDTH;
-
-            // Fix the column width; let height grow to whatever the row needs.
+            int colWidth = colWidths[i];
             cell.setMinimumSize(new java.awt.Dimension(colWidth, cell.getMinimumSize().height));
             cell.setPreferredSize(new java.awt.Dimension(colWidth, cell.getPreferredSize().height));
             cell.setMaximumSize(new java.awt.Dimension(colWidth, Integer.MAX_VALUE));
-
             row.add(cell);
         }
         return row;
