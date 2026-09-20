@@ -34,11 +34,11 @@ public class ShiftRosterGridPanel extends JPanel implements javax.swing.Scrollab
 
     // Caps so GridLayout cells don't stretch to fill the parent/viewport.
     private static final int DOCTOR_COL_WIDTH = 160;
-    private static final int DAY_COL_WIDTH = 130;
+    private static final int DAY_COL_WIDTH = 125;
     private static final int HEADER_ROW_HEIGHT = 50;
     private static final int DAY_ROW_HEIGHT = 90;
     private static final int MIN_DOCTOR_COL_WIDTH = 160;
-    private static final int MIN_DAY_COL_WIDTH = 130;
+    private static final int MIN_DAY_COL_WIDTH = 125;
     
     private List<Doctor> lastDoctors;
     private List<DoctorShift> lastShifts;

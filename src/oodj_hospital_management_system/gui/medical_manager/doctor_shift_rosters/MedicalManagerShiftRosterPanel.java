@@ -5,6 +5,7 @@
 package oodj_hospital_management_system.gui.medical_manager.doctor_shift_rosters;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         initComponents();
 
         rosterGrid = new ShiftRosterGridPanel();
+        rosterGrid.setBackground(new Color(246,251,255));
         rosterGrid.setShiftClickListener(this::handleShiftCardClick);
         javax.swing.JScrollPane rosterScrollPane = new javax.swing.JScrollPane(rosterGrid);
         rosterScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -400,7 +402,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         jPanel7.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         wrapperPane.setBackground(new java.awt.Color(246, 251, 255));
-        wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
+        wrapperPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
         wrapperPane.setLayout(new javax.swing.BoxLayout(wrapperPane, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel6.setBackground(new java.awt.Color(246, 251, 255));
@@ -432,7 +434,7 @@ public class MedicalManagerShiftRosterPanel extends javax.swing.JPanel {
         wrapperPane.add(showResultsForPanel);
 
         jPanel3.setBackground(new java.awt.Color(246, 251, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 40));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 40, 0));
         jPanel3.setAlignmentY(0.0F);
         jPanel3.setLayout(new java.awt.BorderLayout());
 

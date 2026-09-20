@@ -809,3 +809,10 @@
 [2026-09-20 21:03:02] User {medical manager - #MNG58321 - Chee} logged in
 [2026-09-20 21:04:51] User {medical manager - #MNG58321 - Chee} logged out
 [2026-09-20 21:05:18] User {medical manager - #MNG74295 - Reen} logged in
+[2026-09-20 22:01:52] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-20 22:02:05] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-20 22:02:18] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-20 22:05:38] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-20 22:08:13] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-20 22:14:41] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-20 22:15:26] User {medical manager - #MNG58321 - Chee} logged in
