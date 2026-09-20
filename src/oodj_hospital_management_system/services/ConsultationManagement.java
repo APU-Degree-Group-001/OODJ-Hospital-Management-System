@@ -44,13 +44,111 @@ public class ConsultationManagement {
 
     private User activeUser;
 
+    // ---------------------------------------------------------
+    // Cache state
+    // A Consultation is built from many files, so every file it depends on is
+    // fingerprinted. If any one of them changes, everything is reloaded on the
+    // next access. Add a path here if a consultation ever shows old data.
+    // ---------------------------------------------------------
+    private static final FileHandler[] watchedFiles = {
+        consultationHandler,
+        consultationSlotHandler,
+        feedbackHandler,
+        new FileHandler(SystemConfiguration.userFilePath),                      // patients
+        new FileHandler(SystemConfiguration.doctorShiftFilePath),               // slot -> doctor shift
+        new FileHandler(SystemConfiguration.medicalDepartmentFilePath),         // doctor shift -> doctor -> department
+        new FileHandler(SystemConfiguration.consultationTypesFilePath),
+        new FileHandler(SystemConfiguration.medicalAssessmentFilePath),
+        new FileHandler(SystemConfiguration.labResultFilePath),
+        new FileHandler(SystemConfiguration.labResultTypesFilePath),
+        new FileHandler(SystemConfiguration.prescriptionFilePath),
+        new FileHandler(SystemConfiguration.prescriptionTypesFilePath),
+        new FileHandler(SystemConfiguration.hospitalAssetFilePath),
+        new FileHandler(SystemConfiguration.hospitalAssetAllocationFilePath),
+        new FileHandler(SystemConfiguration.billFilePath),
+        new FileHandler(SystemConfiguration.insuranceFilePath)                  // bill -> insurance
+    };
+    private static boolean loaded = false;
+    private static boolean loading = false;
+    private static String loadedFingerprint = null;
+    // earliest time a slot / scheduled consultation will end (and so needs its status auto-updated)
+    private static LocalDateTime nextExpiry = null;
+
     public ConsultationManagement(User user) {
         this.activeUser = user;
-        HospitalAssetManagement.loadHospitalAssets();
-        ConsultationTypeManagement.loadConsultationTypes();
-        loadAllFeedback();
-        loadConsultationSlots();
-        loadConsultations();
+        ensureLoaded();
+    }
+
+    // Reload only when a file changed, or when a slot/consultation has just ended
+    private static synchronized void ensureLoaded() {
+        if (loading) {
+            return; // something we call while loading called back into us
+        }
+        String current = dataFingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadAll();
+        } else if (nextExpiry != null && LocalDateTime.now().isAfter(nextExpiry)) {
+            // files are unchanged, but time has passed: some statuses need auto-updating
+            loadAll();
+        }
+    }
+
+    // Full reload, in the same order the old getAll...() methods used
+    private static synchronized void loadAll() {
+        loading = true;
+        try {
+            String fingerprint = dataFingerprint();
+            HospitalAssetManagement.loadHospitalAssets();
+            ConsultationTypeManagement.loadConsultationTypes();
+            loadAllFeedback();
+            loadConsultationSlots();
+            loadConsultations();
+            nextExpiry = computeNextExpiry();
+            loadedFingerprint = fingerprint;
+            loaded = true;
+        } finally {
+            loading = false;
+        }
+    }
+
+    // One combined fingerprint of every watched file (null = could not check, so always reload)
+    private static String dataFingerprint() {
+        StringBuilder combined = new StringBuilder();
+        for (FileHandler handler : watchedFiles) {
+            String fingerprint = handler.fingerprint();
+            if (fingerprint == null) {
+                return null;
+            }
+            combined.append(fingerprint).append('|');
+        }
+        return combined.toString();
+    }
+
+    // Earliest end time among slots that can still auto-expire and consultations still SCHEDULED
+    private static LocalDateTime computeNextExpiry() {
+        LocalDateTime earliest = null;
+
+        for (ConsultationSlot slot : consultationSlots) {
+            String status = slot.getStatus();
+            if (ConsultationSlot.STATUS_AVAILABLE.equals(status) || ConsultationSlot.STATUS_BOOKED.equals(status)) {
+                LocalDateTime end = DateTime.toDateTimeObject(slot.getEndDateTime());
+                if (end != null && (earliest == null || end.isBefore(earliest))) {
+                    earliest = end;
+                }
+            }
+        }
+
+        for (Consultation consultation : consultations) {
+            if (consultation.getConsultationStatus() == ConsultationStatus.SCHEDULED
+                    && consultation.getConsultationSlot() != null) {
+                LocalDateTime end = DateTime.toDateTimeObject(consultation.getConsultationSlot().getEndDateTime());
+                if (end != null && (earliest == null || end.isBefore(earliest))) {
+                    earliest = end;
+                }
+            }
+        }
+
+        return earliest;
     }
 
     public static void loadConsultations() {
@@ -130,36 +228,30 @@ public class ConsultationManagement {
         }
     }
 
-    public static List<Consultation> getAllConsultations() {
-        HospitalAssetManagement.loadHospitalAssets();
-        ConsultationTypeManagement.loadConsultationTypes();
-        loadAllFeedback();
-        loadConsultationSlots();
-        loadConsultations();
-        return consultations;
+    // NOTE: the getAll...() methods return copies, so sorting/filtering in the UI
+    // can't reorder or damage the cached lists
+    public static synchronized List<Consultation> getAllConsultations() {
+        ensureLoaded();
+        return new ArrayList<>(consultations);
     }
 
-    public static List<ConsultationSlot> getAllConsultationSlots() {
-        HospitalAssetManagement.loadHospitalAssets();
-        loadAllFeedback();
-        loadConsultationSlots();
-        return consultationSlots;
+    public static synchronized List<ConsultationSlot> getAllConsultationSlots() {
+        ensureLoaded();
+        return new ArrayList<>(consultationSlots);
     }
 
-    public static List<Feedback> getAllFeedback() {
-        loadAllFeedback();
-        return allFeedback;
+    public static synchronized List<Feedback> getAllFeedback() {
+        ensureLoaded();
+        return new ArrayList<>(allFeedback);
     }
 
     public static Consultation getConsultationById(String consultationId) {
-        HospitalAssetManagement.loadHospitalAssets();
-        ConsultationTypeManagement.loadConsultationTypes();
-        loadAllFeedback();
-        loadConsultationSlots();
-        loadConsultations();
+        ensureLoaded();
         return findConsultationById(consultationId);
     }
 
+    // find...() methods only look in memory (no ensureLoaded) because the load methods use them;
+    // use the get...() versions when you need fresh data
     public static Consultation findConsultationById(String consultationId) {
         try {
             if (consultationId == null || consultationId.isEmpty()) {
@@ -179,10 +271,7 @@ public class ConsultationManagement {
     }
 
     public static ConsultationSlot getConsultationSlotById(String consultationSlotId) {
-        HospitalAssetManagement.loadHospitalAssets();
-        loadAllFeedback();
-        loadConsultationSlots();
-        loadConsultations();
+        ensureLoaded();
         return findConsultationSlotById(consultationSlotId);
     }
 
@@ -205,7 +294,7 @@ public class ConsultationManagement {
     }
 
     public static Feedback getFeedbackById(String feedbackId) {
-        loadAllFeedback();
+        ensureLoaded();
         return findFeedbackById(feedbackId);
     }
 
@@ -237,7 +326,7 @@ public class ConsultationManagement {
     }
     
     public static Feedback getFeedbackByConsultationId(String consultationId) {
-        loadAllFeedback();
+        ensureLoaded();
         for (Feedback feedback : allFeedback) {
             if (feedback.getConsultationId().equals(consultationId)) {
                 return feedback;
@@ -265,7 +354,7 @@ public class ConsultationManagement {
         }
     }
 
-    // File Handler （Write and Append)
+    // File Handler (Write and Append)
     private static boolean writeConsultations() {
         ArrayList<LinkedHashMap<String, String>> consultationData = new ArrayList<>();
 
@@ -369,6 +458,7 @@ public class ConsultationManagement {
     }
 
     public LinkedHashMap<String, String> createConsultation(ConsultationSlot consultationSlot, Patient patient, ConsultationType consultationType, String description) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -435,13 +525,11 @@ public class ConsultationManagement {
             writeConsultations();
         }
 
-        // mark the slot as booked and persist it BEFORE reloading consultations,
-        // so findConsultationSlotById() picks up the updated status downstream
+        // mark the slot as booked and persist it, then reload everything
+        // so the consultation picks up the updated slot status
         targetSlot.setStatus(ConsultationSlot.STATUS_BOOKED);
         writeConsultationSlots();
-        loadConsultationSlots();
-
-        loadConsultations();
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation '%s' is created and stored!", newConsultationId));
@@ -451,6 +539,7 @@ public class ConsultationManagement {
     }
 
     public LinkedHashMap<String, String> updateConsultation(Consultation consultation, ConsultationType newConsultationType, String newDescription) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
  
         // Validate on the passed-in object first, then re-fetch via ID before mutating
@@ -479,7 +568,7 @@ public class ConsultationManagement {
         targetConsultation.setDescription(newDescription);
  
         writeConsultations();
-        loadConsultations();
+        loadAll();
  
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation '%s' is updated!", targetConsultation.getConsultationId()));
@@ -488,6 +577,7 @@ public class ConsultationManagement {
     }
     
     public LinkedHashMap<String, String> cancelConsultation(String consultationId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Consultation targetConsultation = findConsultationById(consultationId);
@@ -514,11 +604,10 @@ public class ConsultationManagement {
             if (targetSlot != null) {
                 targetSlot.setStatus(ConsultationSlot.STATUS_AVAILABLE);
                 writeConsultationSlots();
-                loadConsultationSlots();
             }
         }
 
-        loadConsultations();
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation '%s' is cancelled!", consultationId));
@@ -527,6 +616,7 @@ public class ConsultationManagement {
     }
 
     public LinkedHashMap<String, String> deleteConsultation(String consultationId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Consultation deleteConsultation = findConsultationById(consultationId);
@@ -546,11 +636,10 @@ public class ConsultationManagement {
             if (targetSlot != null) {
                 targetSlot.setStatus(ConsultationSlot.STATUS_AVAILABLE);
                 writeConsultationSlots();
-                loadConsultationSlots();
             }
         }
 
-        loadConsultations();
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation '%s' is deleted!", consultationId));
@@ -560,6 +649,7 @@ public class ConsultationManagement {
     }
 
     public LinkedHashMap<String, String> createConsultationSlot(DoctorShift doctorShift, String startDateTime, String endDateTime) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -592,7 +682,7 @@ public class ConsultationManagement {
             writeConsultationSlots();
         }
 
-        loadConsultationSlots();
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Consultation slot '%s' is created and stored!", newConsultationSlotId));
@@ -611,6 +701,7 @@ public class ConsultationManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> createConsultationSlotInBulk(DoctorShift doctorShift, String startDateTime, String endDateTime) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -650,7 +741,7 @@ public class ConsultationManagement {
         }
 
         writeConsultationSlots();
-        loadConsultationSlots();
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("%d consultation slots are created and stored for Doctor Shift '%s'!", slotCount, doctorShift.getShiftId()));
@@ -660,6 +751,7 @@ public class ConsultationManagement {
     }
     
     public static LinkedHashMap<String, String> deleteConsultationSlotsInBulk(String doctorShiftId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -722,8 +814,7 @@ public class ConsultationManagement {
                             && c.getConsultationSlot().getConsultationSlotId().equals(slot.getConsultationSlotId())));
 
             writeConsultationSlots();
-            loadConsultationSlots();
-            loadConsultations();
+            loadAll();
 
             System.out.printf("Doctor Shift '%s': %d slot(s) removed, %d slot(s) marked CANCELLED (had bookings), %d consultation(s) cancelled!%n",
                     doctorShiftId, removedCount, keptCount, cancelledCount);
@@ -748,7 +839,9 @@ public class ConsultationManagement {
     public LinkedHashMap<String, String> createFeedback(String consultationId, Patient patient, int rating, String comment) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        loadConsultations(); // keep in-memory list synced with disk before validating
+        // keeps consultations and feedback in sync with disk before validating
+        // (also covers the duplicate-rating check below)
+        ensureLoaded();
 
         Consultation targetConsultation = findConsultationById(consultationId);
         if (targetConsultation == null) {
@@ -778,7 +871,6 @@ public class ConsultationManagement {
             return msgMap;
         }
 
-        loadAllFeedback(); // re-sync feedback list before checking for duplicates
         if (findFeedbackByConsultationId(consultationId) != null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("Feedback is not created\nConsultation '%s' has already been rated", consultationId));
@@ -816,8 +908,8 @@ public class ConsultationManagement {
             writeAllFeedback();
         }
 
-        loadAllFeedback();
-        loadConsultations(); // refresh so this consultation's Feedback reference picks up the new record
+        // reload everything so this consultation's Feedback reference picks up the new record
+        loadAll();
 
         msgMap.put("success", "true");
         msgMap.put("msg", String.format("Feedback '%s' is submitted for Consultation '%s'!", newFeedbackId, consultationId));
@@ -827,6 +919,7 @@ public class ConsultationManagement {
     }
     
     public static boolean isConsultationSlotTaken(String consultationSlotId) {
+        ensureLoaded();
         for (Consultation consultation : consultations) {
             if (consultation.getConsultationSlot() != null
                     && consultationSlotId.equals(consultation.getConsultationSlot().getConsultationSlotId())
@@ -880,6 +973,9 @@ public class ConsultationManagement {
         return true;
     }
 
+    // The generate...Id() methods don't call ensureLoaded() on purpose: they are called in the middle of
+    // create methods (after new items are added in memory but before saving), and a reload there would
+    // throw those unsaved items away. Every create method calls ensureLoaded() first.
     public static String generateConsultationId() {
         List<String> existingIds = consultations.stream().map(Consultation::getConsultationId).toList();
         return SystemConfiguration.generateId("#CON", existingIds);

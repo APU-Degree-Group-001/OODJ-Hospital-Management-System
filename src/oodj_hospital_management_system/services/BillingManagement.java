@@ -37,12 +37,31 @@ public class BillingManagement {
     private static final List<Bill> bills = new ArrayList<>();
     private User activeUser;
 
+    // Cache state: bills are only re-read when bills.txt changed,
+    // or when the users were reloaded (each Bill holds a Patient object from UserManagement)
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadedUsersVersion = -1;
+
     public BillingManagement(User usr) {
         this.activeUser = usr;
-        loadBills();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = billHandler.fingerprint();
+        int usersVersion = UserManagement.getLoadVersion();
+        if (!loaded
+                || current == null
+                || !current.equals(loadedFingerprint)
+                || usersVersion != loadedUsersVersion) {
+            loadBills();
+        }
     }
 
     public static void loadBills() {
+        String fingerprint = billHandler.fingerprint();
+        int usersVersion = UserManagement.getLoadVersion();
         bills.clear();
         List<LinkedHashMap<String, String>> rawData = billHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -62,6 +81,9 @@ public class BillingManagement {
             );
             bills.add(bill);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadedUsersVersion = usersVersion;
     }
     
     public static Bill.BillStatus getBillStatus(String status) {
@@ -76,12 +98,13 @@ public class BillingManagement {
     }
 
     public static List<Bill> getAllBills() {
-        loadBills();
-        return bills;
+        ensureLoaded();
+        // return a copy so sorting/filtering in the UI can't reorder or damage the cached list
+        return new ArrayList<>(bills);
     }
 
     public static Bill getBillById(String billId) {
-        loadBills();
+        ensureLoaded();
         try {
             if (!bills.stream().anyMatch(bill -> bill.getBillId().equals(billId))) {
                 throw new BillException(String.format("Invalid Bill ID: Bill ID '%s' is not found", billId));
@@ -100,6 +123,7 @@ public class BillingManagement {
     }
     
     public static Bill findBillByConsultationId(String consultationId) {
+        ensureLoaded();
         for (Bill bill : bills) {
             if (bill.getConsultationId().equals(consultationId)) {
                 return bill;
@@ -109,7 +133,7 @@ public class BillingManagement {
     }
     
     public static Bill getBillByConsultationId(String consultationId) {
-        loadBills();
+        ensureLoaded();
         for (Bill bill : bills) {
             if (bill.getConsultationId().equals(consultationId)) {
                 return bill;
@@ -147,6 +171,7 @@ public class BillingManagement {
     }
 
     public LinkedHashMap<String, String> createBill(String consultationId, Patient patient, Insurance insurance, double consultationFee) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.billErrorHandler(Arrays.asList("admin staff", "consultation", "patient", "consultationFee"), activeUser, consultationId, patient, consultationFee);
@@ -197,6 +222,7 @@ public class BillingManagement {
             return msgMap;
         }
 
+        // getBillById() calls ensureLoaded(), so 'bills' is fresh from here on
         Bill targetBill = getBillById(bill.getBillId());
         if (targetBill == null) {
             msgMap.put("success", null);
@@ -247,6 +273,7 @@ public class BillingManagement {
             return msgMap;
         }
 
+        // getBillById() calls ensureLoaded(), so 'bills' is fresh from here on
         Bill targetBill = getBillById(bill.getBillId());
         if (targetBill == null) {
             msgMap.put("success", null);
@@ -277,6 +304,7 @@ public class BillingManagement {
     public LinkedHashMap<String, String> markBillAsPaid(Bill bill) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
+        // getBillById() calls ensureLoaded(), so 'bills' is fresh from here on
         Bill targetBill = getBillById(bill.getBillId());
         if (targetBill == null) {
             msgMap.put("success", null);
@@ -357,7 +385,7 @@ public class BillingManagement {
         return msgMap;
     }
 
-        private LinkedHashMap<String, String> calculateLabCharges(Consultation consultation) {
+    private LinkedHashMap<String, String> calculateLabCharges(Consultation consultation) {
         LinkedHashMap<String, String> result = new LinkedHashMap<>();
         double labCharge = 0.0;
         List<String> labItems = new ArrayList<>();
@@ -410,6 +438,7 @@ public class BillingManagement {
 
     // Searching and Sorting
     public List<Bill> searchBills(String keywords) {
+        ensureLoaded();
         List<Bill> matchedBills = new ArrayList<>();
         for (Bill bill : bills) {
             if (bill.getBillId().toLowerCase().contains(keywords.toLowerCase().trim())
@@ -447,6 +476,7 @@ public class BillingManagement {
 
     // Generate ID
     public static String generateBillId() {
+        ensureLoaded();
         List<String> existingIds = bills.stream().map(Bill::getBillId).toList();
         return SystemConfiguration.generateId("#BILL", existingIds);
     }

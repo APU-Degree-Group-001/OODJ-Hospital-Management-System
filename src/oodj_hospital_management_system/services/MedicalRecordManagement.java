@@ -34,16 +34,65 @@ public class MedicalRecordManagement {
     private static final List<LabResult> labResults = new ArrayList<>();
     private static final List<Prescription> prescriptions = new ArrayList<>();
 
+    private static boolean assessmentsLoaded = false;
+    private static String loadedAssessmentFingerprint = null;
+    private static int assessmentLoadVersion = 0;
+
+    private static boolean labResultsLoaded = false;
+    private static String loadedLabResultFingerprint = null;
+    private static int labResultLoadVersion = 0;
+
+    private static boolean prescriptionsLoaded = false;
+    private static String loadedPrescriptionFingerprint = null;
+    private static int prescriptionLoadVersion = 0;
+
     private User activeUser;
 
     public MedicalRecordManagement(User usr) {
         this.activeUser = usr;
-        loadMedicalAssessments();
-        loadLabResults();
-        loadPrescriptions();
+        ensureAssessmentsLoaded();
+        ensureLabResultsLoaded();
+        ensurePrescriptionsLoaded();
+    }
+
+    private static void ensureAssessmentsLoaded() {
+        String current = assessmentHandler.fingerprint();
+        if (!assessmentsLoaded || current == null || !current.equals(loadedAssessmentFingerprint)) {
+            loadMedicalAssessments();
+        }
+    }
+
+    private static void ensureLabResultsLoaded() {
+        String current = labResultHandler.fingerprint();
+        if (!labResultsLoaded || current == null || !current.equals(loadedLabResultFingerprint)) {
+            loadLabResults();
+        }
+    }
+
+    private static void ensurePrescriptionsLoaded() {
+        String current = prescriptionHandler.fingerprint();
+        if (!prescriptionsLoaded || current == null || !current.equals(loadedPrescriptionFingerprint)) {
+            loadPrescriptions();
+        }
+    }
+
+    public static int getAssessmentLoadVersion() {
+        ensureAssessmentsLoaded();
+        return assessmentLoadVersion;
+    }
+
+    public static int getLabResultLoadVersion() {
+        ensureLabResultsLoaded();
+        return labResultLoadVersion;
+    }
+
+    public static int getPrescriptionLoadVersion() {
+        ensurePrescriptionsLoaded();
+        return prescriptionLoadVersion;
     }
 
     public static void loadMedicalAssessments() {
+        String fingerprint = assessmentHandler.fingerprint();
         medicalAssessments.clear();
         List<LinkedHashMap<String, String>> rawData = assessmentHandler.readFile();
 
@@ -58,9 +107,13 @@ public class MedicalRecordManagement {
             );
             medicalAssessments.add(assessment);
         }
+        assessmentsLoaded = true;
+        loadedAssessmentFingerprint = fingerprint;
+        assessmentLoadVersion++;
     }
 
     public static void loadLabResults() {
+        String fingerprint = labResultHandler.fingerprint();
         labResults.clear();
         List<LinkedHashMap<String, String>> rawData = labResultHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -75,9 +128,13 @@ public class MedicalRecordManagement {
             );
             labResults.add(result);
         }
+        labResultsLoaded = true;
+        loadedLabResultFingerprint = fingerprint;
+        labResultLoadVersion++;
     }
 
     public static void loadPrescriptions() {
+        String fingerprint = prescriptionHandler.fingerprint();
         prescriptions.clear();
         List<LinkedHashMap<String, String>> rawData = prescriptionHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -92,25 +149,28 @@ public class MedicalRecordManagement {
                     row.get("instructions"));
             prescriptions.add(prescription);
         }
+        prescriptionsLoaded = true;
+        loadedPrescriptionFingerprint = fingerprint;
+        prescriptionLoadVersion++;
     }
 
     public static List<MedicalAssessment> getAllMedicalAssessments() {
-        loadMedicalAssessments();
+        ensureAssessmentsLoaded();
         return medicalAssessments;
     }
 
     public static List<LabResult> getAllLabResults() {
-        loadLabResults();
+        ensureLabResultsLoaded();
         return labResults;
     }
 
     public static List<Prescription> getAllPrescriptions() {
-        loadPrescriptions();
+        ensurePrescriptionsLoaded();
         return prescriptions;
     }
 
     public static MedicalAssessment getMedicalAssessmentById(String assessmentId) {
-        loadMedicalAssessments();
+        ensureAssessmentsLoaded();
         try {
             if (!medicalAssessments.stream().anyMatch(assessment -> assessment.getAssessmentId().equals(assessmentId))) {
                 throw new MedicalAssessmentException(String.format("Invalid Medical Assessment ID: Assessment ID '%s' is not found", assessmentId));
@@ -129,7 +189,7 @@ public class MedicalRecordManagement {
     }
 
     public static LabResult getLabResultById(String resultId) {
-        loadLabResults();
+        ensureLabResultsLoaded();
         try {
             if (!labResults.stream().anyMatch(result -> result.getResultId().equals(resultId))) {
                 throw new LabResultException(String.format("Invalid Lab Result ID: Result ID '%s' is not found", resultId));
@@ -148,7 +208,7 @@ public class MedicalRecordManagement {
     }
 
     public static Prescription getPrescriptionById(String prescriptionId) {
-        loadPrescriptions();
+        ensurePrescriptionsLoaded();
         try {
             if (!prescriptions.stream().anyMatch(prescription -> prescription.getPrescriptionId().equals(prescriptionId))) {
                 throw new PrescriptionException(String.format("Invalid Prescription ID: Prescription ID '%s' is not found", prescriptionId));
@@ -167,7 +227,7 @@ public class MedicalRecordManagement {
     }
     
     public static List<MedicalAssessment> getMedicalAssessmentsByConsultationId(String consultationId) {
-        loadMedicalAssessments();
+        ensureAssessmentsLoaded();
         List<MedicalAssessment> matchedAssessments = new ArrayList<>();
         for (MedicalAssessment assessment : medicalAssessments) {
             if (assessment.getConsultationId().equals(consultationId)) {
@@ -178,7 +238,7 @@ public class MedicalRecordManagement {
     }
     
     public static List<LabResult> getLabResultsByConsultationId(String consultationId) {
-        loadLabResults();
+        ensureLabResultsLoaded();
 
         List<LabResult> matchedResults = new ArrayList<>();
 
@@ -192,7 +252,7 @@ public class MedicalRecordManagement {
     }
     
     public static List<Prescription> getPrescriptionsByConsultationId(String consultationId) {
-        loadPrescriptions();
+        ensurePrescriptionsLoaded();
 
         List<Prescription> matchedPrescriptions = new ArrayList<>();
 
@@ -290,6 +350,7 @@ public class MedicalRecordManagement {
     
     // Medical Assessment Management
     public boolean createMedicalAssessment(MedicalAssessment assessment) {
+        ensureAssessmentsLoaded();
         try {
             if (assessment == null) {
                 throw new MedicalAssessmentException("Medical assessment cannot be null");
@@ -325,6 +386,7 @@ public class MedicalRecordManagement {
     }
     
     public LinkedHashMap<String, String> modifyAssessmentType(String newAssessmentType, String assessmentId) {
+        ensureAssessmentsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         MedicalAssessment assessment = getMedicalAssessmentById(assessmentId);
@@ -352,6 +414,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyFindings(String newFindings, String assessmentId) {
+        ensureAssessmentsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         MedicalAssessment assessment = getMedicalAssessmentById(assessmentId);
@@ -379,6 +442,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyDiagnosis(String newDiagnosis, String assessmentId) {
+        ensureAssessmentsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         MedicalAssessment assessment = getMedicalAssessmentById(assessmentId);
@@ -406,6 +470,7 @@ public class MedicalRecordManagement {
     }
 
     public boolean deleteMedicalAssessment(MedicalAssessment assessment) {
+        ensureAssessmentsLoaded();
         try {
             if (assessment == null || !medicalAssessments.contains(assessment)) {
                 throw new MedicalAssessmentException(
@@ -439,6 +504,7 @@ public class MedicalRecordManagement {
 
     // Lab Result Management
     public boolean createLabResult(LabResult result) {
+        ensureLabResultsLoaded();
         try {
             if (result == null) {
                 throw new LabResultException("Lab result cannot be null");
@@ -474,6 +540,7 @@ public class MedicalRecordManagement {
     }
     
     public LinkedHashMap<String, String> modifyLabResultTestType(String newTestType, String resultId) {
+        ensureLabResultsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResult result = getLabResultById(resultId);
@@ -494,6 +561,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyLabResultResult(String newResult, String resultId) {
+        ensureLabResultsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResult result = getLabResultById(resultId);
@@ -514,6 +582,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyLabResultDateTime(String newResultDateTime, String resultId) {
+        ensureLabResultsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResult result = getLabResultById(resultId);
@@ -534,6 +603,7 @@ public class MedicalRecordManagement {
     }
     
     public LinkedHashMap<String, String> modifyLabResultRemarks(String newRemarks, String resultId) {
+        ensureLabResultsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResult result = getLabResultById(resultId);
@@ -555,6 +625,7 @@ public class MedicalRecordManagement {
     }
 
     public boolean deleteLabResult(LabResult result) {
+        ensureLabResultsLoaded();
         try {
             if (result == null || !labResults.contains(result)) {
                 throw new LabResultException(
@@ -588,6 +659,7 @@ public class MedicalRecordManagement {
 
     // Prescription Management
     public boolean createPrescription(Prescription prescription) {
+        ensurePrescriptionsLoaded();
         try {
             if (prescription == null) {
                 throw new PrescriptionException("Prescription cannot be null");
@@ -623,6 +695,7 @@ public class MedicalRecordManagement {
     }
     
     public LinkedHashMap<String, String> modifyPrescriptionMedicineName(String newMedicineName, String prescriptionId) {
+        ensurePrescriptionsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Prescription prescription = getPrescriptionById(prescriptionId);
@@ -643,6 +716,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyPrescriptionDosage(String newDosage, String prescriptionId) {
+        ensurePrescriptionsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Prescription prescription = getPrescriptionById(prescriptionId);
@@ -663,6 +737,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyPrescriptionFrequencyPerDay(String newFrequencyPerDay, String prescriptionId) {
+        ensurePrescriptionsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Prescription prescription = getPrescriptionById(prescriptionId);
@@ -683,6 +758,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyPrescriptionDurationInDays(String newDurationInDays, String prescriptionId) {
+        ensurePrescriptionsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Prescription prescription = getPrescriptionById(prescriptionId);
@@ -703,6 +779,7 @@ public class MedicalRecordManagement {
     }
 
     public LinkedHashMap<String, String> modifyPrescriptionInstructions(String newInstructions, String prescriptionId) {
+        ensurePrescriptionsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Prescription prescription = getPrescriptionById(prescriptionId);
@@ -723,6 +800,7 @@ public class MedicalRecordManagement {
     }
 
     public boolean deletePrescription(Prescription prescription) {
+        ensurePrescriptionsLoaded();
         try {
             if (prescription == null || !prescriptions.contains(prescription)) {
                 throw new PrescriptionException(
@@ -892,18 +970,20 @@ public class MedicalRecordManagement {
     }
 
     public static String generateMedicalAssessmentId() {
+        ensureAssessmentsLoaded();
         List<String> existingIds = medicalAssessments.stream().map(MedicalAssessment::getAssessmentId).toList();
         return SystemConfiguration.generateId("#MED", existingIds);
     }
 
     public static String generateLabResultId() {
+        ensureLabResultsLoaded();
         List<String> existingIds = labResults.stream().map(LabResult::getResultId).toList();
         return SystemConfiguration.generateId("#LAB", existingIds);
     }
 
     public static String generatePrescriptionId() {
+        ensurePrescriptionsLoaded();
         List<String> existingIds = prescriptions.stream().map(Prescription::getPrescriptionId).toList();
         return SystemConfiguration.generateId("#PRE", existingIds);
     }
 }
-

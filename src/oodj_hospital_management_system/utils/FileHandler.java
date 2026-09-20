@@ -9,11 +9,17 @@ package oodj_hospital_management_system.utils;
  * @author sheaw
  */
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,87 +127,93 @@ public class FileHandler {
 
     public ArrayList<LinkedHashMap<String, String>> readFile() {
         ArrayList<LinkedHashMap<String, String>> maps = new ArrayList<>();
-        if (file.exists()) {
-            try (Scanner reader = new Scanner(file)) {
-                List<String> header = new ArrayList<>();
-                for (int i = 0; reader.hasNextLine(); i++) {
-                    if (i == 0) {
-                        String line = reader.nextLine();
-                        // cannot split by ", " if last field is empty
-                        String[] headerArray = line.split(",", -1);
-                        for (String column : headerArray) {
-                            header.add(column.trim());
-                        }
-                    } else {
-                        String line = reader.nextLine();
-                        String[] rowArray = line.split(",", -1);
-                        if (rowArray.length == header.size()) {
-                            LinkedHashMap<String, String> map =
-                                    new LinkedHashMap<>();
-                            for (int index = 0;
-                                 index < rowArray.length;
-                                 index++) {
-                                map.put(header.get(index),
-                                        unescapeValue(rowArray[index].trim()));
-                            }
-                            maps.add(map);
-                        } else {
-                            System.out.println(String.format(
-                                "Skipped malformed row in '%s' (expected %d columns, got %d): %s",
-                                filePath, header.size(), rowArray.length, line));
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                System.out.println("Error reading file: " + filePath);
-                e.printStackTrace();
+        if (!file.exists()) {
+            return maps;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                return maps;
             }
+            String[] header = headerLine.split(",", -1);
+            for (int i = 0; i < header.length; i++) {
+                header[i] = header[i].trim();
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] row = line.split(",", -1);
+                if (row.length == header.length) {
+                    LinkedHashMap<String, String> map = new LinkedHashMap<>();
+                    for (int i = 0; i < row.length; i++) {
+                        map.put(header[i], unescapeValue(row[i].trim()));
+                    }
+                    maps.add(map);
+                } else {
+                    System.out.println("Skipped malformed row in '" + filePath
+                            + "' (expected " + header.length + " columns, got "
+                            + row.length + "): " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + filePath);
+            e.printStackTrace();
         }
         return maps;
     }
 
     public void writeFile(ArrayList<LinkedHashMap<String, String>> maps) {
-        try (FileWriter writer = new FileWriter(filePath)) {
-            // prevent writing empty file
-            if (maps.isEmpty()) {
-                System.out.println("No data to write to file: " + filePath);
-                return;
-            }
-            List<String> header = new ArrayList<>(maps.get(0).keySet());
-            writer.write(String.join(", ", header) + "\n");
-            writer.flush();
+        if (maps.isEmpty()) {
+            System.out.println("No data to write to file: " + filePath);
+            return;
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(String.join(", ", maps.get(0).keySet()) + "\n");
             for (LinkedHashMap<String, String> map : maps) {
-                List<String> row = new ArrayList<>(map.values());
-                for (int i = 0; i < row.size(); i++) {
-                    row.set(i, escapeValue(row.get(i)));
-                }
-                writer.write(String.join(", ", row) + "\n");
-                writer.flush();
+                writeRow(writer, map);
             }
         } catch (IOException e) {
             System.out.println("Error writing data to file: " + filePath);
-            e.printStackTrace(); // print error details
+            e.printStackTrace();
         }
     }
 
     public void appendFile(ArrayList<LinkedHashMap<String, String>> maps) {
-        try (FileWriter writer = new FileWriter(filePath, true)) {
-            if (maps.isEmpty()) {
-                System.out.println("No data to append to file: " + filePath);
-                return;
-            }
+        if (maps.isEmpty()) {
+            System.out.println("No data to append to file: " + filePath);
+            return;
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for (LinkedHashMap<String, String> map : maps) {
-                List<String> row = new ArrayList<>(map.values());
-                for (int i = 0; i < row.size(); i++) {
-                    row.set(i, escapeValue(row.get(i)));
-                }
-                writer.write(String.join(", ", row) + "\n");
-                writer.flush();
+                writeRow(writer, map);
             }
             System.out.println(String.format("Data is appended to file '%s'!", file.getName()));
         } catch (IOException e) {
             System.out.println("Error appending data to file: " + filePath);
-            e.printStackTrace(); // print error details
+            e.printStackTrace();
+        }
+    }
+
+    private void writeRow(BufferedWriter writer, LinkedHashMap<String, String> map) throws IOException {
+        boolean first = true;
+        for (String value : map.values()) {
+            if (!first) writer.write(", ");
+            writer.write(escapeValue(value));
+            first = false;
+        }
+        writer.write("\n");
+    }
+    
+    public String fingerprint() {
+        if (!file.exists()) {
+            return "";
+        }
+        try {
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            byte[] hash = MessageDigest.getInstance("SHA-256").digest(bytes);
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            return null; // null never equals a stored fingerprint, so we reload
         }
     }
 }

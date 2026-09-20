@@ -23,11 +23,28 @@ public class LabResultTypeManagement {
 
     private static final List<LabResultType> labResultTypes = new ArrayList<>();
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     public LabResultTypeManagement() {
-        loadLabResultTypes();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = labResultTypeHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadLabResultTypes();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     public static void loadLabResultTypes() {
+        String fingerprint = labResultTypeHandler.fingerprint();
         labResultTypes.clear();
         List<LinkedHashMap<String, String>> rawData = labResultTypeHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -39,15 +56,18 @@ public class LabResultTypeManagement {
             );
             labResultTypes.add(labResultType);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     public static List<LabResultType> getAllLabResultTypes() {
-        loadLabResultTypes();
+        ensureLoaded();
         return labResultTypes;
     }
 
     public static List<LabResultType> getActiveLabResultTypes() {
-        loadLabResultTypes();
+        ensureLoaded();
         List<LabResultType> active = new ArrayList<>();
         for (LabResultType labResultType : labResultTypes) {
             if (labResultType.getStatus() == LabResultTypeStatus.ACTIVE) {
@@ -58,7 +78,7 @@ public class LabResultTypeManagement {
     }
 
     public static LabResultType getLabResultTypeById(String labResultTypeId) {
-        loadLabResultTypes();
+        ensureLoaded();
         return findLabResultTypeById(labResultTypeId);
     }
 
@@ -81,7 +101,7 @@ public class LabResultTypeManagement {
     }
 
     public static LabResultType getLabResultTypeByName(String typeName) {
-        loadLabResultTypes();
+        ensureLoaded();
         return findLabResultTypeByName(typeName);
     }
 
@@ -154,6 +174,7 @@ public class LabResultTypeManagement {
     }
 
     public LinkedHashMap<String, String> createLabResultType(String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (typeName == null || typeName.trim().isEmpty()) {
@@ -195,6 +216,7 @@ public class LabResultTypeManagement {
     }
 
     public LinkedHashMap<String, String> updateLabResultType(LabResultType labResultType, String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         // Validate on the passed-in object first, then re-fetch via ID before mutating
@@ -232,6 +254,7 @@ public class LabResultTypeManagement {
     }
 
     public LinkedHashMap<String, String> deactivateLabResultType(String labResultTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResultType targetLabResultType = findLabResultTypeById(labResultTypeId);
@@ -260,6 +283,7 @@ public class LabResultTypeManagement {
     }
 
     public LinkedHashMap<String, String> activateLabResultType(String labResultTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         LabResultType targetLabResultType = findLabResultTypeById(labResultTypeId);
@@ -288,6 +312,7 @@ public class LabResultTypeManagement {
     }
 
     public static String generateLabResultTypeId() {
+        ensureLoaded();
         List<String> existingIds = labResultTypes.stream().map(LabResultType::getLabResultTypeId).toList();
         return SystemConfiguration.generateId("#LRTYPE", existingIds);
     }

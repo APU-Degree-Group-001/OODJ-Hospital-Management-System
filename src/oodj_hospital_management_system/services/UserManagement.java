@@ -43,16 +43,34 @@ public class UserManagement {
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
     private User activeUser;
     
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+    
     public UserManagement(User user) {
         this.activeUser = user;
-        loadUsers();
+        ensureLoaded();
     }
     
     public User getActiveUser() {
         return this.activeUser;
     }
     
+    
+    private static void ensureLoaded() {
+        String current = handler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadUsers();
+        }
+    }
+    
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
+    }
+    
     public static void loadUsers() {
+        String fingerprint = handler.fingerprint();
         allUsers.clear();
         adminStaffs.clear();
         medicalManagers.clear();
@@ -111,31 +129,34 @@ public class UserManagement {
                 doctor.setMedicalDepartment(DoctorManagement.getMedicalDepartmentById(departmentId));
             }
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     // Accessor Method for Users
     public static List<User> getAllUsers() {
-        loadUsers();
+        ensureLoaded();
         return allUsers;
     }
     
     public static List<User> getAllAdminStaffs() {
-        loadUsers();
+        ensureLoaded();
         return adminStaffs;
     }
     
     public static List<User> getAllMedicalManagers() {
-        loadUsers();
+        ensureLoaded();
         return medicalManagers;
     }
     
     public static List<User> getAllDoctors() {
-        loadUsers();
+        ensureLoaded();
         return doctors;
     }
     
     public static List<User> getAllPatients() {
-        loadUsers();
+        ensureLoaded();
         return patients;
     }
     
@@ -170,6 +191,7 @@ public class UserManagement {
     
     // CRUD - mutator methods
     public LinkedHashMap<String, String> createUser(String name, String pwd, String type, String email) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.userErrorHandler(Arrays.asList("name", "pwd", "type", "email"), name, pwd, type, email);
@@ -227,6 +249,7 @@ public class UserManagement {
     }
 
     public LinkedHashMap<String, String> modifyUserName(String newName, String userId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             User user = getUserById(userId);
@@ -271,6 +294,7 @@ public class UserManagement {
     }
 
     public LinkedHashMap<String, String> modifyUserEmail(String newEmail, String userId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.userErrorHandler(Arrays.asList("email"), newEmail);
@@ -318,6 +342,7 @@ public class UserManagement {
     }
  
     public LinkedHashMap<String, String> modifyUserPwd(String newPwd, String userId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             User user = getUserById(userId);
@@ -362,6 +387,7 @@ public class UserManagement {
     }
     
     public LinkedHashMap<String, String> updateDoctorDepartment(String doctorId, String departmentId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         Doctor doctor = getDoctorById(doctorId);
@@ -398,6 +424,7 @@ public class UserManagement {
     }
     
     public static LinkedHashMap<String, String> clearDoctorDepartment(String departmentId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         int clearedCount = 0;
         for (User user : allUsers) {
@@ -423,6 +450,7 @@ public class UserManagement {
     }
     
     public LinkedHashMap<String, String> deleteUser(String userId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         User deleteUser = null;
         for (User user : allUsers) {
@@ -449,7 +477,7 @@ public class UserManagement {
     }
     
     public static User getUserById(String userId) {
-        loadUsers();
+        ensureLoaded();
         try {
             if (!allUsers.stream().anyMatch(user -> user.getId().equals(userId))) {
                 throw new UserException(String.format("Invalid User ID: User ID '%s' is not found", userId));
@@ -468,7 +496,7 @@ public class UserManagement {
     }
     
     public static AdminStaff getAdminStaffById(String adminId) {
-        loadUsers();
+        ensureLoaded();
         try {
             if (!adminStaffs.stream().anyMatch(
                     adminStaff -> adminStaff.getId().equals(adminId))) {
@@ -491,7 +519,7 @@ public class UserManagement {
     }
     
     public static MedicalManager getMedicalManagerById(String managerId) {
-        loadUsers();
+        ensureLoaded();
         try {
             if (!medicalManagers.stream().anyMatch(
                     medicalManager -> medicalManager.getId().equals(managerId))) {
@@ -514,7 +542,7 @@ public class UserManagement {
     }
     
     public static Doctor getDoctorById(String doctorId) {
-        loadUsers();
+        ensureLoaded();
         try {
             if (!doctors.stream().anyMatch(
                     doctor -> doctor.getId().equals(doctorId))) {
@@ -537,7 +565,7 @@ public class UserManagement {
     }
     
     public static Patient getPatientById(String patientId) {
-        loadUsers();
+        ensureLoaded();
         try {
             if (!patients.stream().anyMatch(
                     patient -> patient.getId().equals(patientId))) {
@@ -579,6 +607,7 @@ public class UserManagement {
 
     // Searching and Sorting
     public List<User> searchUsers(String keywords) {
+        ensureLoaded();
         List<User> matchedUsers = new ArrayList<>();
         for (User user : allUsers) {
             if (user.getId().toLowerCase().contains(keywords.toLowerCase().trim())
@@ -633,6 +662,7 @@ public class UserManagement {
     
     // Generate ID annd Temp Password
     public static String generateUserId(String userType) {
+        ensureLoaded();
         if (!Arrays.asList(SystemConfiguration.userTypes).contains(userType)) {
             throw new IllegalArgumentException("Invalid user type");
         }
@@ -701,6 +731,7 @@ public class UserManagement {
     }
     
     public LinkedHashMap<String, String> assignDoctorToMedicalManager(Doctor doctor, MedicalManager medicalManager) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.doctorShiftErrorHandler(Arrays.asList(
@@ -725,6 +756,7 @@ public class UserManagement {
             }
             // Save updated user information
             writeUsers();
+            loadUsers();
 
         } catch (Exception e) {
             System.out.println("Error assigning doctor to medical manager\n" + e.getMessage());

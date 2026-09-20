@@ -28,12 +28,29 @@ public class InsuranceManagement {
     private static final List<Insurance> insurances = new ArrayList<>();
     private User activeUser;
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     public InsuranceManagement(User usr) {
         this.activeUser = usr;
-        loadInsurances();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = insuranceHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadInsurances();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     public static void loadInsurances() {
+        String fingerprint = insuranceHandler.fingerprint();
         insurances.clear();
         List<LinkedHashMap<String, String>> rawData = insuranceHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -46,15 +63,18 @@ public class InsuranceManagement {
             );
             insurances.add(insurance);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     public static List<Insurance> getAllInsurances() {
-        loadInsurances();
+        ensureLoaded();
         return insurances;
     }
 
     public static Insurance getInsuranceById(String insuranceId) {
-        loadInsurances();
+        ensureLoaded();
         try {
             if (!insurances.stream().anyMatch(insurance -> insurance.getInsuranceId().equals(insuranceId))) {
                 throw new InsuranceException(String.format("Invalid Insurance ID: Insurance ID '%s' is not found", insuranceId));
@@ -101,6 +121,7 @@ public class InsuranceManagement {
     }
 
     public LinkedHashMap<String, String> createInsurance(String insuranceName, boolean accepted, double coveragePercentage) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.insuranceErrorHandler(Arrays.asList("admin staff", "insuranceName", "coveragePercentage"), activeUser, insuranceName, coveragePercentage);
@@ -133,6 +154,7 @@ public class InsuranceManagement {
     }
 
     public LinkedHashMap<String, String> updateInsurance(Insurance insurance, String insuranceName, boolean accepted, double coveragePercentage) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.insuranceErrorHandler(Arrays.asList("admin staff", "update insurance", "insuranceName", "coveragePercentage"), activeUser, insurance, insuranceName, coveragePercentage);
@@ -206,6 +228,7 @@ public class InsuranceManagement {
 
     // Generate ID
     public static String generateInsuranceId() {
+        ensureLoaded();
         List<String> existingIds = insurances.stream().map(Insurance::getInsuranceId).toList();
         return SystemConfiguration.generateId("#INS", existingIds);
     }

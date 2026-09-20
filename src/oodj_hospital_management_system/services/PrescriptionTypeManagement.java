@@ -23,12 +23,28 @@ public class PrescriptionTypeManagement {
 
     private static final List<PrescriptionType> prescriptionTypes = new ArrayList<>();
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     public PrescriptionTypeManagement() {
-        loadPrescriptionTypes();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = prescriptionTypeHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadPrescriptionTypes();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     public static void loadPrescriptionTypes() {
-        System.out.println(">>> LOAD PRESCRIPTION TYPES");
+        String fingerprint = prescriptionTypeHandler.fingerprint();
         prescriptionTypes.clear();
         List<LinkedHashMap<String, String>> rawData = prescriptionTypeHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -40,15 +56,18 @@ public class PrescriptionTypeManagement {
             );
             prescriptionTypes.add(prescriptionType);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     public static List<PrescriptionType> getAllPrescriptionTypes() {
-        loadPrescriptionTypes();
+        ensureLoaded();
         return prescriptionTypes;
     }
 
     public static List<PrescriptionType> getActivePrescriptionTypes() {
-        loadPrescriptionTypes();
+        ensureLoaded();
         List<PrescriptionType> active = new ArrayList<>();
         for (PrescriptionType prescriptionType : prescriptionTypes) {
             if (prescriptionType.getStatus() == PrescriptionTypeStatus.ACTIVE) {
@@ -59,7 +78,7 @@ public class PrescriptionTypeManagement {
     }
 
     public static PrescriptionType getPrescriptionTypeById(String prescriptionTypeId) {
-        loadPrescriptionTypes();
+        ensureLoaded();
         return findPrescriptionTypeById(prescriptionTypeId);
     }
 
@@ -82,7 +101,7 @@ public class PrescriptionTypeManagement {
     }
 
     public static PrescriptionType getPrescriptionTypeByName(String typeName) {
-        loadPrescriptionTypes();
+        ensureLoaded();
         return findPrescriptionTypeByName(typeName);
     }
 
@@ -155,6 +174,7 @@ public class PrescriptionTypeManagement {
     }
 
     public LinkedHashMap<String, String> createPrescriptionType(String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (typeName == null || typeName.trim().isEmpty()) {
@@ -196,6 +216,7 @@ public class PrescriptionTypeManagement {
     }
 
     public LinkedHashMap<String, String> updatePrescriptionType(PrescriptionType prescriptionType, String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         // Validate on the passed-in object first, then re-fetch via ID before mutating
@@ -233,6 +254,7 @@ public class PrescriptionTypeManagement {
     }
 
     public LinkedHashMap<String, String> deactivatePrescriptionType(String prescriptionTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         PrescriptionType targetPrescriptionType = findPrescriptionTypeById(prescriptionTypeId);
@@ -261,6 +283,7 @@ public class PrescriptionTypeManagement {
     }
 
     public LinkedHashMap<String, String> activatePrescriptionType(String prescriptionTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         PrescriptionType targetPrescriptionType = findPrescriptionTypeById(prescriptionTypeId);
@@ -289,6 +312,7 @@ public class PrescriptionTypeManagement {
     }
 
     public static String generatePrescriptionTypeId() {
+        ensureLoaded();
         List<String> existingIds = prescriptionTypes.stream().map(PrescriptionType::getPrescriptionTypeId).toList();
         return SystemConfiguration.generateId("#PTYPE", existingIds);
     }

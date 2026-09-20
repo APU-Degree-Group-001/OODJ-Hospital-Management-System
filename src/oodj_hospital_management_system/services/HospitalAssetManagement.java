@@ -30,13 +30,49 @@ public class HospitalAssetManagement {
 
     private static final List<HospitalAsset> allHospitalAssets = new ArrayList<>();
     private static final List<HospitalAssetAllocation> allHospitalAssetAllocations = new ArrayList<>();
-    
+
+    private static boolean assetsLoaded = false;
+    private static String loadedAssetFingerprint = null;
+    private static int assetLoadVersion = 0;
+
+    private static boolean allocationsLoaded = false;
+    private static String loadedAllocationFingerprint = null;
+    private static int allocationLoadVersion = 0;
+
     private User activeUser;
     
     public HospitalAssetManagement(User usr) {
         this.activeUser = usr;
-        loadHospitalAssets();
-        loadHospitalAssetAllocations();
+        ensureAssetsLoaded();
+        ensureAllocationsLoaded();
+    }
+
+    // =========================================================
+    // ENSURE LOADED
+    // =========================================================
+
+    private static void ensureAssetsLoaded() {
+        String current = assetHandler.fingerprint();
+        if (!assetsLoaded || current == null || !current.equals(loadedAssetFingerprint)) {
+            loadHospitalAssets();
+        }
+    }
+
+    private static void ensureAllocationsLoaded() {
+        String current = allocationHandler.fingerprint();
+        if (!allocationsLoaded || current == null || !current.equals(loadedAllocationFingerprint)) {
+            loadHospitalAssetAllocations();
+        }
+    }
+
+    public static int getAssetLoadVersion() {
+        ensureAssetsLoaded();
+        return assetLoadVersion;
+    }
+
+    public static int getAllocationLoadVersion() {
+        ensureAllocationsLoaded();
+        return allocationLoadVersion;
     }
 
     // =========================================================
@@ -81,6 +117,12 @@ public class HospitalAssetManagement {
         if (changed) {
             writeHospitalAssets();
         }
+        // Fingerprint is captured AFTER the possible recomputeStatuses() write above,
+        // so it reflects what's actually on disk right now and doesn't trigger
+        // a reload loop on the next ensureAssetsLoaded() call.
+        assetsLoaded = true;
+        loadedAssetFingerprint = assetHandler.fingerprint();
+        assetLoadVersion++;
     }
 
     private static boolean recomputeStatuses() {
@@ -107,6 +149,7 @@ public class HospitalAssetManagement {
     }
     
     public static void loadHospitalAssetAllocations() {
+        String fingerprint = allocationHandler.fingerprint();
         allHospitalAssetAllocations.clear();
 
         List<LinkedHashMap<String, String>> rawData = allocationHandler.readFile();
@@ -125,6 +168,9 @@ public class HospitalAssetManagement {
 
             allHospitalAssetAllocations.add(allocation);
         }
+        allocationsLoaded = true;
+        loadedAllocationFingerprint = fingerprint;
+        allocationLoadVersion++;
     }
 
     // =========================================================
@@ -132,12 +178,12 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static List<HospitalAssetAllocation> getAllHospitalAssetAllocations() {
-        loadHospitalAssetAllocations();
+        ensureAllocationsLoaded();
         return new ArrayList<>(allHospitalAssetAllocations);
     }
 
     public static List<HospitalAsset> getAllHospitalAssets() {
-        loadHospitalAssets();
+        ensureAssetsLoaded();
         return new ArrayList<>(allHospitalAssets);
     }
 
@@ -146,7 +192,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static HospitalAsset getHospitalAssetById(String assetId) {
-        loadHospitalAssets();
+        ensureAssetsLoaded();
 
         try {
             if (!allHospitalAssets.stream().anyMatch(asset -> asset.getAssetId().equals(assetId))) {
@@ -169,7 +215,7 @@ public class HospitalAssetManagement {
     }
 
     public static HospitalAssetAllocation getHospitalAssetAllocationById(String allocationId) {
-        loadHospitalAssetAllocations();
+        ensureAllocationsLoaded();
         if (allocationId == null || allocationId.isEmpty()) {
             return null;
         }
@@ -195,7 +241,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static List<HospitalAssetAllocation> getHospitalAssetAllocationsByAssetId(String assetId) {
-        loadHospitalAssetAllocations();
+        ensureAllocationsLoaded();
 
         return allHospitalAssetAllocations.stream()
                 .filter(allocation -> allocation.getAssetId().equals(assetId))
@@ -207,7 +253,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static List<HospitalAsset> searchHospitalAssets(String keyword) {
-        loadHospitalAssets();
+        ensureAssetsLoaded();
 
         if (keyword == null || keyword.trim().isEmpty()) {
             return new ArrayList<>(allHospitalAssets);
@@ -229,7 +275,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static List<HospitalAsset> sortHospitalAssets(String sortBy, boolean ascending) {
-        loadHospitalAssets();
+        ensureAssetsLoaded();
 
         List<HospitalAsset> sortedAssets = new ArrayList<>(allHospitalAssets);
 
@@ -358,6 +404,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> createHospitalAsset(String assetType, String assetName, String imagePath, String location, String description) {
+        ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         String newAssetId = generateHospitalAssetId();
@@ -394,6 +441,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> createWard(String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
+        ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         String newAssetId = generateHospitalAssetId();
@@ -431,6 +479,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> modifyHospitalAsset(HospitalAsset asset, String assetType, String assetName, String imagePath, String location, String description) {
+        ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (asset == null) {
@@ -466,6 +515,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> modifyWard(Ward ward, String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
+        ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (ward == null) {
@@ -503,6 +553,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public LinkedHashMap<String, String> deleteHospitalAsset(String assetId) {
+        ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         HospitalAsset deleteAsset = getHospitalAssetById(assetId);
@@ -545,7 +596,7 @@ public class HospitalAssetManagement {
     ) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        loadHospitalAssetAllocations();
+        ensureAllocationsLoaded();
 
         if (assetId == null || assetId.isBlank() || getHospitalAssetById(assetId) == null) {
             msgMap.put("success", null);
@@ -653,7 +704,7 @@ public class HospitalAssetManagement {
     public LinkedHashMap<String, String> setHospitalAssetAllocationSchedule(String allocationId, String scheduledStartDateTime, String scheduledEndDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        loadHospitalAssetAllocations();
+        ensureAllocationsLoaded();
 
         HospitalAssetAllocation allocation = getHospitalAssetAllocationById(allocationId);
 
@@ -862,6 +913,7 @@ public class HospitalAssetManagement {
     // =========================================================
 
     public static String generateHospitalAssetId() {
+        ensureAssetsLoaded();
         List<String> existingIds = allHospitalAssets.stream()
                 .map(HospitalAsset::getAssetId)
                 .toList();
@@ -870,6 +922,7 @@ public class HospitalAssetManagement {
     }
 
     public static String generateHospitalAssetAllocationId() {
+        ensureAllocationsLoaded();
         List<String> existingIds = allHospitalAssetAllocations.stream()
                 .map(HospitalAssetAllocation::getAllocationId)
                 .toList();

@@ -29,11 +29,27 @@ public class WardAdmissionManagement {
 
     private static final List<WardAdmission> allWardAdmissions = new ArrayList<>();
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     private User activeUser;
 
     public WardAdmissionManagement(User usr) {
         this.activeUser = usr;
-        loadWardAdmissions();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = admissionHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadWardAdmissions();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     // =========================================================
@@ -41,6 +57,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static void loadWardAdmissions() {
+        String fingerprint = admissionHandler.fingerprint();
         allWardAdmissions.clear();
 
         List<LinkedHashMap<String, String>> rawData = admissionHandler.readFile();
@@ -60,6 +77,9 @@ public class WardAdmissionManagement {
             );
             allWardAdmissions.add(admission);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     // =========================================================
@@ -67,7 +87,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static List<WardAdmission> getAllWardAdmissions() {
-        loadWardAdmissions();
+        ensureLoaded();
         return allWardAdmissions;
     }
 
@@ -76,7 +96,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static WardAdmission getWardAdmissionById(String admissionId) {
-        loadWardAdmissions();
+        ensureLoaded();
 
         try {
             if (!allWardAdmissions.stream().anyMatch(a -> a.getAdmissionId().equals(admissionId))) {
@@ -103,7 +123,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static List<WardAdmission> searchWardAdmissions(String keyword) {
-        loadWardAdmissions();
+        ensureLoaded();
 
         if (keyword == null || keyword.trim().isEmpty()) {
             return new ArrayList<>(allWardAdmissions);
@@ -126,7 +146,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static List<WardAdmission> sortWardAdmissions(String sortBy, boolean ascending) {
-        loadWardAdmissions();
+        ensureLoaded();
 
         List<WardAdmission> sorted = new ArrayList<>(allWardAdmissions);
 
@@ -175,7 +195,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static int getActiveAdmissionCount(String wardId) {
-        loadWardAdmissions();
+        ensureLoaded();
 
         int count = 0;
 
@@ -248,7 +268,7 @@ public class WardAdmissionManagement {
     public LinkedHashMap<String, String> createWardAdmission(String patientId, String wardId, String admittingDoctorId, String admittedDateTime, String reason) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        loadWardAdmissions(); // keep in-memory list synced with disk before mutating
+        ensureLoaded(); // keep in-memory list synced with disk before mutating
 
         HospitalAsset asset = HospitalAssetManagement.getHospitalAssetById(wardId);
         if (!(asset instanceof Ward)) {
@@ -397,6 +417,7 @@ public class WardAdmissionManagement {
     // =========================================================
 
     public static String generateWardAdmissionId() {
+        ensureLoaded();
         List<String> existingIds = allWardAdmissions.stream()
                 .map(WardAdmission::getAdmissionId)
                 .toList();

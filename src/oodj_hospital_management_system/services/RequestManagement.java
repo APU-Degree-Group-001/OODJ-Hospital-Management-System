@@ -31,12 +31,29 @@ public class RequestManagement {
     private static final List<Request> requests = new ArrayList<>();
     private User activeUser;
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     public RequestManagement(User usr) {
         this.activeUser = usr;
-        loadRequests();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = requestHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadRequests();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     public static void loadRequests() {
+        String fingerprint = requestHandler.fingerprint();
         requests.clear();
         List<LinkedHashMap<String, String>> rawData = requestHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -57,15 +74,18 @@ public class RequestManagement {
             );
             requests.add(request);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     public static List<Request> getAllRequests() {
-        loadRequests();
+        ensureLoaded();
         return requests;
     }
 
     public static Request getRequestById(String requestId) {
-        loadRequests();
+        ensureLoaded();
         try {
             if (!requests.stream().anyMatch(request -> request.getRequestId().equals(requestId))) {
                 throw new RequestException(String.format("Invalid Request ID: Request ID '%s' is not found", requestId));
@@ -135,6 +155,7 @@ public class RequestManagement {
 
     // Create - generic entrypoint used by all 3 request types
     public LinkedHashMap<String, String> createRequest(RequestType type, User target, String referenceId, String reason) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.requestErrorHandler(Arrays.asList("requester", "requestType", "referenceId", "reason"), activeUser, type, referenceId, reason);
@@ -168,6 +189,7 @@ public class RequestManagement {
     }
     
     public LinkedHashMap<String, String> updateRequest(Request request, String referenceId, String reason) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -206,6 +228,7 @@ public class RequestManagement {
     }
 
     public LinkedHashMap<String, String> withdrawRequest(Request request) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -247,6 +270,7 @@ public class RequestManagement {
 
     // Approve - dispatches to the right downstream service based on request type
     public LinkedHashMap<String, String> approveRequest(Request request) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -303,6 +327,7 @@ public class RequestManagement {
     }
     
     public LinkedHashMap<String, String> rejectRequest(Request request, String reason) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         try {
@@ -376,14 +401,14 @@ public class RequestManagement {
 
     // Filtering helpers - likely useful for "requests waiting on me" views
     public static List<Request> getPendingRequestsByType(RequestType type) {
-        loadRequests();
+        ensureLoaded();
         return requests.stream()
                 .filter(r -> type.equals(r.getRequestType()) && RequestStatus.PENDING.equals(r.getStatus()))
                 .toList();
     }
 
     public static List<Request> getRequestsByRequester(User requester) {
-        loadRequests();
+        ensureLoaded();
         return requests.stream()
                 .filter(r -> requester.equals(r.getRequester()))
                 .toList();
@@ -391,6 +416,7 @@ public class RequestManagement {
 
     // Generate ID
     public static String generateRequestId() {
+        ensureLoaded();
         List<String> existingIds = requests.stream().map(Request::getRequestId).toList();
         return SystemConfiguration.generateId("#REQ", existingIds);
     }

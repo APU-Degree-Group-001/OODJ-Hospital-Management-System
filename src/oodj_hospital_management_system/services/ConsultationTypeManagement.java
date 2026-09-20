@@ -23,11 +23,28 @@ public class ConsultationTypeManagement {
 
     private static final List<ConsultationType> consultationTypes = new ArrayList<>();
 
+    private static boolean loaded = false;
+    private static String loadedFingerprint = null;
+    private static int loadVersion = 0;
+
     public ConsultationTypeManagement() {
-        loadConsultationTypes();
+        ensureLoaded();
+    }
+
+    private static void ensureLoaded() {
+        String current = consultationTypeHandler.fingerprint();
+        if (!loaded || current == null || !current.equals(loadedFingerprint)) {
+            loadConsultationTypes();
+        }
+    }
+
+    public static int getLoadVersion() {
+        ensureLoaded();
+        return loadVersion;
     }
 
     public static void loadConsultationTypes() {
+        String fingerprint = consultationTypeHandler.fingerprint();
         consultationTypes.clear();
         List<LinkedHashMap<String, String>> rawData = consultationTypeHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -39,15 +56,18 @@ public class ConsultationTypeManagement {
             );
             consultationTypes.add(consultationType);
         }
+        loaded = true;
+        loadedFingerprint = fingerprint;
+        loadVersion++;
     }
 
     public static List<ConsultationType> getAllConsultationTypes() {
-        loadConsultationTypes();
+        ensureLoaded();
         return consultationTypes;
     }
 
     public static List<ConsultationType> getActiveConsultationTypes() {
-        loadConsultationTypes();
+        ensureLoaded();
         List<ConsultationType> active = new ArrayList<>();
         for (ConsultationType consultationType : consultationTypes) {
             if (consultationType.getStatus() == ConsultationTypeStatus.ACTIVE) {
@@ -58,7 +78,7 @@ public class ConsultationTypeManagement {
     }
 
     public static ConsultationType getConsultationTypeById(String consultationTypeId) {
-        loadConsultationTypes();
+        ensureLoaded();
         return findConsultationTypeById(consultationTypeId);
     }
 
@@ -131,6 +151,7 @@ public class ConsultationTypeManagement {
     }
 
     public LinkedHashMap<String, String> createConsultationType(String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (typeName == null || typeName.trim().isEmpty()) {
@@ -172,6 +193,7 @@ public class ConsultationTypeManagement {
     }
 
     public LinkedHashMap<String, String> updateConsultationType(ConsultationType consultationType, String typeName, double baseRate) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         // Validate on the passed-in object first, then re-fetch via ID before mutating
@@ -209,6 +231,7 @@ public class ConsultationTypeManagement {
     }
 
     public LinkedHashMap<String, String> deactivateConsultationType(String consultationTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         ConsultationType targetConsultationType = findConsultationTypeById(consultationTypeId);
@@ -237,6 +260,7 @@ public class ConsultationTypeManagement {
     }
 
     public LinkedHashMap<String, String> activateConsultationType(String consultationTypeId) {
+        ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         ConsultationType targetConsultationType = findConsultationTypeById(consultationTypeId);
@@ -265,6 +289,7 @@ public class ConsultationTypeManagement {
     }
 
     public static String generateConsultationTypeId() {
+        ensureLoaded();
         List<String> existingIds = consultationTypes.stream().map(ConsultationType::getConsultationTypeId).toList();
         return SystemConfiguration.generateId("#CTYPE", existingIds);
     }

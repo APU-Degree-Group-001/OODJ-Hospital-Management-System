@@ -35,13 +35,45 @@ public class DoctorManagement {
     private static final List<DoctorShift> doctorShifts = new ArrayList<>();
     private static final List<MedicalDepartment> medicalDepartments = new ArrayList<>();
     private User activeUser;
-    
+
+    private static boolean shiftLoaded = false;
+    private static String loadedShiftFingerprint = null;
+    private static int shiftLoadVersion = 0;
+
+    private static boolean departmentLoaded = false;
+    private static String loadedDepartmentFingerprint = null;
+    private static int departmentLoadVersion = 0;
+
     public DoctorManagement(User usr) {
         this.activeUser = usr;
-        loadDoctorShift();
-        loadMedicalDepartment();
+        ensureShiftLoaded();
+        ensureDepartmentLoaded();
     }
-    
+
+    private static void ensureShiftLoaded() {
+        String current = shiftHandler.fingerprint();
+        if (!shiftLoaded || current == null || !current.equals(loadedShiftFingerprint)) {
+            loadDoctorShift();
+        }
+    }
+
+    private static void ensureDepartmentLoaded() {
+        String current = departmentHandler.fingerprint();
+        if (!departmentLoaded || current == null || !current.equals(loadedDepartmentFingerprint)) {
+            loadMedicalDepartment();
+        }
+    }
+
+    public static int getShiftLoadVersion() {
+        ensureShiftLoaded();
+        return shiftLoadVersion;
+    }
+
+    public static int getDepartmentLoadVersion() {
+        ensureDepartmentLoaded();
+        return departmentLoadVersion;
+    }
+
     public static void loadDoctorShift() {
         doctorShifts.clear();
         List<LinkedHashMap<String, String>> rawData = shiftHandler.readFile();
@@ -69,9 +101,16 @@ public class DoctorManagement {
         if (anyChanged) {
             writeDoctorShifts();
         }
+        // Fingerprint is captured AFTER the possible auto-correction write above,
+        // so it reflects what's actually on disk right now and doesn't trigger
+        // a reload loop on the next ensureShiftLoaded() call.
+        shiftLoaded = true;
+        loadedShiftFingerprint = shiftHandler.fingerprint();
+        shiftLoadVersion++;
     }
-    
+
     public static void loadMedicalDepartment() {
+        String fingerprint = departmentHandler.fingerprint();
         medicalDepartments.clear();
         List<LinkedHashMap<String, String>> rawData = departmentHandler.readFile();
         for (LinkedHashMap<String, String> row : rawData) {
@@ -83,20 +122,23 @@ public class DoctorManagement {
         );
             medicalDepartments.add(department);
         }
+        departmentLoaded = true;
+        loadedDepartmentFingerprint = fingerprint;
+        departmentLoadVersion++;
     }
-    
+
     public static List<DoctorShift> getAllDoctorShifts() {
-        loadDoctorShift();
+        ensureShiftLoaded();
         return doctorShifts;
     }
-    
+
     public static List<MedicalDepartment> getAllMedicalDepartments() {
-        loadMedicalDepartment();
+        ensureDepartmentLoaded();
         return medicalDepartments;
     }
-    
+
     public static DoctorShift getDoctorShiftById(String shiftId) {
-        loadDoctorShift();
+        ensureShiftLoaded();
         try {
             if (!doctorShifts.stream().anyMatch(shift -> shift.getShiftId().equals(shiftId))) {
                 throw new DoctorShiftException(String.format("Invalid Doctor Shift ID: Shift ID '%s' is not found", shiftId));
@@ -113,9 +155,9 @@ public class DoctorManagement {
             return null;
         }
     }
-    
+
     public static MedicalDepartment getMedicalDepartmentById(String departmentId) {
-        loadMedicalDepartment();
+        ensureDepartmentLoaded();
         try {
             if (!medicalDepartments.stream().anyMatch(department -> department.getDepartmentId().equals(departmentId))) {
                 throw new MedicalDepartmentException(String.format("Invalid Medical Department ID: Department ID '%s' is not found", departmentId));
@@ -132,7 +174,7 @@ public class DoctorManagement {
             return null;
         }
     }
-    
+
     public static DoctorShiftStatus getDoctorShiftStatus(String status) {
         DoctorShiftStatus shiftStaus = null;
         switch (status) {
@@ -146,7 +188,7 @@ public class DoctorManagement {
         }
         return shiftStaus;
     }
-    
+
     // File Handler (Write and Append) - Doctor Shifts
     private static boolean writeDoctorShifts() {
         ArrayList<LinkedHashMap<String, String>> shifts = new ArrayList<>();
@@ -176,7 +218,7 @@ public class DoctorManagement {
             return false;
         }
     }
-    
+
     // File Handler (Write and Append) - Medical Department
     private static boolean writeMedicalDepartments() {
         ArrayList<LinkedHashMap<String, String>> departments = new ArrayList<>();
@@ -215,6 +257,7 @@ public class DoctorManagement {
 
     // CRUD - mutator methods (Doctor Shift) 
     public LinkedHashMap<String, String> createShift(Doctor doctor, String startDateTime, String endDateTime) {
+        ensureShiftLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.doctorShiftErrorHandler(Arrays.asList("medical manager", "doctor", "startDateTime", "endDateTime"), activeUser, doctor, startDateTime, endDateTime);
@@ -260,6 +303,7 @@ public class DoctorManagement {
     }
     
     public LinkedHashMap<String, String> cancelShift(DoctorShift shift) {
+        ensureShiftLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         if (shift == null) {
             msgMap.put("success", null);
@@ -333,6 +377,7 @@ public class DoctorManagement {
     }
     
     public LinkedHashMap<String, String> startShift(DoctorShift shift) {
+        ensureShiftLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (shift == null) {
@@ -373,6 +418,7 @@ public class DoctorManagement {
     }
 
     public LinkedHashMap<String, String> endShift(DoctorShift shift) {
+        ensureShiftLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
         if (shift == null) {
@@ -411,7 +457,7 @@ public class DoctorManagement {
     
     // Shift Management
     public static Doctor.ShiftStatus getDoctorAttendanceStatus(Doctor doctor) {
-        loadDoctorShift();
+        ensureShiftLoaded();
         LocalDateTime now = DateTime.currentDateTime();
         for (DoctorShift shift : doctorShifts) {
             if (!shift.getDoctor().equals(doctor)) {
@@ -478,7 +524,7 @@ public class DoctorManagement {
 
     // Dynamically Calculate Monthly Assigned Shift Hours
     public static int calculateAssignedShiftHourByMonth(Doctor doctor) {
-        loadDoctorShift();
+        ensureShiftLoaded();
         LocalDateTime now = DateTime.currentDateTime();
         int totalHours = 0;
         for (DoctorShift shift : doctorShifts) {
@@ -501,7 +547,7 @@ public class DoctorManagement {
 
     // Dynamically Calculate Monthly Actual Shift Hours
     public static String calculateActualShiftHourByMonth(Doctor doctor) {
-        loadDoctorShift();
+        ensureShiftLoaded();
         LocalDateTime now = DateTime.currentDateTime();
         int totalMinutes = 0;
         for (DoctorShift shift : doctorShifts) {
@@ -534,6 +580,7 @@ public class DoctorManagement {
     
     // CRUD - mutator methods (Medical Department)
     public LinkedHashMap<String, String> addNewDepartment(String departmentName, String description) {
+        ensureDepartmentLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             ErrorHandler.medicalDepartmentErrorHandler(Arrays.asList("name", "description"), departmentName, description);
@@ -571,6 +618,7 @@ public class DoctorManagement {
     }
 
     public LinkedHashMap<String, String> editDepartment(String newName, String newDescription, String departmentId) {
+        ensureDepartmentLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         try {
             MedicalDepartment department = getMedicalDepartmentById(departmentId);
@@ -614,6 +662,7 @@ public class DoctorManagement {
     }
 
     public LinkedHashMap<String, String> deleteDepartment(String departmentId) {
+        ensureDepartmentLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
         MedicalDepartment deleteDept = null;
         for (MedicalDepartment d : medicalDepartments) {
@@ -735,11 +784,13 @@ public class DoctorManagement {
     
     // Generate ID
     public static String generateShiftId() {
+        ensureShiftLoaded();
         List<String> existingIds = doctorShifts.stream().map(DoctorShift::getShiftId).toList();
         return SystemConfiguration.generateId("#SHIFT", existingIds);
     }
     
     public static String generateDepartmentId() {
+        ensureDepartmentLoaded();
         List<String> existingIds = medicalDepartments.stream().map(MedicalDepartment::getDepartmentId).toList();
         return SystemConfiguration.generateId("#DEPT", existingIds);
     }
