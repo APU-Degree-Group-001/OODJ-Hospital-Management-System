@@ -426,6 +426,25 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
         }
     }
     
+    private WardAdmission findOverlappingAdmission(String patientId, LocalDateTime newStart, LocalDateTime newEnd) {
+        for (WardAdmission adm : admissionCtrl.getAllWardAdmissions()) {
+            if (!patientId.equals(adm.getPatientId())) continue;
+            if (adm.getAdmittedDateTime() == null || adm.getAdmittedDateTime().isEmpty()) continue;
+
+            LocalDateTime existingStart = DateTime.toDateTimeObject(adm.getAdmittedDateTime());
+            LocalDateTime existingEnd =
+                (adm.getDischargedDateTime() == null || adm.getDischargedDateTime().isEmpty())
+                    ? null
+                    : DateTime.toDateTimeObject(adm.getDischargedDateTime());
+
+            boolean newStartsBeforeExistingEnds = existingEnd == null || newStart.isBefore(existingEnd);
+            boolean existingStartsBeforeNewEnds = newEnd == null || existingStart.isBefore(newEnd);
+
+            if (newStartsBeforeExistingEnds && existingStartsBeforeNewEnds) return adm;
+        }
+        return null;
+    }
+    
     private void resetScrollToTop() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             javax.swing.JScrollPane sp = (javax.swing.JScrollPane)
@@ -503,7 +522,7 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
         sortByLabel.setText("Sort By");
         sortByPane.add(sortByLabel);
 
-        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Patient", "Ward", "Admitted Date Time", "Discharged Date Time", "Resolved Date Time", "Resolver" }));
+        sortField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "ID", "Patient", "Ward", "Admitted Date Time", "Discharged Date Time" }));
         sortField.setPreferredSize(new java.awt.Dimension(150, 30));
         sortField.setRequestFocusEnabled(false);
         sortField.addActionListener(this::sortFieldActionPerformed);
@@ -512,7 +531,7 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
         sortByLabel1.setText("Filter By");
         sortByPane.add(sortByLabel1);
 
-        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Patient", "Ward", "Admitted Date Time", "Discharged Date Time", "Resolved Date Time", "Resolver", "Status" }));
+        filterByField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Patient", "Ward", "Admitted Date Time", "Discharged Date Time", "Status" }));
         filterByField.setPreferredSize(new java.awt.Dimension(150, 30));
         filterByField.setRequestFocusEnabled(false);
         filterByField.addActionListener(this::filterByFieldActionPerformed);
@@ -732,6 +751,16 @@ public class WardAdmissionsPanel extends javax.swing.JPanel {
     private void admitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_admitButtonActionPerformed
         String patientId = selectPatientForAdmission();
         if (patientId == null) return;
+        
+        WardAdmission conflict = findOverlappingAdmission(patientId, LocalDateTime.now(), null);
+        if (conflict != null) {
+            JOptionPane.showMessageDialog(parentWindow,
+                resolveUserName(patientId) + " is already admitted to "
+                    + resolveAssetName(conflict.getWardId()) + " (" + conflict.getAdmissionId() + ").\n"
+                    + "Please discharge the patient before creating a new admission.",
+                "Overlapping Admission", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         String wardId = selectWardForAdmission();
         if (wardId == null) return;
