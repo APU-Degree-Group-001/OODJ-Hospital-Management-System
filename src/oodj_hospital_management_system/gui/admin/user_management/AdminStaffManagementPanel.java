@@ -48,6 +48,9 @@ public class AdminStaffManagementPanel extends javax.swing.JPanel {
         adminStaffTable.setPreferredScrollableViewportSize(
             new java.awt.Dimension(1160, adminStaffTable.getRowHeight() * adminStaffTable.getRowCount())
         );
+        if (!this.usrCtrl.getActiveUser().getType().equals("super admin")) {
+            operationsPanel1.setVisible(false);
+        }
     }
     
     private void customStyleHeader() {

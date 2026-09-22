@@ -24,6 +24,7 @@ public class SystemConfiguration {
     public static final String errorLogFilePath = parentPath + "txt/log/error_log.txt";
     
     public static final String userFilePath = parentPath + "txt/users/users.txt";
+    public static final String superAdminFilePath = parentPath + "txt/users/superAdmin.txt";
     public static final String doctorShiftFilePath = parentPath + "txt/users/doctorShifts.txt";
     public static final String medicalDepartmentFilePath = parentPath + "txt/users/medicalDepartments.txt";
     public static final String requestFilePath = parentPath + "txt/users/requests.txt";

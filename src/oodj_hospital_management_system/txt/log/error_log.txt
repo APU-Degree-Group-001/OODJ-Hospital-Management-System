@@ -4494,3 +4494,18 @@ Asset '#LAB001' already has an overlapping scheduled allocation
 [2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
 [2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#AST74cbd' is not found
 [2026-09-18 16:10:52] Error finding hospital asset -> Invalid Hospital Asset ID: Asset ID '#ROOM001' is not found
+[2026-09-22 16:36:32] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:36:32] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:48:59] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:54:15] User with ID '#SADM001' failed to logged in
+	ErrorMsg: Incorrect Login Credentials
+[2026-09-22 16:54:40] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:54:40] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:59:11] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:59:11] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:59:24] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 16:59:24] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 17:00:11] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 17:00:11] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 17:00:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found
+[2026-09-22 17:00:25] Error finding user -> User Handling Error: Invalid User ID: User ID '#SADM001' is not found

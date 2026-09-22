@@ -43,6 +43,7 @@ public class DashboardPanel extends javax.swing.JPanel {
                  fileName = "medical_manager_dashboard.png";
                  break;
              case "admin staff":
+             case "super admin":
                  fileName = "admin_staff_dashboard.png";
                  break;
              default:
@@ -241,7 +242,7 @@ public class DashboardPanel extends javax.swing.JPanel {
      */
     private void handleUpdateResult(LinkedHashMap<String, String> msg, String fieldLabel) {
         if (msg.get("success") != null) {
-            User refreshedUser = usrCtrl.getUserById(usrCtrl.getActiveUser().getId());
+            User refreshedUser = usrCtrl.getUserOrSuperAdminById(usrCtrl.getActiveUser().getId());
             usrCtrl.updateActiveUser(refreshedUser);
             loadUserDetails();
             JOptionPane.showMessageDialog(this, fieldLabel + " updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);

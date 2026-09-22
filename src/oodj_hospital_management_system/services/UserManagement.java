@@ -32,6 +32,7 @@ import oodj_hospital_management_system.utils.exceptions.UserException;
  * @author sheaw
  */
 public class UserManagement {
+    private static final FileHandler superAdminhandler = new FileHandler(SystemConfiguration.superAdminFilePath);
     private static final FileHandler handler = new FileHandler(SystemConfiguration.userFilePath);
     // private static List<User> admins = new ArrayList<>();
     private static List<User> allUsers = new ArrayList<>();
@@ -39,6 +40,7 @@ public class UserManagement {
     private static List<User> medicalManagers = new ArrayList<>();
     private static List<User> doctors = new ArrayList<>();
     private static List<User> patients = new ArrayList<>();
+    private static List<User> superAdmin = new ArrayList<>();
 
     private static ArrayList<LinkedHashMap<String, String>> permissions = new ArrayList<>();
     private User activeUser;
@@ -50,12 +52,17 @@ public class UserManagement {
     public UserManagement(User user) {
         this.activeUser = user;
         ensureLoaded();
+        loadSuperAdmin();
+    }
+    
+    public static User getSuperAdmin() {
+        loadSuperAdmin();
+        return UserManagement.superAdmin.get(0);
     }
     
     public User getActiveUser() {
         return this.activeUser;
     }
-    
     
     private static void ensureLoaded() {
         String current = handler.fingerprint();
@@ -133,6 +140,19 @@ public class UserManagement {
         loadedFingerprint = fingerprint;
         loadVersion++;
     }
+    
+    public static void loadSuperAdmin() {
+        superAdmin.clear();
+        List<LinkedHashMap<String, String>> rawData = superAdminhandler.readFile();
+        for (LinkedHashMap<String, String> row : rawData) {
+            AdminStaff superAdm = new AdminStaff(row.get("userId"), row.get("userName"), row.get("userPwd"), row.get("userType"), "", row.get("email"));
+            superAdmin.add(superAdm);
+        }
+    }
+    
+    public static boolean isSuperAdmin(User user) {
+        return (user.getId().equals(superAdmin.get(0).getId()));
+    }
 
     // Accessor Method for Users
     public static List<User> getAllUsers() {
@@ -161,6 +181,15 @@ public class UserManagement {
     }
     
     // File Handler (Write and Append)
+    private static boolean writeSuperAdmin() {
+        ArrayList<LinkedHashMap<String, String>> admins = new ArrayList<>();
+        for (User admin : superAdmin) {
+            admins.add(admin.getUserMap());
+        }
+        superAdminhandler.writeFile(admins);
+        return true;
+    }
+    
     private static boolean writeUsers() {
         ArrayList<LinkedHashMap<String, String>> users = new ArrayList<>();
         for (User user : allUsers) {
@@ -251,6 +280,24 @@ public class UserManagement {
     public LinkedHashMap<String, String> modifyUserName(String newName, String userId) {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        // Handle super admin separately — not part of allUsers
+        if (superAdmin.get(0).getId().equals(userId)) {
+            try {
+                ErrorHandler.userErrorHandler(Arrays.asList("name"), newName);
+            } catch (UserException e) {
+                System.out.println("Error modifying user name\n" + e.getMessage());
+                msgMap.put("success", null);
+                msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
+                return msgMap;
+            }
+            superAdmin.get(0).setName(newName);
+            writeSuperAdmin();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' name is modified!", userId));
+            return msgMap;
+        }
+
         try {
             User user = getUserById(userId);
             ErrorHandler.userErrorHandler(Arrays.asList("name", "user"), newName, user);
@@ -260,21 +307,13 @@ public class UserManagement {
             msgMap.put("msg", String.format("User '%s''s name is not modified\n", userId) + e.getMessage());
             return msgMap;
         }
-        User modifyUser = null;
-        for (User user : allUsers) {
-            if (user.getId().equals(userId)) {
-                modifyUser = user;
-                break;
-            }
-        }
+        User modifyUser = getUserById(userId);
         if (modifyUser == null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s' not found", userId));
             return msgMap;
         }
-        
-        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
-//            modifyUser.modifyName(newName);
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(modifyUser)) {
             for (User user : allUsers) {
                 if (user.getId().equals(modifyUser.getId())) {
                     user.setName(newName);
@@ -296,6 +335,8 @@ public class UserManagement {
     public LinkedHashMap<String, String> modifyUserEmail(String newEmail, String userId) {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+        boolean isSuperAdminTarget = superAdmin.get(0).getId().equals(userId);
+
         try {
             ErrorHandler.userErrorHandler(Arrays.asList("email"), newEmail);
         } catch (UserException e) {
@@ -304,25 +345,31 @@ public class UserManagement {
             msgMap.put("msg", String.format("User '%s''s email is not modified\n", userId) + e.getMessage());
             return msgMap;
         }
-        boolean emailTaken = allUsers.stream().anyMatch(user -> !user.getId().equals(userId) && newEmail.equalsIgnoreCase(user.getEmail()));
+
+        // also guard against colliding with the super admin's own email
+        boolean emailTaken = allUsers.stream().anyMatch(user -> !user.getId().equals(userId) && newEmail.equalsIgnoreCase(user.getEmail()))
+                || (!isSuperAdminTarget && newEmail.equalsIgnoreCase(superAdmin.get(0).getEmail()));
         if (emailTaken) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s''s email is not modified: email '%s' is already in use", userId, newEmail));
             return msgMap;
         }
-        User modifyUser = null;
-        for (User user : allUsers) {
-            if (user.getId().equals(userId)) {
-                modifyUser = user;
-                break;
-            }
+
+        if (isSuperAdminTarget) {
+            superAdmin.get(0).setEmail(newEmail);
+            writeSuperAdmin();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' email is modified!", userId));
+            return msgMap;
         }
+
+        User modifyUser = getUserById(userId);
         if (modifyUser == null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s' not found", userId));
             return msgMap;
         }
-        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(modifyUser)) {
             for (User user : allUsers) {
                 if (user.getId().equals(modifyUser.getId())) {
                     user.setEmail(newEmail);
@@ -344,6 +391,23 @@ public class UserManagement {
     public LinkedHashMap<String, String> modifyUserPwd(String newPwd, String userId) {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
+
+        if (superAdmin.get(0).getId().equals(userId)) {
+            try {
+                ErrorHandler.userErrorHandler(Arrays.asList("pwd"), newPwd);
+            } catch (UserException e) {
+                System.out.println("Error modifying user password\n" + e.getMessage());
+                msgMap.put("success", null);
+                msgMap.put("msg", String.format("User '%s''s password is not modified\n", userId) + e.getMessage());
+                return msgMap;
+            }
+            superAdmin.get(0).setPwd(newPwd);
+            writeSuperAdmin();
+            msgMap.put("success", "true");
+            msgMap.put("msg", String.format("User '%s' password is modified!", userId));
+            return msgMap;
+        }
+
         try {
             User user = getUserById(userId);
             ErrorHandler.userErrorHandler(Arrays.asList("pwd", "user"), newPwd, user);
@@ -353,30 +417,23 @@ public class UserManagement {
             msgMap.put("msg", String.format("User '%s''s password is not modified\n", userId) + e.getMessage());
             return msgMap;
         }
-        User modifyUser = null;
-        for (User user : allUsers) {
-            if (user.getId().equals(userId)) {
-                modifyUser = user;
-                break;
-            }
-        }
+        User modifyUser = getUserById(userId);
         if (modifyUser == null) {
             msgMap.put("success", null);
             msgMap.put("msg", String.format("User '%s' not found", userId));
             return msgMap;
         }
-        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(getUserById(userId))) {
-//            modifyUser.modifyPwd(newPwd);
+        if (checkPermission(modifyUser.getType()) || this.activeUser.equals(modifyUser)) {
             for (User user : allUsers) {
                 if (user.getId().equals(modifyUser.getId())) {
-                        user.setPwd(newPwd);
+                    user.setPwd(newPwd);
                     break;
                 }
             }
             writeUsers();
-            loadUsers();            
+            loadUsers();
             msgMap.put("success", "true");
-            msgMap.put("msg", String.format("User '%s' password is modified!", userId, modifyUser.getType()));
+            msgMap.put("msg", String.format("User '%s' password is modified!", userId));
         } else {
             msgMap.put("success", null);
             msgMap.put("msg",
@@ -474,6 +531,13 @@ public class UserManagement {
                     deleteUser.getType()));
         }
         return msgMap;
+    }
+    
+    public static User getUserOrSuperAdminById(String userId) {
+        if (getSuperAdmin().getId().equals(userId)) {
+            return getSuperAdmin();
+        }
+        return getUserById(userId);
     }
     
     public static User getUserById(String userId) {

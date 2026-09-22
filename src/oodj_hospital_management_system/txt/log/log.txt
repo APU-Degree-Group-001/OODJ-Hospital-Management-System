@@ -843,3 +843,30 @@
 [2026-09-21 01:36:00] User {patient - #PAT3fad4 - Pau} logged in
 [2026-09-21 01:38:05] User {medical manager - #MNG58321 - Chee} logged in
 [2026-09-21 15:47:06] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-21 18:08:50] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-22 13:46:54] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-22 13:47:44] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-22 13:47:56] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-22 13:48:45] User {medical manager - #MNG58321 - Chee} logged out
+[2026-09-22 13:48:57] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-22 13:50:13] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-22 13:50:26] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-22 14:03:09] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-22 16:35:55] User {super admin - #SADM001 - Super Admin} logged in
+[2026-09-22 16:48:48] User {super admin - #SADM001 - Super Admin} logged in
+[2026-09-22 16:54:26] User {super admin - #SADM001 - Phang} logged in
+[2026-09-22 16:54:40] User {super admin - #SADM001 - Phang} modified name for User {super admin - #SADM001 - Super Admin}
+[2026-09-22 16:59:00] User {super admin - #SADM001 - Super Admin} logged in
+[2026-09-22 16:59:11] User {super admin - #SADM001 - Super Admin} modified name for User {super admin - #SADM001 - Phang}
+[2026-09-22 16:59:24] User {super admin - #SADM001 - Phang} modified email for User {super admin - #SADM001 - Phang}
+[2026-09-22 17:00:11] User {super admin - #SADM001 - Phang} modified password for User {super admin - #SADM001 - Phang}
+[2026-09-22 17:00:25] User {super admin - #SADM001 - Phang} modified password for User {super admin - #SADM001 - Phang}
+[2026-09-22 17:00:29] User {super admin - #SADM001 - Phang} logged out
+[2026-09-22 17:00:39] User {super admin - #SADM001 - Phang} logged in
+[2026-09-22 17:04:37] User {super admin - #SADM001 - Phang} logged in
+[2026-09-22 17:05:09] User {super admin - #SADM001 - Phang} modified password for User {super admin - #SADM001 - Phang}
+[2026-09-22 17:05:12] User {super admin - #SADM001 - Phang} logged out
+[2026-09-22 17:05:20] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-22 17:05:31] User {admin staff - #ADMd4e8f - uehehehe} modified name for User {admin staff - #ADMd4e8f - uehehehe}
+[2026-09-22 17:05:52] User {admin staff - #ADMd4e8f - uehehe} modified name for User {admin staff - #ADMd4e8f - uehehe}
+[2026-09-22 17:06:07] User {admin staff - #ADMd4e8f - uehehe} logged out

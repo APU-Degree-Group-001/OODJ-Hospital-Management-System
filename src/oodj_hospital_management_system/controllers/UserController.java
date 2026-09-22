@@ -53,6 +53,10 @@ public class UserController {
     public User getActiveUser() {
         return this.activeUser;
     }
+    
+    public User getSuperAdmin() {
+        return this.getSuperAdmin();
+    }
 
     public UserManagement getUserServices() {
         return this.userServices;
@@ -124,6 +128,10 @@ public class UserController {
     }
     
     // Lookup by ID
+    public User getUserOrSuperAdminById(String userId) {
+        return UserManagement.getUserOrSuperAdminById(userId);
+    }
+    
     public User getUserById(String userId) {
         return UserManagement.getUserById(userId);
     }
@@ -184,16 +192,23 @@ public class UserController {
                 return true;
             }
         }
-//        if (UserManagement.getSuperAdmin().getId().equals(userId) && UserManagement.getSuperAdmin().getPwd().equals(pwd)) {
-//            this.activeUser = UserManagement.getSuperAdmin();
-//            this.userServices = new UserManagement(this.activeUser);
-//            this.transactionController = new TransactionController(this.activeUser);
-//            this.ppeController = new PPEController(this.activeUser);
-//            this.supplierController = new SupplierController(this.activeUser);
-//            this.hospitalController = new HospitalController(this.activeUser);
-//            Logger.log(String.format("User {%s - %s - %s} logged in", this.activeUser.type, userId, this.activeUser.getName()));
-//            return true;
-//        }
+        if (UserManagement.getSuperAdmin().getId().equals(userId) && UserManagement.getSuperAdmin().getPwd().equals(pwd)) {
+            this.activeUser = UserManagement.getSuperAdmin();
+            this.userServices = new UserManagement(this.activeUser);
+            this.billingController = new BillingController(this.activeUser);
+            this.consultationController = new ConsultationController(this.activeUser);
+            this.doctorController = new DoctorController(this.activeUser);
+            this.hospitalAssetController = new HospitalAssetController(this.activeUser);
+            this.insuranceController = new InsuranceController(this.activeUser);
+            this.medicalRecordController = new MedicalRecordController(this.activeUser);
+            this.reportController = new ReportController(this.activeUser);
+            this.requestController = new RequestController(this.activeUser);
+            this.consultationTypeController = new ConsultationTypeController(this.activeUser);
+            this.labResultTypeController = new LabResultTypeController(this.activeUser);
+            this.prescriptionTypeController = new PrescriptionTypeController(this.activeUser);
+            Logger.log(String.format("User {%s - %s - %s} logged in", this.activeUser.getType(), userId, this.activeUser.getName()));
+            return true;
+        }
         Logger.errorLog(String.format("User with ID '%s' failed to logged in\n\tErrorMsg: %s", userId, "Incorrect Login Credentials"));
         return false;
     }
@@ -250,7 +265,7 @@ public class UserController {
     }
     
     public LinkedHashMap<String, String> modifyUserName(String newName, String userId) {
-        User user = UserManagement.getUserById(userId);
+        User user = UserManagement.getUserOrSuperAdminById(userId);
         LinkedHashMap<String, String> msg = userServices.modifyUserName(newName, userId);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
@@ -263,7 +278,7 @@ public class UserController {
     }
  
     public LinkedHashMap<String, String> modifyPwd(String newPwd, String userId) {
-        User user = UserManagement.getUserById(userId);
+        User user = UserManagement.getUserOrSuperAdminById(userId);
         LinkedHashMap<String, String> msg = userServices.modifyUserPwd(newPwd, userId);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));
@@ -276,7 +291,7 @@ public class UserController {
     }
     
     public LinkedHashMap<String, String> modifyEmail(String newEmail, String userId) {
-        User user = UserManagement.getUserById(userId);
+        User user = UserManagement.getUserOrSuperAdminById(userId);
         LinkedHashMap<String, String> msg = userServices.modifyUserEmail(newEmail, userId);
         if (msg.get("success") != null) {
             System.out.println(msg.get("msg"));

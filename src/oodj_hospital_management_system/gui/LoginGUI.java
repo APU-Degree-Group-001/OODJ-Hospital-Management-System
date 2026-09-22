@@ -165,6 +165,10 @@ public class LoginGUI extends javax.swing.JFrame {
                 PatientGUI patientGui = new PatientGUI(usrCtrl);
                 patientGui.setVisible(true);
             }
+            if (usrCtrl.getActiveUser().getType().equalsIgnoreCase("super admin")) {
+                AdminStaffGUI adminStaffGui = new AdminStaffGUI(usrCtrl);
+                adminStaffGui.setVisible(true);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Login failed");
         }
