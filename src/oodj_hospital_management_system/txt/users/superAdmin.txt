@@ -1,5 +1,2 @@
 userId, userName, userPwd, userType, joinedDateTime, email, departmentId, medicalManagerId
 #SADM001, Phang, SuperAdmin#123, super admin, , superadmin@gmail.com, , 
-#SADM001, Super Admin, SuperAdmin#123, super admin, , superAdmin@gmail.com, , 
-#SADM001, Super Admin, SuperAdmin#123, super admin, , superAdmin@gmail.com, , 
-#SADM001, Super Admin, SuperAdmin#123, super admin, , superAdmin@gmail.com, , 
