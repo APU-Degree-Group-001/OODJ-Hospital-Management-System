@@ -12,7 +12,7 @@ import oodj_hospital_management_system.controllers.UserController;
  *
  * @author sheaw
  */
-public class PatientConsultationsPanel extends javax.swing.JPanel {
+public class DoctorConsultationsPanel extends javax.swing.JPanel {
     private UserController usrCtrl;
     private CardLayout cl;
     public AvailableConsultationSlotsPanel availablePanel;
@@ -27,7 +27,7 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
     /**
      * Creates new form adminDashboardPanel
      */
-    public PatientConsultationsPanel(UserController usrCtrl) {
+    public DoctorConsultationsPanel(UserController usrCtrl) {
         this.usrCtrl = usrCtrl;
         initComponents();
 
@@ -115,9 +115,6 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         navigationPane = new javax.swing.JPanel();
-        availableConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
-        bookedConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
-        completedConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
         consultationContentArea = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(1020, 0));
@@ -260,9 +257,9 @@ public class PatientConsultationsPanel extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton availableConsultationsButton;
-    private javax.swing.JButton bookedConsultationsButton;
-    private javax.swing.JButton completedConsultationsButton;
+    private final javax.swing.JButton availableConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Patient", 15);
+    private final javax.swing.JButton bookedConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
+    private final javax.swing.JButton completedConsultationsButton = new oodj_hospital_management_system.gui.utils.RoundedButton("Doctor", 15);
     private javax.swing.JPanel consultationContentArea;
     private javax.swing.JPanel dashboardPanel;
     private javax.swing.JLabel jLabel1;

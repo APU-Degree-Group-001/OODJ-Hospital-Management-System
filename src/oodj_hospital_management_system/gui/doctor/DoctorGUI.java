@@ -8,7 +8,7 @@ import java.io.IOException;
 import oodj_hospital_management_system.config.SystemConfiguration;
 import oodj_hospital_management_system.controllers.UserController;
 import oodj_hospital_management_system.gui.DashboardPanel;
-import oodj_hospital_management_system.gui.doctor.consultation.PatientConsultationsPanel;
+import oodj_hospital_management_system.gui.doctor.consultation.DoctorConsultationsPanel;
 import oodj_hospital_management_system.gui.doctor.lab_services.DoctorLabServicesPanel;
 import oodj_hospital_management_system.gui.doctor.rating_feedback.RatingFeedbackPanel;
 import oodj_hospital_management_system.gui.doctor.shift_roster.DoctorShiftRosterPanel;
@@ -35,7 +35,7 @@ public class DoctorGUI extends javax.swing.JFrame {
         // Add cards to contentArea
         DashboardPanel doctorDashboardPanel = new DashboardPanel(this.usrCtrl);
         DoctorShiftRosterPanel doctorShiftRosterPanel = new DoctorShiftRosterPanel(this.usrCtrl);
-        PatientConsultationsPanel patientConsultationsPanel = new PatientConsultationsPanel(this.usrCtrl);
+        DoctorConsultationsPanel patientConsultationsPanel = new DoctorConsultationsPanel(this.usrCtrl);
         DoctorLabServicesPanel doctorLabServicesPanel = new DoctorLabServicesPanel(this.usrCtrl);
         DoctorWardAdmissionPanel doctorWardAdmissionPanel = new DoctorWardAdmissionPanel(this.usrCtrl);
         RatingFeedbackPanel doctorRatingFeedbackPanel = new RatingFeedbackPanel(this.usrCtrl);
