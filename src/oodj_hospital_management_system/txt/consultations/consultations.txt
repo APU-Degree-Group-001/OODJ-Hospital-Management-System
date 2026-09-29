@@ -62,3 +62,10 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CONa8e56, #SLOTd06b8, #PAT8c2d9, #CTYPEedccb, Extended review of recurring migraines, , COMPLETED
 #CONb4be8, #SLOTadf48, #PAT79a39, #CTYPE001, Mental sick, , COMPLETED
 #CON25790, #SLOT9ed8a, #PAT72528, #CTYPE9a6c4, Headache, , COMPLETED
+#CON5548e, #SLOTe59e3, #PAT3fad4, #CTYPE001, Test, , SCHEDULED
+#CON2b376, #SLOT43b47, #PAT3fad4, #CTYPE003, Test2, , SCHEDULED
+#CON59566, #SLOT66204, #PAT3fad4, #CTYPE9a6c4, Test3, , SCHEDULED
+#CONcf1f7, #SLOTa308d, #PAT3fad4, #CTYPE9a6c4, Test4, , SCHEDULED
+#CONdc240, #SLOT15727, #PAT3fad4, #CTYPE003, AAA, , SCHEDULED
+#CON40209, #SLOT201dd, #PAT3fad4, #CTYPE004, AA, , SCHEDULED
+#CONf1119, #SLOTd463d, #PAT3fad4, #CTYPE6f3a8, Testtt, , SCHEDULED
