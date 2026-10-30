@@ -8,7 +8,7 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQc760d, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM001, Testing asset request, WITHDRAWN, 2026-08-16 15:09:33, 2026-08-16 15:11:05, #DOCd4e8f
 #REQ06d36, ASSET_REQUEST, #DOCd4e8c, doctor, , #ROOM002, Testing asset request, APPROVED, 2026-08-16 15:11:45, 2026-08-16 15:12:21, #ADMd4e8f
 #REQ95720, ASSET_REQUEST, #DOCd4e8c, doctor, , #LAB001, Testing asset request, REJECTED, 2026-08-16 15:11:48, 2026-08-16 15:12:21, #ADMd4e8f
-#REQ159f4, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFTeaae1, test hehe, PENDING, 2026-09-08 22:19:30, , 
+#REQ159f4, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFTeaae1, test hehe, APPROVED, 2026-09-08 22:19:30, 2026-09-30 11:02:09, #MNG74295
 #REQ1a63c, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM002, consultation :D, APPROVED, 2026-09-10 00:12:36, 2026-09-13 18:55:28, #ADMd4e8f
 #REQ008, CANCEL_SHIFT, #DOCa1b2c, doctor, #MNG74295, #SHIFT4db21, Family emergency out of state, APPROVED, 2026-09-09 21:00:00, 2026-09-10 08:30:00, #MNG74295
 #REQ009, CANCEL_SHIFT, #DOC5c91e, doctor, #MNG74295, #SHIFTc18e3, Attending mandatory training session, APPROVED, 2026-09-02 13:40:00, 2026-09-02 17:10:00, #MNG74295
@@ -20,7 +20,9 @@ requestId, requestType, requesterId, requesterType, targetId, referenceId, reaso
 #REQe72c4, ASSET_REQUEST, #DOC0f6d3, doctor, , #ROOM004, Room needed for minor skin procedure, REJECTED, 2026-09-13 11:30:00, 2026-09-13 15:00:00, #ADM6b2f4
 #REQa6a40, CANCEL_SHIFT, #DOCd4e8c, doctor, #MNG58321, #SHIFTa6082, sick, REJECTED, 2026-09-21 00:49:02, 2026-09-21 00:49:55, #MNG58321
 #REQa9300, ASSET_REQUEST, #DOCd4e8f, doctor, , #LAB001, Test, PENDING, 2026-09-29 13:41:38, , 
-#REQe1b88, ASSET_REQUEST, #DOCd4e8f, doctor, , #ASTc030c, Test2, PENDING, 2026-09-29 13:41:48, , 
+#REQe1b88, ASSET_REQUEST, #DOCd4e8f, doctor, , #ASTc030c, Test2, WITHDRAWN, 2026-09-29 13:41:48, 2026-09-30 11:08:08, #DOCd4e8f
 #REQb9e25, ASSET_REQUEST, #DOCb8f50, doctor, , #ROOM003, Testt, PENDING, 2026-09-29 13:49:45, , 
 #REQ07709, ASSET_REQUEST, #DOCb8f50, doctor, , #LAB002, Testt2, PENDING, 2026-09-29 13:49:50, , 
 #REQ99172, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM004, Test3, PENDING, 2026-09-29 13:51:17, , 
+#REQ1ee59, CANCEL_SHIFT, #DOCd4e8f, doctor, #MNG74295, #SHIFT2be8d, ...., WITHDRAWN, 2026-09-30 11:05:17, 2026-09-30 11:05:55, #DOCd4e8f
+#REQb822d, ASSET_REQUEST, #DOCd4e8f, doctor, , #ROOM001, mashs, PENDING, 2026-09-30 11:08:02, , 

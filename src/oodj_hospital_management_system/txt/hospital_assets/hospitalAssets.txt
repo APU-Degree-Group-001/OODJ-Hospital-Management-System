@@ -1,6 +1,6 @@
 assetId, assetType, assetName, imagePath, location, description, totalBeds, status
-#ROOM001, Consultation Room, Consultation Room 1, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block C Level 2, Testing, , Occupied
-#ROOM002, Consultation Room, Consultation Room 2, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block A Level 1, General consultation room, , Available
+#ROOM001, Consultation Room, Consultation Room 1 2, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block C Level 2, Testing, , Occupied
+#ROOM002, Consultation Room, Consultation Room 2, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block A Level 1, General consultation room, , Maintenance
 #WARD001, Ward, General Ward A, oodj_hospital_management_system/assets/img/hospital_assets/ward.jpeg, Block B Level 2, Updated via controller test, 15, Available
 #LAB001, Laboratory, Main Laboratory, oodj_hospital_management_system/assets/img/hospital_assets/laboratory.jpg, Block C Level 1, Laboratory for medical testing, , Available
 #XRAY001, XRay Room, X-Ray Room 1, oodj_hospital_management_system/assets/img/hospital_assets/xray.jpg, Block C Level 2, Room equipped for X-ray imaging, , Occupied
@@ -14,3 +14,4 @@ assetId, assetType, assetName, imagePath, location, description, totalBeds, stat
 #IMG002, Imaging Room, MRI Suite, oodj_hospital_management_system/assets/img/hospital_assets/imaging_room.jpg, Block D Level 1, Room housing the 1.5T MRI scanner, , Occupied
 #THTR001, Operating Theatre, Operating Theatre 1, oodj_hospital_management_system/assets/img/hospital_assets/operating_theatre.jpg, Block D Level 2, General surgical theatre, , Available
 #ASTc030c, Consultation Room, Consultation Room 5, oodj_hospital_management_system/assets/img/hospital_assets/consultation.jpeg, Block A Level 1, General consultation room, , Available
+#AST35804, Test, test, , test, test, , Available

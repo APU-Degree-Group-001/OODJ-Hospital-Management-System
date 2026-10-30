@@ -14,3 +14,4 @@ resultId, consultationId, resultType, result, remarks, resultDateTime
 #LAB6f2a8, #CON8d24a, Physical Scans, Mild disc bulge at L4 to L5, Conservative management advised, 2026-09-11 12:10:00
 #LAB95cd4, #CON1f803, Physical Scans, Nerve conduction study pending, Report to follow, 2026-09-12 11:00:00
 #LABe803b, #CONa05d7, Cardiac Enzyme Test, Troponin 0.01 ng/mL, Stable, 2026-09-12 11:20:00
+#LAB57722, #CON35f70, Urine Test, gdsj111, fsug, 2026-09-30 11:06:51

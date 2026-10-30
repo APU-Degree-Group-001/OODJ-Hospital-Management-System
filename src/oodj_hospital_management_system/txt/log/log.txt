@@ -871,3 +871,60 @@
 [2026-09-22 17:05:52] User {admin staff - #ADMd4e8f - uehehe} modified name for User {admin staff - #ADMd4e8f - uehehe}
 [2026-09-22 17:06:07] User {admin staff - #ADMd4e8f - uehehe} logged out
 [2026-09-23 17:48:17] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-26 22:08:53] User {medical manager - #MNG58321 - Chee} logged in
+[2026-09-26 22:09:15] User {medical manager - #MNG58321 - Cheewawa} modified name for User {medical manager - #MNG58321 - Cheewawa}
+[2026-09-26 22:09:48] User {medical manager - #MNG58321 - Cheewawa} logged out
+[2026-09-28 19:31:08] User {medical manager - #MNG58321 - Cheewawa} logged in
+[2026-09-29 11:18:51] User {medical manager - #MNG58321 - Cheewawa} logged in
+[2026-09-29 19:34:44] User {medical manager - #MNG58321 - Cheewawa} logged in
+[2026-09-29 22:06:12] User {medical manager - #MNG58321 - Cheewawa} logged in
+[2026-09-29 23:18:33] User {patient - #PAT3fad4 - Pau} logged in
+[2026-09-29 23:21:02] User {patient - #PAT3fad4 - Pau} logged out
+[2026-09-29 23:21:18] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-29 23:22:53] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-29 23:26:35] User {medical manager - #MNG58321 - Cheewawa} logged in
+[2026-09-30 10:53:07] User {super admin - #SADM001 - Phang} logged in
+[2026-09-30 10:53:30] User {super admin - #SADM001 - Phang} modified name for User {super admin - #SADM001 - Phang ha}
+[2026-09-30 10:54:37] User {super admin - #SADM001 - Phang ha} logged out
+[2026-09-30 10:54:44] User {admin staff - #ADMd4e8f - uehehe} logged in
+[2026-09-30 10:55:05] User {admin staff - #ADMd4e8f - uehehe} created a new 'patient' account, User {#PAT61d73 - he}
+[2026-09-30 10:55:25] User {admin staff - #ADMd4e8f - uehehe} modified name for User {patient - #PAT3fad4 - Paur}
+[2026-09-30 10:55:33] User {admin staff - #ADMd4e8f - uehehe} modified password for User {patient - #PAT79a39 - Chua}
+[2026-09-30 10:55:46] User {admin staff - #ADMd4e8f - uehehe} removed User {patient - #PAT79a39 - Chua}
+[2026-09-30 10:56:14] User {admin staff - #ADMd4e8f - uehehe} updated Doctor {#DOC30c95}'s Medical Department to {#DEPT001}
+[2026-09-30 10:56:27] User {admin staff - #ADMd4e8f - uehehe} assigned Doctor {#DOC56ea5} to Medical Manager {#MNG74295}
+[2026-09-30 10:57:08] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset {#AST35804 - test}
+[2026-09-30 10:57:25] User {admin staff - #ADMd4e8f - uehehe} modified Hospital Asset {#ROOM001 - Consultation Room 1 2}
+[2026-09-30 10:57:46] User {admin staff - #ADMd4e8f - uehehe} set Hospital Asset {#ROOM002} maintenance status to Maintenance
+[2026-09-30 10:58:59] User {admin staff - #ADMd4e8f - uehehe} created Hospital Asset Allocation {#ALLOC2e5fd} for Asset {#ROOM002} for Doctor {#DOCd4e8f}
+[2026-09-30 10:59:11] User {admin staff - #ADMd4e8f - uehehe} deleted Hospital Asset Allocation {#ALLOC2e5fd}
+[2026-09-30 10:59:42] User {admin staff - #ADMd4e8f - uehehe} deactivated Consultation Type {#CTYPE003}
+[2026-09-30 11:00:08] User {admin staff - #ADMd4e8f - uehehe} logged out
+[2026-09-30 11:00:23] User {medical manager - #MNG74295 - Reen} logged in
+[2026-09-30 11:00:40] User {medical manager - #MNG74295 - Reen} created Medical Department {#DEPTc6b4f - test}
+[2026-09-30 11:00:51] User {medical manager - #MNG74295 - Reen} deleted Medical Department {#DEPTc6b4f - test}
+[2026-09-30 11:01:34] User {medical manager - #MNG74295 - Reen} created Doctor Shift {#SHIFT565b8} for Doctor {#DOC56ea5 - test2}
+[2026-09-30 11:01:49] User {medical manager - #MNG74295 - Reen} cancelled Doctor Shift {#SHIFT565b8}
+[2026-09-30 11:02:09] User {medical manager - #MNG74295 - Reen} approved Request {#REQ159f4}
+[2026-09-30 11:03:30] User {medical manager - #MNG74295 - Reen} generated Bill {#BILL6b9cb} from Consultation {#CON8d24a}
+[2026-09-30 11:04:25] User {medical manager - #MNG74295 - Reen} logged out
+[2026-09-30 11:04:32] User {doctor - #DOCd4e8f - bug1} logged in
+[2026-09-30 11:05:17] User {doctor - #DOCd4e8f - bug1} submitted Request {#REQ1ee59} of type {CANCEL_SHIFT}
+[2026-09-30 11:05:55] User {doctor - #DOCd4e8f - bug1} withdrew Request {#REQ1ee59}
+[2026-09-30 11:06:51] User {doctor - #DOCd4e8f - bug1} created Lab Result {#LAB57722}
+[2026-09-30 11:07:05] User {doctor - #DOCd4e8f - bug1} modified test type for Lab Result {#LAB57722}
+[2026-09-30 11:07:05] User {doctor - #DOCd4e8f - bug1} modified result for Lab Result {#LAB57722}
+[2026-09-30 11:07:05] User {doctor - #DOCd4e8f - bug1} modified remarks for Lab Result {#LAB57722}
+[2026-09-30 11:08:02] User {doctor - #DOCd4e8f - bug1} submitted Request {#REQb822d} of type {ASSET_REQUEST}
+[2026-09-30 11:08:08] User {doctor - #DOCd4e8f - bug1} withdrew Request {#REQe1b88}
+[2026-09-30 11:09:04] User {doctor - #DOCd4e8f - bug1} created Ward Admission {#WA19912} for Patient {#PAT72528} in Ward {#WARD002}
+[2026-09-30 11:09:15] User {doctor - #DOCd4e8f - bug1} discharged Ward Admission {#WAb9e19}
+[2026-09-30 11:09:41] User {doctor - #DOCd4e8f - bug1} logged out
+[2026-09-30 11:10:04] User {patient - #PAT3fad4 - Paur} logged in
+[2026-09-30 11:10:33] User {patient - #PAT3fad4 - Paur} created Consultation {#CON89413} for Patient {#PAT3fad4 - Paur}
+[2026-09-30 11:11:12] User {patient - #PAT3fad4 - Paur} created Consultation {#CONb40b9} for Patient {#PAT3fad4 - Paur}
+[2026-09-30 11:11:22] User {patient - #PAT3fad4 - Paur} cancelled Consultation {#CONb40b9}
+[2026-09-30 11:12:02] User {patient - #PAT3fad4 - Paur} submitted Feedback {#FB8683e} for Consultation {#CONf64cd}
+[2026-09-30 11:24:03] User {patient - #PAT3fad4 - Paur} logged out
+[2026-10-30 21:28:05] User {super admin - #SADM001 - Phang ha} logged in
+[2026-10-30 21:28:27] User {super admin - #SADM001 - Phang ha} created a new 'patient' account, User {#PATee62b - Test}

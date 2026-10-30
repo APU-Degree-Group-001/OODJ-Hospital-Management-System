@@ -8,4 +8,5 @@ admissionId, patientId, wardId, admittingDoctorId, admittedDateTime, dischargedD
 #WA9f031, #PATb92e7, #WARD001, #DOC0f6d3, 2026-09-12 19:10:00, , ADMITTED, Cellulitis of the left leg requiring IV antibiotics
 #WA5d8b6, #PAT6d3c8, #WARD003, #DOC7f3ad, 2026-09-16 09:40:00, , ADMITTED, Asthma exacerbation#| under observation
 #WAe103c, #PAT0a4f2, #WARD001, #DOC5c91e, 2026-09-17 22:05:00, , ADMITTED, Suspected appendicitis awaiting surgical review
-#WAb9e19, #PATaa85d, #WARD002, #DOCd4e8f, 2026-09-29 13:42:02, , ADMITTED, Test
+#WAb9e19, #PATaa85d, #WARD002, #DOCd4e8f, 2026-09-29 13:42:02, 2026-09-30 11:09:15, DISCHARGED, Test
+#WA19912, #PAT72528, #WARD002, #DOCd4e8f, 2026-09-30 11:09:03, , ADMITTED, test

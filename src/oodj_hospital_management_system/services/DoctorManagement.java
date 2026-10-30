@@ -101,9 +101,7 @@ public class DoctorManagement {
         if (anyChanged) {
             writeDoctorShifts();
         }
-        // Fingerprint is captured AFTER the possible auto-correction write above,
-        // so it reflects what's actually on disk right now and doesn't trigger
-        // a reload loop on the next ensureShiftLoaded() call.
+        
         shiftLoaded = true;
         loadedShiftFingerprint = shiftHandler.fingerprint();
         shiftLoadVersion++;

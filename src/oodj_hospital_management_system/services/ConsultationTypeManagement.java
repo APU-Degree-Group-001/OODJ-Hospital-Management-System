@@ -196,9 +196,6 @@ public class ConsultationTypeManagement {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        // Validate on the passed-in object first, then re-fetch via ID before mutating
-        // (loadConsultationTypes() inside getConsultationTypeById reloads the list,
-        // orphaning any reference fetched before this call)
         if (consultationType == null || findConsultationTypeById(consultationType.getConsultationTypeId()) == null) {
             msgMap.put("success", null);
             msgMap.put("msg", "Consultation type is not updated\nConsultation type not found.");

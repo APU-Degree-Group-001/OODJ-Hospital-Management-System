@@ -52,10 +52,7 @@ public class WardAdmissionManagement {
         return loadVersion;
     }
 
-    // =========================================================
     // LOAD
-    // =========================================================
-
     public static void loadWardAdmissions() {
         String fingerprint = admissionHandler.fingerprint();
         allWardAdmissions.clear();
@@ -118,10 +115,7 @@ public class WardAdmissionManagement {
         }
     }
 
-    // =========================================================
     // SEARCH
-    // =========================================================
-
     public static List<WardAdmission> searchWardAdmissions(String keyword) {
         ensureLoaded();
 
@@ -190,10 +184,7 @@ public class WardAdmissionManagement {
         return sorted;
     }
 
-    // =========================================================
     // BED AVAILABILITY (derived, not stored on Ward)
-    // =========================================================
-
     public static int getActiveAdmissionCount(String wardId) {
         ensureLoaded();
 
@@ -222,10 +213,7 @@ public class WardAdmissionManagement {
         return Math.max(0, totalBeds - occupied);
     }
 
-    // =========================================================
     // FILE HANDLER
-    // =========================================================
-
     private static boolean writeWardAdmissions() {
         ArrayList<LinkedHashMap<String, String>> admissionData = new ArrayList<>();
 
@@ -261,10 +249,7 @@ public class WardAdmissionManagement {
         }
     }
 
-    // =========================================================
     // CREATE (ADMIT DIRECTLY — no approval step)
-    // =========================================================
-
     public LinkedHashMap<String, String> createWardAdmission(String patientId, String wardId, String admittingDoctorId, String admittedDateTime, String reason) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -321,10 +306,7 @@ public class WardAdmissionManagement {
         return msgMap;
     }
 
-    // =========================================================
     // DISCHARGE
-    // =========================================================
-
     public LinkedHashMap<String, String> dischargeWardAdmission(String admissionId, String dischargedDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -358,10 +340,7 @@ public class WardAdmissionManagement {
         return msgMap;
     }
 
-    // =========================================================
     // MODIFY REASON
-    // =========================================================
-
     public LinkedHashMap<String, String> modifyWardAdmissionReason(String admissionId, String reason) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -384,10 +363,7 @@ public class WardAdmissionManagement {
         return msgMap;
     }
 
-    // =========================================================
     // DELETE
-    // =========================================================
-
 //    FOR ADMIN STAFF ONLY
     public LinkedHashMap<String, String> deleteWardAdmission(String admissionId) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
@@ -412,10 +388,7 @@ public class WardAdmissionManagement {
         return msgMap;
     }
 
-    // =========================================================
     // GENERATE ID
-    // =========================================================
-
     public static String generateWardAdmissionId() {
         ensureLoaded();
         List<String> existingIds = allWardAdmissions.stream()

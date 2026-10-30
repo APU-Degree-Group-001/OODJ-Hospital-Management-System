@@ -44,19 +44,13 @@ public class ConsultationManagement {
 
     private User activeUser;
 
-    // ---------------------------------------------------------
-    // Cache state
-    // A Consultation is built from many files, so every file it depends on is
-    // fingerprinted. If any one of them changes, everything is reloaded on the
-    // next access. Add a path here if a consultation ever shows old data.
-    // ---------------------------------------------------------
     private static final FileHandler[] watchedFiles = {
         consultationHandler,
         consultationSlotHandler,
         feedbackHandler,
-        new FileHandler(SystemConfiguration.userFilePath),                      // patients
-        new FileHandler(SystemConfiguration.doctorShiftFilePath),               // slot -> doctor shift
-        new FileHandler(SystemConfiguration.medicalDepartmentFilePath),         // doctor shift -> doctor -> department
+        new FileHandler(SystemConfiguration.userFilePath),
+        new FileHandler(SystemConfiguration.doctorShiftFilePath),
+        new FileHandler(SystemConfiguration.medicalDepartmentFilePath),
         new FileHandler(SystemConfiguration.consultationTypesFilePath),
         new FileHandler(SystemConfiguration.medicalAssessmentFilePath),
         new FileHandler(SystemConfiguration.labResultFilePath),
@@ -66,7 +60,7 @@ public class ConsultationManagement {
         new FileHandler(SystemConfiguration.hospitalAssetFilePath),
         new FileHandler(SystemConfiguration.hospitalAssetAllocationFilePath),
         new FileHandler(SystemConfiguration.billFilePath),
-        new FileHandler(SystemConfiguration.insuranceFilePath)                  // bill -> insurance
+        new FileHandler(SystemConfiguration.insuranceFilePath)
     };
     private static boolean loaded = false;
     private static boolean loading = false;
@@ -228,8 +222,6 @@ public class ConsultationManagement {
         }
     }
 
-    // NOTE: the getAll...() methods return copies, so sorting/filtering in the UI
-    // can't reorder or damage the cached lists
     public static synchronized List<Consultation> getAllConsultations() {
         ensureLoaded();
         return new ArrayList<>(consultations);
@@ -250,8 +242,6 @@ public class ConsultationManagement {
         return findConsultationById(consultationId);
     }
 
-    // find...() methods only look in memory (no ensureLoaded) because the load methods use them;
-    // use the get...() versions when you need fresh data
     public static Consultation findConsultationById(String consultationId) {
         try {
             if (consultationId == null || consultationId.isEmpty()) {
@@ -542,9 +532,6 @@ public class ConsultationManagement {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
  
-        // Validate on the passed-in object first, then re-fetch via ID before mutating
-        // (findConsultationById relies on the current in-memory list, so always
-        // resolve the live reference before setting fields)
         if (consultation == null || findConsultationById(consultation.getConsultationId()) == null) {
             msgMap.put("success", null);
             msgMap.put("msg", "Consultation is not updated\nConsultation not found.");
@@ -598,7 +585,7 @@ public class ConsultationManagement {
         targetConsultation.setConsultationStatus(ConsultationStatus.CANCELLED);
         writeConsultations();
 
-        // Free the slot back up, same as deleteConsultation does
+        // free the slot back up, same as deleteConsultation does
         if (targetConsultation.getConsultationSlot() != null) {
             ConsultationSlot targetSlot = findConsultationSlotById(targetConsultation.getConsultationSlot().getConsultationSlotId());
             if (targetSlot != null) {
@@ -788,9 +775,6 @@ public class ConsultationManagement {
                 writeConsultations();
             }
 
-            // A slot with ANY consultation (even a completed/already-cancelled one) is kept
-            // as CANCELLED so consultation history can still resolve its date/time.
-            // A slot with no consultation at all is removed outright.
             int removedCount = 0;
             int keptCount = 0;
 
@@ -973,9 +957,6 @@ public class ConsultationManagement {
         return true;
     }
 
-    // The generate...Id() methods don't call ensureLoaded() on purpose: they are called in the middle of
-    // create methods (after new items are added in memory but before saving), and a reload there would
-    // throw those unsaved items away. Every create method calls ensureLoaded() first.
     public static String generateConsultationId() {
         List<String> existingIds = consultations.stream().map(Consultation::getConsultationId).toList();
         return SystemConfiguration.generateId("#CON", existingIds);

@@ -1,11 +1,11 @@
 consultationId, consultationSlotId, patientId, consultationTypeId, description, hospitalAssetAllocationId, status
 #CON001, #SLOT001, #PAT3fad4, #CTYPE002, Patient complained of persistent headache, #ALLOC001, COMPLETED
 #CON002, #SLOT002, #PAT3fad4, #CTYPE002, Patient reported chest discomfort and shortness of breath, #ALLOC002, COMPLETED
-#CON003, #SLOT003, #PAT79a39, #CTYPE001, Patient attended routine health consultation, #ALLOC006, COMPLETED
-#CON004, #SLOT004, #PAT79a39, #CTYPE001, Patient complained of fever and sore throat, #ALLOC003, IN_PROGRESS
+#CON003, #SLOT003, , #CTYPE001, Patient attended routine health consultation, #ALLOC006, COMPLETED
+#CON004, #SLOT004, , #CTYPE001, Patient complained of fever and sore throat, #ALLOC003, IN_PROGRESS
 #CONd3224, #SLOT98432, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
 #CON167e9, #SLOTb7795, #PAT3fad4, #CTYPE001, General check-up for recurring headaches., , COMPLETED
-#CON8a21f, #SLOTc512e, #PAT79a39, #CTYPE001, Patient attended a scheduled routine health consultation, , COMPLETED
+#CON8a21f, #SLOTc512e, , #CTYPE001, Patient attended a scheduled routine health consultation, , COMPLETED
 #CONb0645, #SLOT31317, #PAT3fad4, #CTYPEedccb, testinggg, , CANCELLED
 #CONe3ece, #SLOTb8c80, #PAT3fad4, #CTYPEedccb, testttt, , COMPLETED
 #CON20fba, #SLOT60dd4, #PAT3fad4, #CTYPE001, test file watcher, , COMPLETED
@@ -23,7 +23,7 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #COND4a2b, #SLOT8ba03, #PAT31c63, #CTYPE003, Severe abdominal pain#| walk-in emergency, , COMPLETED
 #CON8f16e, #SLOT91c46, #PATe55bd, #CTYPE001, General health screening, , IN_PROGRESS
 #CON4a1e9, #SLOTe1a47, #PAT3fad4, #CTYPE001, Follow-up for recurring headaches, , COMPLETED
-#CONb72d3, #SLOT93c2b, #PAT79a39, #CTYPE002, Chest tightness on exertion, , COMPLETED
+#CONb72d3, #SLOT93c2b, , #CTYPE002, Chest tightness on exertion, , COMPLETED
 #CON0c58f, #SLOT0f5d8, #PATa6a72, #CTYPE003, Sudden severe dizziness and vomiting, , COMPLETED
 #CONe96b4, #SLOTa76e3, #PATe55bd, #CTYPE33119, Annual health screening, , COMPLETED
 #CON35f70, #SLOT4d819, #PAT31c63, #CTYPE001, Sore throat and low grade fever, , COMPLETED
@@ -31,9 +31,9 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON1f803, #SLOT5b704, #PATaa85d, #CTYPE002, Numbness in fingers after long typing hours, , COMPLETED
 #CON6e4c1, #SLOTd90a5, #PATb3d5f, #CTYPE001, Skin rash on neck after sun exposure, , COMPLETED
 #CONa05d7, #SLOT2e63c, #PAT3fad4, #CTYPE002, Review of cardiac enzyme results, , COMPLETED
-#CON7b39e, #SLOT8c471, #PAT79a39, #CTYPE33119, General wellness consultation, , COMPLETED
+#CON7b39e, #SLOT8c471, , #CTYPE33119, General wellness consultation, , COMPLETED
 #CON51d0a, #SLOT1c0f6, #PAT3fad4, #CTYPE001, Persistent dry cough for one week, , COMPLETED
-#CONc4e72, #SLOT17519, #PAT79a39, #CTYPE002, Shortness of breath when climbing stairs, , COMPLETED
+#CONc4e72, #SLOT17519, , #CTYPE002, Shortness of breath when climbing stairs, , COMPLETED
 #CON9f318, #SLOT2a1da, #PATa6a72, #CTYPE001, Follow-up on blood pressure medication, , COMPLETED
 #CON2b6d5, #SLOTf84e0, #PAT72528, #CTYPE003, Deep cut on right hand from kitchen accident, , COMPLETED
 #CON7a04f, #SLOT4fb47, #PATaa85d, #CTYPE001, Lower back stiffness in the mornings, , COMPLETED
@@ -48,24 +48,26 @@ consultationId, consultationSlotId, patientId, consultationTypeId, description, 
 #CON62ba8, #SLOT9908f, #PAT0a4f2, #CTYPE001, Seasonal allergy symptoms, , COMPLETED
 #CON5c309, #SLOT26457, #PATf74a0, #CTYPE003, Fainting episode at work, , COMPLETED
 #CON1e7d4, #SLOT1d982, #PAT3fad4, #CTYPE001, Follow-up on headache medication dosage, , COMPLETED
-#CONa4b60, #SLOT96a51, #PAT79a39, #CTYPE33119, General wellness and lifestyle review, , COMPLETED
+#CONa4b60, #SLOT96a51, , #CTYPE33119, General wellness and lifestyle review, , COMPLETED
 #CON7f2c8, #SLOTf5d97, #PATa6a72, #CTYPE002, Stomach pain after meals for two weeks, , COMPLETED
 #CONb05e3, #SLOTf4126, #PAT72528, #CTYPE001, Sore throat and mild fever, , COMPLETED
 #CON8c41f, #SLOTc3e74, #PATaa85d, #CTYPE002, Tingling in both feet#| suspected nerve issue, , COMPLETED
 #CON3a71c, #SLOT6d1a9, #PAT3fad4, #CTYPE001, Mild fever and body aches for two days, , COMPLETED
-#CONd68e4, #SLOTb4e70, #PAT79a39, #CTYPE002, Palpitations after caffeine intake, , COMPLETED
+#CONd68e4, #SLOTb4e70, , #CTYPE002, Palpitations after caffeine intake, , COMPLETED
 #CON9c052, #SLOT18c3f, #PATa6a72, #CTYPE001, Ongoing lower back pain from desk work, , COMPLETED
 #CONf3d17, #SLOTe95a2, #PATe55bd, #CTYPE003, Allergic reaction with facial swelling, , COMPLETED
 #CON5b8a6, #SLOT7c04d, #PAT31c63, #CTYPE33119, Routine wellness check before travel, , COMPLETED
 #CONe1c93, #SLOTa38f1, #PATb3d5f, #CTYPE001, Persistent dry eyes and blurred vision, , COMPLETED
 #CON72fd0, #SLOT5e962, #PAT4e7b1, #CTYPE002, Follow-up on thyroid medication dosage, , COMPLETED
 #CONa8e56, #SLOTd06b8, #PAT8c2d9, #CTYPEedccb, Extended review of recurring migraines, , COMPLETED
-#CONb4be8, #SLOTadf48, #PAT79a39, #CTYPE001, Mental sick, , COMPLETED
+#CONb4be8, #SLOTadf48, , #CTYPE001, Mental sick, , COMPLETED
 #CON25790, #SLOT9ed8a, #PAT72528, #CTYPE9a6c4, Headache, , COMPLETED
-#CON5548e, #SLOTe59e3, #PAT3fad4, #CTYPE001, Test, , SCHEDULED
-#CON2b376, #SLOT43b47, #PAT3fad4, #CTYPE003, Test2, , SCHEDULED
-#CON59566, #SLOT66204, #PAT3fad4, #CTYPE9a6c4, Test3, , SCHEDULED
-#CONcf1f7, #SLOTa308d, #PAT3fad4, #CTYPE9a6c4, Test4, , SCHEDULED
-#CONdc240, #SLOT15727, #PAT3fad4, #CTYPE003, AAA, , SCHEDULED
-#CON40209, #SLOT201dd, #PAT3fad4, #CTYPE004, AA, , SCHEDULED
-#CONf1119, #SLOTd463d, #PAT3fad4, #CTYPE6f3a8, Testtt, , SCHEDULED
+#CON5548e, #SLOTe59e3, #PAT3fad4, #CTYPE001, Test, , COMPLETED
+#CON2b376, #SLOT43b47, #PAT3fad4, #CTYPE003, Test2, , COMPLETED
+#CON59566, #SLOT66204, #PAT3fad4, #CTYPE9a6c4, Test3, , COMPLETED
+#CONcf1f7, #SLOTa308d, #PAT3fad4, #CTYPE9a6c4, Test4, , COMPLETED
+#CONdc240, #SLOT15727, #PAT3fad4, #CTYPE003, AAA, , COMPLETED
+#CON40209, #SLOT201dd, #PAT3fad4, #CTYPE004, AA, , COMPLETED
+#CONf1119, #SLOTd463d, #PAT3fad4, #CTYPE6f3a8, Testtt, , COMPLETED
+#CON89413, #SLOTdd4a1, #PAT3fad4, #CTYPE9a6c4, Testunb, , COMPLETED
+#CONb40b9, #SLOT3ed50, #PAT3fad4, #CTYPE001, mmm, , CANCELLED

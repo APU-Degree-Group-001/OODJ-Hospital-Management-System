@@ -75,10 +75,7 @@ public class HospitalAssetManagement {
         return allocationLoadVersion;
     }
 
-    // =========================================================
     // LOAD
-    // =========================================================
-
     public static void loadHospitalAssets() {
         allHospitalAssets.clear();
 
@@ -173,10 +170,7 @@ public class HospitalAssetManagement {
         allocationLoadVersion++;
     }
 
-    // =========================================================
     // ACCESSORS
-    // =========================================================
-
     public static List<HospitalAssetAllocation> getAllHospitalAssetAllocations() {
         ensureAllocationsLoaded();
         return new ArrayList<>(allHospitalAssetAllocations);
@@ -187,10 +181,7 @@ public class HospitalAssetManagement {
         return new ArrayList<>(allHospitalAssets);
     }
 
-    // =========================================================
     // GET BY ID
-    // =========================================================
-
     public static HospitalAsset getHospitalAssetById(String assetId) {
         ensureAssetsLoaded();
 
@@ -236,10 +227,7 @@ public class HospitalAssetManagement {
         }
     }
     
-    // =========================================================
     // GET HOSPITAL ASSET ALLOCATION BY ASSET ID
-    // =========================================================
-
     public static List<HospitalAssetAllocation> getHospitalAssetAllocationsByAssetId(String assetId) {
         ensureAllocationsLoaded();
 
@@ -248,10 +236,7 @@ public class HospitalAssetManagement {
                 .collect(Collectors.toList());
     }
 
-    // =========================================================
     // SEARCH
-    // =========================================================
-
     public static List<HospitalAsset> searchHospitalAssets(String keyword) {
         ensureAssetsLoaded();
 
@@ -270,10 +255,7 @@ public class HospitalAssetManagement {
                 .collect(Collectors.toList());
     }
 
-    // =========================================================
     // SORT
-    // =========================================================
-
     public static List<HospitalAsset> sortHospitalAssets(String sortBy, boolean ascending) {
         ensureAssetsLoaded();
 
@@ -311,20 +293,14 @@ public class HospitalAssetManagement {
         return sortedAssets;
     }
 
-    // =========================================================
     // CONSULTATION ROOM COUNT
-    // =========================================================
-
     public static int getConsultationRoomCount() {
         return (int) getAllHospitalAssets().stream()
                 .filter(asset -> "Consultation Room".equalsIgnoreCase(asset.getAssetType()))
                 .count();
     }
 
-    // =========================================================
     // FILE HANDLER - HOSPITAL ASSET
-    // =========================================================
-
     private static boolean writeHospitalAssets() {
         ArrayList<LinkedHashMap<String, String>> assetData = new ArrayList<>();
 
@@ -360,10 +336,7 @@ public class HospitalAssetManagement {
         }
     }
     
-    // =========================================================
     // FILE HANDLER - HOSPITAL ASSET ALLOCATION
-    // =========================================================
-
     private static boolean writeHospitalAssetAllocations() {
         ArrayList<LinkedHashMap<String, String>> allocationData = new ArrayList<>();
 
@@ -399,10 +372,7 @@ public class HospitalAssetManagement {
         }
     }
 
-    // =========================================================
     // CREATE HOSPITAL ASSET
-    // =========================================================
-
     public LinkedHashMap<String, String> createHospitalAsset(String assetType, String assetName, String imagePath, String location, String description) {
         ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
@@ -474,10 +444,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // MODIFY HOSPITAL ASSET
-    // =========================================================
-
     public LinkedHashMap<String, String> modifyHospitalAsset(HospitalAsset asset, String assetType, String assetName, String imagePath, String location, String description) {
         ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
@@ -510,10 +477,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // MODIFY WARD
-    // =========================================================
-
     public LinkedHashMap<String, String> modifyWard(Ward ward, String assetType, String assetName, String imagePath, String location, String description, int totalBeds) {
         ensureAssetsLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
@@ -576,17 +540,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // CREATE HOSPITAL ASSET ALLOCATION
-    // =========================================================
-
-    /**
-     * Creates a new allocation.
-     * scheduledStartDateTime / scheduledEndDateTime are optional (pass "" or null if not planning ahead).
-     * allocatedDateTime (actual start) defaults to "now" only when there's no schedule (walk-in).
-     * If a future schedule is given and allocatedDateTime is left blank, the allocation is
-     * left un-started (Scheduled) until startHospitalAssetAllocation() is called later.
-     */
     public LinkedHashMap<String, String> createHospitalAssetAllocation(
         String assetId,
         String doctorId,
@@ -697,10 +651,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // MODIFY SCHEDULED START / END
-    // =========================================================
-
     public LinkedHashMap<String, String> setHospitalAssetAllocationSchedule(String allocationId, String scheduledStartDateTime, String scheduledEndDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -768,14 +719,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // START (ACTUAL) HOSPITAL ASSET ALLOCATION
-    // =========================================================
-
-    /**
-     * Marks the actual start of an allocation (allocatedDateTime), separate from when the record was created.
-     * Useful if an allocation was created ahead of time (scheduled) and the asset is only actually taken now.
-     */
     public LinkedHashMap<String, String> startHospitalAssetAllocation(String allocationId, String allocatedDateTime) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -808,10 +752,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // RELEASE (ACTUAL END) HOSPITAL ASSET ALLOCATION
-    // =========================================================
-
     public LinkedHashMap<String, String> releaseHospitalAssetAllocation(String allocationId) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -840,10 +781,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
     
-    // =========================================================
     // SET HOSPITAL ASSET MAINTENANCE STATUS
-    // =========================================================
-
     public LinkedHashMap<String, String> setHospitalAssetMaintenance(String assetId, boolean maintenance) {
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
@@ -908,10 +846,7 @@ public class HospitalAssetManagement {
         return msgMap;
     }
 
-    // =========================================================
     // GENERATE ID
-    // =========================================================
-
     public static String generateHospitalAssetId() {
         ensureAssetsLoaded();
         List<String> existingIds = allHospitalAssets.stream()

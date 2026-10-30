@@ -783,6 +783,7 @@ public class UserManagement {
 
         switch (activeType) {
             case "admin staff":
+            case "super admin":
                 return true; // admin can manage everyone
             case "medical manager":
                 return type.equals("doctor") || type.equals("patient"); // manager can manage doctors/patients only

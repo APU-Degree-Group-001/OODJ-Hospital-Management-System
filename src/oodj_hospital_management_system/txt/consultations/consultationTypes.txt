@@ -1,7 +1,7 @@
 consultationTypeId, typeName, baseRate, status
 #CTYPE001, General Consultation, 60.0, ACTIVE
 #CTYPE002, Specialist Consultation, 120.0, ACTIVE
-#CTYPE003, Emergency Consultation, 200.0, ACTIVE
+#CTYPE003, Emergency Consultation, 200.0, INACTIVE
 #CTYPE9a6c4, Follow-up Consultation, 35.0, INACTIVE
 #CTYPEedccb, Chua Pau Chee hehe :3, 250.0, ACTIVE
 #CTYPE33119, :D, 100.0, ACTIVE

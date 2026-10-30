@@ -29,9 +29,7 @@ public class ReportManagement {
 
     private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM");
 
-    // =========================================================
     // BILLING / REVENUE REPORT
-    // =========================================================
 
     public static LinkedHashMap<String, String> getBillingTotals() {
         List<Bill> bills = BillingManagement.getAllBills();
@@ -225,10 +223,7 @@ public class ReportManagement {
         return dt == null ? null : dt.toLocalDate();
     }
 
-    // =========================================================
     // INSURANCE USAGE REPORT
-    // =========================================================
-
     public static LinkedHashMap<String, String> getInsuranceTotals(LocalDate startDate, LocalDate endDate) {
         List<Bill> bills = BillingManagement.getAllBills();
         List<Bill> filteredBills = bills.stream()
@@ -292,10 +287,7 @@ public class ReportManagement {
         return amountByInsurance;
     }
 
-    // =========================================================
     // CONSULTATION REPORT
-    // =========================================================
-
     public static LinkedHashMap<String, String> getConsultationTotals(LocalDate startDate, LocalDate endDate) {
         List<Consultation> consultations = ConsultationManagement.getAllConsultations();
         List<Consultation> filteredConsultations = consultations.stream()
@@ -417,10 +409,7 @@ public class ReportManagement {
         return (shift == null) ? null : shift.getDoctor();
     }
 
-    // =========================================================
     // DOCTOR SHIFT REPORT
-    // =========================================================
-
     public static LinkedHashMap<String, String> getDoctorShiftTotals(List<Doctor> doctors, LocalDate startDate, LocalDate endDate) {
         List<DoctorShift> shifts = DoctorManagement.getAllDoctorShifts();
         long count = shifts.stream()

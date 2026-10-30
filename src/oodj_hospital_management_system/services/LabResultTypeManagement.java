@@ -219,9 +219,6 @@ public class LabResultTypeManagement {
         ensureLoaded();
         LinkedHashMap<String, String> msgMap = new LinkedHashMap<>();
 
-        // Validate on the passed-in object first, then re-fetch via ID before mutating
-        // (loadLabResultTypes() inside getLabResultTypeById reloads the list,
-        // orphaning any reference fetched before this call)
         if (labResultType == null || findLabResultTypeById(labResultType.getLabResultTypeId()) == null) {
             msgMap.put("success", null);
             msgMap.put("msg", "Lab result type is not updated\nLab result type not found.");
